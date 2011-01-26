@@ -1136,26 +1136,26 @@ When PLACE not specified return STR."
   (let* ((login (tv-get-gmail :mail t))
          (pass  (tv-get-gmail :password t))
          proc)
-    (apply #'start-process
-           "gmailnotify" nil "curl"
-           (list "-u"
-                 (concat login ":" pass)
-                 "https://mail.google.com/mail/feed/atom"))
+    (ignore-errors
+      (apply #'start-process
+             "gmailnotify" nil "curl"
+             (list "-u"
+                   (concat login ":" pass)
+                   "https://mail.google.com/mail/feed/atom")))
     (setq proc (get-process "gmailnotify"))
     (when proc
-      (ignore-errors
-        (set-process-filter proc
-                            #'(lambda (process output)
-                                (let* ((all (with-temp-buffer
-                                              (insert output)
-                                              (car (xml-parse-region (point-min) (point-max)))))
-                                       (title (caddar (xml-get-children all 'title)))
-                                       (tag   (caddar (xml-get-children all 'tagline)))
-                                       (count (caddar (xml-get-children all 'fullcount)))
-                                       (date  (caddar (xml-get-children all 'modified))))
-                                  (when (> (string-to-number count) 0)
-                                    (tooltip-show
-                                     (format "%s\nLast modified: %s\n%s: [%s]" title date tag count))))))))))
+      (set-process-filter proc
+                          #'(lambda (process output)
+                              (let* ((all (with-temp-buffer
+                                            (insert output)
+                                            (car (xml-parse-region (point-min) (point-max)))))
+                                     (title (caddar (xml-get-children all 'title)))
+                                     (tag   (caddar (xml-get-children all 'tagline)))
+                                     (count (caddar (xml-get-children all 'fullcount)))
+                                     (date  (caddar (xml-get-children all 'modified))))
+                                (when (> (string-to-number count) 0)
+                                  (tooltip-show
+                                   (format "%s\nLast modified: %s\n%s: [%s]" title date tag count)))))))))
 
 (defun gmail-notify-check ()
   (interactive)
