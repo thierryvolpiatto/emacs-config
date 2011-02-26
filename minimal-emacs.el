@@ -35,7 +35,7 @@
 	     ;"/home/thierry/elisp/eev/"
 	     "/home/thierry/elisp/D.A-libs/"
 	     "/home/thierry/elisp/pymacs"
-             "/home/thierry/elisp/elscreen"
+             ;"/home/thierry/elisp/elscreen"
              "/home/thierry/elisp/google-apps"
 	     ;"/home/thierry/elisp/ngnus/lisp"
              "/home/thierry/elisp/bbdb/lisp"

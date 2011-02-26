@@ -645,7 +645,7 @@ DIR is a regular directory name.
           ('?\(
            (skip-chars-forward " ")
            (insert "(")
-           (forward-symbol 1)
+           (forward-sexp 1)
            (insert ")"))
           (t
            (throw 'break nil)))))))
@@ -661,7 +661,7 @@ DIR is a regular directory name.
           ('?\"
            (skip-chars-forward " \n")
            (insert "\"")
-           (forward-symbol 1)
+           (forward-sexp 1)
            (insert "\""))
           (t
            (throw 'break nil)))))))
@@ -782,7 +782,10 @@ DIR is a regular directory name.
 (define-key lisp-mode-map (kbd "C-M-&") 'align-loop-region-for)
 (define-key emacs-lisp-mode-map (kbd "C-M-&") 'align-loop-region-for)
 
-;; Persistent-objects 
+;;;;;;;;;;;;;;;;;;;;;;;
+;;; Persistent-objects
+;;
+;; Main function to save objects.
 (defun dump-object-to-file (obj file)
   "Save symbol object OBJ to the byte compiled version of FILE.
 OBJ can be any lisp object, list, hash-table, etc...
@@ -807,8 +810,9 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
                                (anything-surfraw-engines-history . "anything-surfraw-engines-history.el")
                                (tv-save-buffers-alist . "tv-save-buffers-alist.el")
                                (anything-ff-history . "anything-ff-history.el")
-                               (kill-ring . "kill-ring.el")
-                               (kill-ring-yank-pointer . "kill-ring-yank-pointer.el")))
+                               ;(kill-ring . "kill-ring.el")
+                               ;(kill-ring-yank-pointer . "kill-ring-yank-pointer.el")
+                               ))
 
 (defun dump-object-to-file-save-alist ()
   (when object-to-save-alist
@@ -966,36 +970,10 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
   (let ((epa-armor t))
     (epa-sign-file file nil nil)))
 
-;; Chain-substitution 
-(defun* sub-longest (str sep &key place)
-  "Remove longest chain after or before SEP.
-PLACE can be one of 'before or 'after.
-When PLACE not specified return STR."
-  ;; (sub-longest "image.thierry.101.jpg" "\\." :place 'before)
-  ;; "image.thierry.101"
-  ;; (sub-longest "image.thierry.101.jpg" "\\." :place 'after)
-  ;; "thierry.101.jpg"
-  (let ((split (split-string str sep)))
-    (setq sep (replace-regexp-in-string "\\\\" "" sep))
-    (case place
-      (before (mapconcat 'identity (nbutlast split) sep))
-      (after  (mapconcat 'identity (cdr split) sep))
-      (t      str))))
-
-(defun* sub-shortest (str sep &key place)
-  "Remove shortest chain after or before SEP.
-PLACE can be one of 'before or 'after.
-When PLACE not specified return STR."
-  ;; (sub-shortest "image.thierry.101.jpg" "\\." :place 'before)
-  ;; "image"
-  ;; (sub-shortest "image.thierry.101.jpg" "\\." :place 'after)
-  ;; "jpg"
-  (let ((split (split-string str sep)))
-    (setq sep (replace-regexp-in-string "\\\\" "" sep))
-    (case place
-      (before (car (nbutlast split)))
-      (after  (mapconcat 'identity (last split) sep))
-      (t      str))))
+;; Usable from eshell as alias
+(defun gpg-sign-to-sig (file)
+  "Create a .sig file."
+  (epa-sign-file file nil 'detached))
 
 ;; Insert-log-from-patch 
 (defun tv-insert-log-from-patch (patch)
@@ -1013,9 +991,8 @@ When PLACE not specified return STR."
       (kill-buffer))
     (insert data)))
 
-
 (defun* show-file-attributes
-    (file &key type links uid gid access-time modif-time status size mode gid-change inode device-num)
+    (file &key type links uid gid access-time modif-time status size mode gid-change inode device-num dired)
   "Comprehensive reading of file attributes."
   (let ((all (destructuring-bind
                    (type links uid gid access-time modif-time status size mode gid-change inode device-num)
@@ -1042,15 +1019,24 @@ When PLACE not specified return STR."
           (uid   (getf all :uid))
           (gid   (getf all :gid))
           (access-time
-           (format-time-string "%Y-%m-%d" (getf all :access-time)))
+           (format-time-string "%Y-%m-%d %R" (getf all :access-time)))
           (modif-time
-           (format-time-string "%Y-%m-%d" (getf all :modif-time)))
-          (status (getf all :status))
+           (format-time-string "%Y-%m-%d %R" (getf all :modif-time)))
+          (status
+           (format-time-string "%Y-%m-%d %R" (getf all :status)))
           (size (getf all :size))
           (mode (getf all :mode))
           (gid-change (getf all :gid-change))
           (inode (getf all :inode))
           (device-num (getf all :device-num))
+          (dired
+           (concat
+            (getf all :mode) " "
+            (number-to-string (getf all :links)) " "
+            (getf all :uid) ":"
+            (getf all :gid) " "
+            (number-to-string (getf all :size)) " "
+            (format-time-string "%Y-%m-%d %R" (getf all :modif-time))))
           (t all))))
 
 
@@ -1136,24 +1122,25 @@ When PLACE not specified return STR."
   (let* ((login (tv-get-gmail :mail t))
          (pass  (tv-get-gmail :password t))
          proc)
-    (ignore-errors
-      (apply #'start-process
-             "gmailnotify" nil "curl"
-             (list "-u"
-                   (concat login ":" pass)
-                   "https://mail.google.com/mail/feed/atom")))
+    (apply #'start-process
+           "gmailnotify" nil "curl"
+           (list "-u"
+                 (concat login ":" pass)
+                 "https://mail.google.com/mail/feed/atom"))
     (setq proc (get-process "gmailnotify"))
     (when proc
       (set-process-filter proc
                           #'(lambda (process output)
-                              (let* ((all (with-temp-buffer
-                                            (insert output)
-                                            (car (xml-parse-region (point-min) (point-max)))))
+                              (let* ((all   (with-temp-buffer
+                                              (insert output)
+                                              (car (xml-parse-region (point-min) (point-max)))))
                                      (title (caddar (xml-get-children all 'title)))
                                      (tag   (caddar (xml-get-children all 'tagline)))
                                      (count (caddar (xml-get-children all 'fullcount)))
                                      (date  (caddar (xml-get-children all 'modified))))
-                                (when (> (string-to-number count) 0)
+                                (when (and (> (length all) 0)
+                                           (or (not (stringp count))
+                                               (> (string-to-number count) 0)))
                                   (tooltip-show
                                    (format "%s\nLast modified: %s\n%s: [%s]" title date tag count)))))))))
 
@@ -1170,6 +1157,69 @@ When PLACE not specified return STR."
   (interactive)
   (cancel-timer gmail-notification-timer)
   (setq gmail-notification-timer nil))
+
+;; List recursively contents of directory 
+(defun* walk-dir (directory &key fn (directories t) ext)
+  (let (result)
+    (labels ((ls-R (dir)
+               (loop with ls = (directory-files dir t directory-files-no-dot-files-regexp)
+                  for f in ls
+                  if (file-directory-p f)
+                  do (progn (when directories
+                              (if fn
+                                  (push (funcall fn f) result)
+                                  (push f result)))
+                            (ls-R f))
+                  else do (cond ((and ext fn (string= ext (file-name-extension f)))
+                                 (push (funcall fn f) result))
+                                ((and ext (string= ext (file-name-extension f)))
+                                 (push f result))
+                                ((and fn (not ext)) (push (funcall fn f) result))
+                                ((and (not fn) (not ext) (push f result)))))))
+      (ls-R directory)
+      (nreverse result))))
+
+;; Switch indenting lisp style.
+(defun toggle-lisp-indent ()
+  (interactive)
+  (if (eq lisp-indent-function 'common-lisp-indent-function)
+      (progn
+        (setq lisp-indent-function 'lisp-indent-function)
+        (message "Switching to Emacs lisp indenting style."))
+      (setq lisp-indent-function 'common-lisp-indent-function)
+      (message "Switching to Common lisp indenting style.")))
+
+;; C-mode conf
+(defun tv-cc-this-file ()
+  (interactive)
+  (when (eq major-mode 'c-mode)
+    (let* ((iname (buffer-file-name (current-buffer)))
+           (oname (file-name-sans-extension iname)))
+      (compile (format "make -k %s" oname)))))
+(add-hook 'c-mode-hook #'(lambda ()
+                           (define-key c-mode-map (kbd "C-c C-c") 'tv-cc-this-file)
+                           (define-key c-mode-map (kbd "#") 'comment-region)))
+
+;; Insert line numbers in region
+(defun tv-insert-lineno-in-region (beg end)
+  (interactive "r")
+  (save-restriction
+    (narrow-to-region beg end)
+    (goto-char (point-min))
+    (loop while (and (< (point) end) (re-search-forward "^.*$" nil t))
+       for count from 1 do
+         (replace-match
+          (concat (format "%d " count) (match-string 0))))))
+
+;; switch to emacs version
+(defun switch-to-emacs-version ()
+  (interactive)
+  (when (y-or-n-p "Really switch to another emacs? ")
+    (loop for i in '("b2m" "ctags" "ebrowse" "emacs" "emacsclient" "etags" "grep-changelog" "rcs-checkin")
+       do (delete-file (expand-file-name i "/sudo::/usr/local/bin")))
+    (delete-file "/sudo::/usr/local/share/info")
+    (anything-find-files1 "/sudo::/usr/local/sbin")
+    (anything-find-files1 "/sudo::/usr/local/share")))
 
 ;; Provide 
 (provide 'tv-utils)

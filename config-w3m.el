@@ -102,12 +102,9 @@ With prefix arg open another window to diplay result"
 
 ;; enable-cookies-in-w3m 
 (setq w3m-use-cookies t)
-(setq w3m-use-cookies t)
 (setq w3m-cookie-accept-bad-cookies t)
 
 ;; bookmark-in-delicious 
-
-;; (find-fline "~/labo/anything-hg-qpatch/anything-config.el" "w3m-add-delicious-bookmark")
 
 ;; With prefix arg, add also to w3m-bookmarks
 (define-key w3m-mode-map "\C-x\C-a" 'w3m-add-delicious-bookmark)
@@ -130,7 +127,7 @@ With prefix arg open another window to diplay result"
 (autoload 'w3m-antenna "w3m-antenna" "Report changes of WEB sites." t)
 
 ;; netscape-vs-firefox 
-(setq browse-url-netscape-program '"firefox")
+(setq browse-url-netscape-program "firefox")
 
 ;; Scroll-only-one-line-with-arrow-keys 
 (defun w3m-scroll-up-one ()
@@ -148,7 +145,6 @@ With prefix arg open another window to diplay result"
 (define-key w3m-mode-map (kbd "M-<right>") 'w3m-next-buffer)
 
 (define-key w3m-mode-map (kbd "M-<left>") 'w3m-previous-buffer)
-
 
 ;; emacswiki-shortcut 
 (add-to-list 'w3m-uri-replace-alist '("\\`ewi:" w3m-search-uri-replace "emacswiki"))
