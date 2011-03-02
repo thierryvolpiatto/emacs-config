@@ -261,6 +261,9 @@
 ;; Use C-c C-x C/M-w in w3m
 (require 'org-w3m)
 
+;; fontify source code
+(setq org-src-fontify-natively t)
+
 ;; Provide 
 (provide 'org-config-thierry)
 

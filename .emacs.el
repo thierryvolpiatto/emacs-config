@@ -665,6 +665,7 @@ account add <protocol> moi@mail.com password."
 ;; Path-to-abbrev-file 
 (setq abbrev-file-name "/home/thierry/.emacs.d/.abbrev_defs")
 
+
 ;; Copy-and-cut-to-x-clipboard 
 ;; Don't add to emacs kill-ring use yank-from-clipboard instead (C-c v)
 (setq interprogram-paste-function nil)
@@ -707,10 +708,6 @@ account add <protocol> moi@mail.com password."
   (add-to-list 'whitespace-style 'lines-tail)
   (setq whitespace-line-column 80))
 (global-set-key (kbd "C-c W") 'whitespace-mode)
-
-
-;; Bind-comint-dynamic-complete 
-(global-set-key (kbd "M-²") 'comint-dynamic-complete)
 
 ;; regex-tool 
 (require 'regex-tool)
@@ -862,11 +859,17 @@ account add <protocol> moi@mail.com password."
         (concat
          (getenv "USER")
          "@"
-         "MM061: " 
+         (system-name)
+         ":"
          (abbreviate-file-name (eshell/pwd))
          (if (= (user-uid) 0) " # " " $ "))))
 (add-hook 'eshell-mode-hook #'(lambda ()
                                 (set-face-attribute 'eshell-prompt nil :foreground "DeepSkyBlue")))
+
+
+(add-hook 'eshell-mode-hook #'(lambda ()
+                                (require 'anything-esh)
+                                 (define-key eshell-mode-map [remap pcomplete] 'anything-eshell-complete)))
 
 ;; Eshell-banner 
 (setq eshell-banner-message (format "%s %s\n"
@@ -903,7 +906,7 @@ account add <protocol> moi@mail.com password."
 ;; Eshell-visual 
 (setq eshell-term-name "eterm-color")
 (when (require 'em-term)
-  (dolist (i '("kop" "ledger" "mc" "htop"))
+  (dolist (i '("kop" "ledger" "htop"))
     (add-to-list 'eshell-visual-commands i)))
 
 ;; Term-et-ansi-term 
