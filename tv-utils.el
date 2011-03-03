@@ -1212,14 +1212,30 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
           (concat (format "%d " count) (match-string 0))))))
 
 ;; switch to emacs version
+
 (defun switch-to-emacs-version ()
   (interactive)
   (when (y-or-n-p "Really switch to another emacs? ")
     (loop for i in '("b2m" "ctags" "ebrowse" "emacs" "emacsclient" "etags" "grep-changelog" "rcs-checkin")
        do (delete-file (expand-file-name i "/sudo::/usr/local/bin")))
     (delete-file "/sudo::/usr/local/share/info")
-    (anything-find-files1 "/sudo::/usr/local/sbin")
-    (anything-find-files1 "/sudo::/usr/local/share")))
+    (let ((src-bin (anything-comp-read
+                    "EmacsVersion: "
+                    (directory-files "/sudo::/usr/local/sbin" nil directory-files-no-dot-files-regexp)))
+          (src-info (anything-comp-read
+                     "EmacsVersion: "
+                     (loop for i in
+                          (directory-files "/sudo::/usr/local/share" t directory-files-no-dot-files-regexp)
+                        when (string-match "info" i) collect i))))
+      (anything-dired-action "/sudo::/usr/local/bin"
+                             :action 'symlink
+                             :files (loop for i in '("b2m" "ctags"
+                                                     "ebrowse" "emacs"
+                                                     "emacsclient" "etags"
+                                                     "grep-changelog" "rcs-checkin")
+                                       collect (expand-file-name i src-bin)))
+      (anything-dired-action "/sudo::/usr/local/share/info"
+                             :action 'symlink :files (list src-info)))))
 
 ;; Provide 
 (provide 'tv-utils)
