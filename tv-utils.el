@@ -1212,30 +1212,34 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
           (concat (format "%d " count) (match-string 0))))))
 
 ;; switch to emacs version
-
 (defun switch-to-emacs-version ()
   (interactive)
-  (when (y-or-n-p "Really switch to another emacs? ")
+  (when (y-or-n-p (format "Really switch from %s to another emacs? " emacs-version))
     (loop for i in '("b2m" "ctags" "ebrowse" "emacs" "emacsclient" "etags" "grep-changelog" "rcs-checkin")
-       do (delete-file (expand-file-name i "/sudo::/usr/local/bin")))
+       do (delete-file (expand-file-name i "/sudo::/usr/local/bin/")))
     (delete-file "/sudo::/usr/local/share/info")
-    (let ((src-bin (anything-comp-read
-                    "EmacsVersion: "
-                    (directory-files "/sudo::/usr/local/sbin" nil directory-files-no-dot-files-regexp)))
-          (src-info (anything-comp-read
-                     "EmacsVersion: "
-                     (loop for i in
-                          (directory-files "/sudo::/usr/local/share" t directory-files-no-dot-files-regexp)
-                        when (string-match "info" i) collect i))))
-      (anything-dired-action "/sudo::/usr/local/bin"
+    (let* ((src-bin (expand-file-name (anything-comp-read
+                                       "EmacsVersion: "
+                                       (directory-files "/sudo::/usr/local/sbin"
+                                                        nil directory-files-no-dot-files-regexp))
+                                      "/sudo::/usr/local/sbin"))
+           (bin-list (loop for i in '("b2m" "ctags"
+                                      "ebrowse" "emacs"
+                                      "emacsclient" "etags"
+                                      "grep-changelog" "rcs-checkin")
+                                       collect (expand-file-name
+                                                i src-bin)))
+           (src-info (anything-comp-read
+                      "EmacsInfoVersion: "
+                      (loop for i in
+                           (directory-files "/sudo::/usr/local/share" t directory-files-no-dot-files-regexp)
+                           when (string-match "info" i) collect i))))
+      (anything-dired-action "/sudo::/usr/local/bin/"
                              :action 'symlink
-                             :files (loop for i in '("b2m" "ctags"
-                                                     "ebrowse" "emacs"
-                                                     "emacsclient" "etags"
-                                                     "grep-changelog" "rcs-checkin")
-                                       collect (expand-file-name i src-bin)))
+                             :files bin-list)
       (anything-dired-action "/sudo::/usr/local/share/info"
-                             :action 'symlink :files (list src-info)))))
+                             :action 'symlink :files (list src-info))
+      (message "Switched to %s version" (file-name-nondirectory src-bin)))))
 
 ;; Provide 
 (provide 'tv-utils)
