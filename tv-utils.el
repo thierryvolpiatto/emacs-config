@@ -1212,7 +1212,7 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
           (concat (format "%d " count) (match-string 0))))))
 
 ;; switch to emacs version
-(defun switch-to-emacs-version ()
+(defun eselect-emacs ()
   (interactive)
   (when (y-or-n-p (format "Really switch from %s to another emacs? " emacs-version))
     (loop for i in '("b2m" "ctags" "ebrowse" "emacs" "emacsclient" "etags" "grep-changelog" "rcs-checkin")
