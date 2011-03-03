@@ -1206,7 +1206,7 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
   (save-restriction
     (narrow-to-region beg end)
     (goto-char (point-min))
-    (loop while (and (< (point) end) (re-search-forward "^.*$" nil t))
+    (loop while (re-search-forward "^.*$" nil t)
        for count from 1 do
          (replace-match
           (concat (format "%d " count) (match-string 0))))))
