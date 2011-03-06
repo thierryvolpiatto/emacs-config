@@ -264,6 +264,15 @@
 ;; fontify source code
 (setq org-src-fontify-natively t)
 
+;; Use C-c on a org block like
+;; #+BEGIN: image :file "~/Pictures/Claude_et_Nathalie.JPG"
+;; #+END
+
+(defun org-dblock-write:image (params)
+  (let ((file (plist-get params :file)))
+    (clear-image-cache file)
+    (insert-image (create-image file) )))
+
 ;; Provide 
 (provide 'org-config-thierry)
 
