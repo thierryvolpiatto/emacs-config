@@ -1159,8 +1159,17 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
   (setq gmail-notification-timer nil))
 
 ;; List recursively contents of directory 
-(defun* walk-dir (directory &key fn (directories t) ext)
-  (let (result)
+(defun* walk-dir (directory &key (path 'basename) (directories t) match)
+  "Walk through DIRECTORY tree.
+PATH can be one of basename, relative, or full.
+DIRECTORIES when non--nil (default) return also directories names, otherwise
+skip directories names.
+MATCH when non--nil mention only file names that match the regexp MATCH."
+  (let (result
+        (fn (case path
+              (basename 'file-name-nondirectory)
+              (relative 'file-relative-name)
+              (t        nil))))
     (labels ((ls-R (dir)
                (loop with ls = (directory-files dir t directory-files-no-dot-files-regexp)
                   for f in ls
@@ -1170,12 +1179,14 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
                                   (push (funcall fn f) result)
                                   (push f result)))
                             (ls-R f))
-                  else do (cond ((and ext fn (string= ext (file-name-extension f)))
+                  else do (cond ((and match fn (string-match match (file-name-nondirectory f)))
                                  (push (funcall fn f) result))
-                                ((and ext (string= ext (file-name-extension f)))
+                                ((and match (string-match match (file-name-nondirectory f)))
                                  (push f result))
-                                ((and fn (not ext)) (push (funcall fn f) result))
-                                ((and (not fn) (not ext) (push f result)))))))
+                                ((and fn (not match))
+                                 (push (funcall fn f) result))
+                                ((and (not fn) (not match))
+                                 (push f result))))))
       (ls-R directory)
       (nreverse result))))
 
