@@ -1158,8 +1158,10 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
   (cancel-timer gmail-notification-timer)
   (setq gmail-notification-timer nil))
 
-;; List recursively contents of directory 
-(defun* walk-dir (directory &key (path 'basename) (directories t) match)
+;; List recursively contents of directory
+
+
+(defun* walk-dir (directory &key (path 'basename) (directories t) match action)
   "Walk through DIRECTORY tree.
 PATH can be one of basename, relative, or full.
 DIRECTORIES when non--nil (default) return also directories names, otherwise
@@ -1179,14 +1181,16 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
                                   (push (funcall fn f) result)
                                   (push f result)))
                             (ls-R f))
-                  else do (cond ((and match fn (string-match match (file-name-nondirectory f)))
-                                 (push (funcall fn f) result))
-                                ((and match (string-match match (file-name-nondirectory f)))
-                                 (push f result))
-                                ((and fn (not match))
-                                 (push (funcall fn f) result))
-                                ((and (not fn) (not match))
-                                 (push f result))))))
+                  else do (progn
+                            (cond ((and match fn (string-match match (file-name-nondirectory f)))
+                                   (push (funcall fn f) result))
+                                  ((and match (string-match match (file-name-nondirectory f)))
+                                   (push f result))
+                                  ((and fn (not match))
+                                   (push (funcall fn f) result))
+                                  ((and (not fn) (not match))
+                                   (push f result)))
+                            (when action (funcall action f))))))
       (ls-R directory)
       (nreverse result))))
 
