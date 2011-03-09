@@ -877,7 +877,7 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
   (when (eq (point-at-bol) (point-at-eol))
     (delete-blank-lines) (skip-chars-forward " ")))
 
-;(global-set-key (kbd "C-c k") 'tv-kill-backward)
+(global-set-key (kbd "C-c k") 'tv-kill-backward)
 
 ;; Eldoc-in-M-: 
 (defvar eldoc-in-minibuffer t)
