@@ -1334,9 +1334,6 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 ;; rst-mode 
 (add-hook 'rst-mode-hook 'auto-fill-mode)
 
-;; Magit 
-;(require 'magit)
-
 ;; rebind-eval-expression 
 (global-set-key (kbd "M-:") 'tv-pp-eval)
 
