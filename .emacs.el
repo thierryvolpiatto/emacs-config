@@ -31,6 +31,7 @@
 (add-to-list 'Info-directory-list "/usr/share/info")
 (add-to-list 'Info-directory-list "~/elisp/info")
 
+;; Rmove unused packages from `load-path'.
 (setq load-path (loop for i in load-path
                    for basename = (file-name-nondirectory i)
                    unless (or (string= basename "gnus")
@@ -79,13 +80,10 @@
 	     ))
   (add-to-list 'load-path i))
 
-;; Load-all-gentoo's-files-from-site-lisp 
+;; Load-all-gentoo's-files-from-site-lisp
+;; Reuse gentoo's old autoload files for external packages.
 (mapc 'load
       (cddr (directory-files "~/elisp/site-gentoo.d" t)))
-
-
-;; (require 'bytecomp)
-;; (debug-on-entry 'byte-compile-form)
 
 ;; Emacs-customize-have-it's-own-file 
 (setq custom-file "~/.emacs.d/.emacs-custom.el")
@@ -140,11 +138,13 @@
 (column-number-mode 1)
 
 ;; desktop-save 
-;; (desktop-save-mode 1)
-;; (setq desktop-restore-eager 5)
-;; (add-to-list 'desktop-globals-to-save 'ioccur-history)
-;; (add-to-list 'desktop-globals-to-save 'anything-external-command-history)
-;; (add-to-list 'desktop-globals-to-save 'anything-surfraw-engines-history)
+(desktop-save-mode 1)
+(setq desktop-restore-eager 5)
+(add-to-list 'desktop-globals-to-save 'ioccur-history)
+(add-to-list 'desktop-globals-to-save 'anything-external-command-history)
+(add-to-list 'desktop-globals-to-save 'anything-surfraw-engines-history)
+(add-to-list 'desktop-globals-to-save 'anything-ff-history)
+(add-to-list 'desktop-globals-to-save 'anything-external-command-history)
 ;(add-to-list 'desktop-locals-to-save 'anything-traverse-buffer-positions-ring)
 
 ;; usage-memo 
@@ -272,13 +272,6 @@
   (add-to-list 'default-frame-alist '(background-color . "black"))
   (add-to-list 'default-frame-alist '(font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1"))
   (add-to-list 'default-frame-alist '(cursor-color . "red")))
-
-;; switch to this frame when display buffer if
-;; this frame contains this buffer.
-;(setq display-buffer-reuse-frames t)
-
-;; Use-dedicated-windows 
-;(add-to-list 'after-make-frame-functions #'(lambda () (set-window-dedicated-p (selected-window) t)))
 
 ;; Bookmarks 
 (setq bookmark-bmenu-toggle-filenames nil)
@@ -441,9 +434,6 @@ account add <protocol> moi@mail.com password."
 ;; Kill buffers for server messages after quitting the server
 (setq erc-kill-server-buffer-on-quit t)
 
-;; Lisppaste 
-;(require 'lisppaste-extension)
-
 ;; Don't use RET to send line
 ;; (define-key erc-mode-map (kbd "RET") nil)
 ;; (define-key erc-mode-map (kbd "C-c RET") 'erc-send-current-line)
@@ -516,15 +506,13 @@ account add <protocol> moi@mail.com password."
 (winner-mode 1)
 
 
-;; Uniquify 
-;; Show 2 level of dir in the paths of buffer-filenames
-
+;; Uniquify.
+;; Show 2 level of dir in the paths of buffer-filenames.
 ;; (when (require 'uniquify)
 ;;   (setq uniquify-min-dir-content 1)
 ;;   (setq uniquify-buffer-name-style 'forward))
 
 ;; load-emms 
-;; (find-fline "~/.emacs.d/emacs-config-laptop/emms-mpd-config.el" "INDEX")
 ;(require 'emms-mpd-config)
 (require 'emms-mplayer-config)
 (define-key dired-mode-map (kbd "C-c p d") 'emms-play-dired)
@@ -541,22 +529,8 @@ account add <protocol> moi@mail.com password."
 ;; No-startup-screen 
 (setq inhibit-startup-message t)
 
-;; Message-displayed-in-scratch-on-startup 
-;; Take effect only on last emacs versions unless
-;; inhibit-startup-(message/screen) is nil.
-;; (setq initial-scratch-message (purecopy "\
-;; ;; SCRATCH BUFFER\n;; ==============
-
-;; "))
-
 ;; Ediff-config 
-;; (find-evardescr 'ediff-window-setup-function)
-
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
-;;(setq ediff-window-setup-function 'ediff-setup-windows-multiframe)
-
-;; highlight-current-line 
-;(global-set-key "\C-c-h" 'hl-line-mode)
 
 ;; yaoddmuse 
 (require 'yaoddmuse)
@@ -571,11 +545,8 @@ account add <protocol> moi@mail.com password."
 (setq dired-dwim-target t)
 (require 'dired-aux)
 (require 'dired-x)
-;(require 'dired-details)
 (require 'dired-extension)
 (setq dired-auto-revert-buffer t) ; Emacs vcs only
-;(dired-details-install)
-;(setq dired-details-initially-hide nil)
 (define-key dired-mode-map (kbd "C-k") #'(lambda () (interactive) (dired-do-delete 1)))
 (define-key dired-mode-map (kbd "b") #'(lambda () (interactive) (dired-do-byte-compile 1)))
 (define-key dired-mode-map (kbd "C-t -") 'thumb-convert-current-dir)
@@ -610,7 +581,6 @@ account add <protocol> moi@mail.com password."
 (setq display-time-use-mail-icon t)
 
 ;; Battery 
-
 ;; (require 'battery)
 ;; (run-with-timer "2" 60 #'(lambda ()
 ;;                            (if (equal (cdr (assoc 76 (battery-linux-proc-acpi)))
@@ -639,9 +609,6 @@ account add <protocol> moi@mail.com password."
 ;; Eval==> (describe-variable 'case-fold-search)
 (setq case-fold-search t)
 
-;; Transient-mark-mode 
-;(transient-mark-mode 1) ; the function
-
 ;; Mark-ring 
 (setq mark-ring-max 50)
 (setq global-mark-ring-max 32)
@@ -655,12 +622,6 @@ account add <protocol> moi@mail.com password."
                                (server-start)
                                (setq server-raise-frame t)))
 
-;; When using emacsclient from external programs, raise emacs and come back
-;; to external program when finish.
-;; (when window-system
-;;   (add-hook 'server-done-hook
-;;             (lambda ()
-;;               (shell-command "stumpish 'eval (stumpwm::return-es-called-win stumpwm::*es-win*)'"))))
 
 ;; Path-to-abbrev-file 
 (setq abbrev-file-name "/home/thierry/.emacs.d/.abbrev_defs")
@@ -691,11 +652,6 @@ account add <protocol> moi@mail.com password."
     (when primary (insert primary))))
 (global-set-key (kbd "C-c v") 'yank-from-primary)
 
-;; text-translator 
-;; (require 'text-translator-load)
-;; (setq text-translator-default-engine "google.com_jaen")
-;; (global-set-key (kbd "<f5> t r") 'text-translator)
-
 ;; htmlize 
 (require 'htmlize)
 
@@ -721,16 +677,12 @@ account add <protocol> moi@mail.com password."
 ;; Elisp 
 
 ;; Eldoc 
-
-;(add-hook 'emacs-lisp-mode-hook #'(lambda () (outline-minor-mode 1)))
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
-;(add-hook 'lisp-interaction-mode-hook #'(lambda () (outline-minor-mode 1)))
 (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'eshell-mode-hook 'turn-on-eldoc-mode)
 
-;; Indent-when-newline 
-;; (RET) in all elisp modes
+;; Indent-when-newline (RET) in all elisp modes
 (define-key lisp-interaction-mode-map (kbd "RET") 'newline-and-indent)
 (define-key emacs-lisp-mode-map (kbd "RET") 'newline-and-indent)
 (define-key lisp-mode-map (kbd "RET") 'newline-and-indent)
@@ -1161,14 +1113,14 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 
 ;; boxquote-config 
 
-(require 'boxquote)
-(global-set-key (kbd "<f7> q f") 'boxquote-describe-function)
-(global-set-key (kbd "<f7> q v") 'boxquote-describe-variable)
-(global-set-key (kbd "<f7> q k") 'boxquote-describe-key)
-(global-set-key (kbd "<f7> q r") 'boxquote-region)
-(global-set-key (kbd "<f7> q u") 'boxquote-unbox-region)
-(global-set-key (kbd "<f7> q t") 'boxquote-title)
-(global-set-key (kbd "<f7> q c") 'boxquote-copy-box-without-box)
+;; (require 'boxquote)
+;; (global-set-key (kbd "<f7> q f") 'boxquote-describe-function)
+;; (global-set-key (kbd "<f7> q v") 'boxquote-describe-variable)
+;; (global-set-key (kbd "<f7> q k") 'boxquote-describe-key)
+;; (global-set-key (kbd "<f7> q r") 'boxquote-region)
+;; (global-set-key (kbd "<f7> q u") 'boxquote-unbox-region)
+;; (global-set-key (kbd "<f7> q t") 'boxquote-title)
+;; (global-set-key (kbd "<f7> q c") 'boxquote-copy-box-without-box)
 ;; (find-fline "~/.emacs.d/emacs-config-laptop/tv-utils.el" "defun boxquote-copy-box-without-box")
 
 
@@ -1238,23 +1190,6 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 ;; (setq host-url "http://thievol.homelinux.org:2222")
 ;; (global-set-key (kbd "C-c t p") 'muse-write-thumb-table)
 
-;; traverselisp-config 
-(require 'traverselisp)
-(setq traverse-use-avfs t)
-(global-set-key (kbd "<f5> f") 'traverse-deep-rfind)
-(global-set-key (kbd "C-M-|") 'traverse-toggle-split-window-h-v)
-
-(define-key dired-mode-map (kbd "A") 'traverse-dired-search-regexp-in-anything-at-point)
-(define-key dired-mode-map (kbd "C-c C-z") 'traverse-dired-browse-archive)
-(define-key dired-mode-map (kbd "C-c t") 'traverse-dired-find-in-all-files)
-
-(setq traverse-ignore-files
-      (append '(".ledger-cache"  "ANYTHING-TAG-FILE") traverse-ignore-files))
-(setq traverse-ignore-dirs
-      (append '("emacs_backup") traverse-ignore-dirs))
-
-;(require 'anything-file-in-current-tree)
-;(global-set-key (kbd "C-c C-d") 'anything-files-in-current-tree)
 
 ;; ioccur 
 (require 'ioccur)
@@ -1284,9 +1219,12 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 (ffap-bindings)
 (setq ffap-newfile-prompt t)
 
-;; autodoc 
+;; autodoc (my autodoc) 
 ;; (find-fline "~/labo/anything-config-qp/developer-tools/autodoc.el")
 (require 'autodoc)
+
+;; auto-document (rubikitch auto documentation)
+(require 'auto-document)
 
 ;; Scroll-down-Scroll-up 
 (defun tv-scroll-down ()
@@ -1334,12 +1272,15 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 ;; ;; xmodmap 
 (load "xmodmap.elc")
 
-;; convenient-keys-for-windows 
-(global-set-key (kbd "C-x C-²") 'delete-other-windows)
+;; convenient keys for splitting windows 
+(global-set-key (kbd "C-x C-&") 'delete-other-windows)
+(global-set-key (kbd "C-x C-à") 'delete-window)
 (global-set-key (kbd "C-x C-é") 'split-window-vertically)
 (global-set-key (kbd "C-x C-\"") 'split-window-horizontally)
-(global-set-key (kbd "C-x C-( C-(") 'make-frame-command)
-(global-set-key (kbd "C-x C-( C-\-") 'delete-frame)
+
+;; convenient keys for creating/deleting frames
+(global-set-key (kbd "C-x C-( C-é") 'make-frame-command)
+(global-set-key (kbd "C-x C-( C-à") 'delete-frame)
 
 ;; sql-mode 
 (setq sql-sqlite-program "sqlite3")
