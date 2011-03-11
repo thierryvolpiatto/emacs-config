@@ -1312,13 +1312,6 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 (add-hook 'lisp-interaction-mode-hook 'align-let-keybinding)
 (add-hook 'lisp-mode-hook 'align-let-keybinding)
 
-;; delete-pair 
-;; See also:
-;; (find-fline "~/.emacs.d/emacs-config-laptop/tv-utils.el" "defun tv-insert-double-quote")
-(define-key lisp-mode-map (kbd "C-c (") 'delete-pair)
-(define-key lisp-interaction-mode-map (kbd "C-c (") 'delete-pair)
-(define-key emacs-lisp-mode-map (kbd "C-c (") 'delete-pair)    
-
 
 ;; line-move-visual 
 ;(setq line-move-visual nil)
