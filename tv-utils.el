@@ -1212,8 +1212,7 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
            (oname (file-name-sans-extension iname)))
       (compile (format "make -k %s" oname)))))
 (add-hook 'c-mode-hook #'(lambda ()
-                           (define-key c-mode-map (kbd "C-c C-c") 'tv-cc-this-file)
-                           (define-key c-mode-map (kbd "#") 'comment-region)))
+                           (define-key c-mode-map (kbd "C-c C-c") 'tv-cc-this-file)))
 
 ;; Insert line numbers in region
 (defun tv-insert-lineno-in-region (beg end)
@@ -1255,6 +1254,37 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
       (anything-dired-action "/sudo::/usr/local/share/info"
                              :action 'symlink :files (list src-info))
       (message "Switched to %s version" (file-name-nondirectory src-bin)))))
+
+;; Permutations
+
+(defun* permutations (bag &key result-as-string print)
+  "Return a list of all the permutations of the input."
+  ;; If the input is nil, there is only one permutation:
+  ;; nil itself
+  (when (stringp bag) (setq bag (split-string bag "" t)))
+  (let ((result
+         (if (null bag)
+             '(())
+             ;; Otherwise, take an element, e, out of the bag.
+             ;; Generate all permutations of the remaining elements,
+             ;; And add e to the front of each of these.
+             ;; Do this for all possible e to generate all permutations.
+             (loop for e in bag append
+                  (loop for p in (permutations (remove e bag))
+                     collect (cons e p))))))
+    (when (or result-as-string print)
+        (setq result (loop for i in result collect (mapconcat 'identity i ""))))
+    (if print
+        (with-current-buffer (get-buffer-create "*permutations*")
+          (erase-buffer)
+          (loop for i in result
+             do (insert (concat i "\n")))
+          (pop-to-buffer (current-buffer)))
+        result)))
+
+;; Popup library, collection of nice widgets.
+;; https://github.com/m2ym/popup-el
+(require 'popup)
 
 ;; Provide 
 (provide 'tv-utils)

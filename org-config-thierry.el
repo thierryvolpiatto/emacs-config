@@ -70,8 +70,8 @@
         ;; (sequence "INPROGRESS(i)" "DEFERRED(s)")))
 
 (setq org-todo-keyword-faces
-      '(("TODO"      .  traverse-match-face)
-        ("INPROGRESS" . traverse-regex-face)
+      '(("TODO"      .  '((:foreground "red")))
+        ("INPROGRESS" . '((:foreground "yellow")))
         ("BUG" . (:foreground "VioletRed4" :weight bold))
         ("FIXED" . (:foreground "SpringGreen4" :weight bold))
         ("DEFERRED"  . shadow)

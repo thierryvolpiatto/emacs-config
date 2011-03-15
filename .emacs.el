@@ -138,14 +138,14 @@
 (column-number-mode 1)
 
 ;; desktop-save 
-(desktop-save-mode 1)
-(setq desktop-restore-eager 5)
-(add-to-list 'desktop-globals-to-save 'ioccur-history)
-(add-to-list 'desktop-globals-to-save 'anything-external-command-history)
-(add-to-list 'desktop-globals-to-save 'anything-surfraw-engines-history)
-(add-to-list 'desktop-globals-to-save 'anything-ff-history)
-(add-to-list 'desktop-globals-to-save 'anything-external-command-history)
-;(add-to-list 'desktop-locals-to-save 'anything-traverse-buffer-positions-ring)
+;; (desktop-save-mode 1)
+;; (setq desktop-restore-eager 5)
+;; (add-to-list 'desktop-globals-to-save 'ioccur-history)
+;; (add-to-list 'desktop-globals-to-save 'anything-external-command-history)
+;; (add-to-list 'desktop-globals-to-save 'anything-surfraw-engines-history)
+;; (add-to-list 'desktop-globals-to-save 'anything-ff-history)
+;; (add-to-list 'desktop-globals-to-save 'anything-external-command-history)
+
 
 ;; usage-memo 
 ;; Add memo to describe-func/variable
@@ -783,7 +783,6 @@ account add <protocol> moi@mail.com password."
 ;(global-set-key (kbd "C-c e p") 'tv-insert-python-header)
 
 ;; shell-config 
-(require 'ansi-color)
 
 ;; Set `undo-outer-limit' to hight value to avoid messages when gentoo emerge
 (setq undo-outer-limit 6000000)
@@ -791,18 +790,20 @@ account add <protocol> moi@mail.com password."
 ;; prompt-shell-read-only 
 (setq comint-prompt-read-only t)
 
+;; [obsolete]
 ;; couleur-dans-le-shell 
 ;; (j'ai ajouté dumb dans /etc/LS_COLOR egalement)
-(autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
-(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+;(require 'ansi-color)
+;; (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
+;; (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
 ;; newline-and-indent-in-sh-mode 
-
 (add-hook 'sh-mode-hook #'(lambda ()
                             (define-key sh-mode-map (kbd "RET") 'newline-and-indent)))
 
 
-;; Eshell-config 
+;; Eshell-config
+(autoload 'eshell-mode "esh-mode.el")
 (require 'em-xtra)
 
 ;; Eshell-prompt 
@@ -847,6 +848,7 @@ account add <protocol> moi@mail.com password."
 ;; Eshell-directory 
 (setq eshell-directory-name "/home/thierry/.emacs.d/.eshell/")
 
+
 ;; Eshell-command 
 (global-set-key (kbd "C-!") 'eshell-command)
 
@@ -862,18 +864,19 @@ account add <protocol> moi@mail.com password."
     (add-to-list 'eshell-visual-commands i)))
 
 ;; Term-et-ansi-term 
-(defvar term-prompt-regexp)
-(add-hook 'term-mode-hook
-          (function
-           (lambda ()
-             (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
-             (make-local-variable 'mouse-yank-at-point)
-             (make-local-variable 'transient-mark-mode)
-             (setq mouse-yank-at-point t)
-             ;(setq transient-mark-mode t)
-             (transient-mark-mode 1)
-             (auto-fill-mode -1)
-             (setq tab-width 8 ))))
+;; [obsolete]
+;; (defvar term-prompt-regexp)
+;; (add-hook 'term-mode-hook
+;;           (function
+;;            (lambda ()
+;;              (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
+;;              (make-local-variable 'mouse-yank-at-point)
+;;              (make-local-variable 'transient-mark-mode)
+;;              (setq mouse-yank-at-point t)
+;;              ;(setq transient-mark-mode t)
+;;              (transient-mark-mode 1)
+;;              (auto-fill-mode -1)
+;;              (setq tab-width 8 ))))
 
 (defun tv-term ()
   (interactive)
@@ -1113,14 +1116,14 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 
 ;; boxquote-config 
 
-;; (require 'boxquote)
-;; (global-set-key (kbd "<f7> q f") 'boxquote-describe-function)
-;; (global-set-key (kbd "<f7> q v") 'boxquote-describe-variable)
-;; (global-set-key (kbd "<f7> q k") 'boxquote-describe-key)
-;; (global-set-key (kbd "<f7> q r") 'boxquote-region)
-;; (global-set-key (kbd "<f7> q u") 'boxquote-unbox-region)
-;; (global-set-key (kbd "<f7> q t") 'boxquote-title)
-;; (global-set-key (kbd "<f7> q c") 'boxquote-copy-box-without-box)
+(require 'boxquote)
+(global-set-key (kbd "<f7> q f") 'boxquote-describe-function)
+(global-set-key (kbd "<f7> q v") 'boxquote-describe-variable)
+(global-set-key (kbd "<f7> q k") 'boxquote-describe-key)
+(global-set-key (kbd "<f7> q r") 'boxquote-region)
+(global-set-key (kbd "<f7> q u") 'boxquote-unbox-region)
+(global-set-key (kbd "<f7> q t") 'boxquote-title)
+(global-set-key (kbd "<f7> q c") 'boxquote-copy-box-without-box)
 ;; (find-fline "~/.emacs.d/emacs-config-laptop/tv-utils.el" "defun boxquote-copy-box-without-box")
 
 
@@ -1272,7 +1275,8 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 ;; ;; xmodmap 
 (load "xmodmap.elc")
 
-;; convenient keys for splitting windows 
+;; convenient keys for splitting windows
+(global-set-key (kbd "C-x C-²") 'delete-other-windows)
 (global-set-key (kbd "C-x C-&") 'delete-other-windows)
 (global-set-key (kbd "C-x C-à") 'delete-window)
 (global-set-key (kbd "C-x C-é") 'split-window-vertically)
@@ -1343,7 +1347,7 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 
 ;; Elscreen 
 (require 'elscreen)
-;(require 'elscreen-w3m)
+(require 'elscreen-w3m)
 (require 'elscreen-dired)
 (require 'elscreen-server)
 (defun anything-elscreen ()
@@ -1464,7 +1468,12 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 ;(gmail-notify-start)
 
 ;; Trash
-(setq delete-by-moving-to-trash t)
+;(setq delete-by-moving-to-trash t)
+
+;; Popwin makes you free from the hell of annoying buffers such like
+;; *Help*, *Completions*, *compilation*, and etc.
+(require 'popwin)
+(setq display-buffer-function 'popwin:display-buffer)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
