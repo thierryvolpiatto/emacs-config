@@ -920,21 +920,10 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
 (global-set-key (kbd "C-d") 'tv-delete-char)
 
 ;; Browse-url 
-(defun* tv-generic-browser (url name &rest args)
-  (let ((proc (concat name " " url)))
-    (message "Starting %s..." name)
-    (apply 'start-process proc nil name
-           (append args (list url)))
-    (set-process-sentinel
-     (get-process proc)
-     #'(lambda (process event)
-         (when (string= event "finished\n")
-           (message "%s process %s" process event))))))
-
 (defun firefox-browse-url (url)
   (interactive "sURL: ")
   (let ((name  "firefox"))
-    (tv-generic-browser url name)))
+    (anything-c-generic-browser url name)))
 
 (defun tv-w3m-view-this-page-in-firefox ()
   (interactive)
@@ -944,10 +933,8 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
 
 (defun browse-url-chromium (url)
   (interactive "sURL: ")
-  (let ((name (concat "chromium " url))
-        (exe  "chromium-bin")
-        (args '("--enable-plugins")))
-    (tv-generic-browser url :name name :exe exe :args args)))
+  (let ((exe  "chromium-browser"))
+    (anything-c-generic-browser url exe)))
 
 ;(global-set-key (kbd "<f7> c") 'browse-url-chromium)
 

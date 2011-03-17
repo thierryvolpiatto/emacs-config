@@ -803,7 +803,6 @@ account add <protocol> moi@mail.com password."
 
 
 ;; Eshell-config
-(autoload 'eshell-mode "esh-mode.el")
 (require 'em-xtra)
 
 ;; Eshell-prompt 
