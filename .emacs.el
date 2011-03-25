@@ -643,13 +643,11 @@ account add <protocol> moi@mail.com password."
 (defun yank-from-primary ()
   "X-apps ==> Emacs."
   (interactive)
-  ;; Thats work with CLIPBOARD also.
-  ;; When copying in other apps to CLIPBOARD
-  ;; selection is added to PRIMARY also.
-  ;; so using PRIMARY cover the both,
-  ;; that is PRIMARY and CLIPBOARD.
-  (let ((primary (x-selection 'PRIMARY)))
-    (when primary (insert primary))))
+  (let ((primary (x-selection 'PRIMARY))
+        (clip    (x-selection 'CLIPBOARD)))
+    (cond (clip    (insert clip))
+          (primary (insert primary))
+          (t       (yank)))))
 (global-set-key (kbd "C-c v") 'yank-from-primary)
 
 ;; htmlize 
