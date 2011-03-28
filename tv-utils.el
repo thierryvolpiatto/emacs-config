@@ -1147,7 +1147,6 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
 
 ;; List recursively contents of directory
 
-
 (defun* walk-dir (directory &key (path 'basename) (directories t) match action)
   "Walk through DIRECTORY tree.
 PATH can be one of basename, relative, or full.
@@ -1167,7 +1166,9 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
                               (if fn
                                   (push (funcall fn f) result)
                                   (push f result)))
-                            (ls-R f))
+                            ;; Don't recurse in directory symlink.
+                            (unless (file-symlink-p f)
+                              (ls-R f)))
                   else do (progn
                             (cond ((and match fn (string-match match (file-name-nondirectory f)))
                                    (push (funcall fn f) result))
@@ -1180,6 +1181,21 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
                             (when action (funcall action f))))))
       (ls-R directory)
       (nreverse result))))
+
+;; Search files recursively
+(defvar tv-search-table (make-hash-table :test 'equal))
+(defun tv-search-file (arg)
+  (interactive "P")
+  (let* ((directory (anything-c-read-file-name "Directory: " :test 'file-directory-p))
+         (data      (or (and (not arg)
+                             (gethash directory tv-search-table))
+                        (prog2
+                            (when arg (remhash directory tv-search-table))
+                            (puthash directory (walk-dir directory :path 'full :directories nil)
+                                     tv-search-table))))
+         (fname     (anything-comp-read "SearchFileMatching: " data)))
+    (find-file fname)))
+;; (dump-object-to-file 'tv-search-table "~/tmp/test.el")
 
 ;; Switch indenting lisp style.
 (defun toggle-lisp-indent ()
