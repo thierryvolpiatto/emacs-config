@@ -1164,9 +1164,7 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
                   for f in ls
                   if (file-directory-p f)
                   do (progn (when directories
-                              (if fn
-                                  (push (funcall fn f) result)
-                                  (push f result)))
+                              (push (funcall fn f) result))
                             ;; Don't recurse in directory symlink.
                             (unless (file-symlink-p f)
                               (ls-R f)))
