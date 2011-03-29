@@ -1147,7 +1147,7 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
 
 ;; List recursively contents of directory
 
-(defun* walk-dir (directory &key (path 'basename) (directories t) match action)
+(defun* walk-directory (directory &key (path 'basename) (directories t) match)
   "Walk through DIRECTORY tree.
 PATH can be one of basename, relative, or full.
 DIRECTORIES when non--nil (default) return also directories names, otherwise
@@ -1157,7 +1157,8 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
         (fn (case path
               (basename 'file-name-nondirectory)
               (relative 'file-relative-name)
-              (t        nil))))
+              (full     'identity)
+              (t (error "Error: Invalid path spec `%s', must be one of basename, relative or full." path)))))
     (labels ((ls-R (dir)
                (loop with ls = (directory-files dir t directory-files-no-dot-files-regexp)
                   for f in ls
@@ -1169,16 +1170,9 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
                             ;; Don't recurse in directory symlink.
                             (unless (file-symlink-p f)
                               (ls-R f)))
-                  else do (progn
-                            (cond ((and match fn (string-match match (file-name-nondirectory f)))
-                                   (push (funcall fn f) result))
-                                  ((and match (string-match match (file-name-nondirectory f)))
-                                   (push f result))
-                                  ((and fn (not match))
-                                   (push (funcall fn f) result))
-                                  ((and (not fn) (not match))
-                                   (push f result)))
-                            (when action (funcall action f))))))
+                  else do 
+                    (unless (and match (not (string-match match (file-name-nondirectory f))))
+                      (push (funcall fn f) result)))))
       (ls-R directory)
       (nreverse result))))
 
@@ -1191,11 +1185,11 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
                              (gethash directory tv-search-table))
                         (prog2
                             (when arg (remhash directory tv-search-table))
-                            (puthash directory (walk-dir directory :path 'full :directories nil)
+                            (puthash directory (walk-directory directory :path 'full :directories nil)
                                      tv-search-table))))
          (fname     (anything-comp-read "SearchFileMatching: " data)))
     (find-file fname)))
-;; (dump-object-to-file 'tv-search-table "~/tmp/test.el")
+;; (dump-object-to-file 'tv-search-table "~/.emacs.d/elisp-objects/tv-search-table.el")
 
 ;; Switch indenting lisp style.
 (defun toggle-lisp-indent ()

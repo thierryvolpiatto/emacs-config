@@ -1469,8 +1469,8 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 
 ;; Popwin makes you free from the hell of annoying buffers such like
 ;; *Help*, *Completions*, *compilation*, and etc.
-(require 'popwin)
-(setq display-buffer-function 'popwin:display-buffer)
+;(require 'popwin)
+;(setq display-buffer-function 'popwin:display-buffer)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
