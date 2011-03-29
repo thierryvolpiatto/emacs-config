@@ -1174,25 +1174,6 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
       (ls-R directory)
       (nreverse result))))
 
-;; Search files recursively
-(defvar tv-search-table (make-hash-table :test 'equal))
-(defun tv-search-file (arg)
-  (interactive "P")
-  (let* ((directory (anything-c-read-file-name "Directory: " :test 'file-directory-p))
-         (data      (or (and (not arg)
-                             (gethash directory tv-search-table))
-                        (prog2
-                            (when arg (remhash directory tv-search-table))
-                            (puthash directory (walk-dir directory :path 'full :directories nil)
-                                     tv-search-table)))))
-    (anything :sources
-              '(((name . "Search files")
-                 (candidates . data)
-                 (type . file)))
-              :buffer "*Search files*"
-              :keymap anything-generic-files-map)))
-
-;; (dump-object-to-file 'tv-search-table "~/.emacs.d/elisp-objects/tv-search-table.el")
 
 ;; Switch indenting lisp style.
 (defun toggle-lisp-indent ()
