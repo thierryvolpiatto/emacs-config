@@ -274,18 +274,19 @@
   (add-to-list 'default-frame-alist '(cursor-color . "red")))
 
 ;; Emacs transparency - only with compiz.
-(add-to-list 'default-frame-alist '(alpha . 100)) ; Default
+(when (window-system)
+  (add-to-list 'default-frame-alist '(alpha . 100)) ; Default
 
-(defun tv-transparency-modify (arg)
-  "Increase Emacs frame transparency.
+  (defun tv-transparency-modify (arg)
+    "Increase Emacs frame transparency.
 With a prefix arg decrease transparency."
-  (interactive "P")
-  (let* ((ini-alpha (frame-parameter nil 'alpha))
-         (def-alpha (or ini-alpha 100))
-         (mod-alpha (if arg (+ def-alpha 10) (- def-alpha 10))))
-    (when (and (>= mod-alpha frame-alpha-lower-limit) (<= mod-alpha 100))
-      (modify-frame-parameters nil (list (cons 'alpha mod-alpha))))))
-(global-set-key (kbd "C-8") 'tv-transparency-modify)
+    (interactive "P")
+    (let* ((ini-alpha (frame-parameter nil 'alpha))
+           (def-alpha (or ini-alpha 100))
+           (mod-alpha (if arg (+ def-alpha 10) (- def-alpha 10))))
+      (when (and (>= mod-alpha frame-alpha-lower-limit) (<= mod-alpha 100))
+        (modify-frame-parameters nil (list (cons 'alpha mod-alpha))))))
+  (global-set-key (kbd "C-8") 'tv-transparency-modify))
 
 ;; Bookmarks 
 (setq bookmark-bmenu-toggle-filenames nil)
