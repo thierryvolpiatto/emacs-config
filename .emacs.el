@@ -273,6 +273,20 @@
   (add-to-list 'default-frame-alist '(font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1"))
   (add-to-list 'default-frame-alist '(cursor-color . "red")))
 
+;; Emacs transparency - only with compiz.
+(add-to-list 'default-frame-alist '(alpha . 100)) ; Default
+
+(defun tv-transparency-modify (arg)
+  "Increase Emacs frame transparency.
+With a prefix arg decrease transparency."
+  (interactive "P")
+  (let* ((ini-alpha (frame-parameter nil 'alpha))
+         (def-alpha (or ini-alpha 100))
+         (mod-alpha (if arg (+ def-alpha 10) (- def-alpha 10))))
+    (when (and (>= mod-alpha frame-alpha-lower-limit) (<= mod-alpha 100))
+      (modify-frame-parameters nil (list (cons 'alpha mod-alpha))))))
+(global-set-key (kbd "C-8") 'tv-transparency-modify)
+
 ;; Bookmarks 
 (setq bookmark-bmenu-toggle-filenames nil)
 (add-hook 'bookmark-bmenu-mode-hook 'hl-line-mode)
@@ -386,8 +400,8 @@ account add <protocol> moi@mail.com password."
                                            "im.okkernoot.net:6667"
                                            "im.codemonkey.be:6667"
                                            "im.se.bitlbee.org:6667")
-                                      :must-match t
-                                      :name "Bitlbee Servers")))
+                                         :must-match t
+                                         :name "Bitlbee Servers")))
   
   (let ((bitlb-auth (auth-source-user-or-password
                      '("login" "password")
@@ -1010,6 +1024,10 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 (setq-default TeX-master nil)
 (add-hook 'TeX-language-fr-hook
                (lambda () (ispell-change-dictionary "french")))
+(add-hook 'LaTeX-mode-hook 'visual-line-mode)
+;(add-hook 'LaTeX-mode-hook 'flyspell-mode)
+(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+(setq TeX-PDF-mode t)
 
 ;; Insertion-d'un-squelette-latex 
 
@@ -1342,15 +1360,16 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 ;(require 'undo-tree)
 ;(global-undo-tree-mode)
 
-;; Elscreen 
-(require 'elscreen)
-(require 'elscreen-w3m)
-(require 'elscreen-dired)
-(require 'elscreen-server)
-(defun anything-elscreen ()
-  (interactive)
-  (anything-other-buffer 'anything-c-source-elscreen "*Anything Elscreen*"))
-(global-set-key (kbd "C-z l") 'anything-elscreen)
+;; Elscreen
+(when (< emacs-major-version 24)
+  (require 'elscreen)
+                                        ;(require 'elscreen-w3m)
+                                        ;(require 'elscreen-dired)
+                                        ;(require 'elscreen-server)
+  (defun anything-elscreen ()
+    (interactive)
+    (anything-other-buffer 'anything-c-source-elscreen "*Anything Elscreen*"))
+  (global-set-key (kbd "C-z l") 'anything-elscreen))
 
 ;; Calendar-and-diary 
 (setq holiday-bahai-holidays nil)

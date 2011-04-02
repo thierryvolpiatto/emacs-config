@@ -7,6 +7,29 @@
 ;; Kill-other-windows-when-using-w3m- 
 (add-hook 'w3m-mode-hook 'delete-other-windows)
 
+;; Elscreen tabs
+;; Use the w3m tabs instead of elscreen one's.
+(when (and (< emacs-major-version 24)
+           (require 'elscreen nil t))
+  (defun tv-elscreen-remove-tab ()
+    "Toggle the tab on the top of screen."
+    (interactive)
+    (setq elscreen-display-tab nil)
+    (elscreen-notify-screen-modification 'force))
+
+  (defun tv-elscreen-display-tab ()
+    "Toggle the tab on the top of screen."
+    (interactive)
+    (setq elscreen-display-tab t)
+    (elscreen-notify-screen-modification 'force))
+
+  (add-hook 'w3m-mode-hook #'(lambda () (call-interactively 'tv-elscreen-remove-tab)))
+  (defadvice w3m-quit (after restore-el-tabs () activate)
+    (call-interactively 'tv-elscreen-display-tab))
+  (defadvice w3m-close-window (after restore-el-tabs () activate)
+    (call-interactively 'tv-elscreen-display-tab))
+  )
+
 ;; default-save-directory 
 (setq w3m-default-save-directory "~/download/")
 

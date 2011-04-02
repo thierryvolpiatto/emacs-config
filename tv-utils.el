@@ -122,8 +122,10 @@
 ;; Crontab 
 ;;;###autoload
 (defun crontab (min hr month-day month week-day progr)
-  (interactive "sMin (0 to 59 or 0-x/every y mn or *): \
-\nsHour (0 to 23 or 0-x/every y hr or *): \
+  "Insert interactively crontab line at point.
+Run first crontab -e in shell and when emacsclient popup run M-x crontab."
+  (interactive "sMin (0 to 59 or 0-59/every_x_mn or *): \
+\nsHour (0 to 23 or 0-59/every_x_ hr or *): \
 \nsDayOfMonth (1 to 31 or *): \
 \nsMonth (1 to 12 or *): \
 \nsDayOfWeek (0 to 7 or x,y,z or *): \nsCommand: ")
