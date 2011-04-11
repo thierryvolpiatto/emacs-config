@@ -305,7 +305,7 @@ You can specify input function to use."
     (when (get-buffer "*scratch*") (kill-buffer "*scratch*")))
   (if (and (get-buffer "*scratch*")
            (buffer-file-name (get-buffer "*scratch*")))
-      (switch-to-buffer "*scratch*")
+      (progn (switch-to-buffer "*scratch*") (lisp-interaction-mode))
       (with-current-buffer (find-file "~/.emacs.d/save-scratch.el")
         (rename-buffer "*scratch*")
         (lisp-interaction-mode)
@@ -1083,12 +1083,12 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
                  (insert last-elm)))))
       (save-window-excursion
         (print-result) ; Print the first chunk of lines before starting loop.
-        (while (let ((char (read-key "===[ Next: SPACE, Prec: -, AnyKey:Exit ]===")))
+        (while (let ((char (read-key "===[ Next: SPACE, Prec: b, AnyKey:Exit ]===")))
                  (case char
-                   (32 ; Continue with a circular iterator.
+                   (32 ; SPACE: Continue with a circular iterator.
                     (setq it (iter-sub-next-circular split last-elm))
                     (setq last-elm (iter-next it)))
-                   (45
+                   (98 ; b Go back.
                     (setq it (iter-sub-prec-circular split last-elm))
                     (setq last-elm (iter-next it)))
                    (t nil))) ; Exit loop if any other key is pressed.
@@ -1265,9 +1265,21 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
           (pop-to-buffer (current-buffer)))
         result)))
 
-;; Popup library, collection of nice widgets.
-;; https://github.com/m2ym/popup-el
-(require 'popup)
+;; Verlan.
+(defun tv-reverse-lines-in-region (beg end)
+  (interactive "r")
+  "Verlan region."
+  (save-restriction
+    (narrow-to-region beg end)
+    (goto-char (point-min))
+    (while (not (eobp))
+      (let* ((bl (point-at-bol))
+             (el (point-at-eol))
+             (cur-line (buffer-substring bl el))
+             (split (loop for i across cur-line collect i)))
+        (delete-region bl el)
+        (loop for i in (reverse split) do (insert i)))
+      (forward-line 1))))
 
 
 ;; Provide 

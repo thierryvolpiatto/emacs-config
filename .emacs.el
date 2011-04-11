@@ -273,9 +273,12 @@
   (add-to-list 'default-frame-alist '(font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1"))
   (add-to-list 'default-frame-alist '(cursor-color . "red")))
 
+;; Emacs screen-gamma
+;(modify-frame-parameters nil (list (cons 'screen-gamma 1.5)))
+
 ;; Emacs transparency - only with compiz.
 (when (window-system)
-  (add-to-list 'default-frame-alist '(alpha . 100)) ; Default
+  ;;(add-to-list 'default-frame-alist '(alpha . 90)) ; Default
 
   (defun tv-transparency-modify (arg)
     "Increase Emacs frame transparency.
@@ -1203,12 +1206,6 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
       (inferior-moz-switch-to-mozilla)
       (message "Please start first firefox and repl!")))
 (global-set-key (kbd "<f11> j s") 'tv-pop-to-moz-repl)
-
-;; thumb-page-config 
-(require 'thumb-page)
-;; (setq host-url "http://thievol.homelinux.org:2222")
-;; (global-set-key (kbd "C-c t p") 'muse-write-thumb-table)
-
 
 ;; ioccur 
 (require 'ioccur)
