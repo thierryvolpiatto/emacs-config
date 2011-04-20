@@ -9,8 +9,7 @@
 
 ;; Elscreen tabs
 ;; Use the w3m tabs instead of elscreen one's.
-(when (and (< emacs-major-version 24)
-           (require 'elscreen nil t))
+(when (locate-library "elscreen.el")
   (defun tv-elscreen-remove-tab ()
     "remove the tab on the top of screen."
     (interactive)
@@ -23,14 +22,13 @@
     (setq elscreen-display-tab t)
     (elscreen-notify-screen-modification 'force))
 
-(add-hook 'w3m-mode-hook #'(lambda () (call-interactively 'tv-elscreen-remove-tab)))
+  (add-hook 'w3m-mode-hook #'(lambda () (call-interactively 'tv-elscreen-remove-tab)))
   (defadvice w3m-quit (after restore-el-tabs () activate)
     (call-interactively 'tv-elscreen-display-tab))
   (defadvice w3m-close-window (after restore-el-tabs () activate)
     (call-interactively 'tv-elscreen-display-tab))
   (defadvice w3m (after close-el-tabs () activate)
-  (call-interactively 'tv-elscreen-remove-tab))
-  )
+    (call-interactively 'tv-elscreen-remove-tab)))
 
 ;; default-save-directory 
 (setq w3m-default-save-directory "~/download/")

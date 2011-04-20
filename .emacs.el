@@ -276,6 +276,9 @@
 ;; Emacs screen-gamma
 ;(modify-frame-parameters nil (list (cons 'screen-gamma 1.5)))
 
+;; Push the mouse out of the way.
+;(mouse-avoidance-mode 'exile)
+
 ;; Emacs transparency - only with compiz.
 (when (window-system)
   ;;(add-to-list 'default-frame-alist '(alpha . 90)) ; Default
@@ -1359,15 +1362,15 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 ;(global-undo-tree-mode)
 
 ;; Elscreen
-(when (< emacs-major-version 24)
-  (require 'elscreen)
+;(when (< emacs-major-version 24)
+(require 'elscreen)
                                         ;(require 'elscreen-w3m)
                                         ;(require 'elscreen-dired)
                                         ;(require 'elscreen-server)
-  (defun anything-elscreen ()
-    (interactive)
-    (anything-other-buffer 'anything-c-source-elscreen "*Anything Elscreen*"))
-  (global-set-key (kbd "C-z l") 'anything-elscreen))
+(defun anything-elscreen ()
+  (interactive)
+  (anything-other-buffer 'anything-c-source-elscreen "*Anything Elscreen*"))
+(global-set-key (kbd "C-z l") 'anything-elscreen)
 
 ;; Calendar-and-diary 
 (setq holiday-bahai-holidays nil)
@@ -1489,6 +1492,8 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 ;(require 'popwin)
 ;(setq display-buffer-function 'popwin:display-buffer)
 
+;; Popup.el nice widgets library.
+(require 'popup)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; .emacs.el ends here

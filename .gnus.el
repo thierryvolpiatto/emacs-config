@@ -91,16 +91,18 @@
 (setq smtpmail-smtp-server "smtp.gmail.com")
 (setq smtpmail-smtp-service 587)
 
+;; Registry
+;(gnus-registry-initialize)
+
 ;; spam-for-news 
-(require 'spam)
-(spam-initialize)
-(setq spam-directory "~/Mail/probably-spam/")
-;; (setq spam-autodetect t)
-;; (setq spam-spamassassin-program "spamc")
-(setq gnus-spam-process-newsgroups
-      '(("^gmane\\." ((spam spam-use-gmane)))
-        ("^gwene\\." ((spam spam-use-bogofilter)))
-        ("^nnimap\\." ((spam spam-use-bogofilter)))))
+;; (require 'spam)
+;; (spam-initialize)
+;; (setq spam-log-to-registry t)
+;; (setq spam-directory "~/Mail/probably-spam/")
+;; (setq gnus-spam-process-newsgroups
+;;       '(("^gmane\\." ((spam spam-use-gmane)))
+;;         ("^gwene\\." ((spam spam-use-bogofilter)))
+;;         ("^nnimap\\." ((spam spam-use-bogofilter)))))
 
 ;; junk-mail 
 (when (require 'mm-decode)
