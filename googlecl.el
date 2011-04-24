@@ -2,12 +2,13 @@
 
 ;;; Code:
 
-(defvar google-db-file "~/.emacs.d/gpicasa-album-list.el")
+(defvar google-db-file "~/.emacs.d/elisp-objects/gpicasa-album-list.el")
 (defun google-create-album (dir)
   (interactive (list (anything-c-read-file-name "Directory: "
                                                 :test 'file-directory-p
                                                 :initial-input "/home/thierry/Pictures/")))
-  (lexical-let ((album (car (last (split-string dir "/"))))) 
+  (lexical-let ((album (car (last (split-string dir "/")))))
+    (message "Syncing `%s' album to google..." album)
     (start-process-shell-command
      "googlecl" nil
      (format "google picasa create --title %s %s*.jpg"
@@ -16,7 +17,7 @@
     (set-process-sentinel (get-process "googlecl")
                           #'(lambda (process event)
                               (when (string= event "finished\n")
-                                (message "`%s' album synced to google." album))))))
+                                (message "Syncing `%s' album to google done." album))))))
 
 (defvar gpicasa-album-list nil)
 (defun google-update-album-list-db ()
