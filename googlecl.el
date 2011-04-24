@@ -2,6 +2,7 @@
 
 ;;; Code:
 
+(defvar google-db-file "~/.emacs.d/gpicasa-album-list.el")
 (defun google-create-album (dir)
   (interactive (list (anything-c-read-file-name "Directory: "
                                                 :test 'file-directory-p
@@ -20,8 +21,8 @@
 (defvar gpicasa-album-list nil)
 (defun google-update-album-list-db ()
   (setq gpicasa-album-list nil)
-  (when (file-exists-p "~/.emacs.d/gpicasa-album-list.elc")
-    (delete-file "~/.emacs.d/gpicasa-album-list.elc"))
+  (let ((comp-file (concat google-db-file "c")))
+    (when (file-exists-p comp-file) (delete-file comp-file)))
   (lexical-let ((album-list ()))
     (start-process-shell-command "gpicasa-list" nil "google picasa list-albums")
     (set-process-filter (get-process "gpicasa-list")
@@ -35,21 +36,23 @@
                                    finally do
                                    (progn
                                      (setq gpicasa-album-list ls-album)
-                                     (dump-object-to-file 'gpicasa-album-list "~/.emacs.d/gpicasa-album-list.el"))))))))
+                                     (dump-object-to-file 'gpicasa-album-list google-db-file))))))))
                                        
 (defun google-insert-link-to-album-at-point (arg)
   (interactive "P")
   (when arg (google-update-album-list-db))
-  (while (not (file-exists-p "~/.emacs.d/gpicasa-album-list.elc")) (sit-for 0.1))
-  (unless gpicasa-album-list (load-file "~/.emacs.d/gpicasa-album-list.elc"))
+  (let ((comp-file (concat google-db-file "c")))
+    (while (not (file-exists-p comp-file)) (sit-for 0.1))
+    (unless gpicasa-album-list (load-file comp-file)))
   (let ((album (anything-comp-read "Album: " gpicasa-album-list)))
     (insert (car album))))
 
 (defun google-post-image-to-album (arg)
   (interactive "P")
   (when arg (google-update-album-list-db))
-  (while (not (file-exists-p "~/.emacs.d/gpicasa-album-list.elc")) (sit-for 0.1))
-  (unless gpicasa-album-list (load-file "~/.emacs.d/gpicasa-album-list.elc"))
+  (let ((comp-file (concat google-db-file "c")))
+    (while (not (file-exists-p comp-file)) (sit-for 0.1))
+    (unless gpicasa-album-list (load-file comp-file)))
   (lexical-let ((album (anything-comp-read "Album: " (loop for i in gpicasa-album-list collect (car i))))
                 (file  (anything-c-read-file-name "File: " :initial-input "~/Pictures")))
     (start-process-shell-command

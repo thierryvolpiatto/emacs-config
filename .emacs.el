@@ -1355,18 +1355,14 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 (add-hook 'rst-mode-hook 'auto-fill-mode)
 
 ;; rebind-eval-expression 
-(global-set-key (kbd "M-:") 'tv-pp-eval)
+(global-set-key (kbd "M-:") 'eldoc-eval-expression)
 
 ;; Undo-tree 
 ;(require 'undo-tree)
 ;(global-undo-tree-mode)
 
 ;; Elscreen
-;(when (< emacs-major-version 24)
 (require 'elscreen)
-                                        ;(require 'elscreen-w3m)
-                                        ;(require 'elscreen-dired)
-                                        ;(require 'elscreen-server)
 (defun anything-elscreen ()
   (interactive)
   (anything-other-buffer 'anything-c-source-elscreen "*Anything Elscreen*"))

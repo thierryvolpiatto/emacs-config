@@ -119,6 +119,12 @@
           ".*/signed"
           "multipart/encrypted")))
 
+;; Remove white space in filenames
+(setq mm-file-name-rewrite-functions
+      '(mm-file-name-trim-whitespace
+        mm-file-name-collapse-whitespace
+        mm-file-name-replace-whitespace))
+
 ;; Show-all-these-headers 
 (setq gnus-visible-headers
       '("^From:"

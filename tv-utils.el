@@ -900,7 +900,7 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
                        (car (eldoc-fnsym-in-current-sexp))))))
     (when doc (funcall eldoc-in-minibuffer-tooltip-prog doc))))
 
-(defun tv-pp-eval ()
+(defun eldoc-eval-expression ()
   (interactive)
   (if (and (window-system) eldoc-in-minibuffer)
       (let ((timer (run-with-idle-timer eldoc-idle-delay
