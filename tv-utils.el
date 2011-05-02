@@ -459,10 +459,8 @@ START and END are buffer positions indicating what to append."
   (let* ((fname           (concat "/tmp/" (symbol-name (gensym "emacs2firefox"))))
          (html-fname      (concat fname ".html"))
          (buffer-contents (buffer-substring (point-min) (point-max))))
-    (save-excursion
-      (find-file fname)
+    (with-current-buffer (find-file-noselect fname)
       (insert buffer-contents)
-      (write-file fname)
       (save-buffer)
       (kill-buffer))
     (htmlize-file fname html-fname)
@@ -486,10 +484,6 @@ START and END are buffer positions indicating what to append."
       (htmlfontify-buffer)
       (write-file fname))
     (browse-url-firefox (format "file://%s" fname))))
-
-(global-set-key (kbd "<f5> h f b") 'tv-htmlfontify-buffer-to-firefox)
-(global-set-key (kbd "<f5> h f r") 'tv-htmlfontify-region-to-firefox)
-
 
 ;; key-for-calendar 
 (defvar tv-calendar-alive nil)
@@ -1281,6 +1275,23 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
         (loop for i in (reverse split) do (insert i)))
       (forward-line 1))))
 
+;; Interface to df command-line.
+;; See:
+;; [EVAL] (find-fline "~/.emacs.d/emacs-config-laptop/dired-extension.el" "defun\* tv-get-disk-info")
+(defun tv-df ()
+  (interactive)
+  (let ((df-info (tv-get-disk-info default-directory t)))
+    (pop-to-buffer (get-buffer-create "*df info*"))
+    (erase-buffer)
+    (insert (format "*Volume Info for `%s'*\n\nDevice: %s\nMaxSize: \
+%s\nUsed: %s\nAvailable: %s\nCapacity in use: %s\nMount point: %s"
+                    default-directory
+                    (getf df-info :device)
+                    (getf df-info :blocks)
+                    (getf df-info :used)
+                    (getf df-info :available)
+                    (getf df-info :capacity)
+                    (getf df-info :mount-point)))))
 
 ;; Provide 
 (provide 'tv-utils)
