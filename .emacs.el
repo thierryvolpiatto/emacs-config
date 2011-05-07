@@ -72,6 +72,7 @@
              "~/elisp/google-maps"
              "~/elisp/org-active"
              "~/elisp/org-active/lisp"
+             "~/elisp/org-active/contrib/lisp"
              "~/elisp/slime"
              "~/elisp/slime/contrib"
              "~/.emacs.d/"
@@ -206,7 +207,6 @@
 ;; anything-config 
 ;; (find-epp anything-type-attributes)
 (require 'init-anything-thierry)
-(setq anything-c-use-adaptative-sorting t)
 
 ;; Debug-on-error 
 (defun tv-debug-on-error ()
@@ -661,22 +661,22 @@ account add <protocol> moi@mail.com password."
 ;; Emacs kill-ring ==> X-apps
 (setq x-select-enable-clipboard t)
 
-(defun yank-from-primary ()
-  "X-apps ==> Emacs."
+(defun yank-from-X ()
+  "Yank from X-apps to Emacs."
   (interactive)
-  (let ((primary (x-selection 'PRIMARY))
-        (clip    (x-selection 'CLIPBOARD)))
-    (cond (clip    (insert clip))
-          (primary (insert primary))
+  (let ((primary (x-get-selection 'PRIMARY))
+        (clip    (x-get-selection 'CLIPBOARD)))
+    (cond (primary (insert primary))
+          (clip    (insert clip))
           (t       (yank)))))
-(global-set-key (kbd "C-c v") 'yank-from-primary)
+(global-set-key (kbd "C-c v") 'yank-from-X)
 
 ;; htmlize 
 (require 'htmlize)
 
 ;; htmlfontify 
-(when (window-system)
-  (require 'htmlfontify))
+;; (when (window-system)
+;;   (require 'htmlfontify))
 
 ;; Whitespace-mode 
 (when (require 'whitespace)
@@ -1355,7 +1355,8 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 (add-hook 'rst-mode-hook 'auto-fill-mode)
 
 ;; rebind-eval-expression 
-(global-set-key (kbd "M-:") 'eldoc-eval-expression)
+;(global-set-key (kbd "M-:") 'eldoc-eval-expression)
+(global-set-key [remap eval-expression] 'eldoc-eval-expression)
 
 ;; Undo-tree 
 ;(require 'undo-tree)
@@ -1488,8 +1489,16 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 ;(require 'popwin)
 ;(setq display-buffer-function 'popwin:display-buffer)
 
-;; Popup.el nice widgets library.
-(require 'popup)
+;; Auto complete
+;; (require 'auto-complete)
+;; (require 'ac-dabbrev)
+;; (require 'auto-complete-emacs-lisp)
+;; (require 'auto-complete-latex)
+;; (setq ac-l-dict-directory "~/elisp/AC/ac-l-dict")
+;; (add-hook 'latex-mode 'auto-complete-mode)
+;; (ac-emacs-lisp-setup)
+;; (ac-emacs-lisp-init)
+;; (add-hook 'lisp-interaction-mode 'auto-complete-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; .emacs.el ends here

@@ -139,9 +139,8 @@
      'show-progress) ; Update dired display after each image is updated.                                
     (add-hook 'dired-after-readin-hook 'image-dired-dired-after-readin-hook nil t)))
 
-;;;;;;;;;;;;;
+;;; Redefine `insert-directory' to showup size available when -h arg of ls used.
 ;;
-;; Redefine `insert-directory' to showup size available when -h arg of ls used.
 (defun insert-directory1 (file switches &optional wildcard full-directory-p)
   "Insert directory listing for FILE, formatted according to SWITCHES.
 Leaves point after the inserted text.
@@ -407,29 +406,6 @@ normally equivalent short `-D' option is just passed on to
 
 (defalias 'insert-directory 'insert-directory1)
 
-;; Redefine because it is broken in emacs 24
-;; It is very simple compared to original ones
-;; TODO add some tests e.g when directory-free-space-program...
-;;
-;; (defun get-free-disk-space (dir)
-;;   (unless (file-remote-p dir)
-;;     ;; Try to find the number of free blocks.  Non-Posix systems don't
-;;     ;; always have df, but might have an equivalent system call.
-;;     ;; That is for windows.
-;;     (if (fboundp 'file-system-info)
-;; 	(let ((fsinfo (file-system-info dir)))
-;; 	  (if fsinfo
-;; 	      (format "%.0f" (/ (nth 2 fsinfo) 1024))))
-;;         ;; And this is for Unix/Linux.
-;;         (when (executable-find directory-free-space-program)
-;;           (let* ((data   (with-temp-buffer
-;;                            (call-process directory-free-space-program
-;;                                          nil t nil
-;;                                          directory-free-space-args
-;;                                          dir)
-;;                            (split-string (buffer-string) "\n" t)))
-;;                  (values (cdr (split-string (second data)))))
-;;             (when data (nth 2 values)))))))
 
 (defun get-free-disk-space (dir &optional human)
   (unless (file-remote-p dir)

@@ -5,44 +5,6 @@
 (require 'cl)
 (blink-cursor-mode -1)
 (show-paren-mode 1)
-;; ;(setenv "LC_ALL" "C")
-
-;; ;; «load-paths» (to ".load-paths")
-;; (add-to-list 'Info-default-directory-list "/home/thierry/elisp/info")
-
-;; (dolist (i '("/usr/local/share/emacs/site-lisp"
-;; 	     "/home/thierry/elisp"
-;;              "/home/thierry/elisp/emacs-wget"
-;; 	     "/home/thierry/elisp/flim"
-;; 	     "/home/thierry/elisp/apel"
-;; 	     "/home/thierry/elisp/auctex"
-;; 	     "/home/thierry/elisp/autoconf-mode"
-;; 	     "/home/thierry/elisp/libidn"
-;; 	     "/home/thierry/elisp/librep"
-;; 	     "/home/thierry/elisp/subversion"
-;; 	     "/home/thierry/elisp/tex-utils"
-;;              "/home/thierry/elisp/AC/"
-;;              "/home/thierry/elisp/emms/lisp/"
-;; 	     "/usr/local/share/emacs/site-lisp"
-;; 	     "/home/thierry/elisp/ipython"
-;; 	     "/home/thierry/elisp/python-mode"
-;; 	     "/home/thierry/elisp/emacs-w3m/"
-;; 	     "/home/thierry/elisp/ledger/"
-;; 	     "/home/thierry/.emacs.d/"
-;;              "/home/thierry/.emacs.d/themes/"
-;; 	     "/home/thierry/.emacs.d/emacs-config-laptop/"
-;; 	     "/home/thierry/elisp/anything/"
-;; 	     ;"/home/thierry/elisp/eev/"
-;; 	     "/home/thierry/elisp/D.A-libs/"
-;; 	     "/home/thierry/elisp/pymacs"
-;;              ;"/home/thierry/elisp/elscreen"
-;;              "/home/thierry/elisp/google-apps"
-;; 	     ;"/home/thierry/elisp/ngnus/lisp"
-;;              "/home/thierry/elisp/bbdb/lisp"
-;;              ;"~/elisp/g-client/"
-;;              ;"~/elisp/wave-client-for-emacs/lisp"
-;; 	     "/usr/share/emacs/site-lisp/libidn"))
-;;   (add-to-list 'load-path i))
 
 (add-to-list 'load-path "~/elisp/")
 (add-to-list 'load-path "~/elisp/anything")
@@ -53,13 +15,15 @@
 
 ;; Anything minimal config
 ;(require 'anything-config)
-(autoload 'anything-command-map "anything-config.el" nil t 'keymap)
-;(autoload 'anything-find-files "anything-config")
+(autoload 'anything-find-files "anything-config" nil t)
+(autoload 'anything-M-x "anything-config" nil t)
+
+
 ;(require 'anything-match-plugin)
 ;(require 'anything-complete)
 
 ;(global-set-key (kbd "C-x C-f") 'anything-find-files)
-;(global-set-key (kbd "M-x") 'anything-M-x)
+(global-set-key (kbd "M-x") 'anything-M-x)
 ;(setq anything-c-find-files-show-icons t)
 ;(global-set-key (kbd "C-x C-b") 'anything-buffers+)
 

@@ -862,7 +862,6 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
 (add-hook 'emacs-startup-hook 'tv-restore-some-buffers 'append)
 
 ;; Kill-backward 
-
 (defun tv-kill-backward ()
   (interactive)
   (let ((end (point)) beg)
@@ -974,9 +973,12 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
       (kill-buffer))
     (insert data)))
 
+;; Show infos on files using an easy interface for `file-attributes'.
+;; [DEPRECATED] Use `anything-ff-attributes'
+;;
 (defun* show-file-attributes
     (file &key type links uid gid access-time modif-time status size mode gid-change inode device-num dired)
-  "Comprehensive reading of file attributes."
+  "Comprehensive reading of `file-attributes'."
   (let ((all (destructuring-bind
                    (type links uid gid access-time modif-time status size mode gid-change inode device-num)
                  (file-attributes file 'string)
@@ -1142,7 +1144,6 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
   (setq gmail-notification-timer nil))
 
 ;; List recursively contents of directory
-
 (defun* walk-directory (directory &key (path 'basename) (directories t) match)
   "Walk through DIRECTORY tree.
 PATH can be one of basename, relative, or full.
