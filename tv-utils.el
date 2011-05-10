@@ -1294,6 +1294,21 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
                     (getf df-info :capacity)
                     (getf df-info :mount-point)))))
 
+(defun tv-toggle-resplit-window ()
+  (interactive)
+  (when (cdr (assoc 'dir (bw-get-tree)))
+    (let ((buf (current-buffer))
+          before-height) 
+      (with-current-buffer buf
+        (setq before-height (window-height))
+        (delete-window)
+        (set-window-buffer
+         (select-window (if (= (window-height) before-height)
+                            (split-window-vertically)
+                            (split-window-horizontally)))
+         buf)))))
+(global-set-key (kbd "C-x C-'") 'tv-toggle-resplit-window)
+
 ;; Provide 
 (provide 'tv-utils)
 

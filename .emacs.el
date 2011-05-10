@@ -881,20 +881,13 @@ account add <protocol> moi@mail.com password."
   (dolist (i '("kop" "ledger" "htop"))
     (add-to-list 'eshell-visual-commands i)))
 
+;; Finally load eshell on startup.
+(add-hook 'emacs-startup-hook #'(lambda ()
+                                  (let ((default-directory (getenv "HOME")))
+                                    (command-execute 'eshell)
+                                    (bury-buffer))))
+
 ;; Term-et-ansi-term 
-;; [obsolete]
-;; (defvar term-prompt-regexp)
-;; (add-hook 'term-mode-hook
-;;           (function
-;;            (lambda ()
-;;              (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
-;;              (make-local-variable 'mouse-yank-at-point)
-;;              (make-local-variable 'transient-mark-mode)
-;;              (setq mouse-yank-at-point t)
-;;              ;(setq transient-mark-mode t)
-;;              (transient-mark-mode 1)
-;;              (auto-fill-mode -1)
-;;              (setq tab-width 8 ))))
 
 (defun tv-term ()
   (interactive)
@@ -1424,8 +1417,8 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 (require 'zop-to-char)
 (global-set-key (kbd "M-z") 'zop-to-char)
 
-;; Eieio 
-(require 'eieio-base)
+;; Eieio [NO MORE NEEDED] 
+;(require 'eieio-base)
 
 ;; iedit 
 (require 'iedit)

@@ -13,35 +13,16 @@
 (setq gnus-select-method '(nntp "news.gmane.org"
                            (nnir-search-engine gmane)))
 
-;; gnus-secondary-select-methods 
-(defun* tv-gnus-set-default-imap-method (&key method gwene)
-  (case method
-    (offline
-     ;; Config IMAP with Dovecot+offlineimap
-     (setq gnus-secondary-select-methods '((nnml "")))
-     (add-to-list 'gnus-secondary-select-methods
-                  '(nnimap "Mail"
-                    (nnimap-address "localhost")
-                    (nnimap-stream network)
-                    (nnimap-authenticator login)
-                    (nnir-search-engine imap))))
-    ;; Config IMAP only online without local mirror
-    (t
-     (setq gnus-secondary-select-methods '((nnml "")))
-     (add-to-list 'gnus-secondary-select-methods
-                  '(nnimap "gmail"
-                    (nnimap-address "imap.gmail.com")))))
-                    ;; (nnimap-server-port 993)
-                    ;; (nnimap-stream ssl)
-                    ;; (nnir-search-engine imap)))))
-  (when gwene
-    (add-to-list 'gnus-secondary-select-methods '(nntp "news.gwene.org"))))
-
-
-(tv-gnus-set-default-imap-method :method 'online :gwene t)
+;; Secondary methods
+(setq gnus-secondary-select-methods '((nnml "")))
+(add-to-list 'gnus-secondary-select-methods
+             '(nnimap "gmail"
+               (nnimap-address "imap.gmail.com")))
+(add-to-list 'gnus-secondary-select-methods '(nntp "news.gwene.org"))
 
 ;; See also:
 ;; `nnimap-fetch-partial-articles' and `A C' to see entire mail.
+;(setq nnimap-fetch-partial-articles "text")
 
 ;; Mail-directory-for-gnus 
 (setq nnml-directory "~/Mail")
