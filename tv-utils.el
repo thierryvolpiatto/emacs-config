@@ -1312,29 +1312,29 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
 ;; Euro million
 (defun euro-million ()
   (interactive)
-  (flet ((star-num ()
+  (flet ((star-num (limit)
            ;; Get a random number between 1 to 12.
            (let ((n 0))
-             (while (= n 0) (setq n (random 12)))
+             (while (= n 0) (setq n (random limit)))
              n))
          (get-stars ()
            ;; Return a list of 2 differents numbers from 1 to 12.
-           (let* ((str1 (number-to-string (star-num)))
-                  (str2 (let ((n (number-to-string (star-num))))
+           (let* ((str1 (number-to-string (star-num 12)))
+                  (str2 (let ((n (number-to-string (star-num 12))))
                           (while (string= n str1)
-                            (setq n (number-to-string (star-num))))
+                            (setq n (number-to-string (star-num 12))))
                           n)))
              (list str1 str2)))           
          (result ()
            ;; Collect random numbers without  dups.
            (loop with L repeat 5
-              for r = (random 51)
+              for r = (star-num 51)
               if (not (member r L))
               collect r into L
               else
-              collect (let ((n (random 51)))
+              collect (let ((n (star-num 51)))
                         (while (memq n L)
-                          (setq n (random 51)))
+                          (setq n (star-num 51)))
                         n) into L
               finally return L)))
     (with-current-buffer (get-buffer-create "*Euro million*")
