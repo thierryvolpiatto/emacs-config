@@ -1310,18 +1310,37 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
 (global-set-key (kbd "C-x C-'") 'tv-toggle-resplit-window)
 
 ;; Euro million
-
 (defun euro-million ()
   (interactive)
   (flet ((star-num ()
+           ;; Get a random number between 1 to 12.
            (let ((n 0))
-             (while (= n 0)
-               (setq n (random 12)))
-             n)))
+             (while (= n 0) (setq n (random 12)))
+             n))
+         (get-stars ()
+           ;; Return a list of 2 differents numbers from 1 to 12.
+           (let* ((str1 (number-to-string (star-num)))
+                  (str2 (let ((n (number-to-string (star-num))))
+                          (while (string= n str1)
+                            (setq n (number-to-string (star-num))))
+                          n)))
+             (list str1 str2)))           
+         (result ()
+           ;; Collect random numbers without  dups.
+           (loop with L repeat 5
+              for r = (random 51)
+              if (not (member r L))
+              collect r into L
+              else
+              collect (let ((n (random 51)))
+                        (while (memq n L)
+                          (setq n (random 51)))
+                        n) into L
+              finally return L)))
     (with-current-buffer (get-buffer-create "*Euro million*")
       (erase-buffer)
       (insert "Grille aléatoire pour l'Euro Million\n\n")
-      (loop with ls = (loop repeat 5 collect (loop repeat 5 collect (random 51)))  
+      (loop with ls = (loop repeat 5 collect (result))  
          for i in ls do
          (progn
            (insert (mapconcat #'(lambda (x)
@@ -1329,12 +1348,7 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
                                     (if (= (length elm) 1) (concat elm " ") elm)))
                               i " "))
            (insert " Stars: ")
-           (let* ((str1 (make-string (star-num) ?*))
-                  (str2 (let ((n (make-string (star-num) ?*)))
-                          (while (string= n str1)
-                            (setq n (make-string (star-num) ?*)))
-                          n)))
-             (insert (concat  str1 " " str2)))
+           (insert (mapconcat 'identity (get-stars) " "))
            (insert "\n"))
          finally do (pop-to-buffer "*Euro million*")))))
 
