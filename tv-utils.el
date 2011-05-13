@@ -1309,6 +1309,36 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
          buf)))))
 (global-set-key (kbd "C-x C-'") 'tv-toggle-resplit-window)
 
+;; Euro million
+
+(defun euro-million ()
+  (interactive)
+  (flet ((star-num ()
+           (let ((n 0))
+             (while (= n 0)
+               (setq n (random 12)))
+             n)))
+    (with-current-buffer (get-buffer-create "*Euro million*")
+      (erase-buffer)
+      (insert "Grille aléatoire pour l'Euro Million\n\n")
+      (loop with ls = (loop repeat 5 collect (loop repeat 5 collect (random 51)))  
+         for i in ls do
+         (progn
+           (insert (mapconcat #'(lambda (x)
+                                  (let ((elm (number-to-string x)))
+                                    (if (= (length elm) 1) (concat elm " ") elm)))
+                              i " "))
+           (insert " Stars: ")
+           (let* ((str1 (make-string (star-num) ?*))
+                  (str2 (let ((n (make-string (star-num) ?*)))
+                          (while (string= n str1)
+                            (setq n (make-string (star-num) ?*)))
+                          n)))
+             (insert (concat  str1 " " str2)))
+           (insert "\n"))
+         finally do (pop-to-buffer "*Euro million*")))))
+
+
 ;; Provide 
 (provide 'tv-utils)
 
