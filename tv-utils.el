@@ -1279,7 +1279,7 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
 ;; Interface to df command-line.
 ;; See:
 ;; [EVAL] (find-fline "~/.emacs.d/emacs-config-laptop/dired-extension.el" "defun\* tv-get-disk-info")
-(defun tv-df ()
+(defun dfh ()
   (interactive)
   (let ((df-info (tv-get-disk-info default-directory t)))
     (pop-to-buffer (get-buffer-create "*df info*"))
