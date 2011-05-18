@@ -1110,6 +1110,7 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 
 ;; newsticker-config 
 (setq newsticker-frontend 'newsticker-plainview)
+(setq newsticker-retrieval-method 'extern)
 (setq newsticker-show-descriptions-of-new-items nil)
 (setq newsticker-html-renderer 'w3m-region)
 (global-set-key (kbd "<f7> n") 'newsticker-show-news)
@@ -1121,6 +1122,17 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
     (newsticker-stop)))
 (when (require 'newsticker)
   (define-key newsticker-mode-map (kbd "Q") 'newsticker-quit-and-stop))
+
+(defadvice newsticker-next-feed (around recenter activate)
+  (interactive)
+  (widen)
+  (newsticker--buffer-goto '(feed))
+  (run-hooks 'newsticker-select-feed-hook)
+  (force-mode-line-update)
+  (prog1 (point) (recenter)))
+
+(defadvice newsticker-mark-all-items-at-point-as-read-and-redraw (after recenter activate)
+  (recenter))
 
 ;; Tramp-config 
 ;(require 'tramp)

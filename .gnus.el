@@ -168,8 +168,6 @@
 
 (setq gnus-posting-styles
       `((".*"
-         ;(Face ,(gnus-face-from-file "~/.xfaces/2-face.png"))
-         ;(x-face-file "~/.xfaces/2-face.png")
          (name "Thierry Volpiatto")
          (address "thierry.volpiatto@gmail.com")
          (signature-file "~/.signature"))))

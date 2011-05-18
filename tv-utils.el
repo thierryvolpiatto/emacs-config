@@ -806,8 +806,7 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
                                (anything-surfraw-engines-history . "anything-surfraw-engines-history.el")
                                (tv-save-buffers-alist . "tv-save-buffers-alist.el")
                                (anything-ff-history . "anything-ff-history.el")
-                               ;(kill-ring . "kill-ring.el")
-                               ;(kill-ring-yank-pointer . "kill-ring-yank-pointer.el")
+                               (anything-c-grep-history . "anything-c-grep-history.el")
                                ))
 
 (defun dump-object-to-file-save-alist ()
@@ -877,7 +876,17 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
 ;; Eldoc-in-M-: 
 (defvar eldoc-in-minibuffer t)
 (defvar eval-prefered-function 'pp-eval-expression)
-(defvar eldoc-in-minibuffer-tooltip-prog 'tooltip-show)
+(defvar eldoc-in-minibuffer-show-fn 'eldoc-show-in-mode-line
+  "A function to display eldoc info.
+Should take one arg: the string to display")
+(defvar eldoc-show-in-mode-line-delay 12)
+(defun eldoc-show-in-mode-line (str)
+  (with-current-buffer (current-buffer)
+    (let ((mode-line-format (concat " " str)))
+      (force-mode-line-update)
+      (sit-for eldoc-show-in-mode-line-delay))
+    (force-mode-line-update)))
+
 (defun eldoc-show-in-eval ()
   "Return eldoc in a tooltip for current minibuffer input."
   (interactive)
@@ -891,7 +900,7 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
          (doc     (or (eldoc-get-var-docstring sym)
                       (eldoc-get-fnsym-args-string
                        (car (eldoc-fnsym-in-current-sexp))))))
-    (when doc (funcall eldoc-in-minibuffer-tooltip-prog doc))))
+    (when doc (funcall eldoc-in-minibuffer-show-fn doc))))
 
 (defun eldoc-eval-expression ()
   (interactive)
@@ -1280,6 +1289,7 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
 ;; See:
 ;; [EVAL] (find-fline "~/.emacs.d/emacs-config-laptop/dired-extension.el" "defun\* tv-get-disk-info")
 (defun dfh ()
+  "Interface to df -h command line."
   (interactive)
   (let ((df-info (tv-get-disk-info default-directory t)))
     (pop-to-buffer (get-buffer-create "*df info*"))

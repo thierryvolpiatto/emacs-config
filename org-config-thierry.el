@@ -273,6 +273,21 @@
     (clear-image-cache file)
     (insert-image (create-image file) )))
 
+;; org feeds (C-c C-x g to update)
+;; (setq org-feed-alist
+;;       '(("Nouvel Obs news"
+;;          "http://rss.nouvelobs.com/c/32262/fe.ed/tempsreel.nouvelobs.com/rss.xml"
+;;          "~/org/feeds.org" "Nouvel Obs News")
+;;         ("Sciences et avenir"
+;;          "http://rss.nouvelobs.com/c/32581/fe.ed/www.sciencesetavenir.fr/rss.xml"
+;;          "~/org/feeds.org" "Sciences et avenir")
+;;         ("Zdnet news"
+;;          "http://www.zdnet.fr/feeds/rss/"
+;;          "~/org/feeds.org" "Zdnet")
+;;         ("EmacsWiki"
+;;          "http://www.emacswiki.org/cgi-bin/wiki.pl?action=rss"
+;;          "~/org/feeds.org" "EmacsWiki")))
+
 ;; Provide 
 (provide 'org-config-thierry)
 
