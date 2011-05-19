@@ -874,44 +874,7 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
 (global-set-key (kbd "C-c k") 'tv-kill-backward)
 
 ;; Eldoc-in-M-: 
-(defvar eldoc-in-minibuffer t)
-(defvar eval-prefered-function 'pp-eval-expression)
-(defvar eldoc-in-minibuffer-show-fn 'eldoc-show-in-mode-line
-  "A function to display eldoc info.
-Should take one arg: the string to display")
-(defvar eldoc-show-in-mode-line-delay 12)
-(defun eldoc-show-in-mode-line (str)
-  (with-current-buffer (current-buffer)
-    (let ((mode-line-format (concat " " str)))
-      (force-mode-line-update)
-      (sit-for eldoc-show-in-mode-line-delay))
-    (force-mode-line-update)))
-
-(defun eldoc-show-in-eval ()
-  "Return eldoc in a tooltip for current minibuffer input."
-  (interactive)
-  (let* ((str-all (minibuffer-completion-contents))
-         (sym     (when str-all
-                    (with-temp-buffer
-                      (insert str-all)
-                      (goto-char (point-max))
-                      (unless (looking-back ")\\|\"") (forward-char -1))
-                      (eldoc-current-symbol))))
-         (doc     (or (eldoc-get-var-docstring sym)
-                      (eldoc-get-fnsym-args-string
-                       (car (eldoc-fnsym-in-current-sexp))))))
-    (when doc (funcall eldoc-in-minibuffer-show-fn doc))))
-
-(defun eldoc-eval-expression ()
-  (interactive)
-  (if (and (window-system) eldoc-in-minibuffer)
-      (let ((timer (run-with-idle-timer eldoc-idle-delay
-                                        'repeat 'eldoc-show-in-eval)))
-        (unwind-protect
-             (call-interactively eval-prefered-function)
-          (cancel-timer timer)))
-      (call-interactively eval-prefered-function)))
-
+(require 'eldoc-eval)
 (when (require 'eldoc)
   (set-face-attribute 'eldoc-highlight-function-argument nil :underline "red"))
 
