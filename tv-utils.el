@@ -1325,6 +1325,14 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
            (insert "\n"))
          finally do (pop-to-buffer "*Euro million*")))))
 
+;; Fast remove-duplicates
+(defun* remove-dups (seq &key (test 'eq))
+  (let ((cont (make-hash-table :test test)))
+    (loop for elm in seq
+       unless (gethash elm cont)
+       do (puthash elm elm cont)
+       finally return
+         (loop for i being the hash-values in cont collect i))))
 
 ;; Provide 
 (provide 'tv-utils)
