@@ -1251,10 +1251,13 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
 ;; Interface to df command-line.
 ;; See:
 ;; [EVAL] (find-fline "~/.emacs.d/emacs-config-laptop/dired-extension.el" "defun\* tv-get-disk-info")
-(defun dfh ()
+(defun dfh (directory)
   "Interface to df -h command line."
-  (interactive)
-  (let ((df-info (tv-get-disk-info default-directory t)))
+  (interactive (list (if current-prefix-arg
+                         (anything-c-read-file-name
+                          "Directory: " :test 'file-directory-p)
+                         default-directory)))
+  (let ((df-info (tv-get-disk-info directory t)))
     (pop-to-buffer (get-buffer-create "*df info*"))
     (erase-buffer)
     (insert (format "*Volume Info for `%s'*\n\nDevice: %s\nMaxSize: \
