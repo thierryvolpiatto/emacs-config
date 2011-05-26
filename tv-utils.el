@@ -72,12 +72,14 @@
 
 ;;;###autoload
 (defun thievol-connect ()
+  "sshfs mount of thievol."
   (interactive)
   (mount-sshfs "thievol:" "~/sshfs-thievol")
   (anything-find-files1 "~/sshfs-thievol"))
 
 ;;;###autoload
 (defun thievol-disconnect ()
+  "sshfs umount of thievol."
   (interactive)
   (umount-sshfs "~/sshfs-thievol"))
 
@@ -1336,6 +1338,36 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
        do (puthash elm elm cont)
        finally return
          (loop for i being the hash-values in cont collect i))))
+
+;; Copy-files-async
+(defun* copy-files-async-1 (file1 file2 &key quiet)
+  (lexical-let ((quiet quiet))
+    (start-file-process "emacs-batch" nil "emacs"
+                   "-Q" "--batch" "--eval"
+                   (format "(progn (require 'dired)
+                             (let ((dired-recursive-copies 'always))
+                                 (dired-copy-file \"%s\" \"%s\" t)))"
+                           file1 file2))
+    (set-process-sentinel
+     (get-process "emacs-batch")
+     #'(lambda (process event)
+         (when (string= event "finished\n")
+           (if quiet t
+               (message "1 File copied")))))))
+
+;(copy-files-async-1 "~/tmp/p1010012.jpg" "~/labo/tmp/my_image.jpg" :quiet t)
+
+(defun copy-file-async (fname dest)
+  (interactive (list (anything-c-read-file-name "Copy File async: "
+                                                :marked-candidates t)
+                     (anything-c-read-file-name "Copy File async To: ")))
+  (let ((count 0)
+        (len (length fname)))
+    (unwind-protect
+         (loop for i in fname
+            when (copy-files-async-1 i dest :quiet t)
+            do (incf count))
+      (message "%s/%s files copied" count len))))
 
 ;; Provide 
 (provide 'tv-utils)
