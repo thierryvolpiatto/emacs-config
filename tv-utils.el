@@ -1347,7 +1347,9 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
                       (format "(progn
   (require 'dired) (require 'cl)
   (let ((dired-recursive-copies 'always)
-        failures success)
+        failures success
+        (ovw-count 0)
+        (cpf-count 0))
     (dolist (f '%S)
        (condition-case err
              (let ((file-exists (file-exists-p
@@ -1356,8 +1358,10 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
                                    (file-name-directory \"%s\")))))
                 (dired-copy-file f \"%s\" t)
                 (if file-exists
-                    (push (cons \"Overwriting\" f) success)
-                    (push (cons \"Copying\" f) success)))
+                    (progn (push (cons \"Overwriting\" f) success)
+                           (incf ovw-count))
+                    (push (cons \"Copying\" f) success)
+                    (incf cpf-count)))
           (file-error
            (push (dired-make-relative
                    (expand-file-name
@@ -1372,8 +1376,9 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
        (when success
          (loop for (a . s) in (reverse success) do
            (insert (concat a \" \" s  \" to %s done\n\"))))
-       (insert (concat (int-to-string (length success)) \" File(s) Copied\n\"))
-       (when failures (insert (concat (int-to-string (length failures)) \" file(s) Failed to copy\n\")))
+       (and (/= cpf-count 0) (insert (concat (int-to-string cpf-count) \" File(s) Copied\n\")))
+       (and (/= ovw-count 0) (insert (concat (int-to-string ovw-count) \" File(s) Overwrited\n\")))
+       (and failures (insert (concat (int-to-string (length failures)) \" File(s) Failed to copy\n\")))
        (save-buffer))))"
                               flist dest dest dest copy-files-async-log-file dest)))
 
