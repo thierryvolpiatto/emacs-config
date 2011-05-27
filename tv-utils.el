@@ -1340,34 +1340,42 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
          (loop for i being the hash-values in cont collect i))))
 
 ;; Copy-files-async
-(defun* copy-files-async-1 (file1 file2 &key quiet)
-  (lexical-let ((quiet quiet))
-    (start-file-process "emacs-batch" nil "emacs"
-                   "-Q" "--batch" "--eval"
-                   (format "(progn (require 'dired)
-                             (let ((dired-recursive-copies 'always))
-                                 (dired-copy-file \"%s\" \"%s\" t)))"
-                           file1 file2))
-    (set-process-sentinel
-     (get-process "emacs-batch")
-     #'(lambda (process event)
-         (when (string= event "finished\n")
-           (if quiet t
-               (message "1 File copied")))))))
+(defun copy-files-async-1 (flist dest)
+  (start-file-process "emacs-batch" nil "emacs"
+                      "-Q" "--batch" "--eval"
+                      (format "(progn
+  (require 'dired)
+  (let ((dired-recursive-copies 'always)
+        failures)
+    (dolist (f '%S)
+       (condition-case err
+             (dired-copy-file f \"%s\" t)
+          (file-error
+           (push (dired-make-relative
+                   (expand-file-name
+                     (file-name-nondirectory (directory-file-name f))
+                     (file-name-directory \"%s\")))
+                 failures)))
+       (with-current-buffer (find-file-noselect \"~/tmp/dired.log\")
+          (goto-char (point-max))
+          (if failures
+              (insert (concat \"Failed to copy \" (car failures) \"\n\"))
+              (insert (concat \"Copying \" f  \" to %s done\n\")))
+          (save-buffer)))))"
+                              flist dest dest dest)))
 
-;(copy-files-async-1 "~/tmp/p1010012.jpg" "~/labo/tmp/my_image.jpg" :quiet t)
-
-(defun copy-file-async (fname dest)
+(defun copy-file-async (flist dest)
   (interactive (list (anything-c-read-file-name "Copy File async: "
-                                                :marked-candidates t)
-                     (anything-c-read-file-name "Copy File async To: ")))
-  (let ((count 0)
-        (len (length fname)))
-    (unwind-protect
-         (loop for i in fname
-            when (copy-files-async-1 i dest :quiet t)
-            do (incf count))
-      (message "%s/%s files copied" count len))))
+                                                :marked-candidates t
+                                                :initial-input "/home/thierry/tmp/")
+                     (anything-c-read-file-name "Copy File async To: "
+                                                :initial-input "/home/thierry/labo/tmp/")))
+  (pop-to-buffer (find-file-noselect "~/tmp/dired.log"))
+  (erase-buffer)
+  (insert "Wait copying files...\n") (save-buffer)
+  ;(shrink-window-if-larger-than-buffer)
+  (auto-revert-tail-mode 1)
+  (copy-files-async-1 flist dest))
 
 ;; Provide 
 (provide 'tv-utils)
