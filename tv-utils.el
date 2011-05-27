@@ -1383,12 +1383,13 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
                                                 :initial-input "/home/thierry/tmp/")
                      (anything-c-read-file-name "Copy File async To: "
                                                 :initial-input "/home/thierry/labo/tmp/")))
-  (pop-to-buffer (find-file-noselect copy-files-async-log-file))
-  (erase-buffer) (insert "Wait copying files...\n") (sit-for 0.5)
-  (erase-buffer) (insert "Sending output...\n") (save-buffer)
-  (goto-char (point-max))
-  (auto-revert-mode 1)
-  (copy-files-async-1 flist dest))
+  (let ((auto-revert-interval 1))
+    (pop-to-buffer (find-file-noselect copy-files-async-log-file))
+    (erase-buffer) (insert "Wait copying files...\n") (sit-for 0.5)
+    (erase-buffer) (insert "Sending output...\n") (save-buffer)
+    (goto-char (point-max))
+    (auto-revert-mode 1)
+    (copy-files-async-1 flist dest)))
 
 ;; Provide 
 (provide 'tv-utils)
