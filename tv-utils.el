@@ -1340,6 +1340,7 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
          (loop for i being the hash-values in cont collect i))))
 
 ;; Copy-files-async
+(defvar copy-files-async-log-file "/tmp/dired.log")
 (defun copy-files-async-1 (flist dest)
   (start-file-process "emacs-batch" nil "emacs"
                       "-Q" "--batch" "--eval"
@@ -1357,7 +1358,7 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
                      (file-name-nondirectory (directory-file-name f))
                      (file-name-directory \"%s\")))
                  failures))))
-    (with-current-buffer (find-file-noselect \"~/tmp/dired.log\")
+    (with-current-buffer (find-file-noselect \"%s\")
        (goto-char (point-max))
        (when failures
          (dolist (fail (reverse failures))
@@ -1368,7 +1369,7 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
        (insert (concat (int-to-string (length success)) \" File(s) Copied\n\"))
        (when failures (insert (concat (int-to-string (length failures)) \" file(s) Failed to copy\n\")))
        (save-buffer))))"
-                              flist dest dest dest)))
+                              flist dest dest copy-files-async-log-file dest)))
 
 (defun copy-file-async (flist dest)
   (interactive (list (anything-c-read-file-name "Copy File async: "
@@ -1376,7 +1377,7 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
                                                 :initial-input "/home/thierry/tmp/")
                      (anything-c-read-file-name "Copy File async To: "
                                                 :initial-input "/home/thierry/labo/tmp/")))
-  (pop-to-buffer (find-file-noselect "~/tmp/dired.log"))
+  (pop-to-buffer (find-file-noselect copy-files-async-log-file))
   (erase-buffer) (insert "Wait copying files...\n") (sit-for 0.5)
   (erase-buffer) (insert "Sending output...\n") (save-buffer)
   (goto-char (point-max))
