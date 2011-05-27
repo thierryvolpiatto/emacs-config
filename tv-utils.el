@@ -1346,22 +1346,28 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
                       (format "(progn
   (require 'dired)
   (let ((dired-recursive-copies 'always)
-        failures)
+        failures success)
     (dolist (f '%S)
        (condition-case err
-             (dired-copy-file f \"%s\" t)
+             (progn (dired-copy-file f \"%s\" t)
+                    (push f success))
           (file-error
            (push (dired-make-relative
                    (expand-file-name
                      (file-name-nondirectory (directory-file-name f))
                      (file-name-directory \"%s\")))
-                 failures)))
-       (with-current-buffer (find-file-noselect \"~/tmp/dired.log\")
-          (goto-char (point-max))
-          (if failures
-              (insert (concat \"Failed to copy \" (car failures) \"\n\"))
-              (insert (concat \"Copying \" f  \" to %s done\n\")))
-          (save-buffer)))))"
+                 failures))))
+    (with-current-buffer (find-file-noselect \"~/tmp/dired.log\")
+       (goto-char (point-max))
+       (when failures
+         (dolist (fail failures)
+           (insert (concat \"Failed to copy \" fail \"\n\"))))
+       (when success
+         (dolist (s success)
+           (insert (concat \"Copying \" s  \" to %s done\n\"))))
+       (insert (concat (int-to-string (length success)) \" File(s) Copied\n\"))
+       (when failures (insert (concat (int-to-string (length failures)) \" file(s) Failed to copy\n\")))
+       (save-buffer))))"
                               flist dest dest dest)))
 
 (defun copy-file-async (flist dest)
@@ -1371,10 +1377,10 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
                      (anything-c-read-file-name "Copy File async To: "
                                                 :initial-input "/home/thierry/labo/tmp/")))
   (pop-to-buffer (find-file-noselect "~/tmp/dired.log"))
-  (erase-buffer)
-  (insert "Wait copying files...\n") (save-buffer)
-  ;(shrink-window-if-larger-than-buffer)
-  (auto-revert-tail-mode 1)
+  (erase-buffer) (insert "Wait copying files...\n") (sit-for 0.5)
+  (erase-buffer) (insert "Sending output...\n") (save-buffer)
+  (goto-char (point-max))
+  (auto-revert-mode 1)
   (copy-files-async-1 flist dest))
 
 ;; Provide 
