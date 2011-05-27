@@ -1360,10 +1360,10 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
     (with-current-buffer (find-file-noselect \"~/tmp/dired.log\")
        (goto-char (point-max))
        (when failures
-         (dolist (fail failures)
+         (dolist (fail (reverse failures))
            (insert (concat \"Failed to copy \" fail \"\n\"))))
        (when success
-         (dolist (s success)
+         (dolist (s (reverse success))
            (insert (concat \"Copying \" s  \" to %s done\n\"))))
        (insert (concat (int-to-string (length success)) \" File(s) Copied\n\"))
        (when failures (insert (concat (int-to-string (length failures)) \" file(s) Failed to copy\n\")))
