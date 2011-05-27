@@ -1345,13 +1345,19 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
   (start-file-process "emacs-batch" nil "emacs"
                       "-Q" "--batch" "--eval"
                       (format "(progn
-  (require 'dired)
+  (require 'dired) (require 'cl)
   (let ((dired-recursive-copies 'always)
         failures success)
     (dolist (f '%S)
        (condition-case err
-             (progn (dired-copy-file f \"%s\" t)
-                    (push f success))
+             (let ((file-exists (file-exists-p
+                                 (expand-file-name
+                                  (file-name-nondirectory (directory-file-name f))
+                                   (file-name-directory \"%s\")))))
+                (dired-copy-file f \"%s\" t)
+                (if file-exists
+                    (push (cons \"Overwriting\" f) success)
+                    (push (cons \"Copying\" f) success)))
           (file-error
            (push (dired-make-relative
                    (expand-file-name
@@ -1364,12 +1370,12 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
          (dolist (fail (reverse failures))
            (insert (concat \"Failed to copy \" fail \"\n\"))))
        (when success
-         (dolist (s (reverse success))
-           (insert (concat \"Copying \" s  \" to %s done\n\"))))
+         (loop for (a . s) in (reverse success) do
+           (insert (concat a \" \" s  \" to %s done\n\"))))
        (insert (concat (int-to-string (length success)) \" File(s) Copied\n\"))
        (when failures (insert (concat (int-to-string (length failures)) \" file(s) Failed to copy\n\")))
        (save-buffer))))"
-                              flist dest dest copy-files-async-log-file dest)))
+                              flist dest dest dest copy-files-async-log-file dest)))
 
 (defun copy-file-async (flist dest)
   (interactive (list (anything-c-read-file-name "Copy File async: "
