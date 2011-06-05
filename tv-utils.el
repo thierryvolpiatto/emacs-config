@@ -208,9 +208,9 @@ Run first crontab -e in shell and when emacsclient popup run M-x crontab."
 ;; Chrono-func 
 ;;;###autoload
 (defmacro chrono-func (fn &rest args)
-  `(let ((init-time    (cadr (current-time)))
-         (final-result (funcall ,fn ,@args))
-         (final-time   (- (cadr (current-time)) init-time)))
+  `(let* ((init-time    (cadr (current-time)))
+          (final-result (funcall ,fn ,@args))
+          (final-time   (- (cadr (current-time)) init-time)))
      (message "Time:%2s s" final-time)
      final-result))
 
@@ -817,14 +817,11 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
        for abs = (expand-file-name f elisp-objects-default-directory)
        do (progn
             (dump-object-to-file o abs)))))
-(add-hook 'kill-emacs-hook 'dump-object-to-file-save-alist)
-
 
 (defun* restore-objects-from-directory
     (&optional (dir elisp-objects-default-directory))
   (let ((file-list (cddr (directory-files dir t))))
     (mapc 'load file-list)))
-(add-hook 'emacs-startup-hook 'restore-objects-from-directory)
 
 ;; Persistents-buffer 
 ;; Get rid of desktop.el, too slow.
@@ -839,16 +836,13 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
      for buf-fname = (or (buffer-file-name b) (car (rassoc b dired-buffers)))
      for place = (with-current-buffer b (point))
      when (and buf-fname
-               (file-exists-p buf-fname)
-               (not (string-match tramp-file-name-regexp buf-fname)))
+               (not (string-match tramp-file-name-regexp buf-fname))
+               (file-exists-p buf-fname))
      collect (cons buf-fname place)))
-
 
 (defvar tv-save-buffers-alist nil)
 (defun tv-dump-some-buffers-to-list ()
   (setq tv-save-buffers-alist (tv-save-some-buffers)))
-(add-hook 'kill-emacs-hook 'tv-dump-some-buffers-to-list)
-
 
 (defun tv-restore-some-buffers ()
   (let* ((max (length tv-save-buffers-alist))
@@ -860,6 +854,10 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
          (goto-char p)
          (progress-reporter-update progress-reporter count)))
     (progress-reporter-done progress-reporter)))
+
+(add-hook 'kill-emacs-hook 'dump-object-to-file-save-alist)
+(add-hook 'emacs-startup-hook 'restore-objects-from-directory)
+(add-hook 'kill-emacs-hook 'tv-dump-some-buffers-to-list)
 (add-hook 'emacs-startup-hook 'tv-restore-some-buffers 'append)
 
 ;; Kill-backward 
@@ -1338,63 +1336,6 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
        do (puthash elm elm cont)
        finally return
          (loop for i being the hash-values in cont collect i))))
-
-;; Copy-files-async
-(defvar copy-files-async-log-file "/tmp/dired.log")
-(defun copy-files-async-1 (flist dest)
-  (start-file-process "emacs-batch" nil "emacs"
-                      "-Q" "--batch" "--eval"
-                      (format "(progn
-  (require 'dired) (require 'cl)
-  (let ((dired-recursive-copies 'always)
-        failures success
-        (ovw-count 0)
-        (cpf-count 0))
-    (dolist (f '%S)
-       (condition-case err
-             (let ((file-exists (file-exists-p
-                                 (expand-file-name
-                                  (file-name-nondirectory (directory-file-name f))
-                                   (file-name-directory \"%s\")))))
-                (dired-copy-file f \"%s\" t)
-                (if file-exists
-                    (progn (push (cons \"Overwriting\" f) success)
-                           (incf ovw-count))
-                    (push (cons \"Copying\" f) success)
-                    (incf cpf-count)))
-          (file-error
-           (push (dired-make-relative
-                   (expand-file-name
-                     (file-name-nondirectory (directory-file-name f))
-                     (file-name-directory \"%s\")))
-                 failures))))
-    (with-current-buffer (find-file-noselect \"%s\")
-       (goto-char (point-max))
-       (when failures
-         (dolist (fail (reverse failures))
-           (insert (concat \"Failed to copy \" fail \"\n\"))))
-       (when success
-         (loop for (a . s) in (reverse success) do
-           (insert (concat a \" \" s  \" to %s done\n\"))))
-       (and (/= cpf-count 0) (insert (concat (int-to-string cpf-count) \" File(s) Copied\n\")))
-       (and (/= ovw-count 0) (insert (concat (int-to-string ovw-count) \" File(s) Overwrited\n\")))
-       (and failures (insert (concat (int-to-string (length failures)) \" File(s) Failed to copy\n\")))
-       (save-buffer))))"
-                              flist dest dest dest copy-files-async-log-file dest)))
-
-(defun copy-file-async (flist dest)
-  (interactive (list (anything-c-read-file-name "Copy File async: "
-                                                :marked-candidates t
-                                                :initial-input "/home/thierry/tmp/")
-                     (anything-c-read-file-name "Copy File async To: "
-                                                :initial-input "/home/thierry/labo/tmp/")))
-  (let ((auto-revert-interval 1))
-    (pop-to-buffer (find-file-noselect copy-files-async-log-file))
-    (erase-buffer) (insert "Wait copying files...\n") (sit-for 0.5)
-    (erase-buffer) (insert "Sending output...\n") (save-buffer)
-    (goto-char (point-max))
-    (auto-revert-mode 1)
-    (copy-files-async-1 flist dest)))
 
 ;; Provide 
 (provide 'tv-utils)

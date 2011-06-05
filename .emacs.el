@@ -189,6 +189,10 @@
 
 (global-set-key (kbd "<f7> m") 'tv-gnus)
 
+;; Use now org-keywords in gnus.
+(add-hook 'message-mode-hook #'(lambda () 
+				 (define-key message-mode-map (kbd "<f11> k") 'anything-org-keywords)))
+
 (autoload 'gnus-dired-attach "gnus-dired.el")
 (when (require 'dired)
   (define-key dired-mode-map (kbd "C-c C-a") 'gnus-dired-attach))
@@ -207,6 +211,7 @@
 ;; anything-config 
 ;; (find-epp anything-type-attributes)
 (require 'init-anything-thierry)
+;(require 'anything-ipa)
 
 ;; Debug-on-error 
 (defun tv-debug-on-error ()
@@ -640,8 +645,9 @@ account add <protocol> moi@mail.com password."
 
 ;; Start-emacs-server 
 (add-hook 'after-init-hook #'(lambda ()
-                               (server-start)
-                               (setq server-raise-frame t)))
+                               (unless (daemonp)
+                                 (server-start)
+                                 (setq server-raise-frame t))))
 
 
 ;; Path-to-abbrev-file 
@@ -953,22 +959,78 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
     (when flyspell-mode
       (flyspell-delete-all-overlays))))
 
-;; Toggle-flyspell-mode 
-
+;;; Toggle-flyspell-mode 
+;;
 (global-set-key (kbd "<f2> f") 'flyspell-mode)
 (global-set-key (kbd "<f2> c") 'tv-change-dico)
 
-;; woman 
-
+;;; Woman
+;;
 (require 'woman)
 (setq woman-use-own-frame nil)
-(global-set-key (kbd "<f11> w") 'woman)
 
-;; printing-config 
+;; [REDEFINE]
+
+(defun woman-file-name (topic &optional re-cache)
+  "Get the name of the UN*X man-page file describing a chosen TOPIC.
+When `woman' is called interactively, the word at point may be
+automatically used as the topic, if the value of the user option
+`woman-use-topic-at-point' is non-nil.  Return nil if no file can
+be found.  Optional argument RE-CACHE, if non-nil, forces the
+cache to be re-read."
+  ;; Handle the caching of the directory and topic lists:
+  (unless (and (not re-cache)
+	       (or
+		(and woman-expanded-directory-path woman-topic-all-completions)
+		(woman-read-directory-cache)))
+    (message "Building list of manual directory expansions...")
+    (setq woman-expanded-directory-path
+	  (woman-expand-directory-path woman-manpath woman-path))
+    (message "Building completion list of all manual topics...")
+    (setq woman-topic-all-completions
+	  (woman-topic-all-completions woman-expanded-directory-path))
+    (woman-write-directory-cache))
+  ;; There is a problem in that I want to offer case-insensitive
+  ;; completions, but to return only a case-sensitive match.  This
+  ;; does not seem to work properly by default, so I re-do the
+  ;; completion if necessary.
+  (let (files)
+    (or (stringp topic)
+	(and (if (boundp 'woman-use-topic-at-point)
+		 woman-use-topic-at-point
+	       ;; Was let-bound when file loaded, so ...
+	       (setq woman-use-topic-at-point woman-use-topic-at-point-default))
+	     (setq topic (or (current-word t) "")) ; only within or adjacent to word
+	     (test-completion topic woman-topic-all-completions))
+	(setq topic (anything-comp-read
+                     "Manual entry: "
+                     woman-topic-all-completions))))
+    ;; Note that completing-read always returns a string.
+    (unless (= (length topic) 0)
+      (cond
+       ((setq files (woman-file-name-all-completions topic)))
+       ;; Complete topic more carefully, i.e. use the completion
+       ;; rather than the string entered by the user:
+       ((setq files (all-completions topic woman-topic-all-completions))
+	(while (/= (length topic) (length (car files)))
+	  (setq files (cdr files)))
+	(setq files (woman-file-name-all-completions (car files)))))
+      (cond
+       ((null files) nil)		; no file found for topic.
+       ((null (cdr files)) (car (car files))) ; only 1 file for topic.
+       (t
+	;; Multiple files for topic, so must select 1.
+	;; Unread the command event (TAB = ?\t = 9) that runs the command
+	;; `minibuffer-complete' in order to automatically complete the
+	;; minibuffer contents as far as possible.
+	(setq unread-command-events '(9)) ; and delete any type-ahead!
+	(anything-comp-read "Manual file: " files)))))
+
+;;; Printing config 
+;;
 
 ;; Gtklp-par-defaut 
 (setq lpr-command "gtklp")
-;(setq lpr-command "xpp")
 (setq-default ps-print-header nil)
 (set-variable 'lpr-switches '("-PStylus-Photo-R265"))
 (setq ps-font-size   '(10 . 11.5))
@@ -1504,6 +1566,21 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 ;; (ac-emacs-lisp-setup)
 ;; (ac-emacs-lisp-init)
 ;; (add-hook 'lisp-interaction-mode 'auto-complete-mode)
+
+;; Haskell-mode
+(add-to-list 'load-path "~/elisp/haskell-mode")
+(load "haskell-site-file")
+(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+(add-hook 'haskell-mode-hook 'font-lock-mode)
+
+;; Kill emacs
+(defun tv-stop-emacs ()
+  (interactive)
+  (if (daemonp)
+      (save-buffers-kill-emacs)
+      (save-buffers-kill-terminal)))
+(global-set-key [remap save-buffers-kill-terminal] 'tv-stop-emacs)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; .emacs.el ends here

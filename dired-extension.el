@@ -474,5 +474,6 @@ As a side effect, killed dired buffers for DIR are removed from
 ;;   "Create initial input value for `touch' command."
 ;;   (format-time-string "%Y%m%d%H%M.%S" (current-time)))
 
+
 ;;; Provide
 (provide 'dired-extension)

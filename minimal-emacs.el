@@ -23,6 +23,9 @@
 (global-set-key (kbd "M-x") 'anything-M-x)
 (global-set-key (kbd "C-x C-b") 'anything-buffers+)
 
+(add-to-list 'load-path "~/.emacs.d/emacs-config-laptop")
+(require 'tv-utils)
+
 ;; Ioccur
 ;(require 'ioccur)
 (global-set-key (kbd "C-c o") 'ioccur)
