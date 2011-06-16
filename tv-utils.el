@@ -308,13 +308,13 @@ You can specify input function to use."
   (if (and (get-buffer "*scratch*")
            (buffer-file-name (get-buffer "*scratch*")))
       (progn (switch-to-buffer "*scratch*") (lisp-interaction-mode))
-      (with-current-buffer (find-file "~/.emacs.d/save-scratch.el")
-        (rename-buffer "*scratch*")
-        (lisp-interaction-mode)
-        (use-local-map lisp-interaction-mode-map)
-        (when (eq (point-min) (point-max))
-          (insert ";; SCRATCH BUFFER\n;; ==============\n\n"))
-        (current-buffer))))
+      (find-file "~/.emacs.d/save-scratch.el")
+      (rename-buffer "*scratch*")
+      (lisp-interaction-mode)
+      (use-local-map lisp-interaction-mode-map)
+      (when (eq (point-min) (point-max))
+        (insert ";; SCRATCH BUFFER\n;; ==============\n\n"))
+      (current-buffer)))
 
 (global-set-key (kbd "<f11> s c") 'go-to-scratch)
 
@@ -1307,7 +1307,7 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
 
 (defun tv-toggle-resplit-window ()
   (interactive)
-  (when (cdr (assoc 'dir (bw-get-tree)))
+  (when (> (count-windows) 1)
     (let ((buf (current-buffer))
           before-height) 
       (with-current-buffer buf
