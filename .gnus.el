@@ -14,11 +14,10 @@
                            (nnir-search-engine gmane)))
 
 ;; Secondary methods
-(setq gnus-secondary-select-methods '((nnml "")))
-(add-to-list 'gnus-secondary-select-methods
-             '(nnimap "gmail"
-               (nnimap-address "imap.gmail.com")))
-(add-to-list 'gnus-secondary-select-methods '(nntp "news.gwene.org"))
+(setq gnus-secondary-select-methods '((nnml "")
+                                      (nnimap "gmail"
+                                       (nnimap-address "imap.gmail.com"))))
+;(add-to-list 'gnus-secondary-select-methods '(nntp "news.gwene.org"))
 
 ;; See also:
 ;; `nnimap-fetch-partial-articles' and `A C' to see entire mail.
@@ -73,7 +72,16 @@
 (setq smtpmail-smtp-service 587)
 
 ;; Registry
-;(gnus-registry-initialize)
+(setq gnus-registry-max-entries 2500)
+(gnus-registry-initialize)
+
+(setq
+ gnus-registry-split-strategy 'majority
+ gnus-registry-ignored-groups '(("nntp" t)
+                                ("nnrss" t))
+ gnus-registry-max-entries 500000
+ ;; this is the default
+ gnus-registry-track-extra '(sender subject))
 
 ;; spam-for-news 
 ;; (require 'spam)

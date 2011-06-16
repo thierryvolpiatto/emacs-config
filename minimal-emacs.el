@@ -26,11 +26,12 @@
 (add-to-list 'load-path "~/.emacs.d/emacs-config-laptop")
 (require 'tv-utils)
 
+
 ;; Ioccur
 ;(require 'ioccur)
 (global-set-key (kbd "C-c o") 'ioccur)
 (global-set-key (kbd "C-c C-o") 'ioccur-find-buffer-matching)
-(load "~/.emacs.d/elisp-objects/ioccur-history.elc")
+;(load "~/.emacs.d/elisp-objects/ioccur-history.elc")
 
 ;; Auto completion
 ;; (add-hook 'minibuffer-setup-hook

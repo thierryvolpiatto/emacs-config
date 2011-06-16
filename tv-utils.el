@@ -349,13 +349,27 @@ START and END are buffer positions indicating what to append."
           (condition-case nil
               (shell-command-to-string (format "LC_ALL=\"fr_FR.UTF-8\" sdcv -n %s" word))
             (error nil))))
+    (setq result (replace-regexp-in-string "^\\[ color=\"blue\">\\|</font>\\|\\]" "" result))
     (if result
-        (progn
-          (setq result (replace-regexp-in-string "^\\[ color=\"blue\">\\|</font>\\|\\]" "" result))
-          (tooltip-show result))
-          ;; (with-current-buffer (get-buffer-create "*Dict*")
-          ;;   (insert result))
-          ;; (switch-to-buffer-other-frame "*Dict*"))
+        (with-current-buffer (get-buffer-create "*Dict*")
+          (erase-buffer)
+          (save-excursion
+            (insert result) (fill-region (point-min) (point-max)))
+          (let ((default-frame-alist '((minibuffer . nil)
+                                       (width . 80)
+                                       (height . 24)
+                                       (left-fringe . 0)
+                                       (border-width . 0)
+                                       (menu-bar-lines . 0)
+                                       (tool-bar-lines . 0)
+                                       (unsplittable . t)
+                                       (top . 24)
+                                       (left . 450)
+                                       (background-color . "LightSteelBlue")
+                                       (foreground-color . "DarkGoldenrod")
+                                       (alpha . nil)
+                                       (fullscreen . nil))))
+            (switch-to-buffer-other-frame "*Dict*")))
           (message "Nothing found."))))
 
 (global-set-key (kbd "C-c t r") 'translate-at-point)
@@ -492,16 +506,18 @@ START and END are buffer positions indicating what to append."
 (defun tv-toggle-calendar ()
   (interactive)
   (if tv-calendar-alive
-      (progn
-        (when (get-buffer "*Calendar*")
-          (with-current-buffer "diary" (save-buffer)) 
-          (calendar-exit))
-        (setq tv-calendar-alive nil))
+      (when (get-buffer "*Calendar*")
+        (with-current-buffer "diary" (save-buffer)) 
+        (calendar-exit)) ; advice reset win conf
       ;; In case calendar were called without toggle command
       (unless (get-buffer-window "*Calendar*")
-        (calendar))
-      (setq tv-calendar-alive t)))
+        (setq tv-calendar-alive (current-window-configuration))
+        (calendar))))
 
+(defadvice calendar-exit (after reset-win-conf activate)
+  (when tv-calendar-alive
+    (set-window-configuration tv-calendar-alive)
+    (setq tv-calendar-alive nil)))
 (global-set-key (kbd "<f5> c") 'tv-toggle-calendar)
 
 ;; Cvs-update-current-directory-and-compile-it 
@@ -855,10 +871,29 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
          (progress-reporter-update progress-reporter count)))
     (progress-reporter-done progress-reporter)))
 
-(add-hook 'kill-emacs-hook 'dump-object-to-file-save-alist)
-(add-hook 'emacs-startup-hook 'restore-objects-from-directory)
-(add-hook 'kill-emacs-hook 'tv-dump-some-buffers-to-list)
-(add-hook 'emacs-startup-hook 'tv-restore-some-buffers 'append)
+;; (add-hook 'kill-emacs-hook 'dump-object-to-file-save-alist)
+;; (add-hook 'emacs-startup-hook 'restore-objects-from-directory)
+;; (add-hook 'kill-emacs-hook 'tv-dump-some-buffers-to-list)
+;; (add-hook 'emacs-startup-hook 'tv-restore-some-buffers 'append)
+
+(defun* tv-set-emacs-session-backup (&key enable)
+  (if enable
+      (unless (or (memq 'dump-object-to-file-save-alist kill-emacs-hook)
+                  (memq 'tv-dump-some-buffers-to-list kill-emacs-hook)
+                  (memq 'restore-objects-from-directory emacs-startup-hook)
+                  (memq 'tv-restore-some-buffers emacs-startup-hook))
+        (add-hook 'kill-emacs-hook 'dump-object-to-file-save-alist)
+        (add-hook 'emacs-startup-hook 'restore-objects-from-directory)
+        (add-hook 'kill-emacs-hook 'tv-dump-some-buffers-to-list)
+        (add-hook 'emacs-startup-hook 'tv-restore-some-buffers 'append))
+      (when (or (memq 'dump-object-to-file-save-alist kill-emacs-hook)
+                (memq 'tv-dump-some-buffers-to-list kill-emacs-hook)
+                (memq 'restore-objects-from-directory emacs-startup-hook)
+                (memq 'tv-restore-some-buffers emacs-startup-hook))
+        (remove-hook 'kill-emacs-hook 'dump-object-to-file-save-alist)
+        (remove-hook 'emacs-startup-hook 'restore-objects-from-directory)
+        (remove-hook 'kill-emacs-hook 'tv-dump-some-buffers-to-list)
+        (remove-hook 'emacs-startup-hook 'tv-restore-some-buffers))))
 
 ;; Kill-backward 
 (defun tv-kill-backward ()
@@ -1336,6 +1371,25 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
        do (puthash elm elm cont)
        finally return
          (loop for i being the hash-values in cont collect i))))
+
+;; Just an example to use `url-retrieve'
+(defun tv-download-file-async (url &optional noheaders to)
+  (lexical-let ((noheaders noheaders) (to to))
+    (url-retrieve url #'(lambda (status)
+                          (if (plist-get status :error)
+                              (signal (car status) (cadr status))
+                              (switch-to-buffer (current-buffer))
+                              (let ((inhibit-read-only t))
+                                (goto-char (point-min))
+                                ;; remove headers
+                                (when noheaders
+                                  (save-excursion
+                                    (re-search-forward "^$")
+                                    (forward-line 1)
+                                    (delete-region (point-min) (point))))
+                                (when to
+                                  (write-file to)
+                                  (kill-buffer (current-buffer)))))))))
 
 ;; Provide 
 (provide 'tv-utils)

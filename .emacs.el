@@ -185,7 +185,7 @@
 (defun tv-gnus (arg)
   (interactive "P")
   (let ((gc-cons-threshold 3500000))
-    (if arg (gnus-no-server) (gnus))))
+    (if arg (gnus-unplugged) (gnus))))
 
 (global-set-key (kbd "<f7> m") 'tv-gnus)
 
@@ -278,6 +278,7 @@
   (add-to-list 'default-frame-alist '(font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1"))
   (add-to-list 'default-frame-alist '(cursor-color . "red")))
 
+
 ;; Emacs screen-gamma
 ;(modify-frame-parameters nil (list (cons 'screen-gamma 1.5)))
 
@@ -305,10 +306,12 @@ With a prefix arg decrease transparency."
 
 (require 'bookmark-extensions)
 (require 'bookmark-firefox-handler)
+(require 'bookmark-uzbl-handler)
 (require 'firefox-protocol)
 (require 'addressbook-bookmark)
 (setq bookmark-automatically-show-annotations nil)
 (add-to-list 'org-agenda-files bmkext-org-annotation-directory)
+(setq bmkext-external-browse-url-function 'browse-url-uzbl)
 
 (defun tv-pp-bookmark-alist ()
   "Quickly print `bookmark-alist'."
@@ -666,6 +669,8 @@ account add <protocol> moi@mail.com password."
 
 ;; Emacs kill-ring ==> X-apps
 (setq x-select-enable-clipboard t)
+(when (boundp 'x-select-enable-clipboard-manager)
+  (setq x-select-enable-clipboard-manager nil))
 
 (defun yank-from-X ()
   "Yank from X-apps to Emacs."
@@ -894,7 +899,6 @@ account add <protocol> moi@mail.com password."
                                     (bury-buffer))))
 
 ;; Term-et-ansi-term 
-
 (defun tv-term ()
   (interactive)
   (ansi-term "/bin/bash"))
@@ -968,63 +972,6 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 ;;
 (require 'woman)
 (setq woman-use-own-frame nil)
-
-;; [REDEFINE]
-
-(defun woman-file-name (topic &optional re-cache)
-  "Get the name of the UN*X man-page file describing a chosen TOPIC.
-When `woman' is called interactively, the word at point may be
-automatically used as the topic, if the value of the user option
-`woman-use-topic-at-point' is non-nil.  Return nil if no file can
-be found.  Optional argument RE-CACHE, if non-nil, forces the
-cache to be re-read."
-  ;; Handle the caching of the directory and topic lists:
-  (unless (and (not re-cache)
-	       (or
-		(and woman-expanded-directory-path woman-topic-all-completions)
-		(woman-read-directory-cache)))
-    (message "Building list of manual directory expansions...")
-    (setq woman-expanded-directory-path
-	  (woman-expand-directory-path woman-manpath woman-path))
-    (message "Building completion list of all manual topics...")
-    (setq woman-topic-all-completions
-	  (woman-topic-all-completions woman-expanded-directory-path))
-    (woman-write-directory-cache))
-  ;; There is a problem in that I want to offer case-insensitive
-  ;; completions, but to return only a case-sensitive match.  This
-  ;; does not seem to work properly by default, so I re-do the
-  ;; completion if necessary.
-  (let (files)
-    (or (stringp topic)
-	(and (if (boundp 'woman-use-topic-at-point)
-		 woman-use-topic-at-point
-	       ;; Was let-bound when file loaded, so ...
-	       (setq woman-use-topic-at-point woman-use-topic-at-point-default))
-	     (setq topic (or (current-word t) "")) ; only within or adjacent to word
-	     (test-completion topic woman-topic-all-completions))
-	(setq topic (anything-comp-read
-                     "Manual entry: "
-                     woman-topic-all-completions))))
-    ;; Note that completing-read always returns a string.
-    (unless (= (length topic) 0)
-      (cond
-       ((setq files (woman-file-name-all-completions topic)))
-       ;; Complete topic more carefully, i.e. use the completion
-       ;; rather than the string entered by the user:
-       ((setq files (all-completions topic woman-topic-all-completions))
-	(while (/= (length topic) (length (car files)))
-	  (setq files (cdr files)))
-	(setq files (woman-file-name-all-completions (car files)))))
-      (cond
-       ((null files) nil)		; no file found for topic.
-       ((null (cdr files)) (car (car files))) ; only 1 file for topic.
-       (t
-	;; Multiple files for topic, so must select 1.
-	;; Unread the command event (TAB = ?\t = 9) that runs the command
-	;; `minibuffer-complete' in order to automatically complete the
-	;; minibuffer contents as far as possible.
-	(setq unread-command-events '(9)) ; and delete any type-ahead!
-	(anything-comp-read "Manual file: " files)))))
 
 ;;; Printing config 
 ;;
@@ -1366,7 +1313,22 @@ cache to be re-read."
 (global-set-key (kbd "C-x C-\"") 'split-window-horizontally)
 
 ;; convenient keys for creating/deleting frames
-(global-set-key (kbd "C-x C-( C-é") 'make-frame-command)
+(defun tv-make-new-frame ()
+  (interactive)
+  (let ((default-frame-alist '((width . 80)
+                               (height . 24)
+                               (border-width . 0)
+                               (menu-bar-lines . 0)
+                               (tool-bar-lines . 0)
+                               (unsplittable . t)
+                               (top . 24)
+                               (left . 600)
+                               (background-color . "LightSteelBlue")
+                               (foreground-color . "black")
+                               (alpha . nil)
+                               (fullscreen . nil))))
+    (make-frame-command)))
+(global-set-key (kbd "C-x C-( C-é") 'tv-make-new-frame)
 (global-set-key (kbd "C-x C-( C-à") 'delete-frame)
 
 ;; sql-mode 
@@ -1434,7 +1396,9 @@ cache to be re-read."
 (defun anything-elscreen ()
   (interactive)
   (anything-other-buffer 'anything-c-source-elscreen "*Anything Elscreen*"))
+;(elscreen-set-prefix-key (kbd "C-&"))
 (global-set-key (kbd "C-z l") 'anything-elscreen)
+;(global-set-key (kbd "C-z") 'ignore)
 
 ;; Calendar-and-diary 
 (setq holiday-bahai-holidays nil)
@@ -1581,6 +1545,9 @@ cache to be re-read."
       (save-buffers-kill-emacs)
       (save-buffers-kill-terminal)))
 (global-set-key [remap save-buffers-kill-terminal] 'tv-stop-emacs)
+
+;; Save/restore emacs-session
+(tv-set-emacs-session-backup :enable t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; .emacs.el ends here
