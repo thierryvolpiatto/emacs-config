@@ -113,7 +113,7 @@ With prefix arg open another window to diplay result"
                                       "gmane.emacs.python-mode")
                                     :must-match t)
                 (read-from-minibuffer "Author(Optional): ")))
-  (w3m-browse-url (concat "http://search.gmane.org/?query="
+  (browse-url (concat "http://search.gmane.org/?query="
                           query
                           "&author="
                           author

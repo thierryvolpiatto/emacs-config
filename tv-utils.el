@@ -469,10 +469,10 @@ START and END are buffer positions indicating what to append."
      (progress-reporter-done progress-reporter)
      new-seq))
 
-;; Send-current-buffer-to-firefox 
-(defun tv-htmlize-buffer-to-firefox ()
+;; Send current buffer htmlized to uzbl. 
+(defun tv-htmlize-buffer-to-uzbl ()
   (interactive)
-  (let* ((fname           (concat "/tmp/" (symbol-name (gensym "emacs2firefox"))))
+  (let* ((fname           (concat "/tmp/" (symbol-name (gensym "emacs2uzbl"))))
          (html-fname      (concat fname ".html"))
          (buffer-contents (buffer-substring (point-min) (point-max))))
     (with-current-buffer (find-file-noselect fname)
@@ -480,26 +480,7 @@ START and END are buffer positions indicating what to append."
       (save-buffer)
       (kill-buffer))
     (htmlize-file fname html-fname)
-    (browse-url-firefox (format "file://%s" html-fname))))
-
-(defun tv-htmlfontify-buffer-to-firefox ()
-  (interactive)
-  (let ((fname (concat "/tmp/" (symbol-name (gensym "emacs2firefox")) ".html")))
-    (htmlfontify-buffer)
-    (with-current-buffer (current-buffer)
-      (write-file fname))
-    (browse-url-firefox (format "file://%s" fname))))
-
-;; <2009-04-09 Jeu.>
-(defun tv-htmlfontify-region-to-firefox (beg end)
-  (interactive "r")
-  (let ((fname (concat "/tmp/" (symbol-name (gensym "emacs2firefox")) ".html"))
-        (buf   (current-buffer)))
-    (with-temp-buffer
-      (insert-buffer-substring buf beg end)
-      (htmlfontify-buffer)
-      (write-file fname))
-    (browse-url-firefox (format "file://%s" fname))))
+    (browse-url-uzbl (format "file://%s" html-fname))))
 
 ;; key-for-calendar 
 (defvar tv-calendar-alive nil)
@@ -908,11 +889,6 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
 
 (global-set-key (kbd "C-c k") 'tv-kill-backward)
 
-;; Eldoc-in-M-: 
-(require 'eldoc-eval)
-(when (require 'eldoc)
-  (set-face-attribute 'eldoc-highlight-function-argument nil :underline "red"))
-
 ;; Delete-char-or-region 
 (defun tv-delete-char (arg)
   (interactive "p")
@@ -924,8 +900,7 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
 ;; Browse-url 
 (defun firefox-browse-url (url)
   (interactive "sURL: ")
-  (let ((name  "firefox"))
-    (anything-c-generic-browser url name)))
+  (anything-c-generic-browser url "firefox"))
 
 (defun tv-w3m-view-this-page-in-firefox ()
   (interactive)
@@ -933,12 +908,11 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
                  (w3m-print-current-url))))
     (firefox-browse-url url)))
 
-(defun browse-url-chromium (url)
-  (interactive "sURL: ")
-  (let ((exe  "chromium-browser"))
-    (anything-c-generic-browser url exe)))
-
-;(global-set-key (kbd "<f7> c") 'browse-url-chromium)
+(defun w3m-view-this-page-in-uzbl ()
+  (interactive)
+  (let ((url (or (w3m-print-this-url)
+                 (w3m-print-current-url))))
+    (browse-url-uzbl url)))
 
 (defun w3m-view-this-page-in-chrome ()
   (interactive)
@@ -1287,7 +1261,8 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
 ;; See:
 ;; [EVAL] (find-fline "~/.emacs.d/emacs-config-laptop/dired-extension.el" "defun\* tv-get-disk-info")
 (defun dfh (directory)
-  "Interface to df -h command line."
+  "Interface to df -h command line.
+If a prefix arg is given choose directory, otherwise use `default-directory'."
   (interactive (list (if current-prefix-arg
                          (anything-c-read-file-name
                           "Directory: " :test 'file-directory-p)
@@ -1297,7 +1272,7 @@ MATCH when non--nil mention only file names that match the regexp MATCH."
     (erase-buffer)
     (insert (format "*Volume Info for `%s'*\n\nDevice: %s\nMaxSize: \
 %s\nUsed: %s\nAvailable: %s\nCapacity in use: %s\nMount point: %s"
-                    default-directory
+                    directory
                     (getf df-info :device)
                     (getf df-info :blocks)
                     (getf df-info :used)

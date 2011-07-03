@@ -31,13 +31,8 @@
 (add-to-list 'Info-directory-list "/usr/share/info")
 (add-to-list 'Info-directory-list "~/elisp/info")
 
-;; Rmove unused packages from `load-path'.
-(setq load-path (loop for i in load-path
-                   for basename = (file-name-nondirectory i)
-                   unless (or (string= basename "gnus")
-                              (string= basename "org")
-                              (string= basename "cedet"))
-                   collect i))
+(when (< emacs-major-version 24)
+  (add-to-list 'load-path "/home/thierry/elisp/ngnus/lisp/gnus-fallback-lib/eieio"))
 
 (dolist (i '("/usr/local/share/emacs/site-lisp"
 	     "~/elisp/"
@@ -70,9 +65,9 @@
 	     "~/elisp/eev/"
              "~/elisp/elscreen"
              "~/elisp/google-maps"
-             "~/elisp/org-active"
-             "~/elisp/org-active/lisp"
-             "~/elisp/org-active/contrib/lisp"
+             ;"~/elisp/org-active"
+             ;"~/elisp/org-active/lisp"
+             "~/elisp/org-active/contrib/lisp" ; Contain htmlize.el
              "~/elisp/slime"
              "~/elisp/slime/contrib"
              "~/.emacs.d/"
@@ -80,6 +75,11 @@
 	     "~/.emacs.d/emacs-config-laptop/"
 	     ))
   (add-to-list 'load-path i))
+
+(when (< emacs-major-version 24)
+  (dolist (lib '("~/elisp/org-active"
+                 "~/elisp/org-active/lisp"))
+    (add-to-list 'load-path lib)))
 
 ;; Load-all-gentoo's-files-from-site-lisp
 ;; Reuse gentoo's old autoload files for external packages.
@@ -162,8 +162,8 @@
     (add-to-list 'Info-directory-list "~/elisp/ngnus/texi/")
     (add-to-list 'Info-default-directory-list "~/elisp/ngnus/texi/")))
 
-(tv-maybe-load-ngnus 'force)
-;(tv-maybe-load-ngnus)
+;(tv-maybe-load-ngnus 'force)
+(tv-maybe-load-ngnus)
 
 ;(require 'gnus-async)
 ;(setq gnus-asynchronous t)
@@ -278,6 +278,7 @@
   (add-to-list 'default-frame-alist '(font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1"))
   (add-to-list 'default-frame-alist '(cursor-color . "red")))
 
+;(set-default-font "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
 
 ;; Emacs screen-gamma
 ;(modify-frame-parameters nil (list (cons 'screen-gamma 1.5)))
@@ -300,6 +301,70 @@ With a prefix arg decrease transparency."
         (modify-frame-parameters nil (list (cons 'alpha mod-alpha))))))
   (global-set-key (kbd "C-8") 'tv-transparency-modify))
 
+;; convenient keys for creating/deleting frames
+(defun tv-make-new-frame ()
+  (interactive)
+  (let ((default-frame-alist '((width . 80)
+                               (height . 24)
+                               (border-width . 0)
+                               (menu-bar-lines . 0)
+                               (tool-bar-lines . 0)
+                               ;(unsplittable . t)
+                               (top . 24)
+                               (left . 600)
+                               (background-color . "LightSteelBlue")
+                               (foreground-color . "black")
+                               (alpha . nil)
+                               (fullscreen . nil))))
+    (make-frame-command)))
+(global-set-key (kbd "C-x C-( C-é") 'tv-make-new-frame)
+(global-set-key (kbd "C-x C-( C-à") 'delete-frame)
+
+(setq pop-up-frame-alist '((width . 80)
+                           (height . 24)
+                           (border-width . 0)
+                           (menu-bar-lines . 0)
+                           (tool-bar-lines . 0)
+                           (unsplittable . t)
+                           (top . 24)
+                           (left . 600)
+                           (background-color . "LightSteelBlue")
+                           (foreground-color . "black")
+                           (alpha . nil)
+                           (fullscreen . nil)))
+
+
+;; (setq special-display-buffer-names `((,(help-buffer)
+;;                                      (minibuffer . nil)
+;;                                      (width . 80)
+;;                                      (height . 24)
+;;                                      (left-fringe . 0)
+;;                                      (border-width . 0)
+;;                                      (menu-bar-lines . 0)
+;;                                      (tool-bar-lines . 0)
+;;                                      (unsplittable . t)
+;;                                      (top . 24)
+;;                                      (left . 450)
+;;                                      (background-color . "LightSteelBlue")
+;;                                      (foreground-color . "black")
+;;                                      (alpha . nil)
+;;                                      (fullscreen . nil))
+;;                                      (,calendar-buffer
+;;                                       (minibuffer . nil)
+;;                                       (width . 80)
+;;                                       (height . 12)
+;;                                       (left-fringe . 0)
+;;                                       (border-width . 0)
+;;                                       (menu-bar-lines . 0)
+;;                                       (tool-bar-lines . 0)
+;;                                       (unsplittable . t)
+;;                                       (top . 24)
+;;                                       (left . 650)
+;;                                       (background-color . "LightSteelBlue")
+;;                                       (foreground-color . "black")
+;;                                       (alpha . nil)
+;;                                       (fullscreen . nil))))
+
 ;; Bookmarks 
 (setq bookmark-bmenu-toggle-filenames nil)
 (add-hook 'bookmark-bmenu-mode-hook 'hl-line-mode)
@@ -312,6 +377,7 @@ With a prefix arg decrease transparency."
 (setq bookmark-automatically-show-annotations nil)
 (add-to-list 'org-agenda-files bmkext-org-annotation-directory)
 (setq bmkext-external-browse-url-function 'browse-url-uzbl)
+(setq bmkext-jump-w3m-defaut-method 'w3m) ; Set to 'external to use external browser.
 
 (defun tv-pp-bookmark-alist ()
   "Quickly print `bookmark-alist'."
@@ -335,7 +401,8 @@ With a prefix arg decrease transparency."
     (define-key dired-mode-map (kbd "C-c F") 'dired-w3m-find-file)))
 
 (require 'config-w3m)
-(setq browse-url-browser-function 'w3m-browse-url)
+;(setq browse-url-browser-function 'w3m-browse-url)
+(setq browse-url-browser-function 'browse-url-uzbl)
 
 ;; w3m-globals-keys 
 (global-set-key (kbd "<f7> h") 'w3m) 
@@ -346,7 +413,7 @@ With a prefix arg decrease transparency."
 
 ;; w3m-mode-map 
 (define-key w3m-mode-map (kbd "C-c v") 'anything-w3m-bookmarks)
-(define-key w3m-mode-map (kbd "C-c M") 'w3m-view-this-page-in-chrome)
+(define-key w3m-mode-map (kbd "C-c M") 'w3m-view-this-page-in-uzbl)
 (substitute-key-definition 'w3m-view-url-with-external-browser
                            'tv-w3m-view-this-page-in-firefox
                            w3m-mode-map)
@@ -384,11 +451,12 @@ With a prefix arg decrease transparency."
 
 (global-set-key (kbd "<f7> i") 'erc-freenode-connect)
          
-;; (setq erc-autojoin-channels-alist '(("freenode.net"
-;;                                      ;"#emacs"
-;;                                      "#gentoofr"
-;;                                      "#gentoo-lisp")))
-;;                                      ;"#stumpwm")))
+(setq erc-autojoin-channels-alist '(("freenode.net"
+                                     ;"#emacs"
+                                     ;"#gentoofr"
+                                     ;"#gentoo-lisp")))
+                                     ;"#stumpwm"
+                                     "#uzbl")))
 
 ;; Bitlbee 
 (defun bitlbee (server)
@@ -600,8 +668,67 @@ account add <protocol> moi@mail.com password."
                (define-key dired-mode-map (kbd "C-c z") 'dired-tar-pack-unpack)))
 
 
-;; yes-or-no 
-(fset 'yes-or-no-p 'y-or-n-p)
+;; [REDEFINE] y-or-n-p
+
+;; (defun y-or-n-p (prompt)
+;;   "Ask user a \"y or n\" question.  Return t if answer is \"y\".
+;; PROMPT is the string to display to ask the question.  It should
+;; end in a space; `y-or-n-p' adds \"(y or n) \" to it.
+
+;; No confirmation of the answer is requested; a single character is enough.
+;; Also accepts Space to mean yes, or Delete to mean no.  \(Actually, it uses
+;; the bindings in `query-replace-map'; see the documentation of that variable
+;; for more information.  In this case, the useful bindings are `act', `skip',
+;; `recenter', and `quit'.\)
+
+;; Under a windowing system a dialog box will be used if `last-nonmenu-event'
+;; is nil and `use-dialog-box' is non-nil."
+;;   ;; ¡Beware! when I tried to edebug this code, Emacs got into a weird state
+;;   ;; where all the keys were unbound (i.e. it somehow got triggered
+;;   ;; within read-key, apparently).  I had to kill it.
+;;   (let ((answer 'recenter))
+;;     (if (and (display-popup-menus-p)
+;;              (listp last-nonmenu-event)
+;;              use-dialog-box)
+;;         (setq answer
+;;               (x-popup-dialog t `(,prompt ("yes" . act) ("No" . skip))))
+;;       (setq prompt (concat prompt
+;;                            (if (eq ?\s (aref prompt (1- (length prompt))))
+;;                                "" " ")
+;;                            "(y or n) "))
+;;       (while
+;;           (let* ((key
+;;                   (let ((cursor-in-echo-area t))
+;;                     (when minibuffer-auto-raise
+;;                       (raise-frame (window-frame (minibuffer-window))))
+;;                     (read-key (propertize (if (or (eq answer 'recenter)
+;;                                                   (eq com 'scroll-other-window)
+;;                                                   (eq com 'scroll-other-window-down))
+;;                                               prompt
+;;                                             (concat "Please answer y or n.  "
+;;                                                     prompt))
+;;                                           'face 'minibuffer-prompt)))))
+;;             (setq answer (lookup-key query-replace-map (vector key) t))
+;;             (setq com (lookup-key global-map (vector key) t))
+;;             (cond
+;;               ((eq com 'scroll-other-window)
+;;                (with-selected-window (minibuffer-window)
+;;                  (scroll-other-window 1)) t)
+;;               ((eq com 'scroll-other-window-down)
+;;                (with-selected-window (minibuffer-window)
+;;                  (scroll-other-window -1)) t)
+;;               ((memq answer '(skip act)) nil)
+;;               ((eq answer 'recenter) (recenter) t)
+;;               ((memq answer '(exit-prefix quit)) (signal 'quit nil) t)
+;;               (t t)))
+;;         (ding)
+;;         (discard-input)))
+;;     (let ((ret (eq answer 'act)))
+;;       (unless noninteractive
+;;         (message "%s %s" prompt (if ret "y" "n")))
+;;       ret)))
+
+;; (fset 'yes-or-no-p 'y-or-n-p)
 
 ;; Affiche-l'heure-au-format-24h 
 (setq display-time-24hr-format t)
@@ -711,6 +838,12 @@ account add <protocol> moi@mail.com password."
 (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'eshell-mode-hook 'turn-on-eldoc-mode)
+
+;; Enable eldoc in-M-: 
+(require 'eldoc-eval)
+(when (require 'eldoc)
+  (set-face-attribute 'eldoc-highlight-function-argument nil :underline "red"))
+
 
 ;; Indent-when-newline (RET) in all elisp modes
 (define-key lisp-interaction-mode-map (kbd "RET") 'newline-and-indent)
@@ -848,10 +981,10 @@ account add <protocol> moi@mail.com password."
 (add-hook 'eshell-mode-hook #'(lambda ()
                                 (set-face-attribute 'eshell-prompt nil :foreground "DeepSkyBlue")))
 
-
-(add-hook 'eshell-mode-hook #'(lambda ()
-                                (require 'anything-esh)
-                                 (define-key eshell-mode-map [remap pcomplete] 'anything-eshell-complete)))
+;; anything completion with pcomplete
+;; (add-hook 'eshell-mode-hook #'(lambda ()
+;;                                 (require 'anything-esh)
+;;                                  (define-key eshell-mode-map [remap pcomplete] 'anything-eshell-complete)))
 
 ;; Eshell-banner 
 (setq eshell-banner-message (format "%s %s\n"
@@ -1298,9 +1431,6 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 ;; (find-fline "~/.emacs.d/emacs-config-laptop/tv-utils.el" "INDEX")
 (require 'tv-utils)
 
-;; Link-scratch-to-file 
-;;(find-fline "~/.emacs.d/emacs-config-laptop/tv-utils.el" "go-to-scratch")
-(add-hook 'emacs-startup-hook 'go-to-scratch)
 
 ;; ;; xmodmap 
 (load "xmodmap.elc")
@@ -1311,25 +1441,6 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 (global-set-key (kbd "C-x C-à") 'delete-window)
 (global-set-key (kbd "C-x C-é") 'split-window-vertically)
 (global-set-key (kbd "C-x C-\"") 'split-window-horizontally)
-
-;; convenient keys for creating/deleting frames
-(defun tv-make-new-frame ()
-  (interactive)
-  (let ((default-frame-alist '((width . 80)
-                               (height . 24)
-                               (border-width . 0)
-                               (menu-bar-lines . 0)
-                               (tool-bar-lines . 0)
-                               (unsplittable . t)
-                               (top . 24)
-                               (left . 600)
-                               (background-color . "LightSteelBlue")
-                               (foreground-color . "black")
-                               (alpha . nil)
-                               (fullscreen . nil))))
-    (make-frame-command)))
-(global-set-key (kbd "C-x C-( C-é") 'tv-make-new-frame)
-(global-set-key (kbd "C-x C-( C-à") 'delete-frame)
 
 ;; sql-mode 
 (setq sql-sqlite-program "sqlite3")
@@ -1383,9 +1494,6 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 ;; rst-mode 
 (add-hook 'rst-mode-hook 'auto-fill-mode)
 
-;; rebind-eval-expression 
-;(global-set-key (kbd "M-:") 'eldoc-eval-expression)
-(global-set-key [remap eval-expression] 'eldoc-eval-expression)
 
 ;; Undo-tree 
 ;(require 'undo-tree)
@@ -1396,8 +1504,8 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 (defun anything-elscreen ()
   (interactive)
   (anything-other-buffer 'anything-c-source-elscreen "*Anything Elscreen*"))
-;(elscreen-set-prefix-key (kbd "C-&"))
 (global-set-key (kbd "C-z l") 'anything-elscreen)
+;(elscreen-set-prefix-key (kbd "C-&"))
 ;(global-set-key (kbd "C-z") 'ignore)
 
 ;; Calendar-and-diary 
@@ -1548,6 +1656,14 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 
 ;; Save/restore emacs-session
 (tv-set-emacs-session-backup :enable t)
+
+;; Link-scratch-to-file 
+;;(find-fline "~/.emacs.d/emacs-config-laptop/tv-utils.el" "go-to-scratch")
+;; [For Emacs24 Fri Jun 17 21:56:29 2011]
+;; This have to be loaded at the end to overhide emacs vanilla scratch buffer
+;; with splash-screen etc... This important for versions of emacs starting at
+;; Fri Jun 17 21:55:55 2011
+(add-hook 'emacs-startup-hook 'go-to-scratch 'append)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; .emacs.el ends here

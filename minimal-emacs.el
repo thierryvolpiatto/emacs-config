@@ -23,12 +23,15 @@
 (global-set-key (kbd "M-x") 'anything-M-x)
 (global-set-key (kbd "C-x C-b") 'anything-buffers+)
 
+;; (require 'descbinds-anything)
+;; (descbinds-anything-install)            ; C-h b, C-x C-h
+(fset 'yes-or-no-p 'y-or-n-p)
 (add-to-list 'load-path "~/.emacs.d/emacs-config-laptop")
 (require 'tv-utils)
 
 
 ;; Ioccur
-;(require 'ioccur)
+(require 'ioccur)
 (global-set-key (kbd "C-c o") 'ioccur)
 (global-set-key (kbd "C-c C-o") 'ioccur-find-buffer-matching)
 ;(load "~/.emacs.d/elisp-objects/ioccur-history.elc")
