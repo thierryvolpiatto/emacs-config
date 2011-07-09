@@ -84,7 +84,7 @@
 ;; Load-all-gentoo's-files-from-site-lisp
 ;; Reuse gentoo's old autoload files for external packages.
 (mapc 'load
-      (cddr (directory-files "~/elisp/site-gentoo.d" t)))
+      (directory-files "~/elisp/site-gentoo.d" t directory-files-no-dot-files-regexp))
 
 ;; Emacs-customize-have-it's-own-file 
 (setq custom-file "~/.emacs.d/.emacs-custom.el")
@@ -271,14 +271,11 @@
 ;; My current-font: [EVAL] (cdr (assoc 'font (frame-parameters)))
 
 ;; Choose a font: [EVAL] (anything 'anything-c-source-xfonts)
-
-(unless window-system ; See: (find-fline "~/.Xressources" "!Emacs config")
-  (add-to-list 'default-frame-alist '(foreground-color . "Wheat"))
-  (add-to-list 'default-frame-alist '(background-color . "black"))
-  (add-to-list 'default-frame-alist '(font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1"))
-  (add-to-list 'default-frame-alist '(cursor-color . "red")))
-
-;(set-default-font "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
+(setq default-frame-alist '((foreground-color . "Wheat")
+                            (background-color . "DarkSlateGray")
+                            (alpha . nil)
+                            (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
+                            (cursor-color . "red")))
 
 ;; Emacs screen-gamma
 ;(modify-frame-parameters nil (list (cons 'screen-gamma 1.5)))
@@ -300,70 +297,6 @@ With a prefix arg decrease transparency."
       (when (and (>= mod-alpha frame-alpha-lower-limit) (<= mod-alpha 100))
         (modify-frame-parameters nil (list (cons 'alpha mod-alpha))))))
   (global-set-key (kbd "C-8") 'tv-transparency-modify))
-
-;; convenient keys for creating/deleting frames
-(defun tv-make-new-frame ()
-  (interactive)
-  (let ((default-frame-alist '((width . 80)
-                               (height . 24)
-                               (border-width . 0)
-                               (menu-bar-lines . 0)
-                               (tool-bar-lines . 0)
-                               ;(unsplittable . t)
-                               (top . 24)
-                               (left . 600)
-                               (background-color . "LightSteelBlue")
-                               (foreground-color . "black")
-                               (alpha . nil)
-                               (fullscreen . nil))))
-    (make-frame-command)))
-(global-set-key (kbd "C-x C-( C-é") 'tv-make-new-frame)
-(global-set-key (kbd "C-x C-( C-à") 'delete-frame)
-
-(setq pop-up-frame-alist '((width . 80)
-                           (height . 24)
-                           (border-width . 0)
-                           (menu-bar-lines . 0)
-                           (tool-bar-lines . 0)
-                           (unsplittable . t)
-                           (top . 24)
-                           (left . 600)
-                           (background-color . "LightSteelBlue")
-                           (foreground-color . "black")
-                           (alpha . nil)
-                           (fullscreen . nil)))
-
-
-;; (setq special-display-buffer-names `((,(help-buffer)
-;;                                      (minibuffer . nil)
-;;                                      (width . 80)
-;;                                      (height . 24)
-;;                                      (left-fringe . 0)
-;;                                      (border-width . 0)
-;;                                      (menu-bar-lines . 0)
-;;                                      (tool-bar-lines . 0)
-;;                                      (unsplittable . t)
-;;                                      (top . 24)
-;;                                      (left . 450)
-;;                                      (background-color . "LightSteelBlue")
-;;                                      (foreground-color . "black")
-;;                                      (alpha . nil)
-;;                                      (fullscreen . nil))
-;;                                      (,calendar-buffer
-;;                                       (minibuffer . nil)
-;;                                       (width . 80)
-;;                                       (height . 12)
-;;                                       (left-fringe . 0)
-;;                                       (border-width . 0)
-;;                                       (menu-bar-lines . 0)
-;;                                       (tool-bar-lines . 0)
-;;                                       (unsplittable . t)
-;;                                       (top . 24)
-;;                                       (left . 650)
-;;                                       (background-color . "LightSteelBlue")
-;;                                       (foreground-color . "black")
-;;                                       (alpha . nil)
-;;                                       (fullscreen . nil))))
 
 ;; Bookmarks 
 (setq bookmark-bmenu-toggle-filenames nil)
@@ -668,67 +601,8 @@ account add <protocol> moi@mail.com password."
                (define-key dired-mode-map (kbd "C-c z") 'dired-tar-pack-unpack)))
 
 
-;; [REDEFINE] y-or-n-p
-
-;; (defun y-or-n-p (prompt)
-;;   "Ask user a \"y or n\" question.  Return t if answer is \"y\".
-;; PROMPT is the string to display to ask the question.  It should
-;; end in a space; `y-or-n-p' adds \"(y or n) \" to it.
-
-;; No confirmation of the answer is requested; a single character is enough.
-;; Also accepts Space to mean yes, or Delete to mean no.  \(Actually, it uses
-;; the bindings in `query-replace-map'; see the documentation of that variable
-;; for more information.  In this case, the useful bindings are `act', `skip',
-;; `recenter', and `quit'.\)
-
-;; Under a windowing system a dialog box will be used if `last-nonmenu-event'
-;; is nil and `use-dialog-box' is non-nil."
-;;   ;; ¡Beware! when I tried to edebug this code, Emacs got into a weird state
-;;   ;; where all the keys were unbound (i.e. it somehow got triggered
-;;   ;; within read-key, apparently).  I had to kill it.
-;;   (let ((answer 'recenter))
-;;     (if (and (display-popup-menus-p)
-;;              (listp last-nonmenu-event)
-;;              use-dialog-box)
-;;         (setq answer
-;;               (x-popup-dialog t `(,prompt ("yes" . act) ("No" . skip))))
-;;       (setq prompt (concat prompt
-;;                            (if (eq ?\s (aref prompt (1- (length prompt))))
-;;                                "" " ")
-;;                            "(y or n) "))
-;;       (while
-;;           (let* ((key
-;;                   (let ((cursor-in-echo-area t))
-;;                     (when minibuffer-auto-raise
-;;                       (raise-frame (window-frame (minibuffer-window))))
-;;                     (read-key (propertize (if (or (eq answer 'recenter)
-;;                                                   (eq com 'scroll-other-window)
-;;                                                   (eq com 'scroll-other-window-down))
-;;                                               prompt
-;;                                             (concat "Please answer y or n.  "
-;;                                                     prompt))
-;;                                           'face 'minibuffer-prompt)))))
-;;             (setq answer (lookup-key query-replace-map (vector key) t))
-;;             (setq com (lookup-key global-map (vector key) t))
-;;             (cond
-;;               ((eq com 'scroll-other-window)
-;;                (with-selected-window (minibuffer-window)
-;;                  (scroll-other-window 1)) t)
-;;               ((eq com 'scroll-other-window-down)
-;;                (with-selected-window (minibuffer-window)
-;;                  (scroll-other-window -1)) t)
-;;               ((memq answer '(skip act)) nil)
-;;               ((eq answer 'recenter) (recenter) t)
-;;               ((memq answer '(exit-prefix quit)) (signal 'quit nil) t)
-;;               (t t)))
-;;         (ding)
-;;         (discard-input)))
-;;     (let ((ret (eq answer 'act)))
-;;       (unless noninteractive
-;;         (message "%s %s" prompt (if ret "y" "n")))
-;;       ret)))
-
-;; (fset 'yes-or-no-p 'y-or-n-p)
+;; y-or-n-p
+;(fset 'yes-or-no-p 'y-or-n-p)
 
 ;; Affiche-l'heure-au-format-24h 
 (setq display-time-24hr-format t)
@@ -1360,6 +1234,7 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 ;; ioccur 
 (require 'ioccur)
 (global-set-key [remap occur] 'ioccur) ; (`M-s o')
+(global-set-key [remap isearch-forward] 'ioccur) ; (C-s)
 (global-set-key (kbd "C-c o") 'ioccur)
 ;(define-key dired-mode-map (kbd "C-c o") 'ioccur-dired)
 (global-set-key (kbd "C-c C-o") 'ioccur-find-buffer-matching)
@@ -1640,11 +1515,11 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 ;; (add-hook 'lisp-interaction-mode 'auto-complete-mode)
 
 ;; Haskell-mode
-(add-to-list 'load-path "~/elisp/haskell-mode")
-(load "haskell-site-file")
-(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-(add-hook 'haskell-mode-hook 'font-lock-mode)
+;; (add-to-list 'load-path "~/elisp/haskell-mode")
+;; (load "haskell-site-file")
+;; (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+;; (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+;; (add-hook 'haskell-mode-hook 'font-lock-mode)
 
 ;; Kill emacs
 (defun tv-stop-emacs ()

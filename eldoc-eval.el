@@ -110,10 +110,29 @@ See `with-eldoc-in-minibuffer'."
                           (unless (looking-back ")\\|\"")
                             (forward-char -1))
                           (eldoc-current-symbol))))
+             (info-fn (eldoc-fnsym-in-current-sexp))
              (doc     (or (eldoc-get-var-docstring sym)
                           (eldoc-get-fnsym-args-string
-                           (car (eldoc-fnsym-in-current-sexp))))))
+                           (car info-fn) (cadr info-fn)))))
         (when doc (funcall eldoc-in-minibuffer-show-fn doc))))))
+
+(defadvice eval-expression (around with-eldoc activate)
+  "This advice enable eldoc support."
+  (list (let ((minibuffer-completing-symbol t))
+          (with-eldoc-in-minibuffer
+            (read-from-minibuffer "Eval: "
+                                  nil read-expression-map t
+                                  'read-expression-history)))
+        current-prefix-arg)
+  ad-do-it)
+
+(defadvice edebug-eval-expression (around with-eldoc activate)
+  "This advice enable eldoc support."
+  (interactive (list (with-eldoc-in-minibuffer
+                       (read-from-minibuffer
+                        "Eval: " nil read-expression-map t
+                        'read-expression-history))))
+  ad-do-it)
 
 (defadvice pp-eval-expression (around with-eldoc activate)
   "This advice enable eldoc support."
@@ -125,4 +144,5 @@ See `with-eldoc-in-minibuffer'."
 (global-set-key [remap eval-expression] 'pp-eval-expression)
 
 (provide 'eldoc-eval)
+
 ;; eldoc-extensions.el ends here

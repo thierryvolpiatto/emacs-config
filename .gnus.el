@@ -157,7 +157,9 @@
 (setq message-send-mail-partially-limit nil)
 
 ;; utiliser-w3m-pour-les-messages-html 
-(setq mm-text-html-renderer 'w3m)
+(setq shr-color-visible-luminance-min 75)
+(setq mm-text-html-renderer 'shr)
+;(setq mm-text-html-renderer 'w3m)
 ;(setq mm-text-html-renderer 'gnus-article-html)
 ;(setq mm-inline-text-html-with-images t)
 

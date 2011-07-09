@@ -648,10 +648,13 @@ DIR is a regular directory name.
 
 (defun tv-insert-double-quote-and-close-forward ()
   (interactive)
-  (let (action)
+  (let (action
+        (prompt (and (not (minibufferp))
+                     "\": Insert, (any key to exit).")))
+    (unless prompt (message "\": Insert, (any key to exit)."))
     (catch 'break
       (while t
-        (setq action (read-key "`\"': Insert, (any key to exit)."))
+        (setq action (read-key prompt))
         (case action
           ('?\"
            (skip-chars-forward " \n")
@@ -659,7 +662,7 @@ DIR is a regular directory name.
            (forward-sexp 1)
            (insert "\""))
           (t
-           (throw 'break nil)))))))
+           (throw 'break (when (characterp action) (insert (string action))))))))))
 
 
 (defun tv-insert-pair-and-close-forward ()
