@@ -45,6 +45,11 @@ Should take one arg: the string to display"
   :group 'eldoc
   :type 'number)
 
+(defcustom eval-prefered-function 'pp-eval-expression
+  "prefered function to use with `M-:'."
+  :group 'lisp
+  :type 'function)
+
 ;; Internal.
 (defvar eldoc-active-minibuffers-list nil
   "Store actives minibuffers with eldoc enabled.")
@@ -116,32 +121,15 @@ See `with-eldoc-in-minibuffer'."
                            (car info-fn) (cadr info-fn)))))
         (when doc (funcall eldoc-in-minibuffer-show-fn doc))))))
 
-(defadvice eval-expression (around with-eldoc activate)
-  "This advice enable eldoc support."
-  (list (let ((minibuffer-completing-symbol t))
-          (with-eldoc-in-minibuffer
-            (read-from-minibuffer "Eval: "
-                                  nil read-expression-map t
-                                  'read-expression-history)))
-        current-prefix-arg)
-  ad-do-it)
+(defun eval-expression-with-eldoc ()
+  "Eval expression with eldoc support in mode-line."
+  (interactive)
+  (with-eldoc-in-minibuffer
+    (call-interactively eval-prefered-function)))
 
-(defadvice edebug-eval-expression (around with-eldoc activate)
-  "This advice enable eldoc support."
-  (interactive (list (with-eldoc-in-minibuffer
-                       (read-from-minibuffer
-                        "Eval: " nil read-expression-map t
-                        'read-expression-history))))
-  ad-do-it)
+;; Bind it to `M-:'.
+(global-set-key [remap eval-expression] 'eval-expression-with-eldoc)
 
-(defadvice pp-eval-expression (around with-eldoc activate)
-  "This advice enable eldoc support."
-  (interactive
-   (list (with-eldoc-in-minibuffer
-           (read-from-minibuffer "Eval: " nil read-expression-map t
-                                 'read-expression-history))))
-   ad-do-it)
-(global-set-key [remap eval-expression] 'pp-eval-expression)
 
 (provide 'eldoc-eval)
 
