@@ -5,7 +5,7 @@
 (require 'w3m)
 ;; test 
 ;; Kill-other-windows-when-using-w3m- 
-(add-hook 'w3m-mode-hook 'delete-other-windows)
+;(add-hook 'w3m-mode-hook 'delete-other-windows)
 
 ;; Elscreen tabs
 ;; Use the w3m tabs instead of elscreen one's.

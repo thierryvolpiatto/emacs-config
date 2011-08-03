@@ -8,16 +8,25 @@
 
 (add-to-list 'load-path "~/elisp/")
 (add-to-list 'load-path "~/elisp/anything")
+(add-to-list 'load-path "~/.emacs.d/emacs-config-laptop")
+
 ;(require 'init-anything-thierry)
 ;; (when (require 'dired)
 ;;   (require 'tv-utils))
 
-;; Anything minimal config
+;; Recursive buffers
+(require 'mb-depth)
+(setq enable-recursive-minibuffers t)
+(minibuffer-depth-indicate-mode 1)
+
+(setq completion-cycle-threshold t)
+
+;;; Anything minimal config
 (require 'anything-config)
 ;(autoload 'anything-find-files "anything-config" nil t)
 ;(autoload 'anything-M-x "anything-config" nil t)
 (require 'anything-match-plugin)
-(require 'anything-complete)
+;(require 'anything-complete)
 (require 'autodoc)
 (global-set-key (kbd "C-x C-f") 'anything-find-files)
 (global-set-key (kbd "M-x") 'anything-M-x)
@@ -26,7 +35,6 @@
 ;; (require 'descbinds-anything)
 ;; (descbinds-anything-install)            ; C-h b, C-x C-h
 (fset 'yes-or-no-p 'y-or-n-p)
-(add-to-list 'load-path "~/.emacs.d/emacs-config-laptop")
 (require 'tv-utils)
 
 
@@ -42,9 +50,10 @@
 ;;                                'minibuffer-completion-help nil t)))
 
 ;; Eldoc
+(require 'eldoc-eval)
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
 (with-current-buffer "*scratch*" (lisp-interaction-mode)) 
 (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'eshell-mode-hook 'turn-on-eldoc-mode)
-;(with-current-buffer "*scratch*" (turn-on-eldoc-mode))
+

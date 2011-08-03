@@ -42,19 +42,17 @@
 	     "~/elisp/cmake"
 	     "~/elisp/desktop-file-utils"
 	     "~/elisp/emacs-wget"
-	     "~/elisp/gentoo-syntax"
+	     ;"~/elisp/gentoo-syntax"
 	     "~/elisp/git"
-	     "~/elisp/ledger"
-	     "~/elisp/libidn"
-	     "~/elisp/lua-mode"
+	     ;"~/elisp/lua-mode"
 	     "~/elisp/mercurial"
-	     "~/elisp/pymacs"
+	     ;"~/elisp/pymacs"
 	     "~/elisp/subversion"
 	     "~/elisp/tex-utils"
 	     "~/elisp/flim"
 	     "~/elisp/apel"
-	     "~/elisp/libidn"
-	     "~/elisp/librep"
+	     ;"~/elisp/libidn"
+	     ;"~/elisp/librep"
              "~/elisp/AC/"
              "~/elisp/emms/lisp/"
 	     "~/elisp/ipython"
@@ -107,7 +105,7 @@
 
 (defvar tv-current-theme 'naquadah)
 ;; Load my favourite theme.
-(load-theme tv-current-theme)
+(add-hook 'emacs-startup-hook #'(lambda () (load-theme tv-current-theme)))
 
 (defun tv-change-theme (theme)
   (interactive
@@ -132,8 +130,8 @@
     (setq tv-current-theme stheme)))
 
 ;; libidn is not in gentoo.d. load it
-(require 'idna)
-(require 'punycode)
+;(require 'idna)
+;(require 'punycode)
 
 ;; column-number 
 (column-number-mode 1)
@@ -152,6 +150,13 @@
 ;; Add memo to describe-func/variable
 (require 'usage-memo)
 (umemo-initialize)
+(defun umemo-electric-quit ()
+  (interactive)
+  (if (umemo-point-is-in-memo-area-p (point))
+       (call-interactively (global-key-binding "q"))
+       (and (view-mode 1) (View-quit))))
+(define-key usage-memo-mode-map (kbd "q") 'umemo-electric-quit)
+
 
 ;; gnus-config 
 (defun tv-maybe-load-ngnus (&optional force)
@@ -211,15 +216,6 @@
 ;; anything-config 
 ;; (find-epp anything-type-attributes)
 (require 'init-anything-thierry)
-;(require 'anything-ipa)
-
-;; Debug-on-error 
-(defun tv-debug-on-error ()
-  (interactive)
-  (let (state)
-    (setq debug-on-error (not debug-on-error))
-    (setq state (if debug-on-error "On" "Off"))
-    (message "Debug-on-error is now `%s'" state)))
 
 ;; no-menu-bar 
 ;; (find-fline "~/.Xressources" "!Emacs config")
@@ -271,11 +267,25 @@
 ;; My current-font: [EVAL] (cdr (assoc 'font (frame-parameters)))
 
 ;; Choose a font: [EVAL] (anything 'anything-c-source-xfonts)
-(setq default-frame-alist '((foreground-color . "Wheat")
-                            (background-color . "DarkSlateGray")
-                            (alpha . nil)
-                            (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
-                            (cursor-color . "red")))
+;; (when (>= emacs-major-version 24)
+;;   (setq default-frame-alist '((foreground-color . "Wheat")
+;;                               (background-color . "DarkSlateGray")
+;;                               (alpha . nil)
+;;                               (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
+;;                               (cursor-color . "red"))))
+
+;; Speedbar
+(setq speedbar-frame-parameters
+      `((minibuffer . nil)
+        (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
+        (width . 20)
+        (fullscreen . nil)
+        (left . ,(- (* (window-width) 8) 160))
+        (border-width . 0)
+        (menu-bar-lines . 0)
+        (tool-bar-lines . 0)
+        (unsplittable . t)
+        (left-fringe . 0)))
 
 ;; Emacs screen-gamma
 ;(modify-frame-parameters nil (list (cons 'screen-gamma 1.5)))
@@ -285,8 +295,6 @@
 
 ;; Emacs transparency - only with compiz.
 (when (window-system)
-  ;;(add-to-list 'default-frame-alist '(alpha . 90)) ; Default
-
   (defun tv-transparency-modify (arg)
     "Increase Emacs frame transparency.
 With a prefix arg decrease transparency."
@@ -310,7 +318,7 @@ With a prefix arg decrease transparency."
 (setq bookmark-automatically-show-annotations nil)
 (add-to-list 'org-agenda-files bmkext-org-annotation-directory)
 (setq bmkext-external-browse-url-function 'browse-url-uzbl)
-(setq bmkext-jump-w3m-defaut-method 'w3m) ; Set to 'external to use external browser.
+(setq bmkext-jump-w3m-defaut-method 'w3m) ; Set to 'external to use external browser, w3m for w3m.
 
 (defun tv-pp-bookmark-alist ()
   "Quickly print `bookmark-alist'."
@@ -595,14 +603,14 @@ account add <protocol> moi@mail.com password."
 
 (setq dired-listing-switches (purecopy "-alh"))
 
-(require 'dired-tar)
-(add-hook 'dired-mode-hook
-	   #'(lambda ()
-               (define-key dired-mode-map (kbd "C-c z") 'dired-tar-pack-unpack)))
+;; (require 'dired-tar)
+;; (add-hook 'dired-mode-hook
+;; 	   #'(lambda ()
+;;                (define-key dired-mode-map (kbd "C-c z") 'dired-tar-pack-unpack)))
 
 
 ;; y-or-n-p
-;(fset 'yes-or-no-p 'y-or-n-p)
+(fset 'yes-or-no-p 'y-or-n-p)
 
 ;; Affiche-l'heure-au-format-24h 
 (setq display-time-24hr-format t)
@@ -718,6 +726,13 @@ account add <protocol> moi@mail.com password."
 (when (require 'eldoc)
   (set-face-attribute 'eldoc-highlight-function-argument nil :underline "red"))
 
+(defadvice edebug-eval-expression (around with-eldoc activate)
+  "This advice enable eldoc support."
+  (interactive (list (with-eldoc-in-minibuffer
+                       (read-from-minibuffer
+                        "Eval: " nil read-expression-map t
+                        'read-expression-history))))
+  ad-do-it)
 
 ;; Indent-when-newline (RET) in all elisp modes
 (define-key lisp-interaction-mode-map (kbd "RET") 'newline-and-indent)
@@ -856,9 +871,13 @@ account add <protocol> moi@mail.com password."
                                 (set-face-attribute 'eshell-prompt nil :foreground "DeepSkyBlue")))
 
 ;; anything completion with pcomplete
-;; (add-hook 'eshell-mode-hook #'(lambda ()
-;;                                 (require 'anything-esh)
-;;                                  (define-key eshell-mode-map [remap pcomplete] 'anything-eshell-complete)))
+(add-hook 'eshell-mode-hook
+          #'(lambda ()
+              (define-key eshell-mode-map [remap pcomplete] 'anything-esh-pcomplete)))
+
+(add-hook 'eshell-mode-hook
+          #'(lambda ()
+              (define-key eshell-mode-map (kbd "M-p") 'anything-eshell-history)))
 
 ;; Eshell-banner 
 (setq eshell-banner-message (format "%s %s\n"
@@ -950,32 +969,28 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 ;; Binding-pour-le-calculateur-d'emacs 
 (global-set-key [(control return)] 'calculator)
 
-;; flyspell-aspell 
-
-;; Aspell 
+;;; flyspell-aspell 
+;;
+;;
 (setq-default ispell-program-name "aspell")
 (setq ispell-local-dictionary "francais")
 
-;; Switch-dico-english-french 
-(defun tv-change-dico ()
-  "change de dictionnaire"
-  (interactive)
-  (let ((dico (or ispell-local-dictionary ispell-dictionary)))
-    (setq dico (if (string= dico "francais")
-                   "english"
-                   "francais"))
-    (message "Switched to %s" dico)
-    (sit-for 0.5)
-    (ispell-change-dictionary dico)
-    (when flyspell-mode
-      (flyspell-delete-all-overlays))))
-
-;;; Toggle-flyspell-mode 
-;;
-(global-set-key (kbd "<f2> f") 'flyspell-mode)
-(global-set-key (kbd "<f2> c") 'tv-change-dico)
+(defun tv-flyspell (arg)
+  "Toggle `flyspell-mode'.
+With prefix arg always start and let me choose dictionary."
+  (interactive "P")
+  (if arg
+      (let ((dic (anything-comp-read
+                  "Dictionnaire: "
+                  '("francais" "english"))))
+        (unless flyspell-mode (flyspell-mode 1))
+        (ispell-change-dictionary dic)
+        (flyspell-delete-all-overlays))
+      (call-interactively 'flyspell-mode)))
+(global-set-key (kbd "<f2>") 'tv-flyspell)
 
 ;;; Woman
+;;
 ;;
 (require 'woman)
 (setq woman-use-own-frame nil)
@@ -1257,8 +1272,8 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 (minibuffer-depth-indicate-mode 1)
 
 ;; ffap-bindings 
-(ffap-bindings)
-(setq ffap-newfile-prompt t)
+;(ffap-bindings)
+;(setq ffap-newfile-prompt t)
 
 ;; autodoc (my autodoc) 
 ;; (find-fline "~/labo/anything-config-qp/developer-tools/autodoc.el")
@@ -1380,6 +1395,7 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
   (interactive)
   (anything-other-buffer 'anything-c-source-elscreen "*Anything Elscreen*"))
 (global-set-key (kbd "C-z l") 'anything-elscreen)
+
 ;(elscreen-set-prefix-key (kbd "C-&"))
 ;(global-set-key (kbd "C-z") 'ignore)
 
@@ -1528,6 +1544,12 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
       (save-buffers-kill-emacs)
       (save-buffers-kill-terminal)))
 (global-set-key [remap save-buffers-kill-terminal] 'tv-stop-emacs)
+
+;; Minibuffers completion
+(setq completion-cycle-threshold t) ; always cycle, no completion buffer.
+
+;; Uzbl
+;(setq browse-url-uzbl-program "uzbl-browser")
 
 ;; Save/restore emacs-session
 (tv-set-emacs-session-backup :enable t)

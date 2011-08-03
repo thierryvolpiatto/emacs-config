@@ -72,17 +72,17 @@
 (setq smtpmail-smtp-service 587)
 
 ;; Registry
-(when (eq emacs-major-version 24)
-  (setq gnus-registry-max-entries 2500)
-  (gnus-registry-initialize)
+;; (when (eq emacs-major-version 24)
+;;   (setq gnus-registry-max-entries 2500)
+;;   (gnus-registry-initialize)
 
-  (setq
-   gnus-registry-split-strategy 'majority
-   gnus-registry-ignored-groups '(("nntp" t)
-                                  ("nnrss" t))
-   gnus-registry-max-entries 500000
-   ;; this is the default
-   gnus-registry-track-extra '(sender subject)))
+;;   (setq
+;;    gnus-registry-split-strategy 'majority
+;;    gnus-registry-ignored-groups '(("nntp" t)
+;;                                   ("nnrss" t))
+;;    gnus-registry-max-entries 500000
+;;    ;; this is the default
+;;    gnus-registry-track-extra '(sender subject)))
 
 ;; spam-for-news 
 ;; (require 'spam)
@@ -157,9 +157,9 @@
 (setq message-send-mail-partially-limit nil)
 
 ;; utiliser-w3m-pour-les-messages-html 
-(setq shr-color-visible-luminance-min 75)
-(setq mm-text-html-renderer 'shr)
-;(setq mm-text-html-renderer 'w3m)
+;; (setq shr-color-visible-luminance-min 75)
+;; (setq mm-text-html-renderer 'shr)
+(setq mm-text-html-renderer 'w3m)
 ;(setq mm-text-html-renderer 'gnus-article-html)
 ;(setq mm-inline-text-html-with-images t)
 
@@ -250,9 +250,9 @@
 ;;  ("gmane.spam.detected" -1000 nil s)))
 (setq gnus-summary-expunge-below -999)
 
-;; gnus-demon 
+;; gnus-demon (start with `gnus-demon-init') 
 ;; Scan for new news
-;(gnus-demon-add-handler 'gnus-demon-scan-news 5 1)
+(gnus-demon-add-handler 'gnus-demon-scan-news 5 1)
 
 ;; Scroll-other-window 
 (define-key gnus-summary-mode-map (kbd "<C-M-down>") #'(lambda ()
