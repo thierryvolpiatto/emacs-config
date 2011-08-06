@@ -1378,7 +1378,8 @@ The sexps are searched after point, unless ARG.
 In this case, sexps are searched before point."
   (interactive "P\nsRegexp: ")
   (let ((pos (point))
-        (fun (if arg 're-search-backward 're-search-forward)))
+        (fun (if arg 're-search-backward 're-search-forward))
+        (sep (and (y-or-n-p "Separate sexp with newline? ") "\n")))
     (loop while (funcall fun regexp nil t)
       do (progn
            (backward-up-list)
@@ -1387,7 +1388,7 @@ In this case, sexps are searched before point."
            (save-excursion
              (goto-char pos)
              (yank)
-             (insert "\n\n")
+             (insert (concat "\n" sep))
              (setq pos (point))))
        finally do (goto-char pos))))
 
