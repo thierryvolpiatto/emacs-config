@@ -28,6 +28,26 @@
 
 (require 'cl)
 
+;;; Global keys
+;;
+;;
+(global-set-key (kbd "<f5> r")    'find-file-as-root)
+(global-set-key (kbd "C-c Y")     'tv-yank-from-screen)
+(global-set-key (kbd "C-c C")     'tv-copy-for-screen)
+(global-set-key [C-left]          'screen-top)
+(global-set-key [C-right]         'screen-bottom)
+(global-set-key (kbd "C-<")       'other-window-backward)
+(global-set-key (kbd "C->")       'other-window)
+(global-set-key (kbd "<f11> s c") 'go-to-scratch)
+(global-set-key (kbd "C-x r a")   'tv-append-to-register)
+(global-set-key (kbd "C-x r L")   'list-registers)
+(global-set-key (kbd "C-c t r")   'translate-at-point)
+(global-set-key (kbd "<f5> c")    'tv-toggle-calendar)
+(global-set-key (kbd "C-c h e")   'tv-tail-echo-area-messages)
+(global-set-key (kbd "C-c k")     'tv-kill-backward)
+(global-set-key (kbd "C-d")       'tv-delete-char)
+(global-set-key (kbd "C-x C-'")   'tv-toggle-resplit-window)
+
 ;; mount-and-umount-sshfs 
 
 ;;;###autoload
@@ -88,7 +108,6 @@
 (defun find-file-as-root (file)
   (interactive "fFindFileAsRoot: ")
   (find-file (concat "/su::" (expand-file-name file))))
-(global-set-key (kbd "<f5> r") 'find-file-as-root)
 
 ;; get-ip 
 ;; get my external ip (need my python script)
@@ -184,7 +203,6 @@ Run first crontab -e in shell and when emacsclient popup run M-x crontab."
     ;; With prefix arg don't remove new lines.
     (if arg (insert content) (insert one-line))
     (forward-char len)))
-(global-set-key (kbd "C-c Y") 'tv-yank-from-screen)
 
 ;;;###autoload
 (defun tv-copy-for-screen (arg beg end)
@@ -203,7 +221,6 @@ Run first crontab -e in shell and when emacsclient popup run M-x crontab."
       (save-buffer)
       (shell-command "screen -X readbuf > /dev/null")
       (kill-buffer))))
-(global-set-key (kbd "C-c C") 'tv-copy-for-screen)
 
 ;; Chrono-func 
 ;;;###autoload
@@ -285,10 +302,6 @@ You can specify input function to use."
   (interactive "P")
   (move-to-window-line (- (prefix-numeric-value n))))
 
-(global-set-key [C-left] 'screen-top)
-
-(global-set-key [C-right] 'screen-bottom)
-
 ;; switch-other-window 
 ;; C-x o inversé de n windows(optional)
 ;;;###autoload
@@ -296,9 +309,7 @@ You can specify input function to use."
   "retourne sur n window(s) precedent(s)"
   (interactive "p")
   (other-window (- (or n 1))))
-(global-set-key (kbd "C-<") 'other-window-backward)
-(global-set-key (kbd "C->") 'other-window)
- 
+
 ;; Persistent-scratch 
 ;;;###autoload
 (defun go-to-scratch ()
@@ -315,8 +326,6 @@ You can specify input function to use."
       (when (eq (point-min) (point-max))
         (insert ";; SCRATCH BUFFER\n;; ==============\n\n"))
       (current-buffer)))
-
-(global-set-key (kbd "<f11> s c") 'go-to-scratch)
 
 ;; registers-config 
 
@@ -335,10 +344,6 @@ START and END are buffer positions indicating what to append."
                     ((stringp reg) (concat reg "\n" text))
                     (t (error "Register does not contain text")))))
   (if delete-flag (delete-region start end)))
-
-(global-set-key (kbd "C-x r a") 'tv-append-to-register)
-
-(global-set-key (kbd "C-x r L") 'list-registers)
 
 ;; Stardict 
 (defun translate-at-point ()
@@ -371,8 +376,6 @@ START and END are buffer positions indicating what to append."
                                        (fullscreen . nil))))
             (switch-to-buffer-other-frame "*Dict*")))
           (message "Nothing found."))))
-
-(global-set-key (kbd "C-c t r") 'translate-at-point)
 
 ;; Get-mime-type-of-file 
 (defun file-mime-type (fname)
@@ -499,7 +502,6 @@ START and END are buffer positions indicating what to append."
   (when tv-calendar-alive
     (set-window-configuration tv-calendar-alive)
     (setq tv-calendar-alive nil)))
-(global-set-key (kbd "<f5> c") 'tv-toggle-calendar)
 
 ;; Cvs-update-current-directory-and-compile-it 
 ;; <2009-04-17 Ven. 16:15>
@@ -768,8 +770,6 @@ DIR is a regular directory name.
     (View-scroll-to-buffer-end)
     (sit-for 10)))
 
-(global-set-key (kbd "C-c h e") 'tv-tail-echo-area-messages)
-
 ;; Align-for-sections-in-loop 
 (defun align-loop-region-for (beg end)
   (interactive "r")
@@ -890,15 +890,12 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
   (when (eq (point-at-bol) (point-at-eol))
     (delete-blank-lines) (skip-chars-forward " ")))
 
-(global-set-key (kbd "C-c k") 'tv-kill-backward)
-
 ;; Delete-char-or-region 
 (defun tv-delete-char (arg)
   (interactive "p")
   (if (anything-region-active-p)
       (delete-region (region-beginning) (region-end))
       (delete-char arg)))
-(global-set-key (kbd "C-d") 'tv-delete-char)
 
 ;; Browse-url 
 (defun firefox-browse-url (url)
@@ -1296,7 +1293,6 @@ If a prefix arg is given choose directory, otherwise use `default-directory'."
                             (split-window-vertically)
                             (split-window-horizontally)))
          buf)))))
-(global-set-key (kbd "C-x C-'") 'tv-toggle-resplit-window)
 
 ;; Euro million
 (defun euro-million ()

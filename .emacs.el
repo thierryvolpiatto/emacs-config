@@ -17,7 +17,7 @@
 (prefer-coding-system 'utf-8)
 
 ;; calendar-date-style 
-(setq calendar-date-style 'european) ; [SEE] 
+(setq calendar-date-style 'european)
 
 ;; load-paths 
 ;; For Info paths see:
@@ -377,12 +377,18 @@
 ;; Choose a font:   [EVAL] (anything 'anything-c-source-xfonts)
 ;; Choose a color:  [EVAL] (anything 'anything-c-source-colors)
 
+(setq default-frame-alist '((foreground-color . "Wheat")
+                            (background-color . "DarkSlateGray")
+                            (alpha . nil)
+                            (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
+                            (cursor-color . "red")))
+
 ;; Speedbar
 (setq speedbar-frame-parameters
       `((minibuffer . nil)
         (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
         (width . 20)
-        (fullscreen . nil)
+        (fullscreen . nil) ; Not needed when fullscreen isn't set in .Xressources.
         (left . ,(- (* (window-width) 8) 160))
         (border-width . 0)
         (menu-bar-lines . 0)
@@ -1379,7 +1385,6 @@ With prefix arg always start and let me choose dictionary."
 
 ;; Mode-line 
 (set-face-attribute 'mode-line-emphasis nil :foreground "red")
-(set-face-attribute 'mode-line-buffer-id nil :foreground "Green4" :reverse-video t)
 
 ;; Google-Apps 
 (setq google-maps-static-default-zoom 10)
