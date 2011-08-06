@@ -306,9 +306,12 @@ You can specify input function to use."
 ;; C-x o inversé de n windows(optional)
 ;;;###autoload
 (defun other-window-backward (&optional n)
-  "retourne sur n window(s) precedent(s)"
+  "Move to other window or frame.
+With a prefix arg move N window forward or backward
+depending the value of N is positive or negative."
   (interactive "p")
-  (other-window (- (or n 1))))
+  (other-window (- (or n 1)) t)
+  (select-frame-set-input-focus (selected-frame)))
 
 ;; Persistent-scratch 
 ;;;###autoload
