@@ -348,16 +348,6 @@
     (setq auth-sources '((:source "~/.authinfo.gpg" :host t :protocol t)))
     (setq auth-sources '((:source "~/.authinfo" :host t :protocol t))))
 
-;; no-menu-bar 
-;; (find-fline "~/.Xressources" "!Emacs config")
-(unless (window-system) ; .Xressources have already loaded that.
-  (menu-bar-mode -1)
-  (tool-bar-mode -1)
-  (scroll-bar-mode -1)
-  (blink-cursor-mode -1))
-
-;(setq-default cursor-in-non-selected-windows nil)
-
 ;; Don't-fucking-split-this-windows-horizontally 
 (setq split-width-threshold nil)
 
@@ -380,34 +370,12 @@
 ;; undo-limit 
 (setq undo-limit 30000)
 
-;; Revert-buffer 
-
-;; kill-line/sexp 
-
 ;;; Frame-parameters
 ;;
 ;;
-
 ;; My current-font: [EVAL] (cdr (assoc 'font (frame-parameters)))
 ;; Choose a font:   [EVAL] (anything 'anything-c-source-xfonts)
 ;; Choose a color:  [EVAL] (anything 'anything-c-source-colors)
-(setq default-frame-alist '((foreground-color . "Wheat")
-                            (background-color . "DarkSlateGray")
-                            (alpha . nil)
-                            (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
-                            (cursor-color . "red")
-                            (fullscreen . nil)))
-
-;; (setq default-minibuffer-frame
-;;       (make-frame
-;;        '((name . "minibuffer")
-;; 	 (width . 80)
-;; 	 (height . 1)
-;; 	 (minibuffer . only)
-;; 	 (top . 0)
-;; 	 (left . 0)
-;; 	 (fullscreen . nil)
-;; 	 )))
 
 ;; Speedbar
 (setq speedbar-frame-parameters
@@ -421,9 +389,6 @@
         (tool-bar-lines . 0)
         (unsplittable . t)
         (left-fringe . 0)))
-
-;; Emacs screen-gamma
-;(modify-frame-parameters nil (list (cons 'screen-gamma 1.5)))
 
 ;;; mouse-avoidance-mode
 ;;
