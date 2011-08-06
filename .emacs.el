@@ -257,22 +257,30 @@
                                   (interactive)
                                   (kill-sexp -1)))
   
-;; Frame-parameters 
-;; Default font of emacs 23.1.92
-;; "-unknown-DejaVu Sans Mono-normal-normal-normal-*-14-*-*-*-m-0-iso10646-1"
-
-;; My bitstream font:
-;; "-bitstream-Bitstream Vera Sans Mono-bold-normal-normal-*-*-*-*-*-m-0-iso10646-1"
+;;; Frame-parameters
+;;
+;;
 
 ;; My current-font: [EVAL] (cdr (assoc 'font (frame-parameters)))
+;; Choose a font:   [EVAL] (anything 'anything-c-source-xfonts)
+;; Choose a color:  [EVAL] (anything 'anything-c-source-colors)
+(setq default-frame-alist '((foreground-color . "Wheat")
+                            (background-color . "DarkSlateGray")
+                            (alpha . nil)
+                            (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
+                            (cursor-color . "red")
+                            (fullscreen . nil)))
 
-;; Choose a font: [EVAL] (anything 'anything-c-source-xfonts)
-;; (when (>= emacs-major-version 24)
-;;   (setq default-frame-alist '((foreground-color . "Wheat")
-;;                               (background-color . "DarkSlateGray")
-;;                               (alpha . nil)
-;;                               (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
-;;                               (cursor-color . "red"))))
+;; (setq default-minibuffer-frame
+;;       (make-frame
+;;        '((name . "minibuffer")
+;; 	 (width . 80)
+;; 	 (height . 1)
+;; 	 (minibuffer . only)
+;; 	 (top . 0)
+;; 	 (left . 0)
+;; 	 (fullscreen . nil)
+;; 	 )))
 
 ;; Speedbar
 (setq speedbar-frame-parameters
@@ -290,10 +298,14 @@
 ;; Emacs screen-gamma
 ;(modify-frame-parameters nil (list (cons 'screen-gamma 1.5)))
 
+;;; mouse-avoidance-mode
+;;
 ;; Push the mouse out of the way.
-;(mouse-avoidance-mode 'exile)
+(mouse-avoidance-mode 'banish)
 
-;; Emacs transparency - only with compiz.
+;;; Emacs transparency - only with compiz.
+;;
+;;
 (when (window-system)
   (defun tv-transparency-modify (arg)
     "Increase Emacs frame transparency.
@@ -306,7 +318,28 @@ With a prefix arg decrease transparency."
         (modify-frame-parameters nil (list (cons 'alpha mod-alpha))))))
   (global-set-key (kbd "C-8") 'tv-transparency-modify))
 
-;; Bookmarks 
+;;; special buffer display.
+;;
+;;
+(setq special-display-buffer-names `((,(help-buffer)
+                                     (minibuffer . nil)
+                                     (width . 80)
+                                     (height . 24)
+                                     (left-fringe . 0)
+                                     (border-width . 0)
+                                     (menu-bar-lines . 0)
+                                     (tool-bar-lines . 0)
+                                     (unsplittable . t)
+                                     (top . 24)
+                                     (left . 450)
+                                     (background-color . "LightSteelBlue")
+                                     (foreground-color . "black")
+                                     (alpha . nil)
+                                     (fullscreen . nil))))
+
+;;; Bookmarks
+;;
+;;
 (setq bookmark-bmenu-toggle-filenames nil)
 (add-hook 'bookmark-bmenu-mode-hook 'hl-line-mode)
 
@@ -328,7 +361,9 @@ With a prefix arg decrease transparency."
   (dolist (i bookmark-alist)
     (pp i (current-buffer))))
 
-;; emacs-w3m 
+;;; emacs-w3m
+;;
+;;
 (setq w3m-icon-directory "~/elisp/emacs-w3m/icons")
 
 (defun dired-w3m-find-file ()
