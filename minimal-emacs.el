@@ -5,16 +5,54 @@
 (require 'cl)
 (blink-cursor-mode -1)
 (show-paren-mode 1)
+(setq inhibit-startup-message t)
 
 (add-to-list 'load-path "~/elisp/")
 (add-to-list 'load-path "~/elisp/anything")
 (add-to-list 'load-path "~/.emacs.d/emacs-config-laptop")
+(add-to-list 'load-path "~/elisp/DA-libs")
 
-;(require 'init-anything-thierry)
-;; (when (require 'dired)
-;;   (require 'tv-utils))
+;;; Independent minibuffer settings.
+;;
+;;
 
-;; Recursive buffers
+(setq anything-persistent-action-use-special-display t)
+(setq inhibit-startup-echo-area-message "thierry")
+
+;; My own settings.
+(setq default-frame-alist '((foreground-color . "Wheat")
+                            (background-color . "DarkSlateGray")
+                            (menu-bar-lines . 0)
+                            (tool-bar-lines . 0)
+                            (alpha . nil)
+                            (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
+                            (cursor-color . "red")
+                            (minibuffer . nil)))
+
+(setq minibuffer-frame-alist
+      '((top . 1) (left . 1)
+        (width . 80) (height . 2)
+        (background-color . "White") (foreground-color . "Black")))
+
+(setq initial-frame-alist
+       '((name . "emacs-1")
+         (foreground-color . "Wheat")
+         (background-color . "Black")
+         (menu-bar-lines . 0)
+         (tool-bar-lines . 0)
+         (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
+         (cursor-color . "red")
+         (minibuffer . nil)))
+
+(setq minibuffer-auto-raise t)
+(setq eldoc-in-minibuffer-own-frame-p t)
+
+(add-hook 'window-setup-hook #'(lambda ()
+                               (other-window 1 t)
+                               (select-frame-set-input-focus (last-nonminibuffer-frame))))
+;(setq pop-up-frames t)
+
+;; Enable recursive buffers
 (require 'mb-depth)
 (setq enable-recursive-minibuffers t)
 (minibuffer-depth-indicate-mode 1)
@@ -57,3 +95,4 @@
 (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'eshell-mode-hook 'turn-on-eldoc-mode)
 
+;;; minimal-emacs.el ends here
