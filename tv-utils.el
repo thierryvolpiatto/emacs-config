@@ -1381,9 +1381,14 @@ In this case, sexps are searched before point."
         (sep (and (y-or-n-p "Separate sexp with newline? ") "\n")))
     (loop while (funcall fun regexp nil t)
       do (progn
-           (backward-up-list)
-           (kill-sexp 1)
-           (delete-blank-lines)
+           (beginning-of-defun)
+           (let ((beg (point))
+                 (end (save-excursion (end-of-defun) (point))))
+             (save-excursion
+               (forward-line -1)
+               (when (search-forward "###autoload" (point-at-eol) t)
+                 (setq beg (point-at-bol))))
+             (kill-region beg end))
            (save-excursion
              (goto-char pos)
              (yank)
