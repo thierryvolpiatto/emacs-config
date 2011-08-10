@@ -377,6 +377,9 @@
 
 ;; [See Initial config: EVAL]: (find-fline "~/.Xressources")
 
+(setq initial-frame-alist '((fullscreen . maximized)
+                            ))
+
 (setq default-frame-alist '((foreground-color . "Wheat")
                             (background-color . "DarkSlateGray")
                             (alpha . nil)
@@ -388,16 +391,6 @@
                             (fullscreen . nil)
                             ))
 
-(setq initial-frame-alist '((foreground-color . "Wheat")
-                            (background-color . "Black")
-                            (alpha . 80)
-                            (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
-                            (cursor-color . "red")
-                            (fullscreen . t)
-                            (vertical-scroll-bars . nil)
-                            (tool-bar-lines . 0)
-                            (menu-bar-lines . 0)
-                            ))
 
 ;; Speedbar
 (setq speedbar-frame-parameters
@@ -412,18 +405,23 @@
         (unsplittable . t)
         (left-fringe . 0)))
 
-;;; mouse-avoidance-mode
-;;
-;; Push the mouse out of the way.
-(mouse-avoidance-mode 'banish)
-
 ;;; Window config
 ;;
-;; Don't-fucking-split-this-windows-horizontally 
+;;
+
+;; Elscreen
+(defun anything-elscreen ()
+  (interactive)
+  (anything-other-buffer 'anything-c-source-elscreen "*Anything Elscreen*"))
+
+;; Don't fucking split this windows horizontally 
 (setq split-width-threshold nil)
 
 ;; Pas-de-dialog-gtk 
 (setq use-file-dialog nil)
+
+;; Push the mouse out of the way.
+(mouse-avoidance-mode 'banish)
 
 ;;; Emacs transparency - only with compiz.
 ;;
@@ -1354,14 +1352,6 @@ With prefix arg always start and let me choose dictionary."
 ;; Undo-tree 
 ;(require 'undo-tree)
 ;(global-undo-tree-mode)
-
-;; Elscreen
-(defun anything-elscreen ()
-  (interactive)
-  (anything-other-buffer 'anything-c-source-elscreen "*Anything Elscreen*"))
-
-;(elscreen-set-prefix-key (kbd "C-&"))
-;(global-set-key (kbd "C-z") 'ignore)
 
 ;; Calendar-and-diary 
 (setq holiday-bahai-holidays nil)

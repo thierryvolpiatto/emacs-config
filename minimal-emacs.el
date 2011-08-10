@@ -16,10 +16,24 @@
 ;;
 ;;
 
-(setq anything-persistent-action-use-special-display t)
-(setq inhibit-startup-echo-area-message "thierry")
-
 ;; My own settings.
+;; (setq anything-persistent-action-use-special-display t)
+;; (setq inhibit-startup-echo-area-message "thierry")
+
+
+;; (setq initial-frame-alist
+;;        '((name . "emacs-1")
+;;          (foreground-color . "Wheat")
+;;          (background-color . "Black")
+;;          (menu-bar-lines . 0)
+;;          (tool-bar-lines . 0)
+;;          (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
+;;          (cursor-color . "red")
+;;          (minibuffer . nil)
+;;          (width . 157)
+;;          (height . 40)
+;;          ))
+
 (setq default-frame-alist '((foreground-color . "Wheat")
                             (background-color . "DarkSlateGray")
                             (menu-bar-lines . 0)
@@ -27,30 +41,30 @@
                             (alpha . nil)
                             (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
                             (cursor-color . "red")
-                            (minibuffer . nil)))
+                            ;(minibuffer . nil)
+                            ))
 
-(setq minibuffer-frame-alist
-      '((top . 1) (left . 1)
-        (width . 80) (height . 2)
-        (background-color . "White") (foreground-color . "Black")))
+;; (setq minibuffer-frame-alist
+;;       '((top . -56) (left . 1)
+;;         (width . 157) (height . 2)
+;;         (background-color . "White")
+;;         (foreground-color . "Black")
+;;         ))
 
-(setq initial-frame-alist
-       '((name . "emacs-1")
-         (foreground-color . "Wheat")
-         (background-color . "Black")
-         (menu-bar-lines . 0)
-         (tool-bar-lines . 0)
-         (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
-         (cursor-color . "red")
-         (minibuffer . nil)))
+;; (setq minibuffer-auto-raise t)
+;; (setq eldoc-in-minibuffer-own-frame-p t)
 
-(setq minibuffer-auto-raise t)
-(setq eldoc-in-minibuffer-own-frame-p t)
+;; (add-hook 'window-setup-hook #'(lambda ()
+;;                                (other-window 1 t)
+;;                                (select-frame-set-input-focus (last-nonminibuffer-frame))))
 
-(add-hook 'window-setup-hook #'(lambda ()
-                               (other-window 1 t)
-                               (select-frame-set-input-focus (last-nonminibuffer-frame))))
 ;(setq pop-up-frames t)
+
+;; Push the mouse out of the way.
+(mouse-avoidance-mode 'banish)
+
+;; Don't-fucking-split-this-windows-horizontally 
+(setq split-width-threshold nil)
 
 ;; Enable recursive buffers
 (require 'mb-depth)
@@ -79,6 +93,8 @@
 ;; Ioccur
 (require 'ioccur)
 (global-set-key (kbd "C-c o") 'ioccur)
+(global-set-key [remap occur] 'ioccur)
+(global-set-key [remap isearch-forward] 'ioccur)
 (global-set-key (kbd "C-c C-o") 'ioccur-find-buffer-matching)
 ;(load "~/.emacs.d/elisp-objects/ioccur-history.elc")
 
