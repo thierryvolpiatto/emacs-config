@@ -58,6 +58,7 @@ Should take one arg: the string to display"
 ;; Internal.
 (defvar eldoc-active-minibuffers-list nil
   "Store actives minibuffers with eldoc enabled.")
+(defvar eldoc-mode-line-rolling-flag nil)
 
 (defun eldoc-store-minibuffer ()
   "Store minibuffer buffer name in `eldoc-active-minibuffers-list'.
@@ -104,9 +105,26 @@ See `with-eldoc-in-minibuffer'."
     (with-current-buffer (eldoc-current-buffer)
       (make-local-variable 'mode-line-format)
       (let ((mode-line-format (concat " " str)))
-        (force-mode-line-update nil)
-        (sit-for eldoc-show-in-mode-line-delay))
+        (rolling-message-in-mode-line mode-line-format))
       (force-mode-line-update))))
+
+(defun rolling-message-in-mode-line (str)
+  (let* ((max (assoc-default 'width (frame-parameters)))
+         (len (length str))
+         (tmp-str str))
+    (if (and (> len max) eldoc-mode-line-rolling-flag)
+        (loop while (sit-for 0.3)
+           do (progn (setq tmp-str (substring tmp-str 2))
+                     (setq mode-line-format (concat tmp-str " <||>" str))
+                     (force-mode-line-update nil)
+                     (unless (not (string= tmp-str "")) (setq tmp-str str))))
+        (force-mode-line-update nil)
+        (sit-for eldoc-show-in-mode-line-delay))))
+
+(defun eldoc-mode-line-toggle-rolling ()
+  (interactive)
+  (setq eldoc-mode-line-rolling-flag (not eldoc-mode-line-rolling-flag)))
+(define-key minibuffer-local-map (kbd "<C-M-right>") 'eldoc-mode-line-toggle-rolling)
 
 (defun eldoc-mode-in-minibuffer ()
   "Show eldoc for current minibuffer input."
