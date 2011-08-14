@@ -371,7 +371,7 @@
 ;;; Frame-parameters
 ;;
 ;;
-;; My current-font: [EVAL]: (cdr (assoc 'font (frame-parameters)))
+;; My current-font: [EVAL]: (assoc-default 'font (frame-parameters))
 ;; Choose a font:   [EVAL]: (anything 'anything-c-source-xfonts)
 ;; Choose a color:  [EVAL]: (anything 'anything-c-source-colors)
 
@@ -398,7 +398,7 @@
         (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
         (width . 20)
         (fullscreen . nil) ; Not needed when fullscreen isn't set in .Xressources.
-        (left . ,(- (* (window-width) 8) 160))
+        (left . ,(- (* (window-width) 8) 160)) ; Speed-bar on right of screen.
         (border-width . 0)
         (menu-bar-lines . 0)
         (tool-bar-lines . 0)
@@ -1470,6 +1470,10 @@ With prefix arg always start and let me choose dictionary."
 
 ;; Uzbl
 ;(setq browse-url-uzbl-program "uzbl-browser")
+
+;; Remove undesired hooks.
+(remove-hook 'find-file-hooks 'vc-find-file-hook)
+(remove-hook 'find-file-hooks 'tla-find-file-hook)
 
 ;; Save/restore emacs-session
 (tv-set-emacs-session-backup :enable t)

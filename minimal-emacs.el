@@ -1,5 +1,4 @@
 ;;; Minimal-emacs.el - Minimal config for Emacs.
-
 ;;; Code:
 
 (require 'cl)
@@ -12,27 +11,29 @@
 (add-to-list 'load-path "~/.emacs.d/emacs-config-laptop")
 (add-to-list 'load-path "~/elisp/DA-libs")
 
-;;; Independent minibuffer settings.
-;;
-;;
+;; Frames setting.
+;; (setq default-frame-alist '((foreground-color . "Wheat")
+;;                             (background-color . "Black")
+;;                             (menu-bar-lines . 0)
+;;                             (tool-bar-lines . 0)
+;;                             (alpha . nil)
+;;                             (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
+;;                             (cursor-color . "red")
+;;                             ;(minibuffer . nil)
+;;                             ))
 
-;; My own settings.
-;; (setq anything-persistent-action-use-special-display t)
-;; (setq inhibit-startup-echo-area-message "thierry")
-
-
-;; (setq initial-frame-alist
-;;        '((name . "emacs-1")
-;;          (foreground-color . "Wheat")
-;;          (background-color . "Black")
-;;          (menu-bar-lines . 0)
-;;          (tool-bar-lines . 0)
-;;          (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
-;;          (cursor-color . "red")
-;;          (minibuffer . nil)
-;;          (width . 157)
-;;          (height . 40)
-;;          ))
+(setq initial-frame-alist
+       '((name . "emacs-1")
+         (foreground-color . "Wheat")
+         (background-color . "Black")
+         (menu-bar-lines . 0)
+         (tool-bar-lines . 0)
+         (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
+         (cursor-color . "red")
+         (minibuffer . nil)
+         (width . 157)
+         (height . 40)
+         ))
 
 (setq default-frame-alist '((foreground-color . "Wheat")
                             (background-color . "DarkSlateGray")
@@ -41,24 +42,54 @@
                             (alpha . nil)
                             (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
                             (cursor-color . "red")
-                            ;(minibuffer . nil)
+                            (minibuffer . nil)
                             ))
 
-;; (setq minibuffer-frame-alist
-;;       '((top . -56) (left . 1)
-;;         (width . 157) (height . 2)
-;;         (background-color . "White")
-;;         (foreground-color . "Black")
-;;         ))
+(setq minibuffer-frame-alist
+      '((top . -56) (left . 1)
+        (width . 157) (height . 2)
+        (background-color . "White")
+        (foreground-color . "Black")
+        ))
 
-;; (setq minibuffer-auto-raise t)
-;; (setq eldoc-in-minibuffer-own-frame-p t)
+(setq minibuffer-auto-raise t)
+(setq eldoc-in-minibuffer-own-frame-p t)
 
-;; (add-hook 'window-setup-hook #'(lambda ()
-;;                                (other-window 1 t)
-;;                                (select-frame-set-input-focus (last-nonminibuffer-frame))))
+(add-hook 'window-setup-hook #'(lambda ()
+                               (other-window 1 t)
+                               (select-frame-set-input-focus (last-nonminibuffer-frame))))
 
-;(setq pop-up-frames t)
+(setq special-display-buffer-names `((,(help-buffer)
+                                     (minibuffer . nil)
+                                     (width . 80)
+                                     (height . 24)
+                                     (left-fringe . 0)
+                                     (border-width . 0)
+                                     (menu-bar-lines . 0)
+                                     (tool-bar-lines . 0)
+                                     (unsplittable . t)
+                                     (top . 24)
+                                     (left . 450)
+                                     (background-color . "LightSteelBlue")
+                                     (foreground-color . "black")
+                                     (alpha . nil)
+                                     (fullscreen . nil))
+                                     ("*Compile-Log*"
+                                     (minibuffer . nil)
+                                     (width . 85)
+                                     (height . 24)
+                                     (left-fringe . 0)
+                                     (border-width . 0)
+                                     (menu-bar-lines . 0)
+                                     (tool-bar-lines . 0)
+                                     (unsplittable . t)
+                                     (top . 24)
+                                     (left . 450)
+                                     (background-color . "Palevioletred1")
+                                     (foreground-color . "black")
+                                     (alpha . nil)
+                                     (fullscreen . nil))))
+
 
 ;; Push the mouse out of the way.
 (mouse-avoidance-mode 'banish)
@@ -97,11 +128,6 @@
 (global-set-key [remap isearch-forward] 'ioccur)
 (global-set-key (kbd "C-c C-o") 'ioccur-find-buffer-matching)
 ;(load "~/.emacs.d/elisp-objects/ioccur-history.elc")
-
-;; Auto completion
-;; (add-hook 'minibuffer-setup-hook
-;;           (lambda () (add-hook 'post-command-hook
-;;                                'minibuffer-completion-help nil t)))
 
 ;; Eldoc
 (require 'eldoc-eval)

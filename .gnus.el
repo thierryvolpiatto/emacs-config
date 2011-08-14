@@ -183,19 +183,29 @@
          (address "thierry.volpiatto@gmail.com")
          (signature-file "~/.signature"))))
 
-;; Easypg 
- ;; use newer epg
+;;; Mail encryption.
+;;
+;;
 (setq mml2015-use 'epg)
 (setq mml2015-encrypt-to-self t)
 
-;; verify/decrypt 
-;; only if mml knows about the protocl used
+;; Verify/Decrypt automatically
+;; only if mml knows about the protocol used.
 (setq mm-verify-option 'known)
 (setq mm-decrypt-option 'known)
 
+(setq gnus-inhibit-mime-unbuttonizing nil)
+(setq gnus-buttonized-mime-types '("multipart/signed"
+                                   "multipart/alternative"))
+
+;; Automatically sign/encrypt replies to signed/encrypted mails. 
+(setq gnus-message-replysign t)
+(setq gnus-message-replyencrypt t)
+
+;; Enable epa.
 (add-hook 'message-mode-hook 'epa-mail-mode)
 
-;; suppression-de-la-signature-quand-on-quote 
+;; Suppression de la signature quand on quote. 
 (setq message-cite-function 'message-cite-original-without-signature)
 
 ;; shimbun 
@@ -204,7 +214,7 @@
 ;; (require 'nnshimbun)
 ;; (autoload 'gnus-group-make-shimbun-group "nnshimbun" nil t)
 
-;; integration-dans-dired? 
+;; Integration dans dired
 (require 'gnus-dired)
 (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
 
@@ -252,7 +262,7 @@
 
 ;; gnus-demon (start with `gnus-demon-init') 
 ;; Scan for new news
-(gnus-demon-add-handler 'gnus-demon-scan-news 5 1)
+;(gnus-demon-add-handler 'gnus-demon-scan-news 5 1)
 
 ;; Scroll-other-window 
 (define-key gnus-summary-mode-map (kbd "<C-M-down>") #'(lambda ()

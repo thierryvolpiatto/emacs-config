@@ -101,7 +101,7 @@
 
 ;; Insinuate-remember 
 (org-remember-insinuate)
-(setq org-directory "~/org")
+(setq org-directory "~/org/")
 (setq org-default-notes-file (concat org-directory "/notes.org"))
 (define-key global-map "\C-cr" 'org-remember)
 (setq org-remember-store-without-prompt t)

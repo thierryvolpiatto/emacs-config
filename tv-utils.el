@@ -95,7 +95,7 @@
   "sshfs mount of thievol."
   (interactive)
   (mount-sshfs "thievol:" "~/sshfs-thievol")
-  (anything-find-files1 "~/sshfs-thievol"))
+  (anything-find-files-1 "~/sshfs-thievol"))
 
 ;;;###autoload
 (defun thievol-disconnect ()
@@ -1369,7 +1369,7 @@ If a prefix arg is given choose directory, otherwise use `default-directory'."
                                   (kill-buffer (current-buffer)))))))))
 
 ;; Tool to take all sexps matching regexps in buffer and bring
-;; them at point. Useful to group e.g all defvar or defcustoms.
+;; them at point. Useful to reorder defvar, defcustoms etc...
 
 (defun tv-group-sexp-matching-regexp-at-point (arg regexp)
   "Put all sexps matching REGEXP and put them at point.
@@ -1388,7 +1388,8 @@ In this case, sexps are searched before point."
                (forward-line -1)
                (when (search-forward "###autoload" (point-at-eol) t)
                  (setq beg (point-at-bol))))
-             (kill-region beg end))
+             (kill-region beg end)
+             (delete-blank-lines))
            (save-excursion
              (goto-char pos)
              (yank)

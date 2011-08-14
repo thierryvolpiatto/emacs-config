@@ -115,7 +115,7 @@ See `with-eldoc-in-minibuffer'."
     (if (and (> len max) eldoc-mode-line-rolling-flag)
         (while (sit-for 0.3)
            (setq tmp-str (substring tmp-str 2)
-                 mode-line-format (concat tmp-str " <||>" str))
+                 mode-line-format (concat tmp-str " [<]" str))
            (force-mode-line-update nil)
            (when (< (length tmp-str) 2) (setq tmp-str str)))
         (force-mode-line-update nil)
