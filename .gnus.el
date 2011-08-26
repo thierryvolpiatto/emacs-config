@@ -70,6 +70,7 @@
 (setq smtpmail-default-smtp-server "smtp.gmail.com")
 (setq smtpmail-smtp-server "smtp.gmail.com")
 (setq smtpmail-smtp-service 587)
+;(setq smtpmail-queue-mail t) ; Use M-x smtpmail-send-queued-mail when online.
 
 ;; Registry
 ;; (when (eq emacs-major-version 24)
@@ -253,7 +254,7 @@
 
 ;;Use a global score file to filter gmane spam articles. That is a really cool feature.
 (setq gnus-global-score-files
-      '("~/gnus/scores/all.SCORE"))
+      '("~/News/scores/all.SCORE"))
 
 ;; all.SCORE contains:
 ;; (("xref"

@@ -203,9 +203,9 @@
 (global-set-key (kbd "<f11> l e")                  'slime-scratch)
 (global-set-key (kbd "<f11> l l")                  'slime-list-connections)
 (global-set-key (kbd "<f11> j s")                  'tv-pop-to-moz-repl)
-(global-set-key [remap occur]                      'ioccur)
-(global-set-key [remap isearch-forward]            'ioccur)
-(global-set-key (kbd "C-c o")                      'ioccur)
+(global-set-key [remap occur]                      'anything-occur)
+(global-set-key (kbd "C-s")                        'ioccur)
+(global-set-key (kbd "C-/")                        'isearch-forward)
 (global-set-key (kbd "C-c C-o")                    'ioccur-find-buffer-matching)
 (global-set-key (kbd "<M-down>")                   'tv-scroll-down)
 (global-set-key (kbd "<M-up>")                     'tv-scroll-up)
@@ -324,9 +324,16 @@
 
 (defvar tv-gnus-loaded-p nil)
 (defun tv-load-gnus-init-may-be ()
+  ;; Sync /tmp/news with ~/Gnus-News
+  (tv-gnus-sync-news)
   (unless tv-gnus-loaded-p
     (load gnus-init-file)
     (setq tv-gnus-loaded-p t)))
+
+(defun tv-gnus-sync-news ()
+  (shell-command "sync-gnus-news.sh")
+  (unless (file-directory-p "/tmp/News/")
+    (error "Gnus data directory doesn't exists")))
 
 (add-hook 'message-mode-hook 'tv-load-gnus-init-may-be)
 (add-hook 'gnus-before-startup-hook 'tv-load-gnus-init-may-be)
@@ -480,7 +487,7 @@ With a prefix arg decrease transparency."
 
 (setq bookmark-automatically-show-annotations nil)
 (add-to-list 'org-agenda-files bmkext-org-annotation-directory)
-(setq bmkext-external-browse-url-function 'browse-url-uzbl)
+(setq bmkext-external-browse-url-function 'browse-url-firefox) ; 'browse-url-uzbl
 (setq bmkext-jump-w3m-defaut-method 'w3m) ; Set to 'external to use external browser, w3m for w3m.
 
 (defun tv-pp-bookmark-alist ()
@@ -507,7 +514,8 @@ With a prefix arg decrease transparency."
     (define-key dired-mode-map (kbd "C-c F") 'dired-w3m-find-file)))
 
 ;(setq browse-url-browser-function 'w3m-browse-url)
-(setq browse-url-browser-function 'browse-url-uzbl)
+;(setq browse-url-browser-function 'browse-url-uzbl)
+(setq browse-url-browser-function 'browse-url-firefox)
 
 ;; w3m-mode-map 
 (define-key w3m-mode-map (kbd "C-c v") 'anything-w3m-bookmarks)
@@ -1328,8 +1336,56 @@ With prefix arg always start and let me choose dictionary."
 (define-key dired-mode-map (kbd "C-c C-S-c") 'tv-slime-dired-copy-files-or-dir-async)
 (define-key dired-mode-map (kbd "C-c C-S-d") 'tv-slime-dired-delete-files-async)
 
-;; isearch 
+;;; Isearch
+;;
+;;
 (setq isearch-allow-scroll t)
+
+;; Implement a decent "online" help like anything. (i.e show help without quitting).
+(defun isearch-help-internal (bufname insert-content-fn)
+  (save-window-excursion
+    (switch-to-buffer (get-buffer-create bufname))
+    (erase-buffer)
+    (funcall insert-content-fn)
+    (setq mode-line-format "%b (SPC,C-v:NextPage  b,M-v:PrevPage  other:Exit)")
+    (setq cursor-type nil)
+    (goto-char 1)
+    (isearch-help-event-loop)))
+
+(defun isearch-help-event-loop ()
+  (ignore-errors
+    (catch 'exit-isearch-help
+      (loop for event = (read-event) do
+           (case event
+             ((?\C-v ? ) (scroll-up))
+             ((?\M-v ?b) (scroll-down))
+             (t (throw 'exit-isearch-help (isearch-update))))))))
+
+(defun isearch-help ()
+  (interactive)
+  (isearch-help-internal
+   " *Isearch Help*"
+   (lambda ()
+     (insert (substitute-command-keys isearch-help-message))
+     (org-mode))))
+
+(defvar isearch-help-message "\\{isearch-mode-map}")
+(define-key isearch-mode-map (kbd "C-?") 'isearch-help)
+(define-key isearch-mode-map [remap isearch-describe-bindings] 'isearch-help)
+
+;; Isearch mode-line help.
+(defvar isearch-old-mode-line nil)
+(defun isearch-mode-line-help ()
+  (let (mode-line-in-non-selected-windows)
+    (setq isearch-old-mode-line mode-line-format)
+    (setq mode-line-format '(" " mode-line-buffer-identification " "
+                             (line-number-mode "%l") " "
+                             "C-?:Help,C-s:Forward,C-b:Backward,C-w:Yank at Point,\
+C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))))
+(add-hook 'isearch-mode-hook 'isearch-mode-line-help)
+(defun isearch-mode-line-help-restore ()
+  (setq mode-line-format isearch-old-mode-line))
+(add-hook 'isearch-mode-end-hook 'isearch-mode-line-help-restore)
 
 ;; align-let 
 (autoload 'align-let-keybinding "align-let" nil t)
@@ -1338,8 +1394,10 @@ With prefix arg always start and let me choose dictionary."
 (add-hook 'lisp-mode-hook 'align-let-keybinding)
 
 
-;; line-move-visual 
-;(setq line-move-visual nil)
+;; line-move-visual: next-line go to real next line when set to nil.
+;; When nil scrolling performances are better in files with long lines.
+;; When non--nil move to next visual line. (slow)
+(setq line-move-visual nil)
 
 ;; xml-weather 
 (setq xml-weather-default-icons-directory "~/xml-weather-icons/icons/31x31")
@@ -1472,7 +1530,7 @@ With prefix arg always start and let me choose dictionary."
 ;(setq browse-url-uzbl-program "uzbl-browser")
 
 ;; Remove undesired hooks.
-(remove-hook 'find-file-hooks 'vc-find-file-hook)
+;(remove-hook 'find-file-hooks 'vc-find-file-hook)
 (remove-hook 'find-file-hooks 'tla-find-file-hook)
 
 ;; Save/restore emacs-session

@@ -35,7 +35,7 @@
 
 ;;; Code:
 
-;(require 'org)
+(require 'org)
 ;; auto-fill-mode 
 ;; (set to 78 in files)
 (add-hook 'org-mode-hook 'auto-fill-mode)
@@ -252,6 +252,7 @@
 (require 'org-crypt)
 (org-crypt-use-before-save-magic)
 (setq org-crypt-key "59F29997")
+(setq org-crypt-disable-auto-save 'encrypt)
 (define-key org-mode-map (kbd "C-c e") 'org-encrypt-entry)
 (define-key org-mode-map (kbd "C-c d") 'org-decrypt-entry)
 
@@ -287,6 +288,9 @@
 ;;         ("EmacsWiki"
 ;;          "http://www.emacswiki.org/cgi-bin/wiki.pl?action=rss"
 ;;          "~/org/feeds.org" "EmacsWiki")))
+
+;; Bugfix: Incompatibility with bidi.
+(add-hook 'org-mode-hook #'(lambda () (setq bidi-display-reordering nil)))
 
 ;; Provide 
 (provide 'org-config-thierry)
