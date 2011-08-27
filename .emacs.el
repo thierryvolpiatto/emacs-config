@@ -1545,6 +1545,20 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 ;(remove-hook 'find-file-hooks 'vc-find-file-hook)
 (remove-hook 'find-file-hooks 'tla-find-file-hook)
 
+;;; VC - buggy VC for Emacs, only useful for RCS.
+;;
+;; Bugfix: vc-dir when used with ac-mode sucks.
+;; vc-dir -> vc-responsible-backend -> vc-call-backend -> vc-responsible-p
+;; =>
+;;(loop for i in vc-handled-backends thereis
+;;      (when (vc-call-backend i 'responsible-p "~/labo/anything-config-qp") i))
+;;
+(defadvice vc-rcs-responsible-p (around check-dir activate)
+  "Return non-nil if RCS thinks it would be responsible for registering FILE."
+  ;; TODO: check for all the patterns in vc-rcs-master-templates
+  (file-directory-p (expand-file-name "RCS" (if (file-directory-p file)
+                                                file (file-name-directory file))))))
+
 ;; Save/restore emacs-session
 (tv-set-emacs-session-backup :enable t)
 
