@@ -32,8 +32,9 @@
   (add-to-list 'load-path "/home/thierry/elisp/ngnus/lisp/gnus-fallback-lib/eieio"))
 
 (dolist (i '("/usr/local/share/emacs/site-lisp"
+             "/usr/local/share/emacs/site-lisp/auctex"
 	     "~/elisp/"
-	     "~/elisp/auctex"
+	     ;"~/elisp/auctex"
 	     "~/elisp/autoconf-mode"
 	     "~/elisp/bzr"
 	     "~/elisp/cmake"
@@ -337,6 +338,7 @@
 
 (add-hook 'message-mode-hook 'tv-load-gnus-init-may-be)
 (add-hook 'gnus-before-startup-hook 'tv-load-gnus-init-may-be)
+(add-hook 'gnus-after-exiting-gnus-hook 'tv-gnus-sync-news)
 
 (defun tv-gnus (arg)
   (interactive "P")
@@ -383,6 +385,8 @@
 ;; Choose a color:  [EVAL]: (anything 'anything-c-source-colors)
 
 ;; [See Initial config: EVAL]: (find-fline "~/.Xressources")
+
+(setq-default frame-background-mode 'dark)
 
 (setq initial-frame-alist '((fullscreen . maximized)
                             ))
@@ -1211,8 +1215,6 @@ With prefix arg always start and let me choose dictionary."
   (with-current-buffer "*newsticker*" 
     (newsticker-close-buffer)
     (newsticker-stop)))
-(when (require 'newsticker)
-  (define-key newsticker-mode-map (kbd "Q") 'newsticker-quit-and-stop))
 
 (defadvice newsticker-next-feed (around recenter activate)
   (interactive)
@@ -1224,6 +1226,16 @@ With prefix arg always start and let me choose dictionary."
 
 (defadvice newsticker-mark-all-items-at-point-as-read-and-redraw (after recenter activate)
   (recenter))
+
+(defun newsticker--next-line ()
+  (interactive)
+  (let ((line-move-visual t))
+    (next-line)))
+
+(when (require 'newsticker)
+  (define-key newsticker-mode-map (kbd "Q") 'newsticker-quit-and-stop))
+
+(add-hook 'newsticker-mode-hook #'(lambda () (setq bidi-display-reordering nil)))
 
 ;; Tramp-config 
 ;(require 'tramp)
