@@ -19,11 +19,17 @@
 ;; calendar-date-style 
 (setq calendar-date-style 'european)
 
+;; Require with messages to debug more easily.
+(defun tv-require (feature &optional filename noerror)
+  (message "Loading %s..." (symbol-name feature))
+  (require feature filename noerror)
+  (message "Loading %s done." (symbol-name feature)))
+
 ;; load-paths 
 ;; For Info paths see:
 ;; [EVAL] (find-fline "~/.profile" "INFOPATH")
 ;; [EVAL] (getenv "INFOPATH")
-(require 'info)
+(tv-require 'info)
 (add-to-list 'Info-directory-list "/usr/local/share/info")
 (add-to-list 'Info-directory-list "/usr/share/info")
 (add-to-list 'Info-directory-list "~/elisp/info")
@@ -79,6 +85,16 @@
                  "~/elisp/org-active/lisp"))
     (add-to-list 'load-path lib)))
 
+(defun tv-maybe-load-ngnus (&optional force)
+  (when (or force (< emacs-major-version 24))
+    (add-to-list 'load-path "~/elisp/ngnus/lisp")
+    (tv-require 'gnus-load "~/elisp/ngnus/lisp/gnus-load.el")
+    (tv-require 'info)
+    (add-to-list 'Info-directory-list "~/elisp/ngnus/texi/")
+    (add-to-list 'Info-default-directory-list "~/elisp/ngnus/texi/")))
+
+(tv-maybe-load-ngnus)
+
 ;; Load-all-gentoo's-files-from-site-lisp
 ;; Reuse gentoo's old autoload files for external packages.
 (mapc 'load
@@ -91,10 +107,6 @@
 ;;; Require's
 ;;
 ;;
-(defun tv-require (feature &optional filename noerror)
-  (message "Loading %s..." (symbol-name feature))
-  (require feature filename noerror)
-  (message "Loading %s done." (symbol-name feature)))
 (tv-require 'cl)
 (tv-require 'eev-thierry)
 (tv-require 'usage-memo)
@@ -303,17 +315,9 @@
 (define-key usage-memo-mode-map (kbd "q") 'umemo-electric-quit)
 
 
-;; gnus-config 
-(defun tv-maybe-load-ngnus (&optional force)
-  (when (or force (< emacs-major-version 24))
-    (add-to-list 'load-path "~/elisp/ngnus/lisp")
-    (require 'gnus-load)
-    (require 'info)
-    (add-to-list 'Info-directory-list "~/elisp/ngnus/texi/")
-    (add-to-list 'Info-default-directory-list "~/elisp/ngnus/texi/")))
-
-;(tv-maybe-load-ngnus 'force)
-(tv-maybe-load-ngnus)
+;;; Gnus-config
+;;
+;;
 
 ;(require 'gnus-async)
 ;(setq gnus-asynchronous t)
@@ -392,7 +396,7 @@
                             ))
 
 (setq default-frame-alist '((foreground-color . "Wheat")
-                            (background-color . "DarkSlateGray")
+                            ;(background-color . "DarkSlateGray")
                             (alpha . nil)
                             (vertical-scroll-bars . nil)
                             (tool-bar-lines . 0)
@@ -446,7 +450,8 @@ With a prefix arg decrease transparency."
            (def-alpha (or ini-alpha 100))
            (mod-alpha (if arg (+ def-alpha 10) (- def-alpha 10))))
       (when (and (>= mod-alpha frame-alpha-lower-limit) (<= mod-alpha 100))
-        (modify-frame-parameters nil (list (cons 'alpha mod-alpha))))))
+        (modify-frame-parameters nil (list (cons 'alpha mod-alpha)))
+        (message "Alpha[%s]" mod-alpha))))
   (global-set-key (kbd "C-8") 'tv-transparency-modify))
 
 ;;; special buffer display.
@@ -1237,9 +1242,17 @@ With prefix arg always start and let me choose dictionary."
 
 (add-hook 'newsticker-mode-hook #'(lambda () (setq bidi-display-reordering nil)))
 
-;; Tramp-config 
+;;; Tramp-config
+;;
 ;(require 'tramp)
 ;(setq tramp-default-method "ssh") ; methode par defaut
+;; Allow connecting as root on all remote Linux machines except this one (if allowed).
+;; Use e.g /sudo:host:/path
+(add-to-list 'tramp-default-proxies-alist
+             '(nil "\\`root\\'" "/ssh:%h:"))
+(add-to-list 'tramp-default-proxies-alist
+             '((regexp-quote (system-name)) nil nil))
+
 
 ;; Mode-lecture-photo-auto 
 (auto-image-file-mode 1)
@@ -1557,7 +1570,7 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
   "Return non-nil if RCS thinks it would be responsible for registering FILE."
   ;; TODO: check for all the patterns in vc-rcs-master-templates
   (file-directory-p (expand-file-name "RCS" (if (file-directory-p file)
-                                                file (file-name-directory file))))))
+                                                file (file-name-directory file)))))
 
 ;; Save/restore emacs-session
 (tv-set-emacs-session-backup :enable t)
