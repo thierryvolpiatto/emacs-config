@@ -105,10 +105,10 @@ See `with-eldoc-in-minibuffer'."
     (with-current-buffer (eldoc-current-buffer)
       (make-local-variable 'mode-line-format)
       (let ((mode-line-format (concat " " str)))
-        (rolling-message-in-mode-line mode-line-format))
+        (eldoc-maybe-roll-message-in-mode-line mode-line-format))
       (force-mode-line-update))))
 
-(defun rolling-message-in-mode-line (str)
+(defun eldoc-maybe-roll-message-in-mode-line (str)
   (let* ((max (window-width (get-buffer-window (eldoc-current-buffer))))
          (len (length str))
          (tmp-str str))

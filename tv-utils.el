@@ -1397,6 +1397,24 @@ In this case, sexps are searched before point."
              (setq pos (point))))
        finally do (goto-char pos))))
 
+;; Check paren errors
+
+(defun tv-check-paren-error ()
+  (interactive)
+  (let (pos-err)
+    (save-excursion
+      (goto-char (point-min))
+      (catch 'error
+        (condition-case err
+            (forward-list 9999)
+          (error
+           (throw 'error
+             (setq pos-err (caddr err)))))))
+    (if pos-err
+        (message "Paren error found in sexp starting at %s"
+                 (goto-char pos-err))
+        (message "No paren error found")))) 
+
 ;; Provide 
 (provide 'tv-utils)
 

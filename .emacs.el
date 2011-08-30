@@ -396,7 +396,7 @@
                             ))
 
 (setq default-frame-alist '((foreground-color . "Wheat")
-                            ;(background-color . "DarkSlateGray")
+                            (background-color . "DarkSlateGray")
                             (alpha . nil)
                             (vertical-scroll-bars . nil)
                             (tool-bar-lines . 0)
@@ -1106,8 +1106,10 @@ With prefix arg always start and let me choose dictionary."
 ;; auto-compression-mode 
 (auto-compression-mode 1)
 
-;; auctex-config 
-
+;;; Auctex/Latex config
+;;
+;;
+(require 'xdvi-search)
 (setq TeX-view-program-selection '(((output-dvi style-pstricks)
                                     "dvips and gv")
                                    (output-dvi "xdvi")
@@ -1246,6 +1248,7 @@ With prefix arg always start and let me choose dictionary."
 ;;
 ;(require 'tramp)
 ;(setq tramp-default-method "ssh") ; methode par defaut
+
 ;; Allow connecting as root on all remote Linux machines except this one (if allowed).
 ;; Use e.g /sudo:host:/path
 (add-to-list 'tramp-default-proxies-alist
@@ -1566,11 +1569,11 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 ;;(loop for i in vc-handled-backends thereis
 ;;      (when (vc-call-backend i 'responsible-p "~/labo/anything-config-qp") i))
 ;;
-(defadvice vc-rcs-responsible-p (around check-dir activate)
-  "Return non-nil if RCS thinks it would be responsible for registering FILE."
-  ;; TODO: check for all the patterns in vc-rcs-master-templates
-  (file-directory-p (expand-file-name "RCS" (if (file-directory-p file)
-                                                file (file-name-directory file)))))
+;; (defadvice vc-rcs-responsible-p (around check-dir activate)
+;;   "Return non-nil if RCS thinks it would be responsible for registering FILE."
+;;   ;; TODO: check for all the patterns in vc-rcs-master-templates
+;;   (file-directory-p (expand-file-name "RCS" (if (file-directory-p file)
+;;                                                 file (file-name-directory file)))))
 
 ;; Save/restore emacs-session
 (tv-set-emacs-session-backup :enable t)
