@@ -395,16 +395,23 @@
 (setq initial-frame-alist '((fullscreen . maximized)
                             ))
 
-(setq default-frame-alist '((foreground-color . "Wheat")
-                            (background-color . "DarkSlateGray")
-                            (alpha . nil)
-                            (vertical-scroll-bars . nil)
-                            (tool-bar-lines . 0)
-                            (menu-bar-lines . 0)
-                            (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
-                            (cursor-color . "red")
-                            (fullscreen . nil)
-                            ))
+(if (daemonp)
+    (setq default-frame-alist '((vertical-scroll-bars . nil)
+                                (tool-bar-lines . 0)
+                                (menu-bar-lines . 0)
+                                (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
+                                (cursor-color . "red")))
+
+    (setq default-frame-alist '((foreground-color . "Wheat")
+                                (background-color . "DarkSlateGray")
+                                (alpha . nil)
+                                (vertical-scroll-bars . nil)
+                                (tool-bar-lines . 0)
+                                (menu-bar-lines . 0)
+                                (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
+                                (cursor-color . "red")
+                                (fullscreen . nil)
+                                )))
 
 
 ;; Speedbar
@@ -1552,28 +1559,22 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
       (save-buffers-kill-terminal)))
 
 ;; Minibuffers completion
-(setq completion-cycle-threshold t) ; always cycle, no completion buffer.
+(setq completion-cycle-threshold t) ; always cycle, no completion buffers.
 
 ;; Uzbl
 ;(setq browse-url-uzbl-program "uzbl-browser")
 
 ;; Remove undesired hooks.
-;(remove-hook 'find-file-hooks 'vc-find-file-hook)
-(remove-hook 'find-file-hooks 'tla-find-file-hook)
+;(remove-hook 'find-file-hook 'vc-find-file-hook)
+(remove-hook 'find-file-hook 'tla-find-file-hook)
 
-;;; VC - buggy VC for Emacs, only useful for RCS.
+;;; Temporary Bugfixs until fixed in trunk.
 ;;
-;; Bugfix: vc-dir when used with ac-mode sucks.
-;; vc-dir -> vc-responsible-backend -> vc-call-backend -> vc-responsible-p
-;; =>
-;;(loop for i in vc-handled-backends thereis
-;;      (when (vc-call-backend i 'responsible-p "~/labo/anything-config-qp") i))
-;;
-;; (defadvice vc-rcs-responsible-p (around check-dir activate)
-;;   "Return non-nil if RCS thinks it would be responsible for registering FILE."
-;;   ;; TODO: check for all the patterns in vc-rcs-master-templates
-;;   (file-directory-p (expand-file-name "RCS" (if (file-directory-p file)
-;;                                                 file (file-name-directory file)))))
+(defadvice vc-rcs-responsible-p (around check-dir activate)
+  "Return non-nil if RCS thinks it would be responsible for registering FILE."
+  ;; TODO: check for all the patterns in vc-rcs-master-templates
+  (file-directory-p (expand-file-name "RCS" (if (file-directory-p file)
+                                                file (file-name-directory file)))))
 
 ;; Save/restore emacs-session
 (tv-set-emacs-session-backup :enable t)
