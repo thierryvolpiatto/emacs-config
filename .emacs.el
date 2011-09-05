@@ -1570,11 +1570,8 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 
 ;;; Temporary Bugfixs until fixed in trunk.
 ;;
-(defadvice vc-rcs-responsible-p (around check-dir activate)
-  "Return non-nil if RCS thinks it would be responsible for registering FILE."
-  ;; TODO: check for all the patterns in vc-rcs-master-templates
-  (file-directory-p (expand-file-name "RCS" (if (file-directory-p file)
-                                                file (file-name-directory file)))))
+;(remove-hook 'dvc-bookmarks-mode-hook 'dvc-buffer-push-previous-window-config)
+
 
 ;; Save/restore emacs-session
 (tv-set-emacs-session-backup :enable t)
