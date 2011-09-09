@@ -1398,7 +1398,6 @@ In this case, sexps are searched before point."
        finally do (goto-char pos))))
 
 ;; Check paren errors
-
 (defun tv-check-paren-error ()
   (interactive)
   (let (pos-err)
@@ -1414,6 +1413,15 @@ In this case, sexps are searched before point."
         (message "Paren error found in sexp starting at %s"
                  (goto-char pos-err))
         (message "No paren error found")))) 
+
+;; Sha-sum
+(defun sha-sum (file)
+  (let ((algo-list '(md5 sha1 sha224 sha256 sha384 sha512)))
+    (kill-new
+     (secure-hash (intern
+                   (anything-comp-read
+                    "Algorithm: " algo-list))
+                  file))))
 
 ;; Provide 
 (provide 'tv-utils)

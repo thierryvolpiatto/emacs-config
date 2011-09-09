@@ -304,14 +304,16 @@
 ;; (add-to-list 'desktop-globals-to-save 'anything-external-command-history)
 
 
-;; usage-memo 
+;;; Usage-memo
+;;
+;;
 ;; Add memo to describe-func/variable
 (umemo-initialize)
 (defun umemo-electric-quit ()
   (interactive)
   (if (umemo-point-is-in-memo-area-p (point))
-       (call-interactively (global-key-binding "q"))
-       (and (view-mode 1) (View-quit))))
+      (call-interactively (global-key-binding "q"))
+      (and (view-mode 1) (View-quit))))
 (define-key usage-memo-mode-map (kbd "q") 'umemo-electric-quit)
 
 
@@ -494,6 +496,8 @@ With a prefix arg decrease transparency."
                                      (foreground-color . "black")
                                      (alpha . nil)
                                      (fullscreen . nil))))
+
+
 
 ;;; Bookmarks
 ;;
@@ -865,6 +869,10 @@ account add <protocol> moi@mail.com password."
 
 ;; byte-compile-file 
 (define-key emacs-lisp-mode-map (kbd "C-c C-c b") 'byte-compile-file)
+
+;; Next page
+(define-key emacs-lisp-mode-map (kbd "<next>") 'forward-page)
+(define-key emacs-lisp-mode-map (kbd "<prior>") 'backward-page)
 
 ;; Indent-only-with-spaces 
 (setq-default indent-tabs-mode nil)
@@ -1256,6 +1264,9 @@ With prefix arg always start and let me choose dictionary."
 ;(require 'tramp)
 ;(setq tramp-default-method "ssh") ; methode par defaut
 
+;; No messages
+(setq tramp-message-show-message nil)
+
 ;; Allow connecting as root on all remote Linux machines except this one (if allowed).
 ;; Use e.g /sudo:host:/path
 (add-to-list 'tramp-default-proxies-alist
@@ -1567,6 +1578,11 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 ;; Remove undesired hooks.
 ;(remove-hook 'find-file-hook 'vc-find-file-hook)
 (remove-hook 'find-file-hook 'tla-find-file-hook)
+
+;;; vc
+;;
+;;
+(setq vc-handled-backends '(RCS))
 
 ;;; Temporary Bugfixs until fixed in trunk.
 ;;
