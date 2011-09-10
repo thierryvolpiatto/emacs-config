@@ -397,7 +397,8 @@
 (setq initial-frame-alist '((fullscreen . maximized)
                             ))
 
-(if (daemonp)
+(if (or (daemonp)
+        (< emacs-major-version 24))
     (setq default-frame-alist '((vertical-scroll-bars . nil)
                                 (tool-bar-lines . 0)
                                 (menu-bar-lines . 0)
@@ -1093,11 +1094,11 @@ With prefix arg always start and let me choose dictionary."
 
 ;;; Printing config 
 ;;
-
-;; Gtklp-par-defaut 
+(setq anything-ff-printer-list (anything-ff-find-printers))
 (setq lpr-command "gtklp")
+(setq lpr-switches '("-P"))
+(setq printer-name "Epson-Stylus-Photo-R265")
 (setq-default ps-print-header nil)
-(set-variable 'lpr-switches '("-PStylus-Photo-R265"))
 (setq ps-font-size   '(10 . 11.5))
 (setq ps-font-family 'Courier)
 
