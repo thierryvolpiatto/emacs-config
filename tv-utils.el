@@ -363,22 +363,10 @@ START and END are buffer positions indicating what to append."
           (erase-buffer)
           (save-excursion
             (insert result) (fill-region (point-min) (point-max)))
-          (let ((default-frame-alist '((minibuffer . nil)
-                                       (width . 80)
-                                       (height . 24)
-                                       (left-fringe . 0)
-                                       (border-width . 0)
-                                       (menu-bar-lines . 0)
-                                       (tool-bar-lines . 0)
-                                       (unsplittable . t)
-                                       (top . 24)
-                                       (left . 450)
-                                       (background-color . "LightSteelBlue")
-                                       (foreground-color . "DarkGoldenrod")
-                                       (alpha . nil)
-                                       (fullscreen . nil))))
-            (switch-to-buffer-other-frame "*Dict*")))
-          (message "Nothing found."))))
+          ;; Assume dict buffer is in `special-display-buffer-names'.
+          (switch-to-buffer-other-frame "*Dict*")
+          (view-mode 1))
+        (message "Nothing found."))))
 
 ;; Get-mime-type-of-file 
 (defun file-mime-type (fname)
@@ -1281,7 +1269,8 @@ If a prefix arg is given choose directory, otherwise use `default-directory'."
                     (getf df-info :used)
                     (getf df-info :available)
                     (getf df-info :capacity)
-                    (getf df-info :mount-point)))))
+                    (getf df-info :mount-point)))
+    (view-mode-enable)))
 
 (defun tv-toggle-resplit-window ()
   (interactive)

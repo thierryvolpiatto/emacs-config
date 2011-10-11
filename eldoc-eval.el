@@ -1,27 +1,27 @@
 ;;; eldoc-eval.el -- Show eldoc when using M-:
 
-;; Copyright (C) 2011, Thierry Volpiatto, all rights reserved.
+;; Copyright (C) 2011 Free Software Foundation, Inc.
 
-;;; This file is NOT part of GNU Emacs
+;; Author: Thierry Volpiatto <thierry.volpiatto@gmail.com>
 
-;;; License
-;;
-;; This program is free software; you can redistribute it and/or modify
+;; This file is part of GNU Emacs.
+
+;; GNU Emacs is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 3, or (at your option)
-;; any later version.
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
 
-;; This program is distributed in the hope that it will be useful,
+;; GNU Emacs is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with this program; see the file COPYING.  If not, write to
-;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
-;; Floor, Boston, MA 02110-1301, USA.
+;; along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.
 
-;; Code:
+;;; Commentary:
+
+;;; Code:
 (require 'eldoc)
 
 
@@ -41,12 +41,12 @@ Should take one arg: the string to display"
   :type 'function)
 
 (defcustom eldoc-show-in-mode-line-delay 12
-  "The time we show eldoc when emacs is idle."
+  "The time we show eldoc when Emacs is idle."
   :group 'eldoc
   :type 'number)
 
 (defcustom eval-prefered-function 'pp-eval-expression
-  "prefered function to use with `M-:'."
+  "Prefered function to use with `M-:'."
   :group 'lisp
   :type 'function)
 
@@ -89,7 +89,7 @@ See `with-eldoc-in-minibuffer'."
              (cdr eldoc-active-minibuffers-list)))))
 
 (defun eldoc-current-buffer ()
-  "The current-buffer before activating minibuffer."
+  "The `current-buffer' before activating minibuffer."
   (with-selected-frame (last-nonminibuffer-frame)
     (window-buffer
      (cond (eldoc-in-minibuffer-own-frame-p
@@ -160,5 +160,4 @@ See `with-eldoc-in-minibuffer'."
 
 
 (provide 'eldoc-eval)
-
-;; eldoc-extensions.el ends here
+;;; eldoc-eval.el ends here

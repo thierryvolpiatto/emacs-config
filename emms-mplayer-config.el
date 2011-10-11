@@ -110,6 +110,8 @@
 (global-set-key (kbd "<f6> \r") 'emms-start)
 (global-set-key (kbd "<f6> c") 'emms-browser-clear-playlist)
 (global-set-key (kbd "<f6> d") 'emms-mode-line-toggle)
+(global-set-key (kbd "<f6> <right>") 'emms-next)
+(global-set-key (kbd "<f6> <left>") 'emms-previous)
 
 ;; «Update-mpd-directory» (to ".Update-mpd-directory")
 

@@ -19,6 +19,9 @@
 ;; calendar-date-style 
 (setq calendar-date-style 'european)
 
+;; Turn off bidi everywhere.
+(setq-default bidi-display-reordering nil)
+
 ;; Require with messages to debug more easily.
 (defun tv-require (feature &optional filename noerror)
   (message "Loading %s..." (symbol-name feature))
@@ -393,9 +396,8 @@
 ;; [See Initial config: EVAL]: (find-fline "~/.Xressources")
 
 (setq-default frame-background-mode 'dark)
-
-(setq initial-frame-alist '((fullscreen . maximized)
-                            ))
+(setq initial-frame-alist '((fullscreen . maximized)))
+(setq frame-auto-hide-function 'delete-frame)
 
 (if (or (daemonp)
         (< emacs-major-version 24))
@@ -496,7 +498,22 @@ With a prefix arg decrease transparency."
                                      (background-color . "Palevioletred1")
                                      (foreground-color . "black")
                                      (alpha . nil)
-                                     (fullscreen . nil))))
+                                     (fullscreen . nil))
+                                     ("*Dict*"
+                                      (minibuffer . nil)
+                                      (width . 80)
+                                      (height . 24)
+                                      (left-fringe . 0)
+                                      (border-width . 0)
+                                      (menu-bar-lines . 0)
+                                      (tool-bar-lines . 0)
+                                      (unsplittable . t)
+                                      (top . 24)
+                                      (left . 450)
+                                      (background-color . "LightSteelBlue")
+                                      (foreground-color . "DarkGoldenrod")
+                                      (alpha . nil)
+                                      (fullscreen . nil))))
 
 
 
@@ -975,8 +992,9 @@ account add <protocol> moi@mail.com password."
                             (define-key sh-mode-map (kbd "RET") 'newline-and-indent)))
 
 
-;; Eshell-config
-
+;;; Eshell-config
+;;
+;;
 ;; Eshell-prompt 
 (setq eshell-prompt-function
       (lambda nil
@@ -1583,11 +1601,18 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 ;;; vc
 ;;
 ;;
-(setq vc-handled-backends '(RCS))
+;; Possible values: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
+(setq vc-handled-backends '(RCS Hg Git Bzr))
 
 ;;; Temporary Bugfixs until fixed in trunk.
 ;;
 ;(remove-hook 'dvc-bookmarks-mode-hook 'dvc-buffer-push-previous-window-config)
+
+;;; Elpa
+;; (eval-after-load 'package
+;;   '(add-to-list 'package-directory-list "~/download/emacs-bzr/elpa/site"))
+;; (setq package-load-list '((auctex nil) all))
+;; (if (fboundp 'package-initialize) (package-initialize))
 
 
 ;; Save/restore emacs-session
