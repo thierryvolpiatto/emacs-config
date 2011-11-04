@@ -147,7 +147,7 @@
                (if (string= account "Socgen:Checking") "Assets:" "Liabilities:")
                account (make-string 8 ? ) "€ "
                (if (string= account "Socgen:Checking")
-                   amount (int-to-string (- (string-to-int amount))))
+                   amount (int-to-string (- (string-to-number amount))))
                "\n    Income:" categorie "\n\n"))
       (goto-char (point-min))
       (ledger-align-device 1)
@@ -170,7 +170,7 @@
                (if (string= account "Socgen:Checking") "Assets:" "Liabilities:")
                account (make-string 8 ? ) "€ "
                (if (string= account "Socgen:Checking")
-                   amount (int-to-string (- (string-to-int amount))))
+                   amount (int-to-string (- (string-to-number amount))))
                "\n    Income:" categorie "\n\n"))
       (goto-char (point-min))
       (ledger-align-device 1)
@@ -195,6 +195,14 @@
                     (string= result ""))
           (push result categories))))
     categories))
+
+(defun ledger-point-entries-in-buffer ()
+  "Point entries from point to end of buffer.
+Like C-c C-e but on all entries.
+If entries are already pointed, skip."
+  (interactive)
+  (while (re-search-forward "^[0-9]\\{4\\}/[0-9]\\{2\\}/[0-9]\\{2\\}" nil t)
+    (forward-char 1) (unless (looking-at "[*]") (insert "* "))))
 
 (provide 'ledger-config)
 

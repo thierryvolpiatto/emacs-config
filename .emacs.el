@@ -132,9 +132,10 @@
 (tv-require 'muse-docbook)
 (tv-require 'muse-colors)
 (tv-require 'htmlize-hack)
-(tv-require 'psvn)
+;(tv-require 'psvn)
 (tv-require 'dvc-init)
-(tv-require 'emms-mplayer-config)
+;(tv-require 'emms-mplayer-config)
+(tv-require 'emms-mpd-config)
 (tv-require 'yaoddmuse)
 (tv-require 'dired-aux)
 (tv-require 'dired-x)
@@ -151,7 +152,6 @@
 (tv-require 'woman)
 (tv-require 'tex-site)
 (tv-require 'ledger-config)
-(tv-require 'boxquote)
 (tv-require 'slime-autoloads)
 (tv-require 'slime)
 (tv-require 'cl-info)
@@ -162,7 +162,7 @@
 (tv-require 'auto-document)
 (tv-require 'tv-utils)
 (tv-require 'rectangle-utils)
-(tv-require 'xml-weather)
+;(tv-require 'xml-weather)
 (tv-require 'smallurl)
 (tv-require 'elscreen)
 (tv-require 'zop-to-char)
@@ -173,6 +173,9 @@
 (tv-require 'simple-call-tree)
 (tv-require 'google-maps)
 (tv-require 'googlecl)
+(tv-require 'iterator)
+(tv-require 'google-weather)
+(tv-require 'org-google-weather)
 
 ;;; Global keys
 ;;
@@ -208,13 +211,6 @@
 (global-set-key (kbd "<f5> p r")                   'print-region)
 (global-set-key (kbd "<f5> p i")                   'pr-interface)
 (global-set-key (kbd "<f7> n")                     'newsticker-show-news)
-(global-set-key (kbd "<f7> q f")                   'boxquote-describe-function)
-(global-set-key (kbd "<f7> q v")                   'boxquote-describe-variable)
-(global-set-key (kbd "<f7> q k")                   'boxquote-describe-key)
-(global-set-key (kbd "<f7> q r")                   'boxquote-region)
-(global-set-key (kbd "<f7> q u")                   'boxquote-unbox-region)
-(global-set-key (kbd "<f7> q t")                   'boxquote-title)
-(global-set-key (kbd "<f7> q c")                   'boxquote-copy-box-without-box)
 (global-set-key (kbd "<f11> l r")                  'tv-start-slime)
 (global-set-key (kbd "<f11> l e")                  'slime-scratch)
 (global-set-key (kbd "<f11> l l")                  'slime-list-connections)
@@ -242,10 +238,6 @@
 (global-set-key (kbd "C-x r h")                    'rectangle-menu)
 (global-set-key (kbd "C-x r <right>")              'rectangle-insert-at-right)
 (global-set-key (kbd "C-x r M-w")                  'copy-rectangle)
-(global-set-key (kbd "<f5> x f")                   'xml-weather-forecast-at)
-(global-set-key (kbd "<f5> x n")                   'xml-weather-today-at)
-(global-set-key (kbd "<f5> x l")                   'xml-weather-today-favorite)
-(global-set-key (kbd "<f5> x t")                   'xml-weather-run-ticker)
 (global-set-key (kbd "C-c u")                      'smallurl-replace-at-point)
 (global-set-key (kbd "C-z l")                      'anything-elscreen)
 (global-set-key (kbd "M-z")                        'zop-to-char)
@@ -335,19 +327,19 @@
 (defvar tv-gnus-loaded-p nil)
 (defun tv-load-gnus-init-may-be ()
   ;; Sync /tmp/news with ~/Gnus-News
-  (tv-gnus-sync-news)
+  ;(tv-gnus-sync-news)
   (unless tv-gnus-loaded-p
     (load gnus-init-file)
     (setq tv-gnus-loaded-p t)))
 
-(defun tv-gnus-sync-news ()
-  (shell-command "sync-gnus-news.sh")
-  (unless (file-directory-p "/tmp/News/")
-    (error "Gnus data directory doesn't exists")))
+;; (defun tv-gnus-sync-news ()
+;;   (shell-command "sync-gnus-news.sh")
+;;   (unless (file-directory-p "/tmp/News/")
+;;     (error "Gnus data directory doesn't exists")))
 
 (add-hook 'message-mode-hook 'tv-load-gnus-init-may-be)
 (add-hook 'gnus-before-startup-hook 'tv-load-gnus-init-may-be)
-(add-hook 'gnus-after-exiting-gnus-hook 'tv-gnus-sync-news)
+;(add-hook 'gnus-after-exiting-gnus-hook 'tv-gnus-sync-news)
 
 (defun tv-gnus (arg)
   (interactive "P")
@@ -374,14 +366,19 @@
 (global-font-lock-mode t)
 (setq font-lock-maximum-decoration t)
 
-;; Save-minibuffer-history 
+;;; Save-minibuffer-history
+;;
+;;
 (setq savehist-file "~/.emacs.d/history")
 (setq history-length 1000)
 (savehist-mode 1)
 
-;; Recentf 
+;;; Recentf
+;;
+;;
 (setq recentf-save-file "~/.emacs.d/recentf")
-(recentf-mode 1)
+;; `recentf-mode' will be started by anything when needed,
+;; so no need to start it here
 
 ;; undo-limit 
 (setq undo-limit 30000)
@@ -719,8 +716,8 @@ account add <protocol> moi@mail.com password."
   (defalias 'winner-set 'winner-set1))
 (winner-mode 1)
 
-;; load-emms 
-;(require 'emms-mpd-config)
+;;; Emms
+;;
 (define-key dired-mode-map (kbd "C-c p d") 'emms-play-dired)
 
 ;; confirm-quit-emacs 
@@ -775,16 +772,6 @@ account add <protocol> moi@mail.com password."
 (setq display-time-day-and-date t)
 (display-time)
 (setq display-time-use-mail-icon t)
-
-;; Battery 
-;; (require 'battery)
-;; (run-with-timer "2" 60 #'(lambda ()
-;;                            (if (equal (cdr (assoc 76 (battery-linux-proc-acpi)))
-;;                                       "on-line")
-;;                                (setq battery-mode-line-format "[%b%p%%,%d°C,%L]")
-;;                                (setq battery-mode-line-format "[%b%p%%,%d°C,%t]"))))
-;; (display-battery-mode)
-
 
 ;; Limite-max-lisp 
 (setq max-lisp-eval-depth '40000)
@@ -1465,8 +1452,8 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 (setq line-move-visual nil)
 
 ;; xml-weather 
-(setq xml-weather-default-icons-directory "~/xml-weather-icons/icons/31x31")
-(setq xml-weather-moon-icons-directory "~/xml-weather-icons/moon-icons2/31X31/")
+;; (setq xml-weather-default-icons-directory "~/xml-weather-icons/icons/31x31")
+;; (setq xml-weather-moon-icons-directory "~/xml-weather-icons/moon-icons2/31X31/")
 
 ;; rst-mode 
 (add-hook 'rst-mode-hook 'auto-fill-mode)
@@ -1592,7 +1579,7 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 (setq completion-cycle-threshold t) ; always cycle, no completion buffers.
 
 ;; Uzbl
-;(setq browse-url-uzbl-program "uzbl-browser")
+;(setq ac-browse-url-uzbl-program "uzbl-browser")
 
 ;; Remove undesired hooks.
 ;(remove-hook 'find-file-hook 'vc-find-file-hook)
@@ -1606,7 +1593,7 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 
 ;;; Temporary Bugfixs until fixed in trunk.
 ;;
-;(remove-hook 'dvc-bookmarks-mode-hook 'dvc-buffer-push-previous-window-config)
+; None actually.
 
 ;;; Elpa
 ;; (eval-after-load 'package
@@ -1614,8 +1601,14 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 ;; (setq package-load-list '((auctex nil) all))
 ;; (if (fboundp 'package-initialize) (package-initialize))
 
+;;; google weather
+;;
+;;
+(setq org-google-weather-format "%L: %i %c, [%l,%h] %s")
 
-;; Save/restore emacs-session
+;;; Save/restore emacs-session
+;;
+;;
 (tv-set-emacs-session-backup :enable t)
 
 ;; Link-scratch-to-file 

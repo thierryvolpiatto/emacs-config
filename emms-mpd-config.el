@@ -51,7 +51,7 @@
 (setq emms-stream-bookmarks-file "~/.emacs.d/emms/emms-streams")
 (setq emms-history-file "~/.emacs.d/emms/emms-history")
 (setq emms-cache-file "~/.emacs.d/emms/emms-cache")
-(setq emms-source-file-default-directory "~/mpd/music")
+(setq emms-source-file-default-directory "/home/thierry/mpd/music")
 
 (when (require 'emms-setup nil t)
   (require 'emms-player-simple)
@@ -182,11 +182,12 @@
 
 (defun tv-emms-update-and-clean-cache ()
   (interactive)
-  (clrhash emms-cache-db)
-  (delete-file "~/.emacs.d/emms/emms-cache")
-  (delete-file "~/.emacs.d/emms/emms-history")
+  (and emms-cache-db
+       (clrhash emms-cache-db))
+  (ignore-errors
+    (delete-file "~/.emacs.d/emms/emms-cache")
+    (delete-file "~/.emacs.d/emms/emms-history"))
   (emms-add-directory-tree "~/mpd/music"))
-
 
 (provide 'emms-mpd-config)
 

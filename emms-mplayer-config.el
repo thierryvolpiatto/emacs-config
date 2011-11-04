@@ -113,7 +113,15 @@
 (global-set-key (kbd "<f6> <right>") 'emms-next)
 (global-set-key (kbd "<f6> <left>") 'emms-previous)
 
-;; «Update-mpd-directory» (to ".Update-mpd-directory")
+
+(defun tv-emms-update-and-clean-cache ()
+  (interactive)
+  (and emms-cache-db
+       (clrhash emms-cache-db))
+  (ignore-errors
+    (delete-file "~/.emacs.d/emms/emms-cache")
+    (delete-file "~/.emacs.d/emms/emms-history"))
+  (emms-add-directory-tree "~/mpd/music"))
 
 (provide 'emms-mplayer-config)
 

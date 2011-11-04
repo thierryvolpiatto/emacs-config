@@ -474,7 +474,7 @@ START and END are buffer positions indicating what to append."
       (save-buffer)
       (kill-buffer))
     (htmlize-file fname html-fname)
-    (browse-url-uzbl (format "file://%s" html-fname))))
+    (ac-browse-url-uzbl (format "file://%s" html-fname))))
 
 ;; key-for-calendar 
 (defvar tv-calendar-alive nil)
@@ -677,47 +677,6 @@ DIR is a regular directory name.
            (throw 'break nil)))))))
 
 
-;; Copy-boxquote 
-(defun boxquote-copy-box-without-box (beg end)
-  (interactive "r")
-  (let (new-beg
-        new-end
-        next-end
-        title)
-    (deactivate-mark)
-    (save-excursion
-      (goto-char beg)
-      (setq title (boxquote-get-title)))
-    (boxquote-unbox-region beg end)
-    (setq new-end (point))
-    (goto-char beg)
-    (while (not (looking-at ".*[^ \n]"))
-      (forward-char 1))
-    (setq new-beg (point))
-    (goto-char new-end)
-    (while (not (looking-back ".*[^ \n]"))
-      (forward-char -1))
-    (setq next-end (point))
-    (copy-region-as-kill new-beg next-end)
-    (boxquote-region beg new-end)
-    (when title
-      (boxquote-title title))))
-
-;; Binded to <f7> q c
-;; (find-fline "~/.emacs.d/emacs-config-laptop/.emacs.el" "require 'boxquote")
-
-
-;; Goto-precedent-level-of-tree-in-dired 
-(defun tv-dired-find-alternate-updir ()
-  (interactive)
-  (when (eq major-mode 'dired-mode)
-    (goto-char (point-min))
-    (when (re-search-forward ".*[.]\\{2\\}$" nil t)
-      (dired-find-alternate-file))))
-          
-(define-key dired-mode-map (kbd "C-c .") 'tv-dired-find-alternate-updir)
-
-
 ;; Open-file-in-gimp 
 ;; <2009-08-13 Jeu. 10:29>
 (defun gimp-open-file (file)
@@ -903,13 +862,13 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
   (interactive)
   (let ((url (or (w3m-print-this-url)
                  (w3m-print-current-url))))
-    (browse-url-uzbl url)))
+    (ac-browse-url-uzbl url)))
 
 (defun w3m-view-this-page-in-chrome ()
   (interactive)
   (let ((url (or (w3m-print-this-url)
                  (w3m-print-current-url))))
-    (browse-url-chromium url)))
+    (ac-browse-url-chromium url)))
 
 ;; Easypg 
 (defun epa-sign-to-armored ()
@@ -1028,8 +987,9 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
      (rename-file file (or both suffixed prefixed replace))))
 
 
-;; eshell-pager 
-(require 'iterator)
+;;; eshell-pager 
+;;
+;;
 (defun eshell-pager (command &rest args)
   "Display the output of COMMAND by chunk of lines."
   (let* ((height   (/ (frame-height) 2)) ; Assume we use 1 or 2 windows.
@@ -1403,14 +1363,6 @@ In this case, sexps are searched before point."
                  (goto-char pos-err))
         (message "No paren error found")))) 
 
-;; Sha-sum
-(defun sha-sum (file)
-  (let ((algo-list '(md5 sha1 sha224 sha256 sha384 sha512)))
-    (kill-new
-     (secure-hash (intern
-                   (anything-comp-read
-                    "Algorithm: " algo-list))
-                  file))))
 
 ;; Provide 
 (provide 'tv-utils)

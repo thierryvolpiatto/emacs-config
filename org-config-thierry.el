@@ -292,6 +292,11 @@
 ;; Bugfix: Incompatibility with bidi.
 (add-hook 'org-mode-hook #'(lambda () (setq bidi-display-reordering nil)))
 
+;; setting for org-refile full completion
+;; (setq org-outline-path-complete-in-steps nil)
+;; (setq org-refile-use-outline-path t)
+;; (setq org-refile-targets '((nil :maxlevel . 8)))
+
 ;; Provide 
 (provide 'org-config-thierry)
 
