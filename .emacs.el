@@ -101,8 +101,54 @@
 
 ;; Load-all-gentoo's-files-from-site-lisp
 ;; Reuse gentoo's old autoload files for external packages.
-(mapc 'load
-      (directory-files "~/elisp/site-gentoo.d" t directory-files-no-dot-files-regexp))
+;; (mapc 'load
+;;       (directory-files "~/elisp/site-gentoo.d" t directory-files-no-dot-files-regexp))
+
+;;; autoconf-mode site-lisp configuration
+(autoload 'autoconf-mode "autoconf-mode"
+  "Major mode for editing autoconf files." t)
+(autoload 'autotest-mode "autotest-mode"
+  "Major mode for editing autotest files." t)
+(add-to-list 'auto-mode-alist
+	     '("\\.ac\\'\\|configure\\.in\\'" . autoconf-mode))
+(add-to-list 'auto-mode-alist
+	     '("\\.at\\'" . autotest-mode))
+
+;;; cmake site-lisp configuration
+(autoload 'cmake-mode "cmake-mode" "Major mode for editing CMake files." t)
+(add-to-list 'auto-mode-alist '("CMakeLists\\.txt\\'" . cmake-mode))
+(add-to-list 'auto-mode-alist '("\\.cmake\\'" . cmake-mode))
+
+;;; desktop-file-utils site-lisp configuration
+(add-to-list 'load-path "~/elisp/desktop-file-utils/")
+(autoload 'desktop-entry-mode "desktop-entry-mode" "Desktop Entry mode" t)
+(add-to-list 'auto-mode-alist
+ '("\\.desktop\\(\\.in\\)?$" . desktop-entry-mode))
+(add-hook 'desktop-entry-mode-hook 'turn-on-font-lock)
+
+;;; app-office/ledger site-lisp configuration
+(autoload 'ledger-mode "ledger" "A mode for editing ledger data files." t)
+
+;;; libidn site-lisp configuration
+(autoload 'idna-to-ascii "idna"
+  "Returns an ASCII Compatible Encoding (ACE) of STR.")
+(autoload 'idna-to-unicode "idna"
+  "Returns a possibly multibyte string after decoding STR.")
+(autoload 'punycode-encode "punycode"
+  "Returns a Punycode encoding of STR.")
+(autoload 'punycode-decode "punycode"
+  "Returns a possibly multibyte string which is the punycode decoding of STR.")
+
+;;; lua-mode site-lisp configuration
+(autoload 'lua-mode "lua-mode" "Mode for editing Lua scripts" t)
+(add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-mode))
+(setq lua-default-application "/usr/bin/lua")
+
+;;; emacs-wget site-lisp configuration
+(autoload 'wget "wget" "wget interface for Emacs." t)
+(autoload 'wget-web-page "wget" "wget interface to download whole web page." t)
+(load "w3m-wget")
+(add-hook 'w3m-mode-hook '(lambda () (require 'w3m-wget)))
 
 ;; Emacs-customize-have-it's-own-file 
 (setq custom-file "~/.emacs.d/.emacs-custom.el")
@@ -1131,6 +1177,15 @@ With prefix arg always start and let me choose dictionary."
 ;;; Auctex/Latex config
 ;;
 ;;
+;;; auctex site-lisp configuration
+(require 'tex-site)
+
+;;; auctex site-lisp configuration, activating preview-latex
+(load "preview-latex.el" nil t t)
+
+;; detect needed steps after rebuild
+(setq TeX-parse-self t)
+
 (require 'xdvi-search)
 (setq TeX-view-program-selection '(((output-dvi style-pstricks)
                                     "dvips and gv")
