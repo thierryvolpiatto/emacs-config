@@ -1,6 +1,6 @@
-;;; emms-mpd-config.el --- 
+;;; emms-mplayer-config.el --- 
 ;; 
-;; Filename: emms-mpd-config.el
+;; Filename: emms-mplayer-config.el
 ;; Description: 
 ;; Author: 
 ;; Maintainer: 
@@ -49,21 +49,27 @@
 
 ;; «Basic-config» (to ".Basic-config")
 
+
+(require 'emms-setup)
+(emms-minimalistic)
+(emms-devel)
+
 (setq emms-score-file "~/.emacs.d/emms/scores")
 (setq emms-stream-bookmarks-file "~/.emacs.d/emms/emms-streams")
 (setq emms-history-file "~/.emacs.d/emms/emms-history")
 (setq emms-cache-file "~/.emacs.d/emms/emms-cache")
 (setq emms-source-file-default-directory "~/mpd/music")
+(setq emms-setup-default-player-list '(emms-player-vlc emms-player-mpg321
+                                       emms-player-ogg123 emms-player-mplayer-playlist
+                                       emms-player-mplayer))
 
-(when (require 'emms-setup nil t)
-  (require 'emms-player-simple)
-  (require 'emms-source-file)
-  (require 'emms-source-playlist)
-  (require 'emms-streams)
-  (require 'emms-info)
-  (emms-devel)
-  (emms-default-players)
-  (require 'emms-mode-line))
+(emms-default-players)
+
+(define-emms-simple-player vlc-playlist '(streamlist url)
+  (concat "\\`\\(http\\|mms\\)://.*"
+          (mapconcat 'regexp-quote
+           '("pls" "m3u") "\\|"))
+  "vlc" "--intf=rc")
 
 ;; «enable-emms-scoring» (to ".enable-emms-scoring")
 (setq emms-score-enabled-p t)

@@ -71,7 +71,6 @@
 ;;; Anything-command-map (to ".Anything-command-map")
 ;;
 ;;
-;(define-key anything-command-map (kbd "a")   'anything-apropos)
 (define-key anything-command-map (kbd "q")   'anything-qpatchs-only)
 (define-key anything-command-map (kbd "v")   'anything-eev-anchors)
 (define-key anything-command-map (kbd "q")   'anything-qpatchs-only)
