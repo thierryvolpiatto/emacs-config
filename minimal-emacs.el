@@ -9,7 +9,7 @@
 (add-to-list 'load-path "~/elisp/")
 (add-to-list 'load-path "~/elisp/anything")
 (add-to-list 'load-path "~/.emacs.d/emacs-config-laptop")
-(add-to-list 'load-path "~/elisp/DA-libs")
+;(add-to-list 'load-path "~/elisp/DA-libs")
 
 ;; Frames setting.
 ;; (setq default-frame-alist '((foreground-color . "Wheat")

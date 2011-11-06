@@ -135,9 +135,9 @@
 (tv-require 'htmlize-hack)
 ;(tv-require 'psvn)
 (tv-require 'dvc-init)
-(tv-require 'emms-mplayer-config)
+;(tv-require 'emms-mplayer-config)
 ;(tv-require 'emms-mpd-config)
-(tv-require 'yaoddmuse)
+;(tv-require 'yaoddmuse)
 (tv-require 'dired-aux)
 (tv-require 'dired-x)
 (tv-require 'dired-extension)
@@ -148,9 +148,9 @@
 (tv-require 'ipython)
 (tv-require 'python-mode)
 (tv-require 'flymake)
-(tv-require 'em-xtra)
+;(tv-require 'em-xtra)
 (tv-require 'esh-toggle)
-(tv-require 'woman)
+;(tv-require 'woman)
 (tv-require 'tex-site)
 (tv-require 'ledger-config)
 (tv-require 'slime-autoloads)
@@ -160,7 +160,7 @@
 (tv-require 'ioccur)
 (tv-require 'mb-depth)
 (tv-require 'autodoc)
-(tv-require 'auto-document)
+;(tv-require 'auto-document)
 (tv-require 'tv-utils)
 (tv-require 'rectangle-utils)
 ;(tv-require 'xml-weather)
@@ -719,7 +719,7 @@ account add <protocol> moi@mail.com password."
 
 ;;; Emms
 ;;
-(define-key dired-mode-map (kbd "C-c p d") 'emms-play-dired)
+;(define-key dired-mode-map (kbd "C-c p d") 'emms-play-dired)
 
 ;; confirm-quit-emacs 
 (setq confirm-kill-emacs 'y-or-n-p)
@@ -737,11 +737,11 @@ account add <protocol> moi@mail.com password."
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 
 ;; yaoddmuse 
-(setq yaoddmuse-username "ThierryVolpiatto")
-(setq yaoddmuse-directory "/home/thierry/.emacs.d/yaoddmuse")
-(setq yaoddmuse-wikis
-      '(("TestWiki" "http://www.emacswiki.org/cgi-bin/test" utf-8 "uihnscuskc=1;")
-        ("EmacsWiki" "http://www.emacswiki.org/cgi-bin/emacs" utf-8 "uihnscuskc=1;")))
+;; (setq yaoddmuse-username "ThierryVolpiatto")
+;; (setq yaoddmuse-directory "/home/thierry/.emacs.d/yaoddmuse")
+;; (setq yaoddmuse-wikis
+;;       '(("TestWiki" "http://www.emacswiki.org/cgi-bin/test" utf-8 "uihnscuskc=1;")
+;;         ("EmacsWiki" "http://www.emacswiki.org/cgi-bin/emacs" utf-8 "uihnscuskc=1;")))
 
 ;; Dired 
 ;; use the directory in the other windows as default target
