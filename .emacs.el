@@ -297,7 +297,9 @@
 (global-set-key (kbd "C-M-)")                      'tv-insert-pair-and-close-forward)
 (global-set-key [remap save-buffers-kill-terminal] 'tv-stop-emacs)
 
-;; Themes 
+;;; Themes
+;;
+;;
 (defvar tv-theme-directory "~/.emacs.d/themes/")
 ;; Fix the last stupid changes of 24.
 (unless (< emacs-major-version 24)
@@ -307,27 +309,6 @@
 ;; Load my favourite theme.
 (add-hook 'emacs-startup-hook #'(lambda () (load-theme tv-current-theme)))
 
-(defun tv-change-theme (theme)
-  (interactive
-   (list (anything-comp-read
-          "Theme: "
-          (loop with themes = (directory-files
-                               tv-theme-directory
-                               nil directory-files-no-dot-files-regexp)
-             for theme in themes
-             unless (string-match "\.hg" theme)
-             collect (replace-regexp-in-string
-                      "\-theme" "" (file-name-sans-extension theme)))
-          :must-match t
-          :fc-transformer #'(lambda (candidates sources)
-                              (loop for i in candidates
-                                 if (string= i (symbol-name tv-current-theme))
-                                 collect (propertize i 'face '((:foreground "red")))
-                                 else
-                                 collect i)))))
-  (let ((stheme (intern theme)))
-    (load-theme stheme)
-    (setq tv-current-theme stheme)))
 
 ;; libidn is not in gentoo.d. load it
 ;(require 'idna)

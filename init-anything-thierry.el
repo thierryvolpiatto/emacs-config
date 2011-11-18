@@ -71,9 +71,8 @@
 ;;; Anything-command-map (to ".Anything-command-map")
 ;;
 ;;
-(define-key anything-command-map (kbd "q")   'anything-qpatchs-only)
+(define-key anything-command-map (kbd "q")   'anything-qpatchs)
 (define-key anything-command-map (kbd "v")   'anything-eev-anchors)
-(define-key anything-command-map (kbd "q")   'anything-qpatchs-only)
 (define-key anything-command-map (kbd "d")   'anything-delicious)
 (define-key anything-command-map (kbd "y e") 'anything-yaoddmuse-emacswiki-edit-or-view)
 (define-key anything-command-map (kbd "y p") 'anything-yaoddmuse-emacswiki-post-library)
@@ -176,10 +175,6 @@
 ;;; Preconfigured-anything or own functions
 ;;
 ;;
-(defun anything-qpatchs-only ()
-  (interactive)
-  (anything :sources '(anything-c-source-qapplied-patchs
-                       anything-c-source-qunapplied-patchs)))
 
 ;; (defun tv-browse-url-w3m (url)
 ;;   (w3m-browse-url url 'tab))
