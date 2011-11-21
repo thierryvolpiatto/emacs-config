@@ -463,10 +463,10 @@ START and END are buffer positions indicating what to append."
      (progress-reporter-done progress-reporter)
      new-seq))
 
-;; Send current buffer htmlized to uzbl. 
-(defun tv-htmlize-buffer-to-uzbl ()
+;; Send current buffer htmlized to web browser. 
+(defun tv-htmlize-buffer-to-browser ()
   (interactive)
-  (let* ((fname           (concat "/tmp/" (symbol-name (gensym "emacs2uzbl"))))
+  (let* ((fname           (concat "/tmp/" (symbol-name (gensym "emacs2browser"))))
          (html-fname      (concat fname ".html"))
          (buffer-contents (buffer-substring (point-min) (point-max))))
     (with-current-buffer (find-file-noselect fname)
@@ -474,7 +474,7 @@ START and END are buffer positions indicating what to append."
       (save-buffer)
       (kill-buffer))
     (htmlize-file fname html-fname)
-    (ac-browse-url-uzbl (format "file://%s" html-fname))))
+    (browse-url (format "file://%s" html-fname))))
 
 ;; key-for-calendar 
 (defvar tv-calendar-alive nil)

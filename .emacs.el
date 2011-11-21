@@ -53,9 +53,7 @@
 	     ;"~/elisp/gentoo-syntax"
 	     "~/elisp/git"
 	     ;"~/elisp/lua-mode"
-	     "~/elisp/mercurial"
-	     ;"~/elisp/pymacs"
-	     "~/elisp/subversion"
+	     ;"~/elisp/subversion"
 	     "~/elisp/tex-utils"
 	     "~/elisp/flim"
 	     "~/elisp/apel"
@@ -63,8 +61,8 @@
 	     ;"~/elisp/librep"
 	     "~/elisp/muse/lisp"
 	     "~/elisp/muse/contrib"
-             "~/elisp/AC/"
-             "~/elisp/emms/lisp/"
+             ;"~/elisp/AC/"
+             ;"~/elisp/emms/lisp/"
 	     "~/elisp/ipython"
 	     "~/elisp/python-mode"
 	     "~/elisp/emacs-w3m/"
@@ -179,7 +177,7 @@
 (tv-require 'muse-docbook)
 (tv-require 'muse-colors)
 (tv-require 'htmlize-hack)
-;(tv-require 'psvn)
+;; (tv-require 'psvn)
 (tv-require 'dvc-init)
 ;(tv-require 'emms-mplayer-config)
 ;(tv-require 'emms-mpd-config)
@@ -202,7 +200,7 @@
 (tv-require 'slime-autoloads)
 (tv-require 'slime)
 (tv-require 'cl-info)
-(tv-require 'moz)
+;; (tv-require 'moz)
 (tv-require 'ioccur)
 (tv-require 'mb-depth)
 (tv-require 'autodoc)
@@ -261,7 +259,7 @@
 (global-set-key (kbd "<f11> l r")                  'tv-start-slime)
 (global-set-key (kbd "<f11> l e")                  'slime-scratch)
 (global-set-key (kbd "<f11> l l")                  'slime-list-connections)
-(global-set-key (kbd "<f11> j s")                  'tv-pop-to-moz-repl)
+;;(global-set-key (kbd "<f11> j s")                  'tv-pop-to-moz-repl)
 (global-set-key [remap occur]                      'anything-occur)
 (global-set-key (kbd "C-s")                        'ioccur)
 (global-set-key (kbd "C-/")                        'isearch-forward)
@@ -1365,13 +1363,13 @@ With prefix arg always start and let me choose dictionary."
 
 ;; mozilla-javascript 
 ;; Javascript and mozilla (interaction with firefox)
-(autoload 'moz-minor-mode "moz" "Mozilla Minor and Inferior Mozilla Modes" t)
+;; (autoload 'moz-minor-mode "moz" "Mozilla Minor and Inferior Mozilla Modes" t)
 
-(defun tv-pop-to-moz-repl ()
-  (interactive)
-  (if (tv-get-pid-from-process-name "firefox")
-      (inferior-moz-switch-to-mozilla)
-      (message "Please start first firefox and repl!")))
+;; (defun tv-pop-to-moz-repl ()
+;;   (interactive)
+;;   (if (tv-get-pid-from-process-name "firefox")
+;;       (inferior-moz-switch-to-mozilla)
+;;       (message "Please start first firefox and repl!")))
 
 ;; ioccur 
 (define-key org-mode-map (kbd "C-c C-o") 'ioccur-find-buffer-matching)
