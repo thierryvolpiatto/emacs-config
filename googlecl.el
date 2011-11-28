@@ -66,6 +66,18 @@
                               (when (string= event "finished\n")
                                 (message "`%s' pushed to `%s'" file album))))))
 
+
+(defun google-post-document ()
+  (interactive)
+  (lexical-let ((document (anything-c-read-file-name "Document: ")))
+    (start-process-shell-command "google-docs-post" nil
+                                 (format "google docs upload --src %s"
+                                         (shell-quote-argument document)))
+    (set-process-sentinel (get-process "google-docs-post")
+                          #'(lambda (process event)
+                              (when (string= event "finished\n")
+                                (message "`%s' pushed to google document done" document))))))
+
 (provide 'googlecl)
 
 ;;; googlecl.el ends here.
