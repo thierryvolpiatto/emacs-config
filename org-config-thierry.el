@@ -88,6 +88,7 @@
                       ("running" . ?r)
                       ("velo" . ?v)
                       ("@climbing" . ?c)
+                      ("Equipement" . ?e)
                       ("buy" . ?b)
                       ("laptop" . ?l)
                       ("pc" . ?p)

@@ -5,10 +5,15 @@
 ;; Author: thierry
 ;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
+;; Time-stamp: <2011-12-10 17:44:07 thierry>
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;
 ;;; Code:
+
+;; Save Timestamp
+(add-hook 'before-save-hook 'time-stamp)
 
 ;; Environment 
 ;; See: (find-fline "~/.emacs.d/.eshell/login")
@@ -352,20 +357,12 @@
 
 (defvar tv-gnus-loaded-p nil)
 (defun tv-load-gnus-init-may-be ()
-  ;; Sync /tmp/news with ~/Gnus-News
-  ;(tv-gnus-sync-news)
   (unless tv-gnus-loaded-p
     (load gnus-init-file)
     (setq tv-gnus-loaded-p t)))
 
-;; (defun tv-gnus-sync-news ()
-;;   (shell-command "sync-gnus-news.sh")
-;;   (unless (file-directory-p "/tmp/News/")
-;;     (error "Gnus data directory doesn't exists")))
-
 (add-hook 'message-mode-hook 'tv-load-gnus-init-may-be)
 (add-hook 'gnus-before-startup-hook 'tv-load-gnus-init-may-be)
-;(add-hook 'gnus-after-exiting-gnus-hook 'tv-gnus-sync-news)
 
 (defun tv-gnus (arg)
   (interactive "P")
@@ -471,7 +468,67 @@
 (setq use-file-dialog nil)
 
 ;; Push the mouse out of the way.
-(mouse-avoidance-mode 'banish)
+
+
+(when (and (display-mouse-p) (require 'avoid nil t))
+
+  (defcustom mouse-avoidance-banish-position '((frame-or-window . frame)
+                                               (side . right)
+                                               (side-pos . -2)
+                                               (top-or-bottom . bottom)
+                                               (top-or-bottom-pos . 1))
+    "Position to which Mouse Avoidance mode `banish' moves the mouse.
+An alist where keywords mean:
+FRAME-OR-WINDOW: banish the mouse to corner of frame or window.
+SIDE: banish the mouse on right or left corner of frame or window.
+SIDE-POS: Distance from right or left edge of frame or window.
+TOP-OR-BOTTOM: banish the mouse to top or bottom of frame or window.
+TOP-OR-BOTTOM-POS: Distance from top or bottom edge of frame or window."
+    :group   'avoid
+    :type    '(alist :key-type symbol :value-type symbol)
+    :options '(frame-or-window side (side-pos integer)
+               top-or-bottom (top-or-bottom-pos integer)))
+
+
+  (defun mouse-avoidance-banish-destination ()
+    "The position to which Mouse Avoidance mode `banish' moves the mouse.
+
+If you want the mouse banished to a different corner set
+`mouse-avoidance-banish-position' as you need."
+    (let* ((fra-or-win         (assoc-default
+                                'frame-or-window
+                                mouse-avoidance-banish-position 'eq))
+           (list-values        (case fra-or-win
+                                 (frame (list 0 0 (frame-width) (frame-height)))
+                                 (window (window-edges))))
+           (alist              (loop for v in list-values
+                                     for k in '(left top right bottom)
+                                     collect (cons k v)))
+           (side               (assoc-default
+                                'side
+                                mouse-avoidance-banish-position 'eq))
+           (side-dist          (assoc-default
+                                'side-pos
+                                mouse-avoidance-banish-position 'eq))
+           (top-or-bottom      (assoc-default
+                                'top-or-bottom
+                                mouse-avoidance-banish-position 'eq))
+           (top-or-bottom-dist (assoc-default
+                                'top-or-bottom-pos
+                                mouse-avoidance-banish-position 'eq))
+           (side-fn            (case side
+                                 (left '+)
+                                 (right '-)))
+           (top-or-bottom-fn   (case top-or-bottom
+                                 (top '+)
+                                 (bottom '-))))
+      (cons (funcall side-fn                      ; -/+
+                     (assoc-default side alist 'eq) ; right or left
+                     side-dist)         ; distance from side
+            (funcall top-or-bottom-fn   ; -/+
+                     (assoc-default top-or-bottom alist 'eq) ; top/bottom
+                     top-or-bottom-dist)))) ; distance from top/bottom
+  (mouse-avoidance-mode 'banish))
 
 ;;; Emacs transparency - only with compiz.
 ;;
@@ -576,7 +633,8 @@ With a prefix arg decrease transparency."
 
 ;(setq browse-url-browser-function 'w3m-browse-url)
 ;(setq browse-url-browser-function 'browse-url-uzbl)
-(setq browse-url-browser-function 'browse-url-firefox)
+;(setq browse-url-browser-function 'browse-url-firefox)
+(setq browse-url-browser-function 'browse-url-mozilla)
 
 ;; w3m-mode-map 
 (define-key w3m-mode-map (kbd "C-c v") 'anything-w3m-bookmarks)
@@ -684,63 +742,63 @@ account add <protocol> moi@mail.com password."
 ;; (define-key erc-mode-map (kbd "C-c RET") 'erc-send-current-line)
 
 ;; winner-mode-config 
-(setq winner-boring-buffers '("*Completions*"
-                              "*Compile-Log*"
-                              "*inferior-lisp*"
-                              "*Fuzzy Completions*"
-                              "*Apropos*"
-                              "*dvc-error*"
-                              "*Help*"
-                              "*cvs*"
-                              "*Buffer List*"
-                              "*Ibuffer*"
-                              ))
+;; (setq winner-boring-buffers '("*Completions*"
+;;                               "*Compile-Log*"
+;;                               "*inferior-lisp*"
+;;                               "*Fuzzy Completions*"
+;;                               "*Apropos*"
+;;                               "*dvc-error*"
+;;                               "*Help*"
+;;                               "*cvs*"
+;;                               "*Buffer List*"
+;;                               "*Ibuffer*"
+;;                               ))
 
-(when (require 'winner)
-  (defvar winner-boring-buffers-regexp
-    "\*[aA]nything.*\\|\*xhg.*\\|\*xgit.*")
-  (defun winner-set1 (conf)
-    ;; For the format of `conf', see `winner-conf'.
-    (let* ((buffers nil)
-           (alive
-            ;; Possibly update `winner-point-alist'
-            (loop for buf in (mapcar 'cdr (cdr conf))
-               for pos = (winner-get-point buf nil)
-               if (and pos (not (memq buf buffers)))
-               do (push buf buffers)
-               collect pos)))
-      (winner-set-conf (car conf))
-      (let (xwins)                      ; to be deleted
+;; (when (require 'winner)
+;;   (defvar winner-boring-buffers-regexp
+;;     "\*[aA]nything.*\\|\*xhg.*\\|\*xgit.*")
+;;   (defun winner-set1 (conf)
+;;     ;; For the format of `conf', see `winner-conf'.
+;;     (let* ((buffers nil)
+;;            (alive
+;;             ;; Possibly update `winner-point-alist'
+;;             (loop for buf in (mapcar 'cdr (cdr conf))
+;;                for pos = (winner-get-point buf nil)
+;;                if (and pos (not (memq buf buffers)))
+;;                do (push buf buffers)
+;;                collect pos)))
+;;       (winner-set-conf (car conf))
+;;       (let (xwins)                      ; to be deleted
 
-        ;; Restore points
-        (dolist (win (winner-sorted-window-list))
-          (unless (and (pop alive)
-                       (setf (window-point win)
-                             (winner-get-point (window-buffer win) win))
-                       (not (or (member (buffer-name (window-buffer win))
-                                        winner-boring-buffers)
-                                (string-match winner-boring-buffers-regexp
-                                              (buffer-name (window-buffer win))))))
-            (push win xwins)))          ; delete this window
+;;         ;; Restore points
+;;         (dolist (win (winner-sorted-window-list))
+;;           (unless (and (pop alive)
+;;                        (setf (window-point win)
+;;                              (winner-get-point (window-buffer win) win))
+;;                        (not (or (member (buffer-name (window-buffer win))
+;;                                         winner-boring-buffers)
+;;                                 (string-match winner-boring-buffers-regexp
+;;                                               (buffer-name (window-buffer win))))))
+;;             (push win xwins)))          ; delete this window
 
-        ;; Restore marks
-        (letf (((current-buffer)))
-          (loop for buf in buffers
-             for entry = (cadr (assq buf winner-point-alist))
-             do (progn (set-buffer buf)
-                       (set-mark (car entry))
-                       (setf (winner-active-region) (cdr entry)))))
-        ;; Delete windows, whose buffers are dead or boring.
-        ;; Return t if this is still a possible configuration.
-        (or (null xwins)
-            (progn
-              (mapc 'delete-window (cdr xwins)) ; delete all but one
-              (unless (one-window-p t)
-                (delete-window (car xwins))
-                t))))))
+;;         ;; Restore marks
+;;         (letf (((current-buffer)))
+;;           (loop for buf in buffers
+;;              for entry = (cadr (assq buf winner-point-alist))
+;;              do (progn (set-buffer buf)
+;;                        (set-mark (car entry))
+;;                        (setf (winner-active-region) (cdr entry)))))
+;;         ;; Delete windows, whose buffers are dead or boring.
+;;         ;; Return t if this is still a possible configuration.
+;;         (or (null xwins)
+;;             (progn
+;;               (mapc 'delete-window (cdr xwins)) ; delete all but one
+;;               (unless (one-window-p t)
+;;                 (delete-window (car xwins))
+;;                 t))))))
 
-  (defalias 'winner-set 'winner-set1))
-(winner-mode 1)
+;;   (defalias 'winner-set 'winner-set1))
+;; (winner-mode 1)
 
 ;;; Emms
 ;;
@@ -1048,16 +1106,10 @@ account add <protocol> moi@mail.com password."
 
 ;; Eshell-save-history-on-exit 
 ;; Possible values: t (always save), 'never, 'ask (default)
-
 (setq eshell-save-history-on-exit t)
 
 ;; Eshell-directory 
-(setq eshell-directory-name "/home/thierry/.emacs.d/.eshell/")
-
-
-;; Eshell-command 
-
-;; Eshell-toggle 
+(setq eshell-directory-name "/home/thierry/.emacs.d/eshell/")
 
 ;; Eshell-visual 
 (setq eshell-term-name "eterm-color")
@@ -1125,7 +1177,7 @@ With prefix arg always start and let me choose dictionary."
 
 ;;; Printing config 
 ;;
-(setq anything-ff-printer-list (anything-ff-find-printers))
+;(setq anything-ff-printer-list (anything-ff-find-printers))
 (setq lpr-command "gtklp")
 (setq lpr-switches '("-P"))
 (setq printer-name "Epson-Stylus-Photo-R265")
@@ -1331,6 +1383,11 @@ With prefix arg always start and let me choose dictionary."
 (setq slime-net-coding-system 'utf-8-unix
       lisp-indent-function 'common-lisp-indent-function
       slime-complete-symbol-function 'slime-fuzzy-complete-symbol)
+
+;; Fix indentation in CL loop.
+(setq lisp-simple-loop-indentation 1)
+(setq lisp-loop-keyword-indentation 6)
+(setq lisp-loop-forms-indentation 6)
 
 (add-hook 'slime-load-hook (lambda () (require 'slime-tramp)))
 

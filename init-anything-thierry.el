@@ -39,29 +39,13 @@
 ;;   !!!WARNING EXPERIMENTAL!!!
 ;;
 
-;;; STGIT
-(require 'anything-stgit)
-
 ;;;; Extensions (to ".Extensions")
 
 ;;;; Mercurial-Qpatchs (to ".Mercurial-Qpatchs")
-;; (install-elisp "http://www.emacswiki.org/cgi-bin/emacs/download/anything-mercurial.el")
 (require 'anything-mercurial)
 
 ;;;; Delicious-bookmarks-tv (to ".Delicious-bookmarks-tv")
-;; (install-elisp "http://www.emacswiki.org/cgi-bin/emacs/download/anything-delicious.el")
 (require 'anything-delicious)
-
-;; multi-completion (to ".multi-completion")
-;(require 'anything-match-plugin)
-
-;; complete-symbols (to ".complete-symbols")
-;(require 'anything-complete)
-;; Automatically collect symbols by 150 secs
-;(anything-lisp-complete-symbol-set-timer 150)
-
-;; Shell history
-;(require 'shell-history)
 
 ;;;; Anything-faces (to ".Anything-faces")
 
@@ -145,10 +129,10 @@
 ;;; Anything-variables
 ;;
 ;;
-(setq anything-google-suggest-use-curl-p            t
+(setq anything-google-suggest-use-curl-p            nil
       anything-kill-ring-threshold                  1
       anything-raise-command                        "wmctrl -xa %s"
-      anything-allow-skipping-current-buffer        t
+      anything-allow-skipping-current-buffer        nil
       anything-yaoddmuse-use-cache-file             t
       anything-scroll-amount                        1
       anything-candidate-number-limit               100
@@ -165,7 +149,6 @@
       anything-ff-transformer-show-only-basename    t
       anything-c-default-external-file-browser      "thunar"
       ;anything-c-pdfgrep-default-read-command       "evince --page-label=%p '%f'"
-      ;anything-allow-skipping-current-buffer        nil
       ;anything-surfraw-default-browser-function     'tv-browse-url-w3m
       anything-c-etags-use-regexp-search            t
       anything-c-use-adaptative-sorting             t
@@ -196,7 +179,9 @@
   (setq anything-debug (not anything-debug))
   (message "Anything Debug is now %s" (if anything-debug "Enabled" "Disabled")))
 
-;; Enable ac-mode
+;;; Enable ac-mode
+;;
+;;
 (ac-mode 1)
 
 ;;; Provide-anything-config (to ".Provide-anything-config")
