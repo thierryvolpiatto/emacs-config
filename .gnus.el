@@ -36,10 +36,11 @@
 (setq user-mail-address "thierry.volpiatto@gmail.com")
 (setq user-full-name "thierry")
 
-;;; Sending mail
-
+;;; Smtp settings - Sending mail
+;;
+;;
 ;; config-gmail-avec-starttls 
-;; (find-fline "/usr/share/emacs/24.0.50/lisp/mail/smtpmail.el" "Please")
+;; [README] (find-fline "/usr/local/share/emacs/24.0.92/lisp/mail/smtpmail.el.gz" "Please")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Please add these lines in your .emacs(_emacs) or use customize.
@@ -62,15 +63,61 @@
 ;; `smtpmail-send-queued-mail' to send.
 
 (setq message-send-mail-function 'smtpmail-send-it)
-(setq smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil)))
+(setq smtpmail-debug-info t)
 
-;; Now-my-password-are-in-.authinfo 
-;; (setq smtpmail-auth-credentials '(("smtp.gmail.com" 587 "my_email_as_login" "My_password")))
-
-(setq smtpmail-default-smtp-server "smtp.gmail.com")
-(setq smtpmail-smtp-server "smtp.gmail.com")
-(setq smtpmail-smtp-service 587)
+(setq smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
+      smtpmail-default-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-service 587)
 ;(setq smtpmail-queue-mail t) ; Use M-x smtpmail-send-queued-mail when online.
+
+(defun tv-change-smtp-server ()
+  "Use gmail or yahoo smtp server depending of from header."
+  (save-excursion
+    (save-restriction
+      (message-narrow-to-headers)
+      (let* ((from    (message-fetch-field "from"))
+             (yahoo-p (string-match "yahoo" from)))
+        (if yahoo-p
+            (setq smtpmail-starttls-credentials '(("smtp.mail.yahoo.com" 587 nil nil))
+                  smtpmail-default-smtp-server "smtp.mail.yahoo.com"
+                  smtpmail-smtp-server "smtp.mail.yahoo.com")
+            (setq smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
+                  smtpmail-default-smtp-server "smtp.gmail.com"
+                  smtpmail-smtp-server "smtp.gmail.com"))))))
+(add-hook 'message-send-hook 'tv-change-smtp-server)
+
+;;; Posting-styles
+;;
+;;
+;; [EVAL] (info "(gnus) Posting Styles")
+;; [EVAL] (info "(gnus) X-Face")
+;; [EVAL] (info "(gnus) Face")
+(setq gnus-posting-styles
+      '((".*"
+         (name "Thierry Volpiatto")
+         (address "thierry.volpiatto@gmail.com")
+         (signature-file "~/.signature"))
+        ((header "to" "thierry.volpiatto@gmail.com")
+         (from "Thierry Volpiatto <thierry.volpiatto@gmail.com>")
+         (signature-file "~/.signature"))
+        ((header "to" "tvolpiatto@yahoo.fr")
+         (from "Thierry Volpiatto <tvolpiatto@yahoo.fr>")
+         (signature-file "~/.signature"))))
+
+(defun tv-toggle-from-header ()
+  "Toggle from header manually between yahoo and gmail."
+  (interactive)
+  (save-excursion
+    (let* ((from (message-fetch-field "from")))
+      (message-goto-from)
+      (forward-line 0)
+      (re-search-forward ": " (point-at-eol))
+      (delete-region (point) (point-at-eol))
+      (if (string-match "yahoo" from)
+          (insert "Thierry Volpiatto <thierry.volpiatto@gmail.com>")
+          (insert "Thierry Volpiatto <tvolpiatto@yahoo.fr>")))))
+(define-key message-mode-map (kbd "C-c p") 'tv-toggle-from-header)
 
 ;; Registry
 ;; (when (eq emacs-major-version 24)
@@ -157,10 +204,12 @@
 ;; ne-pas-demander-si-on-splitte-les-pa 
 (setq message-send-mail-partially-limit nil)
 
-;; utiliser-w3m-pour-les-messages-html 
-;; (setq shr-color-visible-luminance-min 75)
-;; (setq mm-text-html-renderer 'shr)
-(setq mm-text-html-renderer 'w3m)
+;;; Html renderer
+;;
+;;
+(setq shr-color-visible-luminance-min 75)
+(setq mm-text-html-renderer 'shr)
+;(setq mm-text-html-renderer 'w3m)
 ;(setq mm-text-html-renderer 'gnus-article-html)
 ;(setq mm-inline-text-html-with-images t)
 
@@ -172,17 +221,6 @@
   (setq fill-column 72)
   (turn-on-auto-fill))
 (add-hook 'message-mode-hook 'my-message-mode-setup)
-
-;; Posting-styles 
-;; [EVAL] (info "(gnus) Posting Styles")
-;; [EVAL] (info "(gnus) X-Face")
-;; [EVAL] (info "(gnus) Face")
-
-(setq gnus-posting-styles
-      `((".*"
-         (name "Thierry Volpiatto")
-         (address "thierry.volpiatto@gmail.com")
-         (signature-file "~/.signature"))))
 
 ;;; Mail encryption.
 ;;
