@@ -5,7 +5,7 @@
 ;; Author: thierry
 ;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
-;; Time-stamp: <2011-12-10 17:44:07 thierry>
+;; Time-stamp: <2011-12-10 20:24:15 thierry>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -633,8 +633,8 @@ With a prefix arg decrease transparency."
 
 ;(setq browse-url-browser-function 'w3m-browse-url)
 ;(setq browse-url-browser-function 'browse-url-uzbl)
-;(setq browse-url-browser-function 'browse-url-firefox)
-(setq browse-url-browser-function 'browse-url-mozilla)
+(setq browse-url-browser-function 'browse-url-firefox)
+;(setq browse-url-browser-function 'browse-url-mozilla)
 
 ;; w3m-mode-map 
 (define-key w3m-mode-map (kbd "C-c v") 'anything-w3m-bookmarks)

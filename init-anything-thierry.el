@@ -129,10 +129,10 @@
 ;;; Anything-variables
 ;;
 ;;
-(setq anything-google-suggest-use-curl-p            nil
+(setq anything-google-suggest-use-curl-p            t
       anything-kill-ring-threshold                  1
       anything-raise-command                        "wmctrl -xa %s"
-      anything-allow-skipping-current-buffer        nil
+      ;anything-allow-skipping-current-buffer        nil
       anything-yaoddmuse-use-cache-file             t
       anything-scroll-amount                        1
       anything-candidate-number-limit               100
