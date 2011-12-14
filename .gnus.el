@@ -121,20 +121,23 @@
           (insert "Thierry Volpiatto <tvolpiatto@yahoo.fr>")))))
 (define-key message-mode-map (kbd "C-c p") 'tv-toggle-from-header)
 
-;; Registry
-;; (when (eq emacs-major-version 24)
-;;   (setq gnus-registry-max-entries 2500)
-;;   (gnus-registry-initialize)
+;;; Registry
+;;
+;;
+(when (eq emacs-major-version 24)
+  (setq gnus-registry-max-entries 2500)
+  (gnus-registry-initialize)
 
-;;   (setq
-;;    gnus-registry-split-strategy 'majority
-;;    gnus-registry-ignored-groups '(("nntp" t)
-;;                                   ("nnrss" t))
-;;    gnus-registry-max-entries 500000
-;;    ;; this is the default
-;;    gnus-registry-track-extra '(sender subject)))
+  (setq gnus-registry-split-strategy 'majority
+        gnus-registry-ignored-groups '(("nntp" t)
+                                       ("nnrss" t))
+        gnus-registry-max-entries 500000
+        ;; this is the default
+        gnus-registry-track-extra '(sender subject)))
 
-;; spam-for-news 
+;;; spam-for-news
+;;
+;;
 ;; (require 'spam)
 ;; (spam-initialize)
 ;; (setq spam-log-to-registry t)
