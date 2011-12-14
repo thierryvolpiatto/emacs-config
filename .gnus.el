@@ -69,6 +69,7 @@
       smtpmail-default-smtp-server "smtp.gmail.com"
       smtpmail-smtp-server "smtp.gmail.com"
       smtpmail-smtp-service 587
+      mail-specify-envelope-from t
       mail-envelope-from 'header)
 ;(setq smtpmail-queue-mail t) ; Use M-x smtpmail-send-queued-mail when online.
 
