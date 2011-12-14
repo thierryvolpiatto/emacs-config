@@ -4,8 +4,6 @@
 
 ;;; Code:
 
-;(gnus-compile)
-
 ;; Search engine for imap and gmane (hit `G G' in group buffer)
 (require 'nnir)
 
@@ -342,6 +340,8 @@
 ;; (setq gnus-thread-sort-functions
 ;;       '(gnus-thread-sort-by-number
 ;;         gnus-thread-sort-by-date))
+
+(gnus-compile)
 
 ;;; .gnus.el ends here
 
