@@ -63,6 +63,7 @@
 (setq message-send-mail-function 'smtpmail-send-it)
 (setq smtpmail-debug-info t)
 
+;; Default settings.
 (setq smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
       smtpmail-default-smtp-server "smtp.gmail.com"
       smtpmail-smtp-server "smtp.gmail.com"
@@ -71,23 +72,7 @@
       mail-envelope-from 'header)
 ;(setq smtpmail-queue-mail t) ; Use M-x smtpmail-send-queued-mail when online.
 
-(defun tv-change-smtp-server ()
-  "Use gmail or yahoo smtp server depending of from header."
-  (save-excursion
-    (save-restriction
-      (message-narrow-to-headers)
-      (let* ((from    (message-fetch-field "from"))
-             (yahoo-p (string-match "yahoo" from)))
-        (if yahoo-p
-            (setq smtpmail-starttls-credentials '(("smtp.mail.yahoo.com" 587 nil nil))
-                  smtpmail-default-smtp-server "smtp.mail.yahoo.com"
-                  smtpmail-smtp-server "smtp.mail.yahoo.com")
-            (setq smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-                  smtpmail-default-smtp-server "smtp.gmail.com"
-                  smtpmail-smtp-server "smtp.gmail.com"))))))
-(add-hook 'message-send-hook 'tv-change-smtp-server)
-
-;;; Posting-styles
+;; Posting-styles
 ;;
 ;;
 ;; [EVAL] (info "(gnus) Posting Styles")
@@ -105,11 +90,42 @@
          (from "Thierry Volpiatto <tvolpiatto@yahoo.fr>")
          (signature-file "~/.signature"))))
 
+(defvar tv-smtp-accounts
+  '(("thierry.volpiatto@gmail.com"
+     (("smtp.gmail.com" 587 nil nil))
+     "smtp.gmail.com"
+     "smtp.gmail.com"
+     587)
+    ("tvolpiatto@yahoo.fr"
+     (("smtp.mail.yahoo.com" 587 nil nil))
+     "smtp.mail.yahoo.com"
+     "smtp.mail.yahoo.com"
+     587)))
+
+(defun tv-change-smtp-server ()
+  "Use account found in `tv-smtp-accounts' according to from header.
+`from' is set in `gnus-posting-styles' according to `to' header.
+or manually with `tv-toggle-from-header'."
+  (save-excursion
+    (save-restriction
+      (message-narrow-to-headers)
+      (let* ((from (message-fetch-field "from"))
+             (account (loop for account in tv-smtp-accounts
+                            when (string-match (car account) from)
+                            return account)))
+        (setq smtpmail-starttls-credentials (nth 1 account)
+              smtpmail-default-smtp-server  (nth 2 account)
+              smtpmail-smtp-server          (nth 3 account)
+              smtpmail-smtp-service         (nth 4 account))))))
+(add-hook 'message-send-hook 'tv-change-smtp-server)
+
 (defun tv-toggle-from-header ()
   "Toggle from header manually between yahoo and gmail."
   (interactive)
   (save-excursion
-    (let* ((from (message-fetch-field "from")))
+    (let* ((from (save-restriction
+                   (message-narrow-to-headers)
+                   (message-fetch-field "from"))))
       (message-goto-from)
       (forward-line 0)
       (re-search-forward ": " (point-at-eol))
@@ -118,6 +134,23 @@
           (insert "Thierry Volpiatto <thierry.volpiatto@gmail.com>")
           (insert "Thierry Volpiatto <tvolpiatto@yahoo.fr>")))))
 (define-key message-mode-map (kbd "C-c p") 'tv-toggle-from-header)
+
+(defun tv-send-mail-with-account ()
+  "Change mail account to send this mail."
+  (interactive)
+  (save-excursion
+    (let* ((from (save-restriction
+                   (message-narrow-to-headers)
+                   (message-fetch-field "from")))
+             (name "Thierry Volpiatto ")
+             (mail (anything-comp-read
+                    "Use account: " (mapcar 'car tv-smtp-accounts)))
+             (new-from (message-make-from name mail)))
+        (message-goto-from)
+        (forward-line 0)
+        (re-search-forward ": " (point-at-eol))
+        (delete-region (point) (point-at-eol))
+        (insert new-from))))
 
 ;;; Registry
 ;;
