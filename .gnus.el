@@ -110,9 +110,8 @@ or manually with `tv-toggle-from-header'."
     (save-restriction
       (message-narrow-to-headers)
       (let* ((from (message-fetch-field "from"))
-             (account (loop for account in tv-smtp-accounts
-                            thereis (and (string-match (car account) from)
-                                         account)))
+             (account (loop for account in tv-smtp-accounts thereis
+                            (and (string-match (car account) from) account))))
         (setq smtpmail-starttls-credentials (nth 1 account)
               smtpmail-default-smtp-server  (nth 2 account)
               smtpmail-smtp-server          (nth 3 account)
