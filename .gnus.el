@@ -92,30 +92,31 @@
 
 (defvar tv-smtp-accounts
   '(("thierry.volpiatto@gmail.com"
-     (("smtp.gmail.com" 587 nil nil))
-     "smtp.gmail.com"
      "smtp.gmail.com"
      587)
     ("tvolpiatto@yahoo.fr"
-     (("smtp.mail.yahoo.com" 587 nil nil))
-     "smtp.mail.yahoo.com"
      "smtp.mail.yahoo.com"
      587)))
 
 (defun tv-change-smtp-server ()
   "Use account found in `tv-smtp-accounts' according to from header.
 `from' is set in `gnus-posting-styles' according to `to' header.
-or manually with `tv-toggle-from-header'."
+or manually with `tv-toggle-from-header'.
+This will run in `message-send-hook'."
   (save-excursion
     (save-restriction
       (message-narrow-to-headers)
       (let* ((from (message-fetch-field "from"))
-             (account (loop for account in tv-smtp-accounts thereis
-                            (and (string-match (car account) from) account))))
-        (setq smtpmail-starttls-credentials (nth 1 account)
-              smtpmail-default-smtp-server  (nth 2 account)
-              smtpmail-smtp-server          (nth 3 account)
-              smtpmail-smtp-service         (nth 4 account))))))
+             (account (loop for account in tv-smtp-accounts
+                            when (string-match (car account) from)
+                            return account)))
+        (setq smtpmail-starttls-credentials (list (list (nth 1 account)
+                                                        (nth 2 account)
+                                                        nil nil))
+              smtpmail-default-smtp-server  (nth 1 account)
+              smtpmail-smtp-server          (nth 1 account)
+              smtpmail-smtp-service         (nth 2 account))))))
+
 (add-hook 'message-send-hook 'tv-change-smtp-server)
 
 (defun tv-toggle-from-header ()
