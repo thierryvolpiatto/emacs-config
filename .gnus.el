@@ -107,9 +107,8 @@ This will run in `message-send-hook'."
     (save-restriction
       (message-narrow-to-headers)
       (let* ((from (message-fetch-field "from"))
-             (account (loop for account in tv-smtp-accounts
-                            when (string-match (car account) from)
-                            return account)))
+             (account (loop for account in tv-smtp-accounts thereis
+                            (and (string-match (car account) from) account))))
         (setq smtpmail-starttls-credentials (list (list (nth 1 account)
                                                         (nth 2 account)
                                                         nil nil))
