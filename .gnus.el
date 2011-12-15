@@ -24,15 +24,9 @@
 ;; Mail-directory-for-gnus 
 (setq nnml-directory "~/Mail")
 
-;; Archivage-des-mails-envoyés 
-;;(setq gnus-message-archive-group "nnml:sent-mail")
+;;; Archivage-des-mails-envoyés
+;;
 (setq gnus-message-archive-group '((when (message-news-p) "sent-news")))
-      ;;       "sent-news"
-      ;;       "nnml:sent-mail")))
-
-;; config-pour-gmail 
-(setq user-mail-address "thierry.volpiatto@gmail.com")
-(setq user-full-name "thierry")
 
 ;;; Smtp settings - Sending mail
 ;;
@@ -60,16 +54,21 @@
 ;; To queue mail, set `smtpmail-queue-mail' to t and use
 ;; `smtpmail-send-queued-mail' to send.
 
-(setq message-send-mail-function 'smtpmail-send-it)
-(setq smtpmail-debug-info t)
+(setq user-mail-address "thierry.volpiatto@gmail.com")
+(setq user-full-name "Thierry Volpiatto")
+
+(setq message-send-mail-function 'smtpmail-send-it
+      smtpmail-debug-info t
+      ;smtpmail-debug-verb t        ; Uncomment to debug
+      mail-specify-envelope-from t ; Use from field to specify sender name.
+      mail-envelope-from 'header)  ; otherwise `user-mail-address' is used. 
 
 ;; Default settings.
 (setq smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
       smtpmail-default-smtp-server "smtp.gmail.com"
       smtpmail-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-service 587
-      mail-specify-envelope-from t
-      mail-envelope-from 'header)
+      smtpmail-smtp-service 587)
+
 ;(setq smtpmail-queue-mail t) ; Use M-x smtpmail-send-queued-mail when online.
 
 ;; Posting-styles
@@ -130,8 +129,10 @@ This will run in `message-send-hook'."
       (re-search-forward ": " (point-at-eol))
       (delete-region (point) (point-at-eol))
       (if (string-match "yahoo" from)
-          (insert "Thierry Volpiatto <thierry.volpiatto@gmail.com>")
-          (insert "Thierry Volpiatto <tvolpiatto@yahoo.fr>")))))
+          (insert (message-make-from user-full-name
+                                     "thierry.volpiatto@gmail.com"))
+          (insert (message-make-from user-full-name
+                                     "tvolpiatto@yahoo.fr"))))))
 (define-key message-mode-map (kbd "C-c p") 'tv-toggle-from-header)
 
 (defun tv-send-mail-with-account ()
@@ -141,10 +142,9 @@ This will run in `message-send-hook'."
     (let* ((from (save-restriction
                    (message-narrow-to-headers)
                    (message-fetch-field "from")))
-             (name "Thierry Volpiatto ")
-             (mail (anything-comp-read
-                    "Use account: " (mapcar 'car tv-smtp-accounts)))
-             (new-from (message-make-from name mail)))
+           (mail (anything-comp-read
+                  "Use account: " (mapcar 'car tv-smtp-accounts)))
+           (new-from (message-make-from user-full-name mail)))
         (message-goto-from)
         (forward-line 0)
         (re-search-forward ": " (point-at-eol))
