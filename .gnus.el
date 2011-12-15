@@ -1,4 +1,3 @@
-;; -*- mode: emacs-lisp -*-
 ;;; .gnus.el -- Laptop
 
 
@@ -31,7 +30,6 @@
 ;;; Smtp settings - Sending mail
 ;;
 ;;
-;; config-gmail-avec-starttls 
 ;; [README] (find-fline "/usr/local/share/emacs/24.0.92/lisp/mail/smtpmail.el.gz" "Please")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -53,6 +51,7 @@
 
 ;; To queue mail, set `smtpmail-queue-mail' to t and use
 ;; `smtpmail-send-queued-mail' to send.
+;(setq smtpmail-queue-mail t) ; Use M-x smtpmail-send-queued-mail when online.
 
 (setq user-mail-address "thierry.volpiatto@gmail.com")
 (setq user-full-name "Thierry Volpiatto")
@@ -69,7 +68,6 @@
       smtpmail-smtp-server "smtp.gmail.com"
       smtpmail-smtp-service 587)
 
-;(setq smtpmail-queue-mail t) ; Use M-x smtpmail-send-queued-mail when online.
 
 ;; Posting-styles
 ;;
