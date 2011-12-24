@@ -13,7 +13,10 @@
 ;; Secondary methods
 (setq gnus-secondary-select-methods '((nnml "")
                                       (nnimap "gmail"
-                                       (nnimap-address "imap.gmail.com"))))
+                                       (nnimap-address "imap.gmail.com"))
+                                      (nnimap "yahoo"
+                                       (nnimap-address "imap.mail.yahoo.com"))
+                                      ))
 ;(add-to-list 'gnus-secondary-select-methods '(nntp "news.gwene.org"))
 
 ;; See also:
@@ -241,6 +244,7 @@ This will run in `message-send-hook'."
 ;;
 ;;
 (setq shr-color-visible-luminance-min 75)
+(setq shr-width nil) ; Use all screen.
 (setq mm-text-html-renderer 'shr)
 ;(setq mm-text-html-renderer 'w3m)
 ;(setq mm-text-html-renderer 'gnus-article-html)
