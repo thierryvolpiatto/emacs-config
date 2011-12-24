@@ -113,7 +113,7 @@
 ;; get my external ip (need my python script)
 ;;;###autoload
 (defun tv-get-ip ()
-  "get my ip"
+  "get my ip."
   (interactive)
   (let ((my-ip (with-temp-buffer
                  (call-process "get_IP.py" nil t nil)
@@ -128,17 +128,15 @@
     (when info
       (destructuring-bind (address broadcast netmask mac state)
           info
-        (list :address address :broadcast broadcast :netmask netmask :mac (cdr mac) :state state)))))
+        (list :address address :broadcast broadcast
+              :netmask netmask :mac (cdr mac) :state state)))))
 
-
-(defun tv-network-state (&optional network)
-  (interactive)
-  (let* ((network (or network (read-string "Network: " "wlan0")))
-         (info (car (last (getf (tv-network-info network) :state))))
+(defun tv-network-state (network &optional arg)
+  (interactive (list (read-string "Network: " "wlan0")
+                     "\np"))
+  (let* ((info (car (last (getf (tv-network-info network) :state))))
          (state (if info (symbol-name info) "down")))
-    (if (interactive-p)
-        (message "%s is %s" network state)
-        state)))
+    (if arg (message "%s is %s" network state) state)))
 
 ;; Crontab 
 ;;;###autoload
@@ -369,10 +367,10 @@ START and END are buffer positions indicating what to append."
         (message "Nothing found."))))
 
 ;; Get-mime-type-of-file 
-(defun file-mime-type (fname)
+(defun file-mime-type (fname &optional arg)
   "Get the mime-type of fname"
-  (interactive "fFileName: ")
-  (if (interactive-p)
+  (interactive "fFileName: \np")
+  (if arg
       (message "%s" (mailcap-extension-to-mime (file-name-extension fname t)))
       (mailcap-extension-to-mime (file-name-extension fname t))))
 
@@ -1021,88 +1019,6 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
                     (setq last-elm (iter-next it)))
                    (t nil))) ; Exit loop if any other key is pressed.
           (print-result))))))
-
-;; gmail-notify 
-;; Timer is started in .emacs:
-;; (find-fline "~/.emacs.d/emacs-config-laptop/.emacs.el" "(gmail-notify-start")
-(defun* tv-get-gmail (&key mail password)
-  (let* ((gmail
-          (auth-source-user-or-password
-           '("login" "password") "smtp.gmail.com" "587"))
-         (name (car gmail))
-         (pass (cadr gmail)))
-    (cond (mail name)
-          (password pass)
-          (t gmail))))
-
-(defun gmail-notify-curl ()
-  (let* ((login (tv-get-gmail :mail t))
-         (pass  (tv-get-gmail :password t))
-         proc)
-    (apply #'start-process
-           "gmailnotify" nil "curl"
-           (list "-u"
-                 (concat login ":" pass)
-                 "https://mail.google.com/mail/feed/atom"))
-    (setq proc (get-process "gmailnotify"))
-    (when proc
-      (set-process-filter proc
-                          #'(lambda (process output)
-                              (let* ((all   (with-temp-buffer
-                                              (insert output)
-                                              (car (xml-parse-region (point-min) (point-max)))))
-                                     (title (caddar (xml-get-children all 'title)))
-                                     (tag   (caddar (xml-get-children all 'tagline)))
-                                     (count (caddar (xml-get-children all 'fullcount)))
-                                     (date  (caddar (xml-get-children all 'modified))))
-                                (when (and (> (length all) 0)
-                                           (or (not (stringp count))
-                                               (> (string-to-number count) 0)))
-                                  (tooltip-show
-                                   (format "%s\nLast modified: %s\n%s: [%s]" title date tag count)))))))))
-
-(defun gmail-notify-check ()
-  (interactive)
-  (gmail-notify-curl))
-
-(defvar gmail-notification-timer nil)
-(defun gmail-notify-start ()
-  (interactive)
-  (setq gmail-notification-timer (run-with-timer 1 60 'gmail-notify-curl)))
-
-(defun gmail-notify-stop ()
-  (interactive)
-  (cancel-timer gmail-notification-timer)
-  (setq gmail-notification-timer nil))
-
-;; List recursively contents of directory
-(defun* walk-directory (directory &key (path 'basename) (directories t) match)
-  "Walk through DIRECTORY tree.
-PATH can be one of basename, relative, or full.
-DIRECTORIES when non--nil (default) return also directories names, otherwise
-skip directories names.
-MATCH when non--nil mention only file names that match the regexp MATCH."
-  (let (result
-        (fn (case path
-              (basename 'file-name-nondirectory)
-              (relative 'file-relative-name)
-              (full     'identity)
-              (t (error "Error: Invalid path spec `%s', must be one of basename, relative or full." path)))))
-    (labels ((ls-R (dir)
-               (loop with ls = (directory-files dir t directory-files-no-dot-files-regexp)
-                  for f in ls
-                  if (file-directory-p f)
-                  do (progn (when directories
-                              (push (funcall fn f) result))
-                            ;; Don't recurse in directory symlink.
-                            (unless (file-symlink-p f)
-                              (ls-R f)))
-                  else do 
-                    (unless (and match (not (string-match match (file-name-nondirectory f))))
-                      (push (funcall fn f) result)))))
-      (ls-R directory)
-      (nreverse result))))
-
 
 ;; Switch indenting lisp style.
 (defun toggle-lisp-indent ()

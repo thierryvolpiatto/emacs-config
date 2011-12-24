@@ -1,47 +1,6 @@
 ;;; emms-mpd-config.el --- 
-;; 
-;; Filename: emms-mpd-config.el
-;; Description: 
-;; Author: 
-;; Maintainer: 
-;; Created: lun jan 12 08:42:23 2009 (+0100)
-;; Version: 
-;; Last-Updated: mar fév 24 14:41:15 2009 (+0100)
-;;           By: thierry
-;;     Update #: 28
-;; URL: 
-;; Keywords: 
-;; Compatibility: 
-;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;;; Commentary: 
-;; 
-;; 
-;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;;; Change log:
-;; 
-;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;; This program is free software; you can redistribute it and/or
-;; modify it under the terms of the GNU General Public License as
-;; published by the Free Software Foundation; either version 3, or
-;; (at your option) any later version.
-;; 
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;; General Public License for more details.
-;; 
-;; You should have received a copy of the GNU General Public License
-;; along with this program; see the file COPYING.  If not, write to
-;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
-;; Floor, Boston, MA 02110-1301, USA.
-;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; Time-stamp: <2011-12-22 17:24:13 thierry>
 
 ;;; Code:
 
@@ -51,7 +10,7 @@
 (setq emms-stream-bookmarks-file "~/.emacs.d/emms/emms-streams")
 (setq emms-history-file "~/.emacs.d/emms/emms-history")
 (setq emms-cache-file "~/.emacs.d/emms/emms-cache")
-(setq emms-source-file-default-directory "/home/thierry/mpd/music")
+(setq emms-source-file-default-directory "/home/thierry/Musique")
 
 (when (require 'emms-setup nil t)
   (require 'emms-player-simple)
@@ -62,7 +21,16 @@
   (emms-devel)
   (emms-default-players)
   (require 'emms-mode-line)
-  (require 'emms-player-mpd))
+  (require 'emms-player-mpd)
+  (require 'emms-player-vlc))
+
+(setq emms-player-list '(emms-player-vlc-playlist
+                         emms-player-vlc
+                         emms-player-mpd
+                         emms-player-mplayer-playlist
+                         emms-player-mplayer
+                         emms-player-mpg321
+                         emms-player-ogg123))
 
 ;; «Disable-Last-Fm» (to ".Disable-Last-Fm")
 ;(emms-lastfm-disable)
@@ -95,11 +63,50 @@
  "all-files" (emms-browser-filter-only-type 'file))
 
 ;; «show-only-tracks-in-one-folder» (to ".show-only-tracks-in-one-folder")
-;; (emms-browser-make-filter
-;;  "Sky_radios" (emms-browser-filter-only-dir "~/mpd/playlists"))
+(emms-browser-make-filter
+ "Sky_radios" (emms-browser-filter-only-dir "~/.mpd/playlists"))
 
 ;; «Mode-line» (to ".Mode-line")
-;(require 'emms-mode-line)
+(setq emms-mode-line-icon-color "Gold1")
+(setq emms-mode-line-icon-before-format "[")
+(setq emms-mode-line-format " %s")
+(setq emms-playing-time-display-format " %s]")
+(defun emms-mode-line-playlist-current ()
+  "Format the currently playing song."
+  (format emms-mode-line-format
+          (propertize "Emms playing"
+                      'help-echo
+                      (emms-track-description
+                       (emms-playlist-current-selected-track)))))
+
+(defun tv-emms-mode-line-icon-function ()
+  (setq emms-mode-line-icon-image-cache
+        `(image :type xpm :ascent center :data ,(concat "/* XPM */
+static char *note[] = {
+/* width height num_colors chars_per_pixel */
+\"    10   11        2            1\",
+/* colors */
+\". c " emms-mode-line-icon-color  "\",
+\"# c None s None\",
+/* pixels */
+\"###...####\",
+\"###.#...##\",
+\"###.###...\",
+\"###.#####.\",
+\"###.#####.\",
+\"#...#####.\",
+\"....#####.\",
+\"#..######.\",
+\"#######...\",
+\"######....\",
+\"#######..#\"};")))
+  (concat " "
+          emms-mode-line-icon-before-format
+          (emms-propertize "NP:" 'display emms-mode-line-icon-image-cache)
+          (emms-mode-line-playlist-current)))
+
+(setq emms-mode-line-mode-line-function 'tv-emms-mode-line-icon-function)
+
 (emms-mode-line 1)
 
 ;; «Time-elapsed-in-current-track» (to ".Time-elapsed-in-current-track")
@@ -107,8 +114,6 @@
 ;;(emms-playing-time 1)
 
 ;; «MPD-config» (to ".MPD-config")
-(require 'emms-player-mpd)
-(add-to-list 'emms-player-list 'emms-player-mpd)
 (setq emms-player-mpd-server-name "localhost")
 (setq emms-player-mpd-server-port "6600")
 (setq emms-player-mpd-music-directory emms-source-file-default-directory)
@@ -157,26 +162,28 @@
 
 
 ;; «stop-mpd» (to ".stop-mpd")
-(defun tv-stop-mpd ()
-  (interactive)
+(defun tv-stop-mpd (arg)
+  "Stop emms mpd, with a prefix arg restart it."
+  (interactive "P")
   (if emms-player-playing-p
       (emms-stop)
-    (shell-command "mpc stop")))
+      (shell-command "mpc stop"))
+  (when arg (emms-start)))
 
 ;; «Bindings» (to ".Bindings")
 
-(global-set-key (kbd "<f6> r") 'emms-streams)
-(global-set-key (kbd "<f6> +") 'emms-volume-raise)
-(global-set-key (kbd "<f6> -") 'emms-volume-lower)
-(global-set-key (kbd "<f6> b") 'emms-smart-browse)
-(global-set-key (kbd "<f6> t") 'emms-player-mpd-show)
-(global-set-key (kbd "<f6> s") 'tv-stop-mpd)
-(global-set-key (kbd "<f6> \r") 'emms-start)
-(global-set-key (kbd "<f6> c") 'emms-browser-clear-playlist)
-(global-set-key (kbd "<f6> p") 'emms-player-mpd-pause)
-(global-set-key (kbd "<f6> >") 'emms-player-mpd-next)
-(global-set-key (kbd "<f6> <") 'emms-player-mpd-previous)
-(global-set-key (kbd "<f6> d") 'emms-mode-line-toggle)
+(global-set-key (kbd "<f6> r")  'emms-streams)
+(global-set-key (kbd "<f6> +")  'emms-volume-raise)
+(global-set-key (kbd "<f6> -")  'emms-volume-lower)
+(global-set-key (kbd "<f6> b")  'emms-smart-browse)
+(global-set-key (kbd "<f6> t")  'emms-player-mpd-show)
+(global-set-key (kbd "<f6> s")  'tv-stop-mpd)
+(global-set-key (kbd "<f6> RET")'emms-start)
+(global-set-key (kbd "<f6> c")  'emms-browser-clear-playlist)
+(global-set-key (kbd "<f6> p")  'emms-player-mpd-pause)
+(global-set-key (kbd "<f6> >")  'emms-player-mpd-next)
+(global-set-key (kbd "<f6> <")  'emms-player-mpd-previous)
+(global-set-key (kbd "<f6> m")  'emms-mode-line-toggle)
 
 ;; «Update-mpd-directory» (to ".Update-mpd-directory")
 
@@ -187,7 +194,7 @@
   (ignore-errors
     (delete-file "~/.emacs.d/emms/emms-cache")
     (delete-file "~/.emacs.d/emms/emms-history"))
-  (emms-add-directory-tree "~/mpd/music"))
+  (emms-add-directory-tree "~/Musique/"))
 
 (provide 'emms-mpd-config)
 

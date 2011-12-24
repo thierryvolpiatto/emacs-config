@@ -5,12 +5,14 @@
 ;; Author: thierry
 ;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
-;; Time-stamp: <2011-12-10 20:24:15 thierry>
+;; Time-stamp: <2011-12-19 16:01:51 thierry>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;
 ;;; Code:
+
+(defvar on-laptop t)
 
 ;; Save Timestamp
 (add-hook 'before-save-hook 'time-stamp)
@@ -67,7 +69,7 @@
 	     "~/elisp/muse/lisp"
 	     "~/elisp/muse/contrib"
              ;"~/elisp/AC/"
-             ;"~/elisp/emms/lisp/"
+             "~/elisp/emms/lisp/"
 	     "~/elisp/ipython"
 	     "~/elisp/python-mode"
 	     "~/elisp/emacs-w3m/"
@@ -185,7 +187,7 @@
 ;; (tv-require 'psvn)
 (tv-require 'dvc-init)
 ;(tv-require 'emms-mplayer-config)
-;(tv-require 'emms-mpd-config)
+(tv-require 'emms-mpd-config)
 ;(tv-require 'yaoddmuse)
 (tv-require 'dired-aux)
 (tv-require 'dired-x)
@@ -346,9 +348,8 @@
 ;;; Gnus-config
 ;;
 ;;
-
-;(require 'gnus-async)
-;(setq gnus-asynchronous t)
+(require 'gnus-async)
+(setq gnus-asynchronous t)
 
 (setq mail-user-agent 'gnus-user-agent)
 (setq read-mail-command 'gnus)
@@ -380,13 +381,17 @@
 (setq gnus-read-active-file 'some)
 (setq gnus-check-new-newsgroups 'ask-server)
 
-;; Authinfo-settings-with-epa 
+;;; Authinfo
+;;
+;;
 (if (file-exists-p "~/.authinfo.gpg")
     (setq auth-sources '((:source "~/.authinfo.gpg" :host t :protocol t)))
     (setq auth-sources '((:source "~/.authinfo" :host t :protocol t))))
 
-;; basic-config 
-(global-font-lock-mode t)
+;;; Font lock
+;;
+;;
+(global-font-lock-mode 1)
 (setq font-lock-maximum-decoration t)
 
 ;;; Save-minibuffer-history
@@ -631,6 +636,9 @@ With a prefix arg decrease transparency."
     (require 'mime-w3m)
     (define-key dired-mode-map (kbd "C-c F") 'dired-w3m-find-file)))
 
+;;; Default web browser
+;;
+;;
 ;(setq browse-url-browser-function 'w3m-browse-url)
 ;(setq browse-url-browser-function 'browse-url-uzbl)
 (setq browse-url-browser-function 'browse-url-firefox)
@@ -1697,6 +1705,36 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 ;;
 ;;
 (setq org-google-weather-format "%L: %i %c, [%l,%h] %s")
+
+;;; Battery
+;;
+;;
+(when on-laptop
+  (setq battery-mode-line-format "[Bat:%b%p%%,%L]")
+  (display-battery-mode 1))
+
+;;; Display time in mode-line
+;;
+;;
+(setq display-time-string-forms
+      '(;; date
+        (if (and (not display-time-format) display-time-day-and-date)
+            (format-time-string "[%a %b %e " now)
+            "")
+        ;; time
+        (concat
+         (propertize
+          (format-time-string (or display-time-format
+                                  (if display-time-24hr-format " %H:%M" " %-I:%M%p"))
+                              now)
+         'face '((:foreground "green"))
+         'help-echo (format-time-string " %a %b %e, %Y" now)) "]")
+        ;; cpu load average
+        ;; (if (and load (not (string= load "")))
+        ;;     (format "cpu:%s" load) "")
+        ""
+        ;; mail
+        ""))
 
 ;;; Save/restore emacs-session
 ;;

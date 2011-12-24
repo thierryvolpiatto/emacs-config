@@ -51,6 +51,7 @@
 
 
 (require 'emms-setup)
+(require 'emms-player-vlc)
 (emms-minimalistic)
 (emms-devel)
 
@@ -59,17 +60,14 @@
 (setq emms-history-file "~/.emacs.d/emms/emms-history")
 (setq emms-cache-file "~/.emacs.d/emms/emms-cache")
 (setq emms-source-file-default-directory "~/mpd/music")
-(setq emms-setup-default-player-list '(emms-player-vlc emms-player-mpg321
-                                       emms-player-ogg123 emms-player-mplayer-playlist
-                                       emms-player-mplayer))
+(setq emms-setup-default-player-list '(emms-player-mplayer
+                                       emms-player-mplayer-playlist
+                                       emms-player-vlc
+                                       emms-player-mpg321
+                                       emms-player-ogg123
+                                       ))
 
 (emms-default-players)
-
-(define-emms-simple-player vlc-playlist '(streamlist url)
-  (concat "\\`\\(http\\|mms\\)://.*"
-          (mapconcat 'regexp-quote
-           '("pls" "m3u") "\\|"))
-  "vlc" "--intf=rc")
 
 ;; «enable-emms-scoring» (to ".enable-emms-scoring")
 (setq emms-score-enabled-p t)
@@ -132,4 +130,4 @@
 (provide 'emms-mplayer-config)
 
 
-;;; emms-mpd-config.el ends here
+;;; emms-mplayer-config.el ends here

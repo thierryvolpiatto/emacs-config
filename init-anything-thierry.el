@@ -150,7 +150,7 @@
       anything-c-default-external-file-browser      "thunar"
       ;anything-c-pdfgrep-default-read-command       "evince --page-label=%p '%f'"
       ;anything-surfraw-default-browser-function     'tv-browse-url-w3m
-      anything-c-etags-use-regexp-search            t
+      anything-c-etags-use-regexp-search            nil
       anything-c-use-adaptative-sorting             t
       ;anything-save-configuration-functions         '(set-frame-configuration . current-frame-configuration)
       ;anything-c-google-suggest-default-browser-function 'browse-url-uzbl
