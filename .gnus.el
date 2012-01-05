@@ -66,8 +66,9 @@
       mail-envelope-from 'header)  ; otherwise `user-mail-address' is used. 
 
 ;; Default settings.
-(setq smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-      smtpmail-default-smtp-server "smtp.gmail.com"
+;; `smtpmail-starttls-credentials' have been removed since 24.0.92.1
+;; smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
+(setq smtpmail-default-smtp-server "smtp.gmail.com"
       smtpmail-smtp-server "smtp.gmail.com"
       smtpmail-smtp-service 587)
 
@@ -109,10 +110,11 @@ This will run in `message-send-hook'."
       (let* ((from (message-fetch-field "from"))
              (account (loop for account in tv-smtp-accounts thereis
                             (and (string-match (car account) from) account))))
-        (setq smtpmail-starttls-credentials (list (list (nth 1 account)
-                                                        (nth 2 account)
-                                                        nil nil))
-              smtpmail-default-smtp-server  (nth 1 account)
+        ;; `smtpmail-starttls-credentials' have been removed since 24.0.92.1
+        ;; (setq smtpmail-starttls-credentials (list (list (nth 1 account)
+        ;;                                                 (nth 2 account)
+        ;;                                                 nil nil)))
+        (setq smtpmail-default-smtp-server  (nth 1 account)
               smtpmail-smtp-server          (nth 1 account)
               smtpmail-smtp-service         (nth 2 account))))))
 

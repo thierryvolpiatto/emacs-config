@@ -11,7 +11,7 @@
 (add-to-list 'load-path "~/.emacs.d/emacs-config-laptop")
 
 (setq default-frame-alist '((foreground-color . "Wheat")
-                            (background-color . "DarkSlateGray")
+                            (background-color . "Black")
                             (menu-bar-lines . 0)
                             (tool-bar-lines . 0)
                             (vertical-scroll-bars . nil)

@@ -5,14 +5,14 @@
 ;; Author: thierry
 ;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
-;; Time-stamp: <2011-12-19 16:01:51 thierry>
+; Time-stamp: <2011-12-29 17:26:21 thierry>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;
 ;;; Code:
 
-(defvar on-laptop t)
+;(defvar on-laptop t)
 
 ;; Save Timestamp
 (add-hook 'before-save-hook 'time-stamp)
@@ -425,6 +425,7 @@
 (setq frame-auto-hide-function 'delete-frame)
 
 (if (or (daemonp)
+        (not (window-system))
         (< emacs-major-version 24))
     (setq default-frame-alist '((vertical-scroll-bars . nil)
                                 (tool-bar-lines . 0)
@@ -1054,7 +1055,7 @@ account add <protocol> moi@mail.com password."
 ;; shell-config 
 
 ;; Set `undo-outer-limit' to hight value to avoid messages when gentoo emerge
-(setq undo-outer-limit 6000000)
+;(setq undo-outer-limit 6000000)
                        
 ;; prompt-shell-read-only 
 (setq comint-prompt-read-only t)
@@ -1216,10 +1217,6 @@ With prefix arg always start and let me choose dictionary."
 ;;; Auctex/Latex config
 ;;
 ;;
-;;; auctex site-lisp configuration
-(require 'tex-site)
-
-;;; auctex site-lisp configuration, activating preview-latex
 (load "preview-latex.el" nil t t)
 
 ;; detect needed steps after rebuild
@@ -1709,7 +1706,7 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 ;;; Battery
 ;;
 ;;
-(when on-laptop
+(ignore-errors
   (setq battery-mode-line-format "[Bat:%b%p%%,%L]")
   (display-battery-mode 1))
 

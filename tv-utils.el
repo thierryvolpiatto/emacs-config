@@ -223,10 +223,10 @@ Run first crontab -e in shell and when emacsclient popup run M-x crontab."
 ;; Chrono-func 
 ;;;###autoload
 (defmacro chrono-func (fn &rest args)
-  `(let* ((init-time    (cadr (current-time)))
+  `(let* ((init-time    (float-time))
           (final-result (funcall ,fn ,@args))
-          (final-time   (- (cadr (current-time)) init-time)))
-     (message "Time:%2s s" final-time)
+          (final-time   (- (float-time) init-time)))
+     (message "Time: %.5f s" final-time)
      final-result))
 
 ;; cat-like-cat 
@@ -1038,6 +1038,7 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
            (oname (file-name-sans-extension iname)))
       (compile (format "make -k %s" oname)))))
 (add-hook 'c-mode-hook #'(lambda ()
+                           (declare (special c-mode-map))
                            (define-key c-mode-map (kbd "C-c C-c") 'tv-cc-this-file)))
 
 ;; Insert line numbers in region

@@ -34,25 +34,38 @@
 
 (require 'anything-config)
 
-
 ;;;; Test Sources or new anything code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
 ;;
 
-;;;; Extensions (to ".Extensions")
+;;;; Extensions
 
-;;;; Mercurial-Qpatchs (to ".Mercurial-Qpatchs")
+;;;; Mercurial-Qpatchs
 (require 'anything-mercurial)
 
-;;;; Delicious-bookmarks-tv (to ".Delicious-bookmarks-tv")
+;;;; Delicious-bookmarks-tv
 (require 'anything-delicious)
 
-;;;; Anything-faces (to ".Anything-faces")
+;;;; anything-ipython
+;;
+;;
+;; (require 'anything-ipython)
+
+;; (when (require 'anything-show-completion nil t)
+;;   (use-anything-show-completion 'anything-ipython-complete
+;;                                 '(length initial-pattern)))
+
+;; (define-key py-mode-map (kbd "M-<tab>") 'anything-ipython-complete)
+;; (define-key py-shell-map (kbd "M-<tab>") 'anything-ipython-complete)
+;; (define-key py-mode-map (kbd "C-c M") 'anything-ipython-import-modules-from-buffer)
+
+
+;;;; Anything-faces
 
 (defface anything-tv-header '((t (:background "#22083397778B" :foreground "white" :underline t)))
   "Face for source header in the anything buffer." :group 'anything)
 
-;;; Anything-command-map (to ".Anything-command-map")
+;;; Anything-command-map
 ;;
 ;;
 (define-key anything-command-map (kbd "q")   'anything-qpatchs)
@@ -63,7 +76,7 @@
 (define-key anything-command-map (kbd "g")   'anything-apt)
 
 
-;;; Global-map (to ".Global-map")
+;;; Global-map
 ;;
 ;;
 (global-set-key (kbd "M-x") 'anything-M-x)
@@ -83,14 +96,6 @@
 (define-key global-map [remap insert-register] 'anything-register)
 (define-key global-map [remap list-buffers] 'anything-buffers-list)
 
-;;; Deprecated
-;;
-;;
-;(anything-dired-bindings 1) ; Enable anything dired bindings equivalents of C, R, S, H.
-;(global-set-key (kbd "C-x C-w") 'anything-write-file)
-;(global-set-key (kbd "C-x i") 'anything-insert-file)
-
-
 ;; Lisp complete or indent.
 (define-key lisp-interaction-mode-map [remap indent-for-tab-command] 'anything-lisp-completion-at-point-or-indent)
 (define-key emacs-lisp-mode-map [remap indent-for-tab-command] 'anything-lisp-completion-at-point-or-indent)
@@ -99,30 +104,13 @@
 (define-key lisp-interaction-mode-map [remap completion-at-point] 'anything-lisp-completion-at-point)
 (define-key emacs-lisp-mode-map [remap completion-at-point] 'anything-lisp-completion-at-point)
 
-
-;;; anything-ipython
-;;
-;;
-;; (require 'anything-ipython)
-
-;; (when (require 'anything-show-completion nil t)
-;;   (use-anything-show-completion 'anything-ipython-complete
-;;                                 '(length initial-pattern)))
-
-;; (define-key py-mode-map (kbd "M-<tab>") 'anything-ipython-complete)
-;; (define-key py-shell-map (kbd "M-<tab>") 'anything-ipython-complete)
-;; (define-key py-mode-map (kbd "C-c M") 'anything-ipython-import-modules-from-buffer)
-
-;;; Anything-attributes (to ".Anything-attributes")
-;; [EVAL] (find-epp anything-type-attributes)
-
 ;;; Describe-key-bindings
 ;;
 ;;
 ;(require 'descbinds-anything)
 ;(descbinds-anything-install)            ; C-h b, C-x C-h
 
-;; My-anything-describe-keybindings (to ".My-anything-describe-keybindings")
+;; My-anything-describe-keybindings
 (require 'anything-describe-keybindings)
 (anything-describe-bindings-mode 1)
 
@@ -156,17 +144,6 @@
       ;anything-c-google-suggest-default-browser-function 'browse-url-uzbl
       )
 
-;;; Preconfigured-anything or own functions
-;;
-;;
-
-;; (defun tv-browse-url-w3m (url)
-;;   (w3m-browse-url url 'tab))
-
-(defun anything-org-info ()
-  (interactive)
-  (anything-other-buffer 'anything-c-source-info-org "*anything org info*"))
-
 ;;; Debugging
 ;;
 ;;
@@ -184,7 +161,6 @@
 ;;
 (ac-mode 1)
 
-;;; Provide-anything-config (to ".Provide-anything-config")
 (provide 'init-anything-thierry)
 
 ;;; init-anything-thierry.el ends here

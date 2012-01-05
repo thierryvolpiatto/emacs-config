@@ -275,28 +275,18 @@
     (clear-image-cache file)
     (insert-image (create-image file) )))
 
-;; org feeds (C-c C-x g to update)
-;; (setq org-feed-alist
-;;       '(("Nouvel Obs news"
-;;          "http://rss.nouvelobs.com/c/32262/fe.ed/tempsreel.nouvelobs.com/rss.xml"
-;;          "~/org/feeds.org" "Nouvel Obs News")
-;;         ("Sciences et avenir"
-;;          "http://rss.nouvelobs.com/c/32581/fe.ed/www.sciencesetavenir.fr/rss.xml"
-;;          "~/org/feeds.org" "Sciences et avenir")
-;;         ("Zdnet news"
-;;          "http://www.zdnet.fr/feeds/rss/"
-;;          "~/org/feeds.org" "Zdnet")
-;;         ("EmacsWiki"
-;;          "http://www.emacswiki.org/cgi-bin/wiki.pl?action=rss"
-;;          "~/org/feeds.org" "EmacsWiki")))
-
 ;; Bugfix: Incompatibility with bidi.
 (add-hook 'org-mode-hook #'(lambda () (setq bidi-display-reordering nil)))
 
-;; setting for org-refile full completion
+;;; setting for org-refile full completion
+;;
 ;; (setq org-outline-path-complete-in-steps nil)
 ;; (setq org-refile-use-outline-path t)
 ;; (setq org-refile-targets '((nil :maxlevel . 8)))
+
+;; Org babel
+(require 'ob-sh)
+(require 'ob-emacs-lisp)
 
 ;; Provide 
 (provide 'org-config-thierry)
