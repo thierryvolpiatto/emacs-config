@@ -140,7 +140,7 @@
   %i
   %a" :prepend t) ("R" "Report" entry (file+headline "~/org/agenda.org" "Development") "** REPORT %?
   %i
-  %a" :prepend t) ("n" "Notes" entry (file+headline "~/org/notes.org" "General") "* %U %?
+  %a" :prepend t) ("n" "Notes" entry (file+headline "~/org/notes.org" "General") "* %T %?
 
   %i
   %a" :prepend t) ("i" "Idea" entry (file+headline "~/org/notes.org" "New Ideas") "* %^{Title}

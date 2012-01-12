@@ -757,6 +757,8 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
                                (tv-save-buffers-alist . "tv-save-buffers-alist.el")
                                (anything-ff-history . "anything-ff-history.el")
                                (anything-c-grep-history . "anything-c-grep-history.el")
+                               (kill-ring . "kill-ring.el")
+                               (kill-ring-yank-pointer . "kill-ring-yank-pointer.el")
                                ))
 
 (defun dump-object-to-file-save-alist ()
