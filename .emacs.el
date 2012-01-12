@@ -5,7 +5,7 @@
 ;; Author: thierry
 ;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
-; Time-stamp: <2012-01-12 08:34:22 thierry>
+; Time-stamp: <2012-01-12 14:08:37 thierry>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -1129,29 +1129,7 @@ account add <protocol> moi@mail.com password."
 ;;; pcomplete Completion functions on specific commands
 ;;
 ;;
-(defun pcomplete/find ()
-  (when (pcomplete-match "-" 'last)
-    (while (pcomplete-here
-            '("-amin" "-anewer" "-atime" "-cmin" "-cnewer" "-context"
-              "-ctime" "-daystart" "-delete" "-depth" "-empty" "-exec"
-              "-execdir" "-executable" "-false" "-fls" "-follow" "-fprint"
-              "-fprint0" "-fprintf" "-fstype" "-gid" "-group"
-              "-help" "-ignore_readdir_race" "-ilname" "-iname"
-              "-inum" "-ipath" "-iregex" "-iwholename"
-              "-links" "-lname" "-ls" "-maxdepth"
-              "-mindepth" "-mmin" "-mount" "-mtime"
-              "-name" "-newer" "-nogroup" "-noignore_readdir_race"
-              "-noleaf" "-nouser" "-nowarn" "-ok"
-              "-okdir" "-path" "-perm" "-print"
-              "-print0" "-printf" "-prune" "-quit"
-              "-readable" "-regex" "-regextype" "-samefile"
-              "-size" "-true" "-type" "-uid"
-              "-used" "-user" "-version" "-warn"
-              "-wholename" "-writable" "-xdev" "-xtype")
-            nil 'identity)))
-    (while (pcomplete-here (pcomplete-entries) nil 'identity)))
-
-(require 'pcomplete-hg)
+(require 'pcomplete-extension)
 
 ;; Finally load eshell on startup.
 (add-hook 'emacs-startup-hook #'(lambda ()

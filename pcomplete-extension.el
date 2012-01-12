@@ -1,5 +1,7 @@
-;; Time-stamp: <2012-01-11 07:09:23 thierry>
-
+;; Time-stamp: <2012-01-12 14:07:06 thierry>
+;;; Hg completion
+;;
+;;
 (defun* pcomplete-get-hg-commands (&key com opts spec)
   (with-temp-buffer
     (let (h1 h2 h3)
@@ -57,7 +59,43 @@
                 (not (string= cur avder)))
            (pcomplete-here commands)))
     (while (pcomplete-here (pcomplete-entries) nil 'identity))))
-          
-(provide 'pcomplete-hg)
+
+;;; Find completion
+;;
+;;
+(defun pcomplete/find ()
+  (let ((prec (pcomplete-arg 'last -1)))
+    (cond ((and (pcomplete-match "-" 'last)
+                (string= "find" prec))
+           (pcomplete-opt "HLPDO"))
+          ((pcomplete-match "-" 'last)
+           (while (pcomplete-here
+                   '("-amin" "-anewer" "-atime" "-cmin" "-cnewer" "-context"
+                     "-ctime" "-daystart" "-delete" "-depth" "-empty" "-exec"
+                     "-execdir" "-executable" "-false" "-fls" "-follow" "-fprint"
+                     "-fprint0" "-fprintf" "-fstype" "-gid" "-group"
+                     "-help" "-ignore_readdir_race" "-ilname" "-iname"
+                     "-inum" "-ipath" "-iregex" "-iwholename"
+                     "-links" "-lname" "-ls" "-maxdepth"
+                     "-mindepth" "-mmin" "-mount" "-mtime"
+                     "-name" "-newer" "-nogroup" "-noignore_readdir_race"
+                     "-noleaf" "-nouser" "-nowarn" "-ok"
+                     "-okdir" "-path" "-perm" "-print"
+                     "-print0" "-printf" "-prune" "-quit"
+                     "-readable" "-regex" "-regextype" "-samefile"
+                     "-size" "-true" "-type" "-uid"
+                     "-used" "-user" "-version" "-warn"
+                     "-wholename" "-writable" "-xdev" "-xtype"))))
+          ((string= "-type" prec)
+           (while (pcomplete-here (list "b" "c" "d" "p" "f" "l" "s" "D"))))
+          ((string= "-xtype" prec)
+           (while (pcomplete-here (list "b" "c" "d" "p" "f" "l" "s"))))
+          ((or (string= prec "-exec")
+               (string= prec "-execdir"))
+           (while (pcomplete-here (anything-c-external-commands-list-1 t)
+                                   (pcomplete-arg 'last)))))
+    (while (pcomplete-here (pcomplete-entries) nil 'identity))))
+
+(provide 'pcomplete-extension)
 
 ;;; pcomplete-hg.el ends here
