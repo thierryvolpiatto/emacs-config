@@ -1283,7 +1283,7 @@ In this case, sexps are searched before point."
         (message "No paren error found")))) 
 
 ;; Compare file names
-(defun tv-file-name-equal-p (name1 name2 &optional dir)
+(defun file-name-equal-p (name1 name2 &optional dir)
   (let* ((n1     (file-name-as-directory
                   (file-truename (expand-file-name name1 dir))))
          (n2     (file-name-as-directory
