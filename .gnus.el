@@ -171,14 +171,15 @@ This will run in `message-send-hook'."
 ;;; spam-for-news
 ;;
 ;;
-;; (require 'spam)
-;; (spam-initialize)
-;; (setq spam-log-to-registry t)
-;; (setq spam-directory "~/Mail/probably-spam/")
-;; (setq gnus-spam-process-newsgroups
-;;       '(("^gmane\\." ((spam spam-use-gmane)))
-;;         ("^gwene\\." ((spam spam-use-bogofilter)))
-;;         ("^nnimap\\." ((spam spam-use-bogofilter)))))
+(require 'spam)
+(spam-initialize)
+(setq spam-log-to-registry t)
+(setq spam-directory "~/Mail/probably-spam/")
+(setq gnus-spam-process-newsgroups
+      '(("^gmane\\." ((spam spam-use-gmane)))
+        ("^nnimap\\." ((spam spam-use-bogofilter)
+                       (spam spam-use-blacklist)
+                       (spam spam-use-whitelist)))))
 
 ;; junk-mail 
 (when (require 'mm-decode)

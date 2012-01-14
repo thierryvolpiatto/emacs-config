@@ -1,4 +1,4 @@
-;; Time-stamp: <2012-01-12 14:07:06 thierry>
+;;; Time-stamp: <2012-01-13 06:42:33 thierry>
 ;;; Hg completion
 ;;
 ;;
@@ -63,12 +63,13 @@
 ;;; Find completion
 ;;
 ;;
+
 (defun pcomplete/find ()
   (let ((prec (pcomplete-arg 'last -1)))
-    (cond ((and (pcomplete-match "-" 'last)
+    (cond ((and (pcomplete-match "^-" 'last)
                 (string= "find" prec))
            (pcomplete-opt "HLPDO"))
-          ((pcomplete-match "-" 'last)
+          ((pcomplete-match "^-" 'last)
            (while (pcomplete-here
                    '("-amin" "-anewer" "-atime" "-cmin" "-cnewer" "-context"
                      "-ctime" "-daystart" "-delete" "-depth" "-empty" "-exec"
@@ -92,8 +93,8 @@
            (while (pcomplete-here (list "b" "c" "d" "p" "f" "l" "s"))))
           ((or (string= prec "-exec")
                (string= prec "-execdir"))
-           (while (pcomplete-here (anything-c-external-commands-list-1 t)
-                                   (pcomplete-arg 'last)))))
+           (while (pcomplete-here* (funcall pcomplete-command-completion-function)
+                                   (pcomplete-arg 'last) t))))
     (while (pcomplete-here (pcomplete-entries) nil 'identity))))
 
 (provide 'pcomplete-extension)
