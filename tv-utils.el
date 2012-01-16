@@ -1283,7 +1283,7 @@ In this case, sexps are searched before point."
         (message "No paren error found")))) 
 
 ;; Compare file names
-(defun file-equal-p (name1 name2)
+(defun tv-file-equal-p (name1 name2)
   (if (or (file-remote-p name1)
           (file-remote-p name2))
       (let* ((n1     (file-name-as-directory
@@ -1343,28 +1343,28 @@ In this case, sexps are searched before point."
     (expectations
       (desc "file name comparison: Symlink<=>truefile")
       (expect t
-        (file-equal-p "~/.emacs.el" "~/.emacs.d/emacs-config-laptop/.emacs.el"))
+        (tv-file-equal-p "~/.emacs.el" "~/.emacs.d/emacs-config-laptop/.emacs.el"))
       (desc "Local regular file name comparison")
       (expect t
-        (file-equal-p "/home/thierry/Test" "~/Test"))
+        (tv-file-equal-p "/home/thierry/Test" "~/Test"))
       (expect t
-        (file-equal-p "/home/thierry/Test" "~/Test/"))
+        (tv-file-equal-p "/home/thierry/Test" "~/Test/"))
       (expect nil
-        (file-equal-p "/home/thierry/Test" "/home/thierry/tmp/Test"))
+        (tv-file-equal-p "/home/thierry/Test" "/home/thierry/tmp/Test"))
       (expect t
-        (file-equal-p "./save-scratch.el" "~/labo/tmp/save-scratch.el"))
+        (tv-file-equal-p "./save-scratch.el" "~/labo/tmp/save-scratch.el"))
       (expect nil
-        (file-equal-p "/home/thierry/tmp" "/tmp"))
+        (tv-file-equal-p "/home/thierry/tmp" "/tmp"))
       (expect nil
-        (file-equal-p "/home/thierry/test" "/home/thierry/Test"))
+        (tv-file-equal-p "/home/thierry/test" "/home/thierry/Test"))
       (desc "Sudo file against local")
       (expect nil
-        (file-equal-p "/sudo::/home/thierry/Test" "/sudo::~/Test"))
+        (tv-file-equal-p "/sudo::/home/thierry/Test" "/sudo::~/Test"))
       (expect t
-        (file-equal-p "/sudo::/home/thierry/Test" "~/Test"))
+        (tv-file-equal-p "/sudo::/home/thierry/Test" "~/Test"))
       (desc "file name comparison: Remote with different methods")
       (expect t
-        (file-equal-p "/ssh:thievol:/home/thierry/Test" "/scpc:thievol:/home/thierry/Test")))))
+        (tv-file-equal-p "/ssh:thievol:/home/thierry/Test" "/scpc:thievol:/home/thierry/Test")))))
 
 ;; Provide 
 (provide 'tv-utils)
