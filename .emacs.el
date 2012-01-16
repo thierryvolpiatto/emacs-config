@@ -5,7 +5,7 @@
 ;; Author: thierry
 ;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
-; Time-stamp: <2012-01-12 19:21:09 thierry>
+; Time-stamp: <2012-01-16 10:40:33 thierry>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -1440,6 +1440,7 @@ With prefix arg always start and let me choose dictionary."
 
 ;; ioccur 
 (define-key org-mode-map (kbd "C-c C-o") 'ioccur-find-buffer-matching)
+(setq ioccur-fontify-buffer-p nil)
 
 ;; Enable-commands-disabled-by-default 
 (put 'narrow-to-region 'disabled nil)          ; C-x n n
@@ -1738,6 +1739,30 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
         ;; mail
         ""))
 
+(defun cat-command ()
+  "A command for cats."
+  (interactive)
+  (require 'animate)
+  (let ((mouse "
+           ___(00)
+        ~~/_____^'>
+          /    \\")
+        (h-pos (floor (/ (window-height) 2)))
+        (contents (buffer-string))
+        (mouse-buffer (generate-new-buffer "*mouse*")))
+    (save-excursion
+      (switch-to-buffer mouse-buffer)
+      (insert contents)
+      (setq truncate-lines t)
+      (animate-string mouse h-pos 0)
+      (dotimes (_ (window-width))
+        (sit-for 0.01)
+        (dotimes (n 3)
+          (anything-goto-line (+ h-pos n 2) t)
+          (move-to-column 0)
+          (insert " "))))
+    (kill-buffer mouse-buffer)))
+
 ;;; Save/restore emacs-session
 ;;
 ;;
@@ -1750,6 +1775,7 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 ;; with splash-screen etc... This important for versions of emacs starting at
 ;; Fri Jun 17 21:55:55 2011
 (add-hook 'emacs-startup-hook 'go-to-scratch 'append)
+(add-hook 'emacs-startup-hook 'cat-command 'append)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; .emacs.el ends here
