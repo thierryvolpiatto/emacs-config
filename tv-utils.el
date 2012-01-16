@@ -1283,53 +1283,88 @@ In this case, sexps are searched before point."
         (message "No paren error found")))) 
 
 ;; Compare file names
-(defun file-name-equal-p (name1 name2 &optional dir)
-  (let* ((n1     (file-name-as-directory
-                  (file-truename (expand-file-name name1 dir))))
-         (n2     (file-name-as-directory
-                  (file-truename (expand-file-name name2 dir))))
-         (rhost1 (file-remote-p n1 'host))
-         (rhost2 (file-remote-p n2 'host))
-         (lname1 (file-remote-p n1 'localname))
-         (lname2 (file-remote-p n2 'localname))
-         (rem-n1 (if rhost1
-                     (list (cons rhost1 lname1))
-                     (list (cons (system-name) n1))))
-         (rem-n2 (if rhost2
-                     (list (cons rhost2 lname2))
-                     (list (cons (system-name) n2)))))
-    (loop for (x1 . y1) in rem-n1
-          for (x2 . y2) in rem-n2
-          thereis (and (equal x1 x2)
-                       (equal y1 y2)))))
+(defun file-equal-p (name1 name2)
+  (if (or (file-remote-p name1)
+          (file-remote-p name2))
+      (let* ((n1     (file-name-as-directory
+                      (expand-file-name name1)))
+             (n2     (file-name-as-directory
+                      (expand-file-name name2)))
+             (rhost1 (file-remote-p n1 'host))
+             (rhost2 (file-remote-p n2 'host))
+             (lname1 (file-remote-p n1 'localname))
+             (lname2 (file-remote-p n2 'localname))
+             rem-n1 rem-n2)
+        (cond ((and rhost1 (not rhost2))
+               (setq rem-n1 (list (cons rhost1 (file-truename lname1))))
+               (setq rem-n2 (list (cons (system-name) (file-truename n2)))))
+              ((and (not rhost1) rhost2)
+               (setq rem-n1 (list (cons (system-name) (file-truename n1))))
+               (setq rem-n2 (list (cons rhost2 (file-truename lname2)))))
+              ((and rhost1 rhost2)
+               (setq rem-n1 (list (cons rhost1 (file-truename lname1))))
+               (setq rem-n2 (list (cons rhost2 (file-truename lname2))))))
+        (loop for (x1 . y1) in rem-n1
+              for (x2 . y2) in rem-n2
+              always (and (equal x1 x2)
+                          (equal y1 y2))))
+      (string= (file-name-as-directory
+                (file-truename (expand-file-name name1)))
+               (file-name-as-directory
+                (file-truename (expand-file-name name2))))))
+
+;; A very nice cat command from emacs-dev.
+(defun cat-command ()
+  "A command for cats."
+  (interactive)
+  (require 'animate)
+  (let ((mouse "
+           ,___(00)
+        ~~/_____,^'>
+          /    \\")
+        (h-pos (floor (/ (window-height) 2)))
+        (contents (buffer-string))
+        (mouse-buffer (generate-new-buffer "*mouse*")))
+    (save-excursion
+      (switch-to-buffer mouse-buffer)
+      (insert contents)
+      (setq truncate-lines t)
+      (animate-string mouse h-pos 0)
+      (dotimes (_ (window-width))
+        (sit-for 0.01)
+        (dotimes (n 3)
+          (anything-goto-line (+ h-pos n 2))
+          (move-to-column 0)
+          (insert " "))))
+    (kill-buffer mouse-buffer)))
 
 (dont-compile
   (when (fboundp 'expectations)
     (expectations
       (desc "file name comparison: Symlink<=>truefile")
       (expect t
-        (file-name-equal-p "~/.emacs.el" "~/.emacs.d/emacs-config-laptop/.emacs.el"))
+        (file-equal-p "~/.emacs.el" "~/.emacs.d/emacs-config-laptop/.emacs.el"))
       (desc "Local regular file name comparison")
       (expect t
-        (file-name-equal-p "/home/thierry/Test" "~/Test"))
+        (file-equal-p "/home/thierry/Test" "~/Test"))
       (expect t
-        (file-name-equal-p "/home/thierry/Test" "~/Test/"))
+        (file-equal-p "/home/thierry/Test" "~/Test/"))
       (expect nil
-        (file-name-equal-p "/home/thierry/Test" "/home/thierry/tmp/Test"))
+        (file-equal-p "/home/thierry/Test" "/home/thierry/tmp/Test"))
       (expect t
-        (file-name-equal-p "./save-scratch.el" "~/labo/tmp/save-scratch.el"))
+        (file-equal-p "./save-scratch.el" "~/labo/tmp/save-scratch.el"))
       (expect nil
-        (file-name-equal-p "/home/thierry/tmp" "/tmp"))
+        (file-equal-p "/home/thierry/tmp" "/tmp"))
       (expect nil
-        (file-name-equal-p "/home/thierry/test" "/home/thierry/Test"))
+        (file-equal-p "/home/thierry/test" "/home/thierry/Test"))
       (desc "Sudo file against local")
       (expect nil
-        (file-name-equal-p "/sudo::/home/thierry/Test" "/sudo::~/Test"))
+        (file-equal-p "/sudo::/home/thierry/Test" "/sudo::~/Test"))
       (expect t
-        (file-name-equal-p "/sudo::/home/thierry/Test" "~/Test"))
+        (file-equal-p "/sudo::/home/thierry/Test" "~/Test"))
       (desc "file name comparison: Remote with different methods")
       (expect t
-        (file-name-equal-p "/ssh:thievol:/home/thierry/Test" "/scpc:thievol:/home/thierry/Test")))))
+        (file-equal-p "/ssh:thievol:/home/thierry/Test" "/scpc:thievol:/home/thierry/Test")))))
 
 ;; Provide 
 (provide 'tv-utils)
