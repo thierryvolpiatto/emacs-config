@@ -1282,6 +1282,30 @@ In this case, sexps are searched before point."
                  (goto-char pos-err))
         (message "No paren error found")))) 
 
+;;; Predicate to test if dir1 is subdir of dir2
+(defun file-subdir-of-p (file1 file2)
+  "Check if FILE1 is a subdirectory of FILE2 on local filesystem.
+If directory FILE1 is the same than directory FILE2,return `t'."
+  (when (and (not (or (file-remote-p file1)
+                      (file-remote-p file2)))
+             (not (string= file1 "/"))
+             (file-directory-p file1)
+             (file-directory-p file2))
+    (or (string= file2 "/")
+        (loop with f1 = (expand-file-name file1)
+              with f2 = (expand-file-name file2)
+              with ls1 = (split-string f1 "/" t)
+              with ls2 = (split-string f2 "/" t)
+              for p = (string-match "^/" f1)
+              for i in ls1
+              for j in ls2
+              when (string= i j)
+              concat (if p (concat "/" i) (concat i "/"))
+              into root
+              finally return
+              (string= (file-truename (directory-file-name root))
+                       (file-truename (directory-file-name f2)))))))
+
 
 ;; Provide 
 (provide 'tv-utils)
