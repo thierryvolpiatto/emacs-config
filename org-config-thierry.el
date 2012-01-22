@@ -65,17 +65,15 @@
 ;; Todo-rules 
 ;; (find-node "(org)Fast access to TODO states")
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "|" "DONE(d)" "CANCELED(c)" "INPROGRESS(i)" "DEFERRED(s)")))
-        ;; (sequence "REPORT(r)" "BUG(b)" "KNOWNCAUSE(k)" "|" "FIXED(f)")
-        ;; (sequence "INPROGRESS(i)" "DEFERRED(s)")))
+      '((sequence "TODO(t)" "|" "INPROGRESS(i)" "DONE(d)" "CANCELED(c)" "DEFERRED(s)")))
 
 (setq org-todo-keyword-faces
       '(("TODO"      .  ((:foreground "red")))
         ("INPROGRESS" . ((:foreground "yellow")))
-        ("BUG" . (:foreground "VioletRed4" :weight bold))
-        ("FIXED" . (:foreground "SpringGreen4" :weight bold))
+        ("BUGREPORT" . ((:foreground "VioletRed4" :weight bold)))
+        ("FIXED" . ((:foreground "SpringGreen4" :weight bold)))
         ("DEFERRED"  . shadow)
-        ("CANCELED"  . (:foreground "blue" :weight bold))))
+        ("CANCELED"  . ((:foreground "blue" :weight bold)))))
         
 
 (setq org-log-done 'time)
@@ -141,7 +139,6 @@
   %a" :prepend t) ("R" "Report" entry (file+headline "~/org/agenda.org" "Development") "** REPORT %?
   %i
   %a" :prepend t) ("n" "Notes" entry (file+headline "~/org/notes.org" "General") "* %T %?
-
   %i
   %a" :prepend t) ("i" "Idea" entry (file+headline "~/org/notes.org" "New Ideas") "* %^{Title}
   %i
@@ -151,15 +148,15 @@
   %i
   %a" :prepend t) ("e" "Emacs" entry (file+headline "~/org/notes.org" "Memo Emacs") "* %^{Title}
   %i
+  %a" :prepend t) ("b" "Bash" entry (file+headline "~/org/notes.org" "Memo Bash") "* %^{Title}
+  %i
   %a" :prepend t) ("s" "Stump" entry (file+headline "~/org/notes.org" "Memo Stumpwm") "* %^{Title}
   %i
   %a" :prepend t) ("L" "Linux" entry (file+headline "~/org/notes.org" "Memo Linux") "* %^{Title}
   %i
   %a" :prepend t) ("g" "Gentoo" entry (file+headline "~/org/notes.org" "Notes Gentoo") "* %^{Title}
   %i
-  %a" :prepend t) ("w" "Web" entry (file+headline "~/org/notes.org" "Web links") "* %u %c 
-
-%i" :prepend t))))
+  %a" :prepend t) ("w" "Web" entry (file+headline "~/org/notes.org" "Web links") "* %u %c %i" :prepend t))))
 
 ;; org-annotation-helper 
 (require 'org-annotation-helper)

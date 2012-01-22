@@ -3,32 +3,54 @@
 
 ;;; Code:
 
-;; Search engine for imap and gmane (hit `G G' in group buffer)
+;;; Search engine for imap and gmane (hit `G G' in group buffer)
+;;
 (require 'nnir)
 
-;; methode-par-defaut 
+;;; Gnus default methods
+;;
+;;
+;; Methode par defaut is nntp as Gnus is a newsreader. 
 (setq gnus-select-method '(nntp "news.gmane.org"
                            (nnir-search-engine gmane)))
 
-;; Secondary methods
+;; Secondary methods are mails and possibly other nntp servers.
 (setq gnus-secondary-select-methods '((nnml "")
                                       (nnimap "gmail"
                                        (nnimap-address "imap.gmail.com"))
                                       (nnimap "yahoo"
                                        (nnimap-address "imap.mail.yahoo.com"))
+                                      ;'(nntp "news.gwene.org")
                                       ))
-;(add-to-list 'gnus-secondary-select-methods '(nntp "news.gwene.org"))
 
-;; See also:
-;; `nnimap-fetch-partial-articles' and `A C' to see entire mail.
+;; Don't load mime parts when receiving mail, only text part.
+;; Use `A-C' to see entire mail.
 ;(setq nnimap-fetch-partial-articles "text")
 
-;; Mail-directory-for-gnus 
+;; Nnml mail directory 
 (setq nnml-directory "~/Mail")
 
 ;;; Archivage-des-mails-envoyés
 ;;
 (setq gnus-message-archive-group '((when (message-news-p) "sent-news")))
+
+;;; Posting-styles - must be set correctly for
+;;  following smtp settings.
+;;
+;; [EVAL] (info "(gnus) Posting Styles")
+;; [EVAL] (info "(gnus) X-Face")
+;; [EVAL] (info "(gnus) Face")
+(setq gnus-posting-styles
+      '((".*"
+         (name "Thierry Volpiatto")
+         (address "thierry.volpiatto@gmail.com")
+         (signature-file "~/.signature"))
+        ((header "to" "thierry.volpiatto@gmail.com")
+         (from "Thierry Volpiatto <thierry.volpiatto@gmail.com>")
+         (signature-file "~/.signature"))
+        ((header "to" "tvolpiatto@yahoo.fr")
+         (from "Thierry Volpiatto <tvolpiatto@yahoo.fr>")
+         (signature-file "~/.signature"))))
 
 ;;; Smtp settings - Sending mail
 ;;
@@ -71,25 +93,6 @@
 (setq smtpmail-default-smtp-server "smtp.gmail.com"
       smtpmail-smtp-server "smtp.gmail.com"
       smtpmail-smtp-service 587)
-
-
-;; Posting-styles
-;;
-;;
-;; [EVAL] (info "(gnus) Posting Styles")
-;; [EVAL] (info "(gnus) X-Face")
-;; [EVAL] (info "(gnus) Face")
-(setq gnus-posting-styles
-      '((".*"
-         (name "Thierry Volpiatto")
-         (address "thierry.volpiatto@gmail.com")
-         (signature-file "~/.signature"))
-        ((header "to" "thierry.volpiatto@gmail.com")
-         (from "Thierry Volpiatto <thierry.volpiatto@gmail.com>")
-         (signature-file "~/.signature"))
-        ((header "to" "tvolpiatto@yahoo.fr")
-         (from "Thierry Volpiatto <tvolpiatto@yahoo.fr>")
-         (signature-file "~/.signature"))))
 
 (defvar tv-smtp-accounts
   '(("thierry.volpiatto@gmail.com"
@@ -157,16 +160,16 @@ This will run in `message-send-hook'."
 ;;; Registry
 ;;
 ;;
-(when (eq emacs-major-version 24)
-  (setq gnus-registry-max-entries 2500)
-  (gnus-registry-initialize)
+;; (when (eq emacs-major-version 24)
+;;   (setq gnus-registry-max-entries 2500)
+;;   (gnus-registry-initialize)
 
-  (setq gnus-registry-split-strategy 'majority
-        gnus-registry-ignored-groups '(("nntp" t)
-                                       ("nnrss" t))
-        gnus-registry-max-entries 500000
-        ;; this is the default
-        gnus-registry-track-extra '(sender subject)))
+;;   (setq gnus-registry-split-strategy 'majority
+;;         gnus-registry-ignored-groups '(("nntp" t)
+;;                                        ("nnrss" t))
+;;         gnus-registry-max-entries 500000
+;;         ;; this is the default
+;;         gnus-registry-track-extra '(sender subject)))
 
 ;;; spam-for-news
 ;;
@@ -198,7 +201,9 @@ This will run in `message-send-hook'."
 
 ;; Remove white space in filenames
 (setq mm-file-name-rewrite-functions
-      '(mm-file-name-trim-whitespace
+      '(mm-file-name-delete-control
+        mm-file-name-delete-gotchas
+        mm-file-name-trim-whitespace
         mm-file-name-collapse-whitespace
         mm-file-name-replace-whitespace))
 
@@ -339,9 +344,9 @@ This will run in `message-send-hook'."
 ;;  ("gmane.spam.detected" -1000 nil s)))
 (setq gnus-summary-expunge-below -999)
 
-;; gnus-demon (start with `gnus-demon-init') 
+;; gnus-demon (start with `gnus-demon-init')
 ;; Scan for new news
-;(gnus-demon-add-handler 'gnus-demon-scan-news 5 1)
+;; (gnus-demon-add-handler 'gnus-demon-scan-news 5 1)
 
 ;; Scroll-other-window 
 (define-key gnus-summary-mode-map (kbd "<C-M-down>") #'(lambda ()

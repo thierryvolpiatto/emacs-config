@@ -5,7 +5,7 @@
 ;; Author: thierry
 ;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
-; Time-stamp: <2012-01-16 10:40:33 thierry>
+; Time-stamp: <2012-01-21 07:34:51 thierry>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -1358,7 +1358,8 @@ With prefix arg always start and let me choose dictionary."
     (next-line)))
 
 (when (require 'newsticker)
-  (define-key newsticker-mode-map (kbd "Q") 'newsticker-quit-and-stop))
+  (define-key newsticker-mode-map (kbd "Q") 'newsticker-quit-and-stop)
+  (define-key newsticker-mode-map (kbd "b") 'newsticker-previous-feed))
 
 (add-hook 'newsticker-mode-hook #'(lambda () (setq bidi-display-reordering nil)))
 
@@ -1440,7 +1441,7 @@ With prefix arg always start and let me choose dictionary."
 
 ;; ioccur 
 (define-key org-mode-map (kbd "C-c C-o") 'ioccur-find-buffer-matching)
-(setq ioccur-fontify-buffer-p nil)
+;(setq ioccur-fontify-buffer-p nil)
 
 ;; Enable-commands-disabled-by-default 
 (put 'narrow-to-region 'disabled nil)          ; C-x n n

@@ -147,14 +147,18 @@
 ;;; Debugging
 ;;
 ;;
-(defun anything-switch-to-log ()
+(defun anything-debug-switch-to-log ()
   (interactive)
-  (switch-to-buffer "*Anything Log*"))
+  (switch-to-buffer "*Anything Log*")
+  (set-buffer "*Anything Log*")
+  (goto-char (point-min))
+  (re-search-forward "[\+]*$" nil t))
 
-(defun anything-toggle-debug ()
+(defun anything-debug-toggle ()
   (interactive)
   (setq anything-debug (not anything-debug))
-  (message "Anything Debug is now %s" (if anything-debug "Enabled" "Disabled")))
+  (message "Anything Debug is now %s"
+           (if anything-debug "Enabled" "Disabled")))
 
 ;;; Enable ac-mode
 ;;
