@@ -157,34 +157,10 @@ This will run in `message-send-hook'."
         (delete-region (point) (point-at-eol))
         (insert new-from))))
 
-;;; Registry
-;;
-;;
-;; (when (eq emacs-major-version 24)
-;;   (setq gnus-registry-max-entries 2500)
-;;   (gnus-registry-initialize)
 
-;;   (setq gnus-registry-split-strategy 'majority
-;;         gnus-registry-ignored-groups '(("nntp" t)
-;;                                        ("nnrss" t))
-;;         gnus-registry-max-entries 500000
-;;         ;; this is the default
-;;         gnus-registry-track-extra '(sender subject)))
-
-;;; spam-for-news
+;;; Junk-mail
 ;;
 ;;
-(require 'spam)
-(spam-initialize)
-(setq spam-log-to-registry t)
-(setq spam-directory "~/Mail/probably-spam/")
-(setq gnus-spam-process-newsgroups
-      '(("^gmane\\." ((spam spam-use-gmane)))
-        ("^nnimap\\." ((spam spam-use-bogofilter)
-                       (spam spam-use-blacklist)
-                       (spam spam-use-whitelist)))))
-
-;; junk-mail 
 (when (require 'mm-decode)
   (setq mm-discouraged-alternatives
         '("text/html"
@@ -199,7 +175,9 @@ This will run in `message-send-hook'."
           ".*/signed"
           "multipart/encrypted")))
 
-;; Remove white space in filenames
+;;; Remove white space in filenames
+;;
+;;
 (setq mm-file-name-rewrite-functions
       '(mm-file-name-delete-control
         mm-file-name-delete-gotchas
@@ -207,7 +185,9 @@ This will run in `message-send-hook'."
         mm-file-name-collapse-whitespace
         mm-file-name-replace-whitespace))
 
-;; Show-all-these-headers 
+;;; Show-all-these-headers
+;;
+;;
 (setq gnus-visible-headers
       '("^From:"
 	"^Newsgroups:"
@@ -231,7 +211,9 @@ This will run in `message-send-hook'."
 	"^X-User-Agent:"
 	"^User-Agent:"))
 
-;; Order-of-headers 
+;;; Order-of-headers
+;;
+;;
 (setq gnus-sorted-header-list '("^From:"
                                 "^Subject:"
                                 "^Summary:"
@@ -245,7 +227,7 @@ This will run in `message-send-hook'."
                                 "^X-Mailer:"
                                 "^X-Newsreader:"))
 
-;; ne-pas-demander-si-on-splitte-les-pa 
+;; Ne pas demander si on splitte les pa 
 (setq message-send-mail-partially-limit nil)
 
 ;;; Html renderer
