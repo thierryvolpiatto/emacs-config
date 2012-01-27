@@ -1,0 +1,7 @@
+syntax: glob
+*.orig
+*.rej
+*~
+*.elc
+ANYTHING-TAG-FILE
+TAGS
