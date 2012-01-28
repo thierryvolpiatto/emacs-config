@@ -5,7 +5,7 @@
 ;; Author: thierry
 ;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
-; Time-stamp: <2012-01-21 07:34:51 thierry>
+; Time-stamp: <2012-01-28 07:40:20 thierry>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -51,6 +51,7 @@
 (dolist (i '("/usr/local/share/emacs/site-lisp"
              "/usr/local/share/emacs/site-lisp/auctex"
 	     "~/elisp/"
+             "~/elisp/dvc/lisp/"
 	     ;"~/elisp/auctex"
 	     "~/elisp/autoconf-mode"
 	     "~/elisp/bzr"
