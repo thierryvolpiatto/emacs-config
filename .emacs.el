@@ -5,7 +5,7 @@
 ;; Author: thierry
 ;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
-; Time-stamp: <2012-01-28 07:40:20 thierry>
+; Time-stamp: <2012-01-30 10:24:13 thierry>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -537,7 +537,7 @@ If you want the mouse banished to a different corner set
                      top-or-bottom-dist)))) ; distance from top/bottom
   (mouse-avoidance-mode 'banish))
 
-;;; Emacs transparency - only with compiz.
+;;; Emacs transparency.
 ;;
 ;;
 (when (window-system)
@@ -553,39 +553,39 @@ With a prefix arg decrease transparency."
         (message "Alpha[%s]" mod-alpha))))
   (global-set-key (kbd "C-8") 'tv-transparency-modify))
 
-;;; special buffer display.
+;;; Special buffer display.
 ;;
 ;;
 (setq special-display-buffer-names `((,(help-buffer)
-                                     (minibuffer . nil)
-                                     (width . 80)
-                                     (height . 24)
-                                     (left-fringe . 0)
-                                     (border-width . 0)
-                                     (menu-bar-lines . 0)
-                                     (tool-bar-lines . 0)
-                                     (unsplittable . t)
-                                     (top . 24)
-                                     (left . 450)
-                                     (background-color . "LightSteelBlue")
-                                     (foreground-color . "black")
-                                     (alpha . nil)
-                                     (fullscreen . nil))
+                                       (minibuffer . nil)
+                                       (width . 80)
+                                       (height . 24)
+                                       (left-fringe . 0)
+                                       (border-width . 0)
+                                       (menu-bar-lines . 0)
+                                       (tool-bar-lines . 0)
+                                       (unsplittable . t)
+                                       (top . 24)
+                                       (left . 450)
+                                       (background-color . "Lightsteelblue1")
+                                       (foreground-color . "black")
+                                       (alpha . nil)
+                                       (fullscreen . nil))
                                      ("*Compile-Log*"
-                                     (minibuffer . nil)
-                                     (width . 85)
-                                     (height . 24)
-                                     (left-fringe . 0)
-                                     (border-width . 0)
-                                     (menu-bar-lines . 0)
-                                     (tool-bar-lines . 0)
-                                     (unsplittable . t)
-                                     (top . 24)
-                                     (left . 450)
-                                     (background-color . "Palevioletred1")
-                                     (foreground-color . "black")
-                                     (alpha . nil)
-                                     (fullscreen . nil))
+                                      (minibuffer . nil)
+                                      (width . 85)
+                                      (height . 24)
+                                      (left-fringe . 0)
+                                      (border-width . 0)
+                                      (menu-bar-lines . 0)
+                                      (tool-bar-lines . 0)
+                                      (unsplittable . t)
+                                      (top . 24)
+                                      (left . 450)
+                                      (background-color . "Palevioletred1")
+                                      (foreground-color . "black")
+                                      (alpha . nil)
+                                      (fullscreen . nil))
                                      ("*Dict*"
                                       (minibuffer . nil)
                                       (width . 80)
@@ -623,7 +623,7 @@ With a prefix arg decrease transparency."
   (dolist (i bookmark-alist)
     (pp i (current-buffer))))
 
-;;; emacs-w3m
+;;; Emacs-w3m
 ;;
 ;;
 (setq w3m-icon-directory "~/elisp/emacs-w3m/icons")
@@ -1372,13 +1372,12 @@ With prefix arg always start and let me choose dictionary."
 ;; No messages
 (setq tramp-message-show-message nil)
 
-;; Allow connecting as root on all remote Linux machines except this one (if allowed).
+;; Allow connecting as root on all remote Linux machines except this one.
 ;; Use e.g /sudo:host:/path
 (add-to-list 'tramp-default-proxies-alist
              '(nil "\\`root\\'" "/ssh:%h:"))
 (add-to-list 'tramp-default-proxies-alist
              '((regexp-quote (system-name)) nil nil))
-
 
 ;; Mode-lecture-photo-auto 
 (auto-image-file-mode 1)
