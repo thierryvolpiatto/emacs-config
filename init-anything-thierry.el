@@ -49,15 +49,11 @@
 ;;;; anything-ipython
 ;;
 ;;
-;; (require 'anything-ipython)
+(require 'anything-ipython)
 
-;; (when (require 'anything-show-completion nil t)
-;;   (use-anything-show-completion 'anything-ipython-complete
-;;                                 '(length initial-pattern)))
-
-;; (define-key py-mode-map (kbd "M-<tab>") 'anything-ipython-complete)
-;; (define-key py-shell-map (kbd "M-<tab>") 'anything-ipython-complete)
-;; (define-key py-mode-map (kbd "C-c M") 'anything-ipython-import-modules-from-buffer)
+(define-key py-mode-map (kbd "M-<tab>") 'anything-ipython-complete)
+(define-key py-shell-map (kbd "M-<tab>") 'anything-ipython-complete)
+(define-key py-mode-map (kbd "C-c M") 'anything-ipython-import-modules-from-buffer)
 
 
 ;;;; Anything-faces
@@ -120,7 +116,6 @@
 (setq anything-google-suggest-use-curl-p            t
       anything-kill-ring-threshold                  1
       anything-raise-command                        "wmctrl -xa %s"
-      ;anything-allow-skipping-current-buffer        nil
       anything-yaoddmuse-use-cache-file             t
       anything-scroll-amount                        1
       anything-candidate-number-limit               100
@@ -137,10 +132,8 @@
       anything-ff-transformer-show-only-basename    t
       anything-c-default-external-file-browser      "thunar"
       ;anything-c-pdfgrep-default-read-command       "evince --page-label=%p '%f'"
-      ;anything-surfraw-default-browser-function     'tv-browse-url-w3m
       anything-c-etags-use-regexp-search            nil
       anything-c-use-adaptative-sorting             t
-      ;anything-save-configuration-functions         '(set-frame-configuration . current-frame-configuration)
       ;anything-c-google-suggest-default-browser-function 'browse-url-uzbl
       )
 
