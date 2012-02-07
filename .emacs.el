@@ -5,7 +5,7 @@
 ;; Author: thierry
 ;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
-; Time-stamp: <2012-01-30 10:24:13 thierry>
+; Time-stamp: <2012-02-07 17:44:29 thierry>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -44,6 +44,7 @@
 (add-to-list 'Info-directory-list "/usr/local/share/info-auctex")
 (add-to-list 'Info-directory-list "/usr/share/info")
 (add-to-list 'Info-directory-list "~/elisp/info")
+(add-to-list 'Info-directory-list "~/elisp/info/eshell-doc")
 
 (when (< emacs-major-version 24)
   (add-to-list 'load-path "/home/thierry/elisp/ngnus/lisp/gnus-fallback-lib/eieio"))
@@ -1368,6 +1369,9 @@ With prefix arg always start and let me choose dictionary."
 ;;
 ;(require 'tramp)
 ;(setq tramp-default-method "ssh") ; methode par defaut
+
+;; Ange-ftp
+(setq ange-ftp-try-passive-mode t)
 
 ;; No messages
 (setq tramp-message-show-message nil)
