@@ -5,7 +5,7 @@
 ;; Author: thierry
 ;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
-; Time-stamp: <2012-02-07 17:44:29 thierry>
+; Time-stamp: <2012-02-08 08:24:39 thierry>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -1370,9 +1370,6 @@ With prefix arg always start and let me choose dictionary."
 ;(require 'tramp)
 ;(setq tramp-default-method "ssh") ; methode par defaut
 
-;; Ange-ftp
-(setq ange-ftp-try-passive-mode t)
-
 ;; No messages
 (setq tramp-message-show-message nil)
 
@@ -1382,6 +1379,11 @@ With prefix arg always start and let me choose dictionary."
              '(nil "\\`root\\'" "/ssh:%h:"))
 (add-to-list 'tramp-default-proxies-alist
              '((regexp-quote (system-name)) nil nil))
+
+;;; Ange-ftp
+;;
+;;
+(setq ange-ftp-passive-host-alist '(("mafreebox.freebox.fr" . "on")))
 
 ;; Mode-lecture-photo-auto 
 (auto-image-file-mode 1)
