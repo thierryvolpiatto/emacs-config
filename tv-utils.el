@@ -1057,32 +1057,33 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
 ;; switch to emacs version
 (defun eselect-emacs ()
   (interactive)
-  (when (y-or-n-p (format "Really switch from %s to another emacs? " emacs-version))
-    (loop for i in '("b2m" "ctags" "ebrowse" "emacs" "emacsclient" "etags" "grep-changelog" "rcs-checkin")
-       do (delete-file (expand-file-name i "/sudo::/usr/local/bin/")))
-    (delete-file "/sudo::/usr/local/share/info")
+  (let ((execs '("b2m" "ctags" "ebrowse" "emacs" "emacsclient" "etags" "grep-changelog" "rcs-checkin")))
     (let* ((src-bin (expand-file-name (anything-comp-read
                                        "EmacsVersion: "
                                        (directory-files "/sudo::/usr/local/sbin"
                                                         nil directory-files-no-dot-files-regexp))
                                       "/sudo::/usr/local/sbin"))
-           (bin-list (loop for i in '("b2m" "ctags"
-                                      "ebrowse" "emacs"
-                                      "emacsclient" "etags"
-                                      "grep-changelog" "rcs-checkin")
-                                       collect (expand-file-name
-                                                i src-bin)))
+           (bin-list (loop for i in execs
+                           for full = (expand-file-name i src-bin)
+                           when (file-exists-p full)
+                           collect full))
            (src-info (anything-comp-read
                       "EmacsInfoVersion: "
                       (loop for i in
-                           (directory-files "/sudo::/usr/local/share" t directory-files-no-dot-files-regexp)
-                           when (string-match "info" i) collect i))))
-      (anything-dired-action "/sudo::/usr/local/bin/"
-                             :action 'symlink
-                             :files bin-list)
-      (anything-dired-action "/sudo::/usr/local/share/info"
-                             :action 'symlink :files (list src-info))
-      (message "Switched to %s version" (file-name-nondirectory src-bin)))))
+                            (directory-files "/sudo::/usr/local/share" t directory-files-no-dot-files-regexp)
+                            when (string-match "info.*[0-9]+\\'" i) collect i))))
+      (when (y-or-n-p (format "Really switch from %s to another emacs? " emacs-version))
+        (loop for i in execs
+              for full = (expand-file-name i "/sudo::/usr/local/bin/")
+              when (file-exists-p full)
+              do (delete-file (expand-file-name i "/sudo::/usr/local/bin/")))
+        (delete-file "/sudo::/usr/local/share/info")
+        (anything-dired-action "/sudo::/usr/local/bin/"
+                               :action 'symlink
+                               :files bin-list)
+        (anything-dired-action "/sudo::/usr/local/share/info"
+                               :action 'symlink :files (list src-info))
+        (message "Switched to %s version" (file-name-nondirectory src-bin))))))
 
 ;; Permutations
 

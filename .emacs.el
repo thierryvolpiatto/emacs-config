@@ -5,7 +5,7 @@
 ;; Author: thierry
 ;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
-; Time-stamp: <2012-02-08 08:24:39 thierry>
+; Time-stamp: <2012-02-09 20:30:23 thierry>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -1380,6 +1380,10 @@ With prefix arg always start and let me choose dictionary."
 (add-to-list 'tramp-default-proxies-alist
              '((regexp-quote (system-name)) nil nil))
 
+;; Connect to my freebox as 'freebox' user.
+(add-to-list 'tramp-default-user-alist
+             '("ftp" "\\`mafreebox\\.freebox\\.fr\\'" "freebox"))
+
 ;;; Ange-ftp
 ;;
 ;;
@@ -1729,7 +1733,7 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 (setq display-time-string-forms
       '(;; date
         (if (and (not display-time-format) display-time-day-and-date)
-            (format-time-string "[%a %b %e " now)
+            (format-time-string "[%a %e %b " now)
             "")
         ;; time
         (concat
