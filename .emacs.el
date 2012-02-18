@@ -5,7 +5,7 @@
 ;; Author: thierry
 ;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
-; Time-stamp: <2012-02-09 20:30:23 thierry>
+; Time-stamp: <2012-02-17 18:12:33 thierry>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -1387,7 +1387,8 @@ With prefix arg always start and let me choose dictionary."
 ;;; Ange-ftp
 ;;
 ;;
-(setq ange-ftp-passive-host-alist '(("mafreebox.freebox.fr" . "on")))
+(setq ange-ftp-passive-host-alist '(("mafreebox.freebox.fr" . "on")
+                                    ("dl.free.fr" . "on")))
 
 ;; Mode-lecture-photo-auto 
 (auto-image-file-mode 1)
