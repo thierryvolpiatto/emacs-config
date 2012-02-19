@@ -51,82 +51,79 @@
                                                 (format "%s%s-csv2org.org"
                                                         csv2org-output-dir
                                                         (tv-cur-date-string)))))
-  (csv2org1 fname output-file))
+  (csv2org-1 fname output-file))
 
-(defun csv2org1 (fname output-file)
+(defun csv2org-1 (fname output-file)
   "Convert a csv file to an org table."
   (if (string= (file-name-extension fname) "csv")
-      (save-excursion
-        (unwind-protect
-             (progn
-               ;(find-file (format "%s%s-csv2org.org" csv2org-output-dir (tv-cur-date-string)))
-               (find-file output-file)
-               (insert-file-contents fname)
-               (goto-char (point-min))
-               (let* ((info-list (split-string (buffer-substring (point) (point-at-eol))";"))
-                      (account (nth 0 info-list))
-                      (from (nth 1 info-list))
-                      (to (nth 2 info-list))
-                      (nentries (nth 3 info-list))
-                      (date (nth 4 info-list))
-                      (bal (nth 5 info-list)))
-                 (delete-region (point) (point-at-eol))
-                 ;; make the info section
-                 (insert "* Infos\n")
-                 (insert (format "  - Date: %s\n" date))
-                 (insert (format "  - Account%s\n" account))
-                 (insert (format "  - From %s to %s\n" from to))
-                 (insert (format "  - Entries: %s\n" nentries))
-                 (insert (format "  - Solde: %s\n" (propertize bal 'face 'traverse-match-face)))
-                 (insert "* Balance\n")
-                 ;; replace all ; with |
-                 (while (re-search-forward ";" nil t)
-                   (replace-match "\|"))
-                 (goto-char (point-min))
-                 (forward-line 9)
-                 ;; Add | at beginning of lines
-                 (while (not (eobp))
-                   (beginning-of-line)
-                   (insert "|")
-                   (forward-line))
-                 (goto-char (point-min))
-                 ;; remove long entry in column
-                 (while (re-search-forward "\\(de l'opération\\)" nil t)
-                   (delete-char -14))
-                 (end-of-line)
-                 ;; Add the P column
-                 (insert "|P")
-                 (newline)
-                 ;; Insert narrow column and active formulas
-                 (insert "|||<6>|=|=|")
-                 ;; add a column for negative entries
-                 (while (re-search-forward "\\(\|-[0-9]\\)" nil t)
-                   (let ((num (match-string 0)))
-                     (delete-char (- 0 (length num)))
-                     (insert (concat "|" num))))
-                 (goto-char (point-min))
-                 ;; Replace Devise with Debit
-                 (while (re-search-forward "Devise" nil t)
-                   (replace-match "Debit"))
-                 (goto-char (point-min))
-                 ;; Remove all EUR
-                 (while (re-search-forward "EUR" nil t)
-                   (replace-match ""))
-                 ;; replace all ,
-                 (while (re-search-backward "," nil t)
-                   (replace-match "\."))
-                 ;; replace montant with credit
-                 (goto-char (point-min))
-                 (while (re-search-forward "Montant" nil t)
-                   (replace-match "Credit"))
-                 ;; Go to end and insert keyword and formulas
-                 (goto-char (point-max))
-                 (setq nentries (int-to-string (+ (string-to-number nentries) 2)))
-                 (insert (format "\n\n#+TBLFM: $4=vsum(@3$4..@%s$4);EN::$5=vsum(@3$5..@%s$5)\n#+STARTUP: align"
-                                 nentries
-                                 nentries))))
-          (save-buffer)
-          (kill-buffer)))
+      (with-current-buffer (find-file-noselect output-file)
+        (insert-file-contents fname)
+        (goto-char (point-min))
+        (let* ((info-list (split-string (buffer-substring (point) (point-at-eol))";"))
+               (account (nth 0 info-list))
+               (from (nth 1 info-list))
+               (to (nth 2 info-list))
+               (nentries (nth 3 info-list))
+               (date (nth 4 info-list))
+               (bal (nth 5 info-list)))
+          (delete-region (point) (point-at-eol))
+          ;; make the info section
+          (insert "* Infos\n")
+          (insert (format "  - Date: %s\n" date))
+          (insert (format "  - Account%s\n" account))
+          (insert (format "  - From %s to %s\n" from to))
+          (insert (format "  - Entries: %s\n" nentries))
+          (insert (format "  - Solde: %s\n" (propertize bal 'face 'traverse-match-face)))
+          (insert "* Balance\n")
+          ;; replace all ; with |
+          (while (re-search-forward ";" nil t)
+            (replace-match "\|"))
+          (goto-char (point-min))
+          (forward-line 9)
+          ;; Add | at beginning of lines
+          (while (not (eobp))
+            (beginning-of-line)
+            (insert "|")
+            (forward-line))
+          (goto-char (point-min))
+          ;; remove long entry in column
+          (while (or (search-forward "de l'opÃ©ration" nil t)
+                     (search-forward "de l'opération" nil t))
+            (replace-match ""))
+          (end-of-line)
+          ;; Add the P column
+          (insert "|P")
+          (newline)
+          ;; Insert narrow column and active formulas
+          (insert "|||<6>|=|=|")
+          ;; add a column for negative entries
+          (while (re-search-forward "\\(\|-[0-9]\\)" nil t)
+            (let ((num (match-string 0)))
+              (delete-char (- 0 (length num)))
+              (insert (concat "|" num))))
+          (goto-char (point-min))
+          ;; Replace Devise with Debit
+          (while (re-search-forward "Devise" nil t)
+            (replace-match "Debit"))
+          (goto-char (point-min))
+          ;; Remove all EUR
+          (while (re-search-forward "EUR" nil t)
+            (replace-match ""))
+          ;; replace all ,
+          (while (re-search-backward "," nil t)
+            (replace-match "\."))
+          ;; replace montant with credit
+          (goto-char (point-min))
+          (while (re-search-forward "Montant" nil t)
+            (replace-match "Credit"))
+          ;; Go to end and insert keyword and formulas
+          (goto-char (point-max))
+          (setq nentries (int-to-string (+ (string-to-number nentries) 2)))
+          (insert (format "\n\n#+TBLFM: $4=vsum(@3$4..@%s$4);EN::$5=vsum(@3$5..@%s$5)\n#+STARTUP: align"
+                          nentries
+                          nentries)))
+        (save-buffer)
+        (kill-buffer))
       (message "Hoops!it seem %s is not a csv file!" fname)))
 
 (defun csv2org-fast (csvfname)
@@ -137,7 +134,7 @@
         (progn
           (when (file-exists-p outfile)
           (delete-file outfile))
-          (csv2org1 csvfname outfile)
+          (csv2org-1 csvfname outfile)
           (find-file outfile))
         (error "Error: %s is not a valid csv file"
                (file-name-nondirectory csvfname)))))
