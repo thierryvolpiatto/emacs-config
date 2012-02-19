@@ -79,41 +79,40 @@
           (save-excursion
             (while (re-search-forward ";" nil t) (replace-match "\|")))
           (while (re-search-forward "^\n$" nil t) (forward-line))
-          (while (not (eobp))
-            (beginning-of-line)
-            (insert "|")
-            (forward-line))
-          (goto-char (point-min))
+          ;; Insert all | at bol
+          (save-excursion
+            (while (not (eobp))
+              (beginning-of-line)
+              (insert "|")
+              (forward-line)))
           ;; remove long entry in column
           (while (or (search-forward "de l'opÃ©ration" nil t)
                      (search-forward "de l'opération" nil t))
             (replace-match ""))
           (end-of-line)
           ;; Add the P column
-          (insert "|P")
-          (newline)
-          ;; Insert narrow column and active formulas
-          (insert "|||<6>|=|=|")
-          ;; add a column for negative entries
-          (while (re-search-forward "\\(\|-[0-9]\\)" nil t)
-            (let ((num (match-string 0)))
-              (delete-char (- 0 (length num)))
-              (insert (concat "|" num))))
-          (goto-char (point-min))
+          (save-excursion
+            (insert "|P\n")
+            ;; Insert narrow column and active formulas
+            (insert "|||<6>|=|=|")
+            ;; add a column for negative entries
+            (while (re-search-forward "\\(\|-[0-9]\\)" nil t)
+              (let ((num (match-string 0)))
+                (delete-char (- 0 (length num)))
+                (insert (concat "|" num)))))
           ;; Replace Devise with Debit
-          (while (re-search-forward "Devise" nil t)
-            (replace-match "Debit"))
-          (goto-char (point-min))
-          ;; Remove all EUR
-          (while (re-search-forward "EUR" nil t)
-            (replace-match ""))
-          ;; replace all ,
-          (while (re-search-backward "," nil t)
-            (replace-match "\."))
-          ;; replace montant with credit
-          (goto-char (point-min))
-          (while (re-search-forward "Montant" nil t)
-            (replace-match "Credit"))
+          (save-excursion
+            (while (re-search-forward "Devise" nil t)
+              (replace-match "Debit"))
+            ;; Remove all EUR
+            (while (re-search-forward "EUR" nil t)
+              (replace-match ""))
+            ;; replace all ,
+            (while (re-search-backward "," nil t)
+              (replace-match "\."))
+            ;; replace montant with credit
+            (while (re-search-forward "Montant" nil t)
+              (replace-match "Credit")))
           ;; Go to end and insert keyword and formulas
           (goto-char (point-max))
           (setq nentries (int-to-string (+ (string-to-number nentries) 2)))
