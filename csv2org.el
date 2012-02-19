@@ -76,11 +76,9 @@
           (insert (format "  - Solde: %s\n" (propertize bal 'face 'traverse-match-face)))
           (insert "* Balance\n")
           ;; replace all ; with |
-          (while (re-search-forward ";" nil t)
-            (replace-match "\|"))
-          (goto-char (point-min))
-          (forward-line 9)
-          ;; Add | at beginning of lines
+          (save-excursion
+            (while (re-search-forward ";" nil t) (replace-match "\|")))
+          (while (re-search-forward "^\n$" nil t) (forward-line))
           (while (not (eobp))
             (beginning-of-line)
             (insert "|")
