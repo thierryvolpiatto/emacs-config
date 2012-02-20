@@ -5,7 +5,7 @@
 ;; Author: thierry
 ;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
-; Time-stamp: <2012-02-17 18:12:33 thierry>
+; Time-stamp: <2012-02-20 08:19:07 thierry>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -1575,8 +1575,8 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 
 
 ;; Undo-tree 
-;(require 'undo-tree)
-;(global-undo-tree-mode)
+(require 'undo-tree)
+(global-undo-tree-mode)
 
 ;; Calendar-and-diary 
 (setq holiday-bahai-holidays nil)
