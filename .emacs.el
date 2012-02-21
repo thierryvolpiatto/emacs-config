@@ -5,7 +5,7 @@
 ;; Author: thierry
 ;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
-; Time-stamp: <2012-02-20 08:19:07 thierry>
+; Time-stamp: <2012-02-21 17:35:58 thierry>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -435,9 +435,11 @@
                                 (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
                                 (cursor-color . "red")))
 
-    (setq default-frame-alist '((foreground-color . "Wheat")
+    (setq default-frame-alist `((foreground-color . "Wheat")
                                 (background-color . "DarkSlateGray")
                                 (alpha . nil)
+                                ;; New frames go in right corner.
+                                (left . ,(- (* (window-width) 8) 160)) ; Chars are 8 bits long.
                                 (vertical-scroll-bars . nil)
                                 (tool-bar-lines . 0)
                                 (menu-bar-lines . 0)
