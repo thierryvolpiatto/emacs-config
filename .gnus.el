@@ -233,17 +233,20 @@ This will run in `message-send-hook'."
 ;;; Html renderer
 ;;
 ;;
+;; shr
+;;
 (setq shr-color-visible-luminance-min 75)
-(setq shr-width nil) ; Use all screen.
+(setq shr-width nil) ; Use all window width.
 (setq mm-text-html-renderer 'shr)
-;(setq mm-text-html-renderer 'w3m)
-;(setq mm-text-html-renderer 'gnus-article-html)
-;(setq mm-inline-text-html-with-images t)
 
-;; delete-incoming-mail-source-files-after-splitting 
-;(setq mail-source-delete-incoming t)
+;; w3m
+;;
+;; (setq mm-text-html-renderer 'w3m)
 
-;; passage-à-la-ligne-automatique 
+;; (setq mm-inline-text-html-with-images t)
+
+;; Passage à la ligne automatique
+;;
 (defun my-message-mode-setup ()
   (setq fill-column 72)
   (turn-on-auto-fill))
