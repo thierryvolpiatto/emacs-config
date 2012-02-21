@@ -1,4 +1,4 @@
-;;; Time-stamp: <2012-01-13 06:42:33 thierry>
+;;; Time-stamp: <2012-02-21 08:43:51 thierry>
 ;;; Hg completion
 ;;
 ;;
@@ -55,6 +55,13 @@
            (while (pcomplete-here special)))
           ((string-match-p "-" last)
            (pcomplete-here options))
+          ((string-match-p "qqueue" avder)
+           (let ((queues (with-temp-buffer
+                           (apply #'call-process "hg" nil t nil
+                                  (list "qqueue" "-l"))
+                           (loop for i in (split-string (buffer-string) "\n" t)
+                                 append (list (car (split-string i " (")))))))
+             (while (pcomplete-here queues))))
           ((and (string= cur "hg")
                 (not (string= cur avder)))
            (pcomplete-here commands)))
