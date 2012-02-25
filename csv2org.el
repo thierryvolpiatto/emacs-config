@@ -57,6 +57,7 @@
   "Convert a csv file to an org table."
   (if (string= (file-name-extension fname) "csv")
       (with-current-buffer (find-file-noselect output-file)
+        (erase-buffer)
         (insert-file-contents fname)
         (goto-char (point-min))
         (let* ((info-list (split-string (buffer-substring (point) (point-at-eol))";"))
