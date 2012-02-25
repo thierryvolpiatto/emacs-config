@@ -5,7 +5,7 @@
 ;; Author: thierry
 ;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
-; Time-stamp: <2012-02-21 17:35:58 thierry>
+; Time-stamp: <2012-02-24 09:59:08 thierry>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -1563,10 +1563,13 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 (add-hook 'lisp-mode-hook 'align-let-keybinding)
 
 
-;; line-move-visual: next-line go to real next line when set to nil.
+;;; line-move-visual.
+;;
+;; next-line go to real next line when set to nil.
 ;; When nil scrolling performances are better in files with long lines.
 ;; When non--nil move to next visual line. (slow)
 (setq line-move-visual nil)
+;(add-hook 'html-mode-hook 'visual-line-mode)
 
 ;; xml-weather 
 ;; (setq xml-weather-default-icons-directory "~/xml-weather-icons/icons/31x31")
