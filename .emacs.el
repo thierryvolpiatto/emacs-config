@@ -5,7 +5,7 @@
 ;; Author: thierry
 ;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
-; Time-stamp: <2012-02-24 09:59:08 thierry>
+; Time-stamp: <2012-02-27 14:33:11 thierry>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -230,6 +230,7 @@
 (tv-require 'iterator)
 (tv-require 'google-weather)
 (tv-require 'org-google-weather)
+(tv-require 'files-extension)
 
 ;;; Global keys
 ;;
