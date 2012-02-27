@@ -253,7 +253,7 @@ ESC or `q' to not overwrite any of the remaining files,
 
 (defun dired-copy-file-recursive (from to ok-flag &optional
 				       preserve-time top recursive)
-  (when (file-subdir-of-p to from)
+  (when (file-subdir-of-p to from t)
     (error "Cannot copy `%s' into its subdirectory `%s'" from to))
   (let ((attrs (file-attributes from)))
     (if (and recursive
