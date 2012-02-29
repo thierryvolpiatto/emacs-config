@@ -28,28 +28,10 @@
 
 (require 'cl)
 
-;;; Global keys
+
+;;; Sshfs
 ;;
 ;;
-(global-set-key (kbd "<f5> r")    'find-file-as-root)
-(global-set-key (kbd "C-c Y")     'tv-yank-from-screen)
-(global-set-key (kbd "C-c C")     'tv-copy-for-screen)
-(global-set-key [C-left]          'screen-top)
-(global-set-key [C-right]         'screen-bottom)
-(global-set-key (kbd "C-<")       'other-window-backward)
-(global-set-key (kbd "C->")       'other-window)
-(global-set-key (kbd "<f11> s c") 'go-to-scratch)
-(global-set-key (kbd "C-x r a")   'tv-append-to-register)
-(global-set-key (kbd "C-x r L")   'list-registers)
-(global-set-key (kbd "C-c t r")   'translate-at-point)
-(global-set-key (kbd "<f5> c")    'tv-toggle-calendar)
-(global-set-key (kbd "C-c h e")   'tv-tail-echo-area-messages)
-(global-set-key (kbd "C-c k")     'tv-kill-backward)
-(global-set-key (kbd "C-d")       'tv-delete-char)
-(global-set-key (kbd "C-x C-'")   'tv-toggle-resplit-window)
-
-;; mount-and-umount-sshfs 
-
 ;;;###autoload
 (defun mount-sshfs (fs mp)
   (interactive (list (read-string "FileSystem: "

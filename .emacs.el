@@ -5,7 +5,7 @@
 ;; Author: thierry
 ;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
-; Time-stamp: <2012-02-27 14:33:11 thierry>
+; Time-stamp: <2012-02-29 07:39:03 thierry>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -160,7 +160,7 @@
 ;; Emacs-customize-have-it's-own-file 
 (setq custom-file "~/.emacs.d/.emacs-custom.el")
 (load custom-file)
-
+
 ;;; Require's
 ;;
 ;;
@@ -230,15 +230,18 @@
 (tv-require 'iterator)
 (tv-require 'google-weather)
 (tv-require 'org-google-weather)
-(tv-require 'files-extension)
-
+;(tv-require 'files-extension)
+
 ;;; Global keys
 ;;
 ;;
-(global-set-key (kbd "M-e")                        'eek-eval-sexp-eol)
-(global-set-key (kbd "<f7> m")                     'tv-gnus)
+(global-set-key (kbd "C-!")                        'eshell-command)
 (global-set-key (kbd "C-c R")                      'revert-buffer)
+(global-set-key (kbd "C-c v")                      'yank-from-X)
+(global-set-key (kbd "C-c W")                      'whitespace-mode)
+(global-set-key (kbd "M-e")                        'eek-eval-sexp-eol)
 (global-set-key (kbd "C-M-j")                      #'(lambda () (interactive) (kill-sexp -1)))
+(global-set-key (kbd "<f7> m")                     'tv-gnus)
 (global-set-key (kbd "<f7> h")                     'w3m)
 (global-set-key (kbd "<f7> t")                     'w3m-dtree)
 (global-set-key (kbd "<f7> j")                     'webjump)
@@ -246,12 +249,8 @@
 (global-set-key (kbd "<f7> s u")                   'tv-search-gmane)
 (global-set-key (kbd "<f7> i")                     'erc-freenode-connect)
 (global-set-key (kbd "<f7> g")                     'bitlbee)
-;(global-set-key (kbd "<f5> s")                     'svn-status)
-(global-set-key (kbd "C-c v")                      'yank-from-X)
-(global-set-key (kbd "C-c W")                      'whitespace-mode)
+(global-set-key (kbd "<f7> n")                     'newsticker-show-news)
 (global-set-key (kbd "<f11> r")                    'regex-tool)
-(global-set-key (kbd "M-<f4>")                     'flymake-mode)
-(global-set-key (kbd "C-!")                        'eshell-command)
 (global-set-key (kbd "<f11> e c")                  'eshell-toggle-cd)
 (global-set-key (kbd "<f11> e t")                  'eshell-toggle)
 (global-set-key (kbd "<f11> s h")                  'shell)
@@ -265,14 +264,12 @@
 (global-set-key (kbd "<f5> p b")                   'print-buffer)
 (global-set-key (kbd "<f5> p r")                   'print-region)
 (global-set-key (kbd "<f5> p i")                   'pr-interface)
-(global-set-key (kbd "<f7> n")                     'newsticker-show-news)
 (global-set-key (kbd "<f11> l r")                  'tv-start-slime)
 (global-set-key (kbd "<f11> l e")                  'slime-scratch)
 (global-set-key (kbd "<f11> l l")                  'slime-list-connections)
-;;(global-set-key (kbd "<f11> j s")                  'tv-pop-to-moz-repl)
-(global-set-key [remap occur]                      'anything-occur)
+(global-set-key [remap occur]                      'anything-occur) ; M-s o
 (global-set-key (kbd "C-s")                        'ioccur)
-(global-set-key (kbd "C-/")                        'isearch-forward)
+(global-set-key (kbd "M-s s")                      'isearch-forward)
 (global-set-key (kbd "C-c C-o")                    'ioccur-find-buffer-matching)
 (global-set-key (kbd "<M-down>")                   'tv-scroll-down)
 (global-set-key (kbd "<M-up>")                     'tv-scroll-up)
@@ -283,9 +280,8 @@
 (global-set-key (kbd "C-h V")                      'find-variable-at-point)
 (global-set-key (kbd "<C-prior>")                  'text-scale-decrease)
 (global-set-key (kbd "<C-next>")                   'text-scale-increase)
-(global-set-key (kbd "C-x C-²")                    'delete-other-windows)
+(global-set-key (kbd "C-x C-²")                    'delete-window)
 (global-set-key (kbd "C-x C-&")                    'delete-other-windows)
-(global-set-key (kbd "C-x C-à")                    'delete-window)
 (global-set-key (kbd "C-x C-é")                    'split-window-vertically)
 (global-set-key (kbd "C-x C-\"")                   'split-window-horizontally)
 (global-set-key (kbd "C-x r v")                    'string-insert-rectangle)
@@ -293,7 +289,6 @@
 (global-set-key (kbd "C-x r h")                    'rectangle-menu)
 (global-set-key (kbd "C-x r <right>")              'rectangle-insert-at-right)
 (global-set-key (kbd "C-x r M-w")                  'copy-rectangle)
-(global-set-key (kbd "C-c u")                      'smallurl-replace-at-point)
 (global-set-key (kbd "C-z l")                      'anything-elscreen)
 (global-set-key (kbd "M-z")                        'zop-to-char)
 (global-set-key (kbd "<f5> g m")                   'google-maps)
@@ -303,8 +298,24 @@
 (global-set-key (kbd "C-M-(")                      'tv-move-pair-forward)
 (global-set-key (kbd "C-M-\"")                     'tv-insert-double-quote-and-close-forward)
 (global-set-key (kbd "C-M-)")                      'tv-insert-pair-and-close-forward)
-(global-set-key [remap save-buffers-kill-terminal] 'tv-stop-emacs)
-
+(global-set-key [remap save-buffers-kill-terminal] 'tv-stop-emacs) ; C-x C-c
+(global-set-key (kbd "<f5> r")                     'find-file-as-root)
+(global-set-key (kbd "C-c Y")                      'tv-yank-from-screen)
+(global-set-key (kbd "C-c C")                      'tv-copy-for-screen)
+(global-set-key [C-left]                           'screen-top)
+(global-set-key [C-right]                          'screen-bottom)
+(global-set-key (kbd "C-<")                        'other-window-backward)
+(global-set-key (kbd "C->")                        'other-window)
+(global-set-key (kbd "<f11> s c")                  'go-to-scratch)
+(global-set-key (kbd "C-x r a")                    'tv-append-to-register)
+(global-set-key (kbd "C-x r L")                    'list-registers)
+(global-set-key (kbd "C-c t r")                    'translate-at-point)
+(global-set-key (kbd "<f5> c")                     'tv-toggle-calendar)
+(global-set-key (kbd "C-c h e")                    'tv-tail-echo-area-messages)
+(global-set-key (kbd "C-c k")                      'tv-kill-backward)
+(global-set-key (kbd "C-d")                        'tv-delete-char)
+(global-set-key (kbd "C-x C-'")                    'tv-toggle-resplit-window)
+
 ;;; Themes
 ;;
 ;;

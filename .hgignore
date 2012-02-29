@@ -3,5 +3,4 @@ syntax: glob
 *.rej
 *~
 *.elc
-ANYTHING-TAG-FILE
 TAGS
