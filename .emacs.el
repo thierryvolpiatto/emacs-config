@@ -5,7 +5,7 @@
 ;; Author: thierry
 ;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
-; Time-stamp: <2012-02-29 07:39:03 thierry>
+; Time-stamp: <2012-02-29 21:13:14 thierry>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -230,7 +230,7 @@
 (tv-require 'iterator)
 (tv-require 'google-weather)
 (tv-require 'org-google-weather)
-;(tv-require 'files-extension)
+
 
 ;;; Global keys
 ;;
@@ -358,7 +358,7 @@
       (and (view-mode 1) (View-quit))))
 (define-key usage-memo-mode-map (kbd "q") 'umemo-electric-quit)
 
-
+
 ;;; Gnus-config
 ;;
 ;;
@@ -402,6 +402,7 @@
     (setq auth-sources '((:source "~/.authinfo.gpg" :host t :protocol t)))
     (setq auth-sources '((:source "~/.authinfo" :host t :protocol t))))
 
+
 ;;; Font lock
 ;;
 ;;
@@ -424,7 +425,7 @@
 
 ;; undo-limit 
 (setq undo-limit 30000)
-
+
 ;;; Frame-parameters
 ;;
 ;;
@@ -473,84 +474,6 @@
         (tool-bar-lines . 0)
         (unsplittable . t)
         (left-fringe . 0)))
-
-;;; Window config
-;;
-;;
-
-;; Elscreen
-(defun anything-elscreen ()
-  (interactive)
-  (anything-other-buffer 'anything-c-source-elscreen "*Anything Elscreen*"))
-
-;; Don't fucking split this windows horizontally 
-(setq split-width-threshold nil)
-
-;; Pas-de-dialog-gtk 
-(setq use-file-dialog nil)
-
-;; Push the mouse out of the way.
-
-
-(when (and (display-mouse-p) (require 'avoid nil t))
-
-  (defcustom mouse-avoidance-banish-position '((frame-or-window . frame)
-                                               (side . right)
-                                               (side-pos . -2)
-                                               (top-or-bottom . bottom)
-                                               (top-or-bottom-pos . 1))
-    "Position to which Mouse Avoidance mode `banish' moves the mouse.
-An alist where keywords mean:
-FRAME-OR-WINDOW: banish the mouse to corner of frame or window.
-SIDE: banish the mouse on right or left corner of frame or window.
-SIDE-POS: Distance from right or left edge of frame or window.
-TOP-OR-BOTTOM: banish the mouse to top or bottom of frame or window.
-TOP-OR-BOTTOM-POS: Distance from top or bottom edge of frame or window."
-    :group   'avoid
-    :type    '(alist :key-type symbol :value-type symbol)
-    :options '(frame-or-window side (side-pos integer)
-               top-or-bottom (top-or-bottom-pos integer)))
-
-
-  (defun mouse-avoidance-banish-destination ()
-    "The position to which Mouse Avoidance mode `banish' moves the mouse.
-
-If you want the mouse banished to a different corner set
-`mouse-avoidance-banish-position' as you need."
-    (let* ((fra-or-win         (assoc-default
-                                'frame-or-window
-                                mouse-avoidance-banish-position 'eq))
-           (list-values        (case fra-or-win
-                                 (frame (list 0 0 (frame-width) (frame-height)))
-                                 (window (window-edges))))
-           (alist              (loop for v in list-values
-                                     for k in '(left top right bottom)
-                                     collect (cons k v)))
-           (side               (assoc-default
-                                'side
-                                mouse-avoidance-banish-position 'eq))
-           (side-dist          (assoc-default
-                                'side-pos
-                                mouse-avoidance-banish-position 'eq))
-           (top-or-bottom      (assoc-default
-                                'top-or-bottom
-                                mouse-avoidance-banish-position 'eq))
-           (top-or-bottom-dist (assoc-default
-                                'top-or-bottom-pos
-                                mouse-avoidance-banish-position 'eq))
-           (side-fn            (case side
-                                 (left '+)
-                                 (right '-)))
-           (top-or-bottom-fn   (case top-or-bottom
-                                 (top '+)
-                                 (bottom '-))))
-      (cons (funcall side-fn                      ; -/+
-                     (assoc-default side alist 'eq) ; right or left
-                     side-dist)         ; distance from side
-            (funcall top-or-bottom-fn   ; -/+
-                     (assoc-default top-or-bottom alist 'eq) ; top/bottom
-                     top-or-bottom-dist)))) ; distance from top/bottom
-  (mouse-avoidance-mode 'banish))
 
 ;;; Emacs transparency.
 ;;
@@ -618,7 +541,83 @@ With a prefix arg decrease transparency."
                                       (fullscreen . nil))))
 
 
+
+;; Elscreen
+(defun anything-elscreen ()
+  (interactive)
+  (anything-other-buffer 'anything-c-source-elscreen "*Anything Elscreen*"))
 
+;; Don't fucking split this windows horizontally 
+(setq split-width-threshold nil)
+
+;; Pas-de-dialog-gtk 
+(setq use-file-dialog nil)
+
+
+;;; Mouse avoidance - Push the mouse out of the way.
+;;
+;;
+(when (and (display-mouse-p) (require 'avoid nil t))
+
+  (defcustom mouse-avoidance-banish-position '((frame-or-window . frame)
+                                               (side . right)
+                                               (side-pos . -2)
+                                               (top-or-bottom . bottom)
+                                               (top-or-bottom-pos . 1))
+    "Position to which Mouse Avoidance mode `banish' moves the mouse.
+An alist where keywords mean:
+FRAME-OR-WINDOW: banish the mouse to corner of frame or window.
+SIDE: banish the mouse on right or left corner of frame or window.
+SIDE-POS: Distance from right or left edge of frame or window.
+TOP-OR-BOTTOM: banish the mouse to top or bottom of frame or window.
+TOP-OR-BOTTOM-POS: Distance from top or bottom edge of frame or window."
+    :group   'avoid
+    :type    '(alist :key-type symbol :value-type symbol)
+    :options '(frame-or-window side (side-pos integer)
+               top-or-bottom (top-or-bottom-pos integer)))
+
+
+  (defun mouse-avoidance-banish-destination ()
+    "The position to which Mouse Avoidance mode `banish' moves the mouse.
+
+If you want the mouse banished to a different corner set
+`mouse-avoidance-banish-position' as you need."
+    (let* ((fra-or-win         (assoc-default
+                                'frame-or-window
+                                mouse-avoidance-banish-position 'eq))
+           (list-values        (case fra-or-win
+                                 (frame (list 0 0 (frame-width) (frame-height)))
+                                 (window (window-edges))))
+           (alist              (loop for v in list-values
+                                     for k in '(left top right bottom)
+                                     collect (cons k v)))
+           (side               (assoc-default
+                                'side
+                                mouse-avoidance-banish-position 'eq))
+           (side-dist          (assoc-default
+                                'side-pos
+                                mouse-avoidance-banish-position 'eq))
+           (top-or-bottom      (assoc-default
+                                'top-or-bottom
+                                mouse-avoidance-banish-position 'eq))
+           (top-or-bottom-dist (assoc-default
+                                'top-or-bottom-pos
+                                mouse-avoidance-banish-position 'eq))
+           (side-fn            (case side
+                                 (left '+)
+                                 (right '-)))
+           (top-or-bottom-fn   (case top-or-bottom
+                                 (top '+)
+                                 (bottom '-))))
+      (cons (funcall side-fn                      ; -/+
+                     (assoc-default side alist 'eq) ; right or left
+                     side-dist)         ; distance from side
+            (funcall top-or-bottom-fn   ; -/+
+                     (assoc-default top-or-bottom alist 'eq) ; top/bottom
+                     top-or-bottom-dist)))) ; distance from top/bottom
+  (mouse-avoidance-mode 'banish))
+
+
 ;;; Bookmarks
 ;;
 ;;
@@ -672,7 +671,9 @@ With a prefix arg decrease transparency."
 (add-hook 'find-file-hooks 'muse-mode-maybe)
 (setq muse-wiki-allow-nonexistent-wikiword t)
 
-;; erc-config 
+;;; Erc config
+;;
+;;
 (defun erc-freenode-connect ()
   (interactive)
   (let ((erc-auth
@@ -765,70 +766,7 @@ account add <protocol> moi@mail.com password."
 ;; Don't use RET to send line
 ;; (define-key erc-mode-map (kbd "RET") nil)
 ;; (define-key erc-mode-map (kbd "C-c RET") 'erc-send-current-line)
-
-;; winner-mode-config 
-;; (setq winner-boring-buffers '("*Completions*"
-;;                               "*Compile-Log*"
-;;                               "*inferior-lisp*"
-;;                               "*Fuzzy Completions*"
-;;                               "*Apropos*"
-;;                               "*dvc-error*"
-;;                               "*Help*"
-;;                               "*cvs*"
-;;                               "*Buffer List*"
-;;                               "*Ibuffer*"
-;;                               ))
-
-;; (when (require 'winner)
-;;   (defvar winner-boring-buffers-regexp
-;;     "\*[aA]nything.*\\|\*xhg.*\\|\*xgit.*")
-;;   (defun winner-set1 (conf)
-;;     ;; For the format of `conf', see `winner-conf'.
-;;     (let* ((buffers nil)
-;;            (alive
-;;             ;; Possibly update `winner-point-alist'
-;;             (loop for buf in (mapcar 'cdr (cdr conf))
-;;                for pos = (winner-get-point buf nil)
-;;                if (and pos (not (memq buf buffers)))
-;;                do (push buf buffers)
-;;                collect pos)))
-;;       (winner-set-conf (car conf))
-;;       (let (xwins)                      ; to be deleted
-
-;;         ;; Restore points
-;;         (dolist (win (winner-sorted-window-list))
-;;           (unless (and (pop alive)
-;;                        (setf (window-point win)
-;;                              (winner-get-point (window-buffer win) win))
-;;                        (not (or (member (buffer-name (window-buffer win))
-;;                                         winner-boring-buffers)
-;;                                 (string-match winner-boring-buffers-regexp
-;;                                               (buffer-name (window-buffer win))))))
-;;             (push win xwins)))          ; delete this window
-
-;;         ;; Restore marks
-;;         (letf (((current-buffer)))
-;;           (loop for buf in buffers
-;;              for entry = (cadr (assq buf winner-point-alist))
-;;              do (progn (set-buffer buf)
-;;                        (set-mark (car entry))
-;;                        (setf (winner-active-region) (cdr entry)))))
-;;         ;; Delete windows, whose buffers are dead or boring.
-;;         ;; Return t if this is still a possible configuration.
-;;         (or (null xwins)
-;;             (progn
-;;               (mapc 'delete-window (cdr xwins)) ; delete all but one
-;;               (unless (one-window-p t)
-;;                 (delete-window (car xwins))
-;;                 t))))))
-
-;;   (defalias 'winner-set 'winner-set1))
-;; (winner-mode 1)
-
-;;; Emms
-;;
-;(define-key dired-mode-map (kbd "C-c p d") 'emms-play-dired)
-
+
 ;; confirm-quit-emacs 
 (setq confirm-kill-emacs 'y-or-n-p)
 
@@ -843,13 +781,6 @@ account add <protocol> moi@mail.com password."
 
 ;; Ediff-config 
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
-
-;; yaoddmuse 
-;; (setq yaoddmuse-username "ThierryVolpiatto")
-;; (setq yaoddmuse-directory "/home/thierry/.emacs.d/yaoddmuse")
-;; (setq yaoddmuse-wikis
-;;       '(("TestWiki" "http://www.emacswiki.org/cgi-bin/test" utf-8 "uihnscuskc=1;")
-;;         ("EmacsWiki" "http://www.emacswiki.org/cgi-bin/emacs" utf-8 "uihnscuskc=1;")))
 
 ;; Dired 
 ;; use the directory in the other windows as default target
@@ -897,7 +828,7 @@ account add <protocol> moi@mail.com password."
 (setq tramp-backup-directory-alist backup-directory-alist)
 (setq auto-save-file-name-transforms nil)
 
-
+
 ;; Eval==> (describe-variable 'case-fold-search)
 (setq case-fold-search t)
 
@@ -953,6 +884,7 @@ account add <protocol> moi@mail.com password."
 (autoload 'no-word "no-word" "word to txt")
 (add-to-list 'auto-mode-alist '("\\.doc\\'" . no-word))
 
+
 ;; Elisp 
 
 ;; Eldoc 
@@ -996,7 +928,7 @@ account add <protocol> moi@mail.com password."
 ;; (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 ;; (add-hook 'lua-mode-hook 'turn-on-font-lock)
 ;; (add-hook 'lua-mode-hook 'hs-minor-mode)
-
+
 ;; Python-config 
 ;; Ipython completion is provided by rlcompleter2
 ;; And anything-ipython.el (need ipython.el)
@@ -1067,7 +999,7 @@ account add <protocol> moi@mail.com password."
           "## Commentary:\n\n"))
 
 ;(global-set-key (kbd "C-c e p") 'tv-insert-python-header)
-
+
 ;; shell-config 
 
 ;; Set `undo-outer-limit' to hight value to avoid messages when gentoo emerge
@@ -1087,7 +1019,7 @@ account add <protocol> moi@mail.com password."
 (add-hook 'sh-mode-hook #'(lambda ()
                             (define-key sh-mode-map (kbd "RET") 'newline-and-indent)))
 
-
+
 ;;; Eshell-config
 ;;
 ;;
@@ -1152,7 +1084,7 @@ account add <protocol> moi@mail.com password."
                                   (let ((default-directory (getenv "HOME")))
                                     (command-execute 'eshell)
                                     (bury-buffer))))
-
+
 ;; Term-et-ansi-term 
 (defun tv-term ()
   (interactive)
@@ -1180,7 +1112,7 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
           "## Description: \n"
           "## Author:Thierry Volpiatto<thierry dot volpiatto FROM gmail DOT com>\n"
           "## Commentary:\n\n"))
-
+
 ;;; flyspell-aspell 
 ;;
 ;;
@@ -1199,7 +1131,7 @@ With prefix arg always start and let me choose dictionary."
         (ispell-change-dictionary dic)
         (flyspell-delete-all-overlays))
       (call-interactively 'flyspell-mode)))
-
+
 ;;; Woman
 ;;
 ;;
@@ -1234,7 +1166,7 @@ With prefix arg always start and let me choose dictionary."
 
 ;; auto-compression-mode 
 (auto-compression-mode 1)
-
+
 ;;; Auctex/Latex config
 ;;
 ;;
@@ -1344,7 +1276,7 @@ With prefix arg always start and let me choose dictionary."
       (re-search-forward "[\\]begin\{letter\}")
     (beginning-of-line)
     (forward-char 15)))
-
+
 ;; newsticker-config 
 (setq newsticker-frontend 'newsticker-plainview)
 (setq newsticker-retrieval-method 'extern)
@@ -1378,7 +1310,7 @@ With prefix arg always start and let me choose dictionary."
   (define-key newsticker-mode-map (kbd "b") 'newsticker-previous-feed))
 
 (add-hook 'newsticker-mode-hook #'(lambda () (setq bidi-display-reordering nil)))
-
+
 ;;; Tramp-config
 ;;
 ;(require 'tramp)
@@ -1406,7 +1338,7 @@ With prefix arg always start and let me choose dictionary."
 
 ;; Mode-lecture-photo-auto 
 (auto-image-file-mode 1)
-
+
 ;; slime-config 
 (setq inferior-lisp-program "/usr/bin/sbcl")
 (setq slime-backend "/home/thierry/elisp/slime/swank-loader.lisp")
@@ -1453,7 +1385,7 @@ With prefix arg always start and let me choose dictionary."
 
 ;; Save-slime-scratch-buffer 
 (setq slime-scratch-file "~/.emacs.d/slime-scratch.lisp")
-
+
 ;; mozilla-javascript 
 ;; Javascript and mozilla (interaction with firefox)
 ;; (autoload 'moz-minor-mode "moz" "Mozilla Minor and Inferior Mozilla Modes" t)
@@ -1516,7 +1448,7 @@ With prefix arg always start and let me choose dictionary."
 ;; key-for-copy-files-async 
 (define-key dired-mode-map (kbd "C-c C-S-c") 'tv-slime-dired-copy-files-or-dir-async)
 (define-key dired-mode-map (kbd "C-c C-S-d") 'tv-slime-dired-delete-files-async)
-
+
 ;;; Isearch
 ;;
 ;;
@@ -1567,7 +1499,7 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 (defun isearch-mode-line-help-restore ()
   (setq mode-line-format isearch-old-mode-line))
 (add-hook 'isearch-mode-end-hook 'isearch-mode-line-help-restore)
-
+
 ;; align-let 
 (autoload 'align-let-keybinding "align-let" nil t)
 (add-hook 'emacs-lisp-mode-hook 'align-let-keybinding)
@@ -1594,7 +1526,7 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 ;; Undo-tree 
 (require 'undo-tree)
 (global-undo-tree-mode)
-
+
 ;; Calendar-and-diary 
 (setq holiday-bahai-holidays nil)
 (setq holiday-solar-holidays nil)
@@ -1645,7 +1577,7 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
         (holiday-float 10 0 -1 "Heure d'hiver")))
 
 (setq calendar-holidays holiday-french-holidays)
-
+
 ;; iedit 
 (define-key global-map (kbd "C-;") 'iedit-mode)
 (define-key isearch-mode-map (kbd "C-;") 'iedit-mode)
@@ -1670,35 +1602,10 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 (add-to-list 'display-time-world-list '("America/Chicago" "Chicago"))
 (add-to-list 'display-time-world-list '("America/Denver" "Denver"))
 
-;; Start gmail notifier
-;; (find-fline "~/.emacs.d/emacs-config-laptop/tv-utils.el" "defun gmail-notify-start")
-;(gmail-notify-start)
-
+
 ;; Trash
 ;(setq delete-by-moving-to-trash t)
 
-;; Popwin makes you free from the hell of annoying buffers such like
-;; *Help*, *Completions*, *compilation*, and etc.
-;(require 'popwin)
-;(setq display-buffer-function 'popwin:display-buffer)
-
-;; Auto complete
-;; (require 'auto-complete)
-;; (require 'ac-dabbrev)
-;; (require 'auto-complete-emacs-lisp)
-;; (require 'auto-complete-latex)
-;; (setq ac-l-dict-directory "~/elisp/AC/ac-l-dict")
-;; (add-hook 'latex-mode 'auto-complete-mode)
-;; (ac-emacs-lisp-setup)
-;; (ac-emacs-lisp-init)
-;; (add-hook 'lisp-interaction-mode 'auto-complete-mode)
-
-;; Haskell-mode
-;; (add-to-list 'load-path "~/elisp/haskell-mode")
-;; (load "haskell-site-file")
-;; (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-;; (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-;; (add-hook 'haskell-mode-hook 'font-lock-mode)
 
 ;; Kill emacs
 (defun tv-stop-emacs ()
