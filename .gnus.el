@@ -7,10 +7,10 @@
 ;;
 (require 'nnir)
 
-;;; Gnus default methods
+;;; Gnus methods
 ;;
 ;;
-;; Methode par defaut is nntp as Gnus is a newsreader. 
+;; Default method
 (setq gnus-select-method '(nntp "news.gmane.org"
                            (nnir-search-engine gmane)))
 
@@ -57,23 +57,6 @@
 ;;
 ;; [README] (find-fline "/usr/local/share/emacs/24.0.92/lisp/mail/smtpmail.el.gz" "Please")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Please add these lines in your .emacs(_emacs) or use customize.
-;;
-;;(setq send-mail-function 'smtpmail-send-it) ; if you use `mail'
-;;(setq message-send-mail-function 'smtpmail-send-it) ; if you use message/Gnus
-;;(setq smtpmail-default-smtp-server "YOUR SMTP HOST")
-;;(setq smtpmail-local-domain "YOUR DOMAIN NAME")
-;;(setq smtpmail-sendto-domain "YOUR DOMAIN NAME")
-;;(setq smtpmail-debug-info t) ; only to debug problems
-;;(setq smtpmail-auth-credentials  ; or use ~/.authinfo
-;;      '(("YOUR SMTP HOST" 25 "username" "password")))
-;;(setq smtpmail-starttls-credentials
-;;      '(("YOUR SMTP HOST" 25 "~/.my_smtp_tls.key" "~/.my_smtp_tls.cert")))
-;; Where the 25 equals the value of `smtpmail-smtp-service', it can be an
-;; integer or a string, just as long as they match (eq).
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;; To queue mail, set `smtpmail-queue-mail' to t and use
 ;; `smtpmail-send-queued-mail' to send.
 ;(setq smtpmail-queue-mail t) ; Use M-x smtpmail-send-queued-mail when online.
@@ -95,12 +78,8 @@
       smtpmail-smtp-service 587)
 
 (defvar tv-smtp-accounts
-  '(("thierry.volpiatto@gmail.com"
-     "smtp.gmail.com"
-     587)
-    ("tvolpiatto@yahoo.fr"
-     "smtp.mail.yahoo.com"
-     587)))
+  '(("thierry.volpiatto@gmail.com" "smtp.gmail.com" 587)
+    ("tvolpiatto@yahoo.fr" "smtp.mail.yahoo.com" 587)))
 
 (defun tv-change-smtp-server ()
   "Use account found in `tv-smtp-accounts' according to from header.
