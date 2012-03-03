@@ -5,10 +5,10 @@
 ;; Author: thierry
 ;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
-; Time-stamp: <2012-02-29 21:13:14 thierry>
+; Time-stamp: <2012-03-03 11:40:03 thierry>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;
 ;;; Code:
 
@@ -17,13 +17,13 @@
 ;; Save Timestamp
 (add-hook 'before-save-hook 'time-stamp)
 
-;; Environment 
+;; Environment
 ;; See: (find-fline "~/.emacs.d/.eshell/login")
 ;; For eshell env settings.
 (setenv "STARDICT_DATA_DIR" "~/.stardict/dic")
 (prefer-coding-system 'utf-8)
 
-;; calendar-date-style 
+;; calendar-date-style
 (setq calendar-date-style 'european)
 
 ;; Turn off bidi everywhere.
@@ -35,7 +35,7 @@
   (require feature filename noerror)
   (message "Loading %s done." (symbol-name feature)))
 
-;; load-paths 
+;; load-paths
 ;; For Info paths see:
 ;; [EVAL] (find-fline "~/.profile" "INFOPATH")
 ;; [EVAL] (getenv "INFOPATH")
@@ -157,7 +157,7 @@
 (load "w3m-wget")
 (add-hook 'w3m-mode-hook '(lambda () (require 'w3m-wget)))
 
-;; Emacs-customize-have-it's-own-file 
+;; Emacs-customize-have-it's-own-file
 (setq custom-file "~/.emacs.d/.emacs-custom.el")
 (load custom-file)
 
@@ -230,6 +230,7 @@
 (tv-require 'iterator)
 (tv-require 'google-weather)
 (tv-require 'org-google-weather)
+(tv-require 'markdown-mode)
 
 
 ;;; Global keys
@@ -280,8 +281,8 @@
 (global-set-key (kbd "C-h V")                      'find-variable-at-point)
 (global-set-key (kbd "<C-prior>")                  'text-scale-decrease)
 (global-set-key (kbd "<C-next>")                   'text-scale-increase)
-(global-set-key (kbd "C-x C-²")                    'delete-window)
-(global-set-key (kbd "C-x C-&")                    'delete-other-windows)
+(global-set-key (kbd "C-x C-²")                    'delete-other-windows)
+(global-set-key (kbd "C-x C-&")                    'delete-window)
 (global-set-key (kbd "C-x C-é")                    'split-window-vertically)
 (global-set-key (kbd "C-x C-\"")                   'split-window-horizontally)
 (global-set-key (kbd "C-x r v")                    'string-insert-rectangle)
@@ -333,10 +334,10 @@
 ;(require 'idna)
 ;(require 'punycode)
 
-;; column-number 
+;; column-number
 (column-number-mode 1)
 
-;; desktop-save 
+;; desktop-save
 ;; (desktop-save-mode 1)
 ;; (setq desktop-restore-eager 5)
 ;; (add-to-list 'desktop-globals-to-save 'ioccur-history)
@@ -385,7 +386,7 @@
     (if arg (gnus-unplugged) (gnus))))
 
 ;; Use now org-keywords in gnus.
-(add-hook 'message-mode-hook #'(lambda () 
+(add-hook 'message-mode-hook #'(lambda ()
 				 (define-key message-mode-map (kbd "<f11> k") 'anything-org-keywords)))
 
 (autoload 'gnus-dired-attach "gnus-dired.el")
@@ -423,7 +424,7 @@
 ;; `recentf-mode' will be started by anything when needed,
 ;; so no need to start it here
 
-;; undo-limit 
+;; undo-limit
 (setq undo-limit 30000)
 
 ;;; Frame-parameters
@@ -547,10 +548,10 @@ With a prefix arg decrease transparency."
   (interactive)
   (anything-other-buffer 'anything-c-source-elscreen "*Anything Elscreen*"))
 
-;; Don't fucking split this windows horizontally 
+;; Don't fucking split this windows horizontally
 (setq split-width-threshold nil)
 
-;; Pas-de-dialog-gtk 
+;; Pas-de-dialog-gtk
 (setq use-file-dialog nil)
 
 
@@ -660,14 +661,14 @@ If you want the mouse banished to a different corner set
 (setq browse-url-browser-function 'browse-url-firefox)
 ;(setq browse-url-browser-function 'browse-url-mozilla)
 
-;; w3m-mode-map 
+;; w3m-mode-map
 (define-key w3m-mode-map (kbd "C-c v") 'anything-w3m-bookmarks)
 (define-key w3m-mode-map (kbd "C-c M") 'w3m-view-this-page-in-uzbl)
 (substitute-key-definition 'w3m-view-url-with-external-browser
                            'tv-w3m-view-this-page-in-firefox
                            w3m-mode-map)
 
-;; muse-config 
+;; muse-config
 (add-hook 'find-file-hooks 'muse-mode-maybe)
 (setq muse-wiki-allow-nonexistent-wikiword t)
 
@@ -692,7 +693,7 @@ If you want the mouse banished to a different corner set
                                      ;"#stumpwm"
                                      "#uzbl")))
 
-;; Bitlbee 
+;; Bitlbee
 (defun bitlbee (server)
   "Connect to a Bitlbee server.
 Actually i am registered on im.uk.bitlbee for talk.google.com.
@@ -719,7 +720,7 @@ account add <protocol> moi@mail.com password."
                                            "im.se.bitlbee.org:6667")
                                          :must-match t
                                          :name "Bitlbee Servers")))
-  
+
   (let ((bitlb-auth (auth-source-user-or-password
                      '("login" "password")
                      "im.uk.bitlbee.org:6667"
@@ -767,22 +768,22 @@ account add <protocol> moi@mail.com password."
 ;; (define-key erc-mode-map (kbd "RET") nil)
 ;; (define-key erc-mode-map (kbd "C-c RET") 'erc-send-current-line)
 
-;; confirm-quit-emacs 
+;; confirm-quit-emacs
 (setq confirm-kill-emacs 'y-or-n-p)
 
-;; consequent-log-file 
+;; consequent-log-file
 (setq message-log-max 1000)
 
-;; Add-newline-at-end-of-files 
+;; Add-newline-at-end-of-files
 (setq require-final-newline t)
 
-;; No-startup-screen 
+;; No-startup-screen
 (setq inhibit-startup-message t)
 
-;; Ediff-config 
+;; Ediff-config
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 
-;; Dired 
+;; Dired
 ;; use the directory in the other windows as default target
 (setq dired-dwim-target t)
 (setq dired-auto-revert-buffer t) ; Emacs vcs only
@@ -807,17 +808,17 @@ account add <protocol> moi@mail.com password."
 ;; y-or-n-p
 (fset 'yes-or-no-p 'y-or-n-p)
 
-;; Affiche-l'heure-au-format-24h 
+;; Affiche-l'heure-au-format-24h
 (setq display-time-24hr-format t)
 (setq display-time-day-and-date t)
 (display-time)
 (setq display-time-use-mail-icon t)
 
-;; Limite-max-lisp 
+;; Limite-max-lisp
 (setq max-lisp-eval-depth '40000)
 (setq max-specpdl-size '100000)
 
-;; emacs-backup-config 
+;; emacs-backup-config
 ;; Backup
 (setq backup-directory-alist '(("" . "/home/thierry/.emacs.d/emacs_backup"))
       backup-by-copying t
@@ -832,25 +833,25 @@ account add <protocol> moi@mail.com password."
 ;; Eval==> (describe-variable 'case-fold-search)
 (setq case-fold-search t)
 
-;; Mark-ring 
+;; Mark-ring
 (setq mark-ring-max 50)
 (setq global-mark-ring-max 32)
 
-;; show-paren-mode 
+;; show-paren-mode
 (show-paren-mode 1)
 (setq show-paren-ring-bell-on-mismatch t)
 
-;; Start-emacs-server 
+;; Start-emacs-server
 (add-hook 'after-init-hook #'(lambda ()
                                (unless (daemonp)
                                  (server-start)
                                  (setq server-raise-frame t))))
 
 
-;; Path-to-abbrev-file 
+;; Path-to-abbrev-file
 (setq abbrev-file-name "/home/thierry/.emacs.d/.abbrev_defs")
 
-;; Copy-and-cut-to-x-clipboard 
+;; Copy-and-cut-to-x-clipboard
 ;; Don't add to emacs kill-ring use yank-from-clipboard instead (C-c v)
 (setq interprogram-paste-function nil)
 
@@ -875,19 +876,19 @@ account add <protocol> moi@mail.com password."
           (t       (yank)))))
 
 
-;; Whitespace-mode 
+;; Whitespace-mode
 (when (require 'whitespace)
   (add-to-list 'whitespace-style 'lines-tail)
   (setq whitespace-line-column 80))
 
-;; antiword 
+;; antiword
 (autoload 'no-word "no-word" "word to txt")
 (add-to-list 'auto-mode-alist '("\\.doc\\'" . no-word))
 
 
-;; Elisp 
+;; Elisp
 
-;; Eldoc 
+;; Eldoc
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
@@ -909,38 +910,38 @@ account add <protocol> moi@mail.com password."
 (define-key emacs-lisp-mode-map (kbd "RET") 'newline-and-indent)
 (define-key lisp-mode-map (kbd "RET") 'newline-and-indent)
 
-;; eval-region 
+;; eval-region
 (define-key lisp-interaction-mode-map (kbd "C-M-!") 'tv-eval-region)
 (define-key emacs-lisp-mode-map (kbd "C-M-!") 'tv-eval-region)
 
-;; byte-compile-file 
+;; byte-compile-file
 (define-key emacs-lisp-mode-map (kbd "C-c C-c b") 'byte-compile-file)
 
 ;; Next page
 (define-key emacs-lisp-mode-map (kbd "<next>") 'forward-page)
 (define-key emacs-lisp-mode-map (kbd "<prior>") 'backward-page)
 
-;; Indent-only-with-spaces 
+;; Indent-only-with-spaces
 (setq-default indent-tabs-mode nil)
 
-;; Lua-mode 
+;; Lua-mode
 ;; (setq auto-mode-alist (cons '("\\.lua$" . lua-mode) auto-mode-alist))
 ;; (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 ;; (add-hook 'lua-mode-hook 'turn-on-font-lock)
 ;; (add-hook 'lua-mode-hook 'hs-minor-mode)
 
-;; Python-config 
+;; Python-config
 ;; Ipython completion is provided by rlcompleter2
 ;; And anything-ipython.el (need ipython.el)
 ;; pymacs/Pycomplete can be used also but are not needed for make
 ;; working anything-ipython.
 
-;; terminal-ipython 
+;; terminal-ipython
 ;; (setenv "PYTHONSTARTUP" "/home/thierry/.pythonstartup")
 (define-key py-shell-map (kbd "\t") 'ipython-complete)
 ;; ;(setq ipython-completion-command-string "print(';'.join(__IP.Completer.all_completions('%s')))\n")
 (define-key py-mode-map (kbd "C-c C-b") 'anything-browse-code)
-;; ;; Pymacs 
+;; ;; Pymacs
 ;; (setenv "PYMACS_PYTHON" "python2.6")
 ;; (autoload 'pymacs-apply "pymacs")
 ;; (autoload 'pymacs-call "pymacs")
@@ -948,15 +949,15 @@ account add <protocol> moi@mail.com password."
 ;; (autoload 'pymacs-exec "pymacs" nil t)
 ;; (autoload 'pymacs-load "pymacs" nil t)
 
-;; Pycomplete 
+;; Pycomplete
 ;(require 'pycomplete)
 
-;; config-python-mode 
+;; config-python-mode
 (setq auto-mode-alist (cons '("\\.py$" . python-mode) auto-mode-alist))
 (setq interpreter-mode-alist (cons '("ipython" . python-mode) interpreter-mode-alist))
 (autoload 'python-mode "python-mode" "Python editing mode." t)
 
-;; Search-in-python-library 
+;; Search-in-python-library
 ;; (find-fline "~/.emacs.d/emacs-config-laptop/.emacs-config-w3m.el" "tv-python-search")
 (define-key py-mode-map (kbd "<f7> s p") 'tv-python-search)
 
@@ -964,7 +965,7 @@ account add <protocol> moi@mail.com password."
 (setq gud-pdb-command-name "/home/thierry/bin/pdb.py")
 (load "pdbtrack.el")
 
-;; Pylint-via-flymake 
+;; Pylint-via-flymake
 ;; fonctionne avec le script python /usr/local/bin/epylint
 
 (defvar flymake-mode-map
@@ -974,7 +975,7 @@ account add <protocol> moi@mail.com password."
     map)
    "Keymap used for flymake commands.")
 
-;; Flymake-pour-python 
+;; Flymake-pour-python
 (when (load "flymake" t)
   (defun flymake-pylint-init ()
     (let* ((temp-file (flymake-init-create-temp-buffer-copy
@@ -987,7 +988,7 @@ account add <protocol> moi@mail.com password."
   (add-to-list 'flymake-allowed-file-name-masks
                '("\\.py\\'" flymake-pylint-init)))
 
-;; Entete-py 
+;; Entete-py
 (defun tv-insert-python-header ()
   "insert python header at point"
   (interactive)
@@ -1000,22 +1001,22 @@ account add <protocol> moi@mail.com password."
 
 ;(global-set-key (kbd "C-c e p") 'tv-insert-python-header)
 
-;; shell-config 
+;; shell-config
 
 ;; Set `undo-outer-limit' to hight value to avoid messages when gentoo emerge
 ;(setq undo-outer-limit 6000000)
-                       
-;; prompt-shell-read-only 
+
+;; prompt-shell-read-only
 (setq comint-prompt-read-only t)
 
 ;; [obsolete]
-;; couleur-dans-le-shell 
+;; couleur-dans-le-shell
 ;; (j'ai ajouté dumb dans /etc/LS_COLOR egalement)
 ;(require 'ansi-color)
 ;; (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
 ;; (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
-;; newline-and-indent-in-sh-mode 
+;; newline-and-indent-in-sh-mode
 (add-hook 'sh-mode-hook #'(lambda ()
                             (define-key sh-mode-map (kbd "RET") 'newline-and-indent)))
 
@@ -1023,7 +1024,7 @@ account add <protocol> moi@mail.com password."
 ;;; Eshell-config
 ;;
 ;;
-;; Eshell-prompt 
+;; Eshell-prompt
 (setq eshell-prompt-function
       (lambda nil
         (concat
@@ -1045,30 +1046,37 @@ account add <protocol> moi@mail.com password."
           #'(lambda ()
               (define-key eshell-mode-map (kbd "M-p") 'anything-eshell-history)))
 
-;; Eshell-banner 
-(setq eshell-banner-message (format "%s %s\n"
+;; Eshell-banner
+(setq eshell-banner-message (format "%s %s\nwith Emacs %s on %s"
                                     (propertize
-                                     "Eshell session started"
+                                     "Eshell session started on"
                                      'face '((:foreground "Goldenrod")))
                                     (propertize
                                      (format-time-string "%c")
+                                     'face '((:foreground "magenta")))
+                                    (propertize emacs-version
+                                                'face '((:foreground "magenta")))
+                                    (propertize
+                                     (with-temp-buffer
+                                       (call-process "uname" nil t nil "-r")
+                                       (buffer-string))
                                      'face '((:foreground "magenta")))))
 
-;; Eshell-et-ansi-color 
+;; Eshell-et-ansi-color
 (ignore-errors
   (dolist (i (list 'eshell-handle-ansi-color
                    'eshell-handle-control-codes
                    'eshell-watch-for-password-prompt))
     (add-to-list 'eshell-output-filter-functions i)))
 
-;; Eshell-save-history-on-exit 
+;; Eshell-save-history-on-exit
 ;; Possible values: t (always save), 'never, 'ask (default)
 (setq eshell-save-history-on-exit t)
 
-;; Eshell-directory 
+;; Eshell-directory
 (setq eshell-directory-name "/home/thierry/.emacs.d/eshell/")
 
-;; Eshell-visual 
+;; Eshell-visual
 (setq eshell-term-name "eterm-color")
 (when (require 'em-term)
   (dolist (i '("kop" "ledger" "htop"))
@@ -1085,7 +1093,7 @@ account add <protocol> moi@mail.com password."
                                     (command-execute 'eshell)
                                     (bury-buffer))))
 
-;; Term-et-ansi-term 
+;; Term-et-ansi-term
 (defun tv-term ()
   (interactive)
   (ansi-term "/bin/bash"))
@@ -1103,7 +1111,7 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 	(progn (comint-send-eof) (kill-buffer))
       (delete-char arg))))
 
-;; Entete-Bash 
+;; Entete-Bash
 (defun tv-insert-bash-header ()
   "insert bash header at point"
   (interactive)
@@ -1113,7 +1121,7 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
           "## Author:Thierry Volpiatto<thierry dot volpiatto FROM gmail DOT com>\n"
           "## Commentary:\n\n"))
 
-;;; flyspell-aspell 
+;;; flyspell-aspell
 ;;
 ;;
 (setq-default ispell-program-name "aspell")
@@ -1137,7 +1145,7 @@ With prefix arg always start and let me choose dictionary."
 ;;
 (setq woman-use-own-frame nil)
 
-;;; Printing config 
+;;; Printing config
 ;;
 ;(setq anything-ff-printer-list (anything-ff-find-printers))
 (setq lpr-command "gtklp")
@@ -1164,7 +1172,7 @@ With prefix arg always start and let me choose dictionary."
 ;; (global-set-key (kbd "<f5> p a b") 'a2ps-buffer)
 ;; (global-set-key (kbd "<f5> p a r") 'a2ps-region)
 
-;; auto-compression-mode 
+;; auto-compression-mode
 (auto-compression-mode 1)
 
 ;;; Auctex/Latex config
@@ -1202,7 +1210,7 @@ With prefix arg always start and let me choose dictionary."
 (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
 (setq TeX-PDF-mode t)
 
-;; Insertion-d'un-squelette-latex 
+;; Insertion-d'un-squelette-latex
 
 (defun tv-insert-skel-latex-doc ()
   "Insert a LaTeX skeleton in an empty file."
@@ -1244,7 +1252,7 @@ With prefix arg always start and let me choose dictionary."
     (beginning-of-line)
     (forward-char 7)))
 
-;; Insertion-d'un-squelette-latex-de-lettre 
+;; Insertion-d'un-squelette-latex-de-lettre
 
 (defun tv-insert-skel-latex-letter ()
   "Insert a latex skeleton letter in an empty file"
@@ -1277,7 +1285,7 @@ With prefix arg always start and let me choose dictionary."
     (beginning-of-line)
     (forward-char 15)))
 
-;; newsticker-config 
+;; newsticker-config
 (setq newsticker-frontend 'newsticker-plainview)
 (setq newsticker-retrieval-method 'extern)
 (setq newsticker-show-descriptions-of-new-items nil)
@@ -1285,7 +1293,7 @@ With prefix arg always start and let me choose dictionary."
 
 (defun newsticker-quit-and-stop ()
   (interactive)
-  (with-current-buffer "*newsticker*" 
+  (with-current-buffer "*newsticker*"
     (newsticker-close-buffer)
     (newsticker-stop)))
 
@@ -1336,10 +1344,10 @@ With prefix arg always start and let me choose dictionary."
 (setq ange-ftp-passive-host-alist '(("mafreebox.freebox.fr" . "on")
                                     ("dl.free.fr" . "on")))
 
-;; Mode-lecture-photo-auto 
+;; Mode-lecture-photo-auto
 (auto-image-file-mode 1)
 
-;; slime-config 
+;; slime-config
 (setq inferior-lisp-program "/usr/bin/sbcl")
 (setq slime-backend "/home/thierry/elisp/slime/swank-loader.lisp")
 (slime-setup '(slime-fancy
@@ -1380,13 +1388,13 @@ With prefix arg always start and let me choose dictionary."
           (slime-list-connections))
       (slime)))
 
-;; common-lisp-info 
+;; common-lisp-info
 (setq Info-additional-directory-list '("~/elisp/info/gcl-info/"))
 
-;; Save-slime-scratch-buffer 
+;; Save-slime-scratch-buffer
 (setq slime-scratch-file "~/.emacs.d/slime-scratch.lisp")
 
-;; mozilla-javascript 
+;; mozilla-javascript
 ;; Javascript and mozilla (interaction with firefox)
 ;; (autoload 'moz-minor-mode "moz" "Mozilla Minor and Inferior Mozilla Modes" t)
 
@@ -1396,11 +1404,11 @@ With prefix arg always start and let me choose dictionary."
 ;;       (inferior-moz-switch-to-mozilla)
 ;;       (message "Please start first firefox and repl!")))
 
-;; ioccur 
+;; ioccur
 (define-key org-mode-map (kbd "C-c C-o") 'ioccur-find-buffer-matching)
 ;(setq ioccur-fontify-buffer-p nil)
 
-;; Enable-commands-disabled-by-default 
+;; Enable-commands-disabled-by-default
 (put 'narrow-to-region 'disabled nil)          ; C-x n n
 (put 'scroll-left 'disabled nil)               ; C-x > or <
 (put 'downcase-region 'disabled nil)           ; C-x C-l
@@ -1408,11 +1416,11 @@ With prefix arg always start and let me choose dictionary."
 (put 'set-goal-column 'disabled nil)           ; C-x C-n ==> disable with C-u
 (put 'dired-find-alternate-file 'disabled nil) ; a in dired
 
-;; setup-minibuffer 
+;; setup-minibuffer
 (setq enable-recursive-minibuffers t)
 (minibuffer-depth-indicate-mode 1)
 
-;; Scroll-down-Scroll-up 
+;; Scroll-down-Scroll-up
 (defun tv-scroll-down ()
   (interactive)
   (scroll-down -1))
@@ -1422,8 +1430,8 @@ With prefix arg always start and let me choose dictionary."
   (interactive)
   (scroll-down 1))
 (define-key org-mode-map (kbd "<M-up>") 'tv-scroll-up)
-                                   
-;; Enable-scroll-other-window-globally 
+
+;; Enable-scroll-other-window-globally
 (defun tv-scroll-other-down ()
   (interactive)
   (scroll-other-window 1))
@@ -1434,18 +1442,18 @@ With prefix arg always start and let me choose dictionary."
   (scroll-other-window -1))
 (define-key org-mode-map (kbd "<C-M-up>") 'tv-scroll-other-up)
 
-;; xmodmap 
+;; xmodmap
 (load "xmodmap.elc")
 
-;; sql-mode 
+;; sql-mode
 (setq sql-sqlite-program "sqlite3")
 
-;; sqlite-dump 
+;; sqlite-dump
 (autoload 'sqlite-dump "sqlite-dump" nil t)
 (modify-coding-system-alist 'file "\\.sqlite\\'" 'raw-text-unix)
 (add-to-list 'auto-mode-alist '("\\.sqlite\\'" . sqlite-dump))
 
-;; key-for-copy-files-async 
+;; key-for-copy-files-async
 (define-key dired-mode-map (kbd "C-c C-S-c") 'tv-slime-dired-copy-files-or-dir-async)
 (define-key dired-mode-map (kbd "C-c C-S-d") 'tv-slime-dired-delete-files-async)
 
@@ -1500,7 +1508,7 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
   (setq mode-line-format isearch-old-mode-line))
 (add-hook 'isearch-mode-end-hook 'isearch-mode-line-help-restore)
 
-;; align-let 
+;; align-let
 (autoload 'align-let-keybinding "align-let" nil t)
 (add-hook 'emacs-lisp-mode-hook 'align-let-keybinding)
 (add-hook 'lisp-interaction-mode-hook 'align-let-keybinding)
@@ -1515,19 +1523,17 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 (setq line-move-visual nil)
 ;(add-hook 'html-mode-hook 'visual-line-mode)
 
-;; xml-weather 
-;; (setq xml-weather-default-icons-directory "~/xml-weather-icons/icons/31x31")
-;; (setq xml-weather-moon-icons-directory "~/xml-weather-icons/moon-icons2/31X31/")
-
-;; rst-mode 
+;;; Rst-mode
+;;
 (add-hook 'rst-mode-hook 'auto-fill-mode)
 
-
-;; Undo-tree 
+;;; Undo-tree
+;;
 (require 'undo-tree)
 (global-undo-tree-mode)
+
 
-;; Calendar-and-diary 
+;; Calendar-and-diary
 (setq holiday-bahai-holidays nil)
 (setq holiday-solar-holidays nil)
 (setq holiday-hebrew-holidays nil)
@@ -1546,7 +1552,7 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 (defface diary-special-event '((t (:foreground "green")))
   "*Face used for special event in diary."  :group 'diary)
 
-;; calendar-date-style is set [HERE]: 
+;; calendar-date-style is set [HERE]:
 (setq calendar-week-start-day 1
       calendar-day-name-array
       ["Dimanche" "Lundi" "Mardi"
@@ -1578,26 +1584,26 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 
 (setq calendar-holidays holiday-french-holidays)
 
-;; iedit 
+;; iedit
 (define-key global-map (kbd "C-;") 'iedit-mode)
 (define-key isearch-mode-map (kbd "C-;") 'iedit-mode)
 
-;; Checkdoc 
+;; Checkdoc
 (autoload 'checkdoc-batch       "checkdoc-batch" nil t)
 (autoload 'checkdoc-batch-files "checkdoc-batch" nil t)
 
-;; Mode-line 
+;; Mode-line
 (set-face-attribute 'mode-line-emphasis nil :foreground "red")
 
-;; Google-Apps 
+;; Google-Apps
 (setq google-maps-static-default-zoom 10)
 
-;; Toggle-show-trailing-whitespace 
+;; Toggle-show-trailing-whitespace
 (defun toggle-show-trailing-whitespace ()
   (interactive)
   (setq show-trailing-whitespace (not show-trailing-whitespace)))
 
-;; World-time 
+;; World-time
 (add-to-list 'display-time-world-list '("Australia/Sydney" "Sydney"))
 (add-to-list 'display-time-world-list '("America/Chicago" "Chicago"))
 (add-to-list 'display-time-world-list '("America/Denver" "Denver"))
@@ -1704,7 +1710,7 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 ;;
 (tv-set-emacs-session-backup :enable t)
 
-;; Link-scratch-to-file 
+;; Link-scratch-to-file
 ;;(find-fline "~/.emacs.d/emacs-config-laptop/tv-utils.el" "go-to-scratch")
 ;; [For Emacs24 Fri Jun 17 21:56:29 2011]
 ;; This have to be loaded at the end to overhide emacs vanilla scratch buffer

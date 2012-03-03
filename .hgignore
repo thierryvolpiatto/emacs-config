@@ -4,3 +4,4 @@ syntax: glob
 *~
 *.elc
 TAGS
+locate.db
