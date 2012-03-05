@@ -659,7 +659,7 @@ DIR is a regular directory name.
 
 ;; Open-file-in-gimp 
 ;; <2009-08-13 Jeu. 10:29>
-(defun gimp-open-file (file)
+(defun tv-gimp-open-file (file)
   (interactive
    (list (anything-comp-read "Image: "
                              (loop
