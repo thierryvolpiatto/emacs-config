@@ -5,7 +5,7 @@
 ;; Author: thierry
 ;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
-; Time-stamp: <2012-03-03 11:40:03 thierry>
+; Time-stamp: <2012-03-15 11:00:04 thierry>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -77,6 +77,7 @@
 	     "~/elisp/emacs-w3m/"
 	     "~/elisp/ledger/"
 	     "~/elisp/anything/"
+             ;"~/elisp/emacs-helm"
 	     "~/elisp/eev/"
              "~/elisp/elscreen"
              "~/elisp/google-maps"
@@ -232,6 +233,9 @@
 (tv-require 'org-google-weather)
 (tv-require 'markdown-mode)
 
+;; Test if this overhide `anything-command-map-prefix-key'
+;(global-set-key (kbd "C-x c") #'(lambda () (interactive) (message "Hello")))
+
 
 ;;; Global keys
 ;;
@@ -258,7 +262,7 @@
 (global-set-key (kbd "<f11> t")                    'tv-term)
 (global-set-key (kbd "<f11> i")                    'ielm)
 (global-set-key (kbd "<f11> p")                    'py-shell)
-(global-set-key [(control return)]                 'calculator)
+(global-set-key (kbd "C-%")                        'calculator)
 (global-set-key (kbd "<f2>")                       'tv-flyspell)
 (global-set-key (kbd "<f5> p s b")                 'tv-ps-print-buffer)
 (global-set-key (kbd "<f5> p s r")                 'tv-ps-print-region)
@@ -316,6 +320,8 @@
 (global-set-key (kbd "C-c k")                      'tv-kill-backward)
 (global-set-key (kbd "C-d")                        'tv-delete-char)
 (global-set-key (kbd "C-x C-'")                    'tv-toggle-resplit-window)
+(global-set-key (kbd "C-§")                        'iedit-mode-on-function)
+
 
 ;;; Themes
 ;;
@@ -1046,6 +1052,9 @@ account add <protocol> moi@mail.com password."
           #'(lambda ()
               (define-key eshell-mode-map (kbd "M-p") 'anything-eshell-history)))
 
+;; Eshell history size
+(setq eshell-history-size 1000) ; Same as env var HISTSIZE.
+
 ;; Eshell-banner
 (setq eshell-banner-message (format "%s %s\nwith Emacs %s on %s"
                                     (propertize
@@ -1584,10 +1593,6 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 
 (setq calendar-holidays holiday-french-holidays)
 
-;; iedit
-(define-key global-map (kbd "C-;") 'iedit-mode)
-(define-key isearch-mode-map (kbd "C-;") 'iedit-mode)
-
 ;; Checkdoc
 (autoload 'checkdoc-batch       "checkdoc-batch" nil t)
 (autoload 'checkdoc-batch-files "checkdoc-batch" nil t)
@@ -1704,6 +1709,10 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
           (move-to-column 0)
           (insert " "))))
     (kill-buffer mouse-buffer)))
+
+;;; Report bug
+;;
+(setq report-emacs-bug-no-explanations t)
 
 ;;; Save/restore emacs-session
 ;;

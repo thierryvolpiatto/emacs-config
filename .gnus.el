@@ -20,7 +20,7 @@
                                        (nnimap-address "imap.gmail.com"))
                                       (nnimap "yahoo"
                                        (nnimap-address "imap.mail.yahoo.com"))
-                                      ;'(nntp "news.gwene.org")
+                                      ;(nntp "news.gwene.org")
                                       ))
 
 ;; Don't load mime parts when receiving mail, only text part.
