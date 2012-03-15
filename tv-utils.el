@@ -77,7 +77,7 @@
   "sshfs mount of thievol."
   (interactive)
   (mount-sshfs "thievol:" "~/sshfs-thievol")
-  (anything-find-files-1 "~/sshfs-thievol"))
+  (helm-find-files-1 "~/sshfs-thievol"))
 
 ;;;###autoload
 (defun thievol-disconnect ()
@@ -661,7 +661,7 @@ DIR is a regular directory name.
 ;; <2009-08-13 Jeu. 10:29>
 (defun tv-gimp-open-file (file)
   (interactive
-   (list (anything-comp-read "Image: "
+   (list (helm-comp-read "Image: "
                              (loop
                                 with f = (cddr (directory-files default-directory))
                                 with img = '("jpg" "png" "gif" "jpeg")
@@ -734,11 +734,11 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
 (defvar elisp-objects-default-directory "~/.emacs.d/elisp-objects/")
 (defvar object-to-save-alist '((ioccur-history . "ioccur-history.el")
                                (extended-command-history . "extended-command-history.el")
-                               (anything-external-command-history . "anything-external-command-history.el")
-                               (anything-surfraw-engines-history . "anything-surfraw-engines-history.el")
+                               (helm-external-command-history . "helm-external-command-history.el")
+                               (helm-surfraw-engines-history . "helm-surfraw-engines-history.el")
                                (tv-save-buffers-alist . "tv-save-buffers-alist.el")
-                               (anything-ff-history . "anything-ff-history.el")
-                               (anything-c-grep-history . "anything-c-grep-history.el")
+                               (helm-ff-history . "helm-ff-history.el")
+                               (helm-c-grep-history . "helm-c-grep-history.el")
                                (kill-ring . "kill-ring.el")
                                (kill-ring-yank-pointer . "kill-ring-yank-pointer.el")
                                ))
@@ -825,14 +825,14 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
 ;; Delete-char-or-region 
 (defun tv-delete-char (arg)
   (interactive "p")
-  (if (anything-region-active-p)
+  (if (helm-region-active-p)
       (delete-region (region-beginning) (region-end))
       (delete-char arg)))
 
 ;; Browse-url 
 (defun firefox-browse-url (url)
   (interactive "sURL: ")
-  (anything-c-generic-browser url "firefox"))
+  (helm-c-generic-browser url "firefox"))
 
 (defun tv-w3m-view-this-page-in-firefox ()
   (interactive)
@@ -872,7 +872,7 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
 
 ;; Insert-log-from-patch 
 (defun tv-insert-log-from-patch (patch)
-  (interactive (list (anything-c-read-file-name
+  (interactive (list (helm-c-read-file-name
                       "Patch: ")))
   (let (beg end data)
     (with-current-buffer (find-file-noselect patch)
@@ -887,7 +887,7 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
     (insert data)))
 
 ;; Show infos on files using an easy interface for `file-attributes'.
-;; [DEPRECATED] Use `anything-ff-attributes'
+;; [DEPRECATED] Use `helm-ff-attributes'
 ;;
 (defun* show-file-attributes
     (file &key type links uid gid access-time modif-time status size mode gid-change inode device-num dired)
@@ -1040,7 +1040,7 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
 (defun eselect-emacs ()
   (interactive)
   (let ((execs '("b2m" "ctags" "ebrowse" "emacs" "emacsclient" "etags" "grep-changelog" "rcs-checkin")))
-    (let* ((src-bin (expand-file-name (anything-comp-read
+    (let* ((src-bin (expand-file-name (helm-comp-read
                                        "EmacsVersion: "
                                        (directory-files "/sudo::/usr/local/sbin"
                                                         nil directory-files-no-dot-files-regexp))
@@ -1049,7 +1049,7 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
                            for full = (expand-file-name i src-bin)
                            when (file-exists-p full)
                            collect full))
-           (src-info (anything-comp-read
+           (src-info (helm-comp-read
                       "EmacsInfoVersion: "
                       (loop for i in
                             (directory-files "/sudo::/usr/local/share" t directory-files-no-dot-files-regexp)
@@ -1060,10 +1060,10 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
               when (file-exists-p full)
               do (delete-file (expand-file-name i "/sudo::/usr/local/bin/")))
         (delete-file "/sudo::/usr/local/share/info")
-        (anything-dired-action "/sudo::/usr/local/bin/"
+        (helm-dired-action "/sudo::/usr/local/bin/"
                                :action 'symlink
                                :files bin-list)
-        (anything-dired-action "/sudo::/usr/local/share/info"
+        (helm-dired-action "/sudo::/usr/local/share/info"
                                :action 'symlink :files (list src-info))
         (message "Switched to %s version" (file-name-nondirectory src-bin))))))
 
@@ -1117,7 +1117,7 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
   "Interface to df -h command line.
 If a prefix arg is given choose directory, otherwise use `default-directory'."
   (interactive (list (if current-prefix-arg
-                         (anything-c-read-file-name
+                         (helm-c-read-file-name
                           "Directory: " :test 'file-directory-p)
                          default-directory)))
   (let ((df-info (tv-get-disk-info directory t)))

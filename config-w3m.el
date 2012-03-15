@@ -94,7 +94,7 @@ With prefix arg open another window to diplay result"
 (defun tv-search-gmane (query &optional group author)
   (interactive (list
                 (read-from-minibuffer "Query: ")
-                (anything-comp-read "Group: "
+                (helm-comp-read "Group: "
                                     '("gmane.emacs.gnus.general"
                                       "gmane.emacs.gnus.cvs"
                                       "gmane.emacs.gnus.user"

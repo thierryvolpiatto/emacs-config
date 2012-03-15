@@ -45,8 +45,8 @@
 
 (defun csv2org (fname output-file)
   "Convert a csv file to an org table."
-  (interactive (list (anything-c-read-file-name "CsvFile: ")
-                     (anything-c-read-file-name "OutputFile: "
+  (interactive (list (helm-c-read-file-name "CsvFile: ")
+                     (helm-c-read-file-name "OutputFile: "
                                                 :initial-input
                                                 (format "%s%s-csv2org.org"
                                                         csv2org-output-dir

@@ -61,8 +61,8 @@
 (xgit-insinuate-gnus)
 (defalias 'xgit-dvc-export-via-email 'xgit-gnus-send-commit-notification)
 
-(defun anything-dvc-apply-patch (patch)
-  (let ((default-directory anything-ff-default-directory))
+(defun helm-dvc-apply-patch (patch)
+  (let ((default-directory helm-ff-default-directory))
     (dvc-apply-patch patch)))
 
 

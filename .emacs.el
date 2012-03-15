@@ -5,7 +5,7 @@
 ;; Author: thierry
 ;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
-; Time-stamp: <2012-03-15 11:00:04 thierry>
+; Time-stamp: <2012-03-15 12:09:36 thierry>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -76,8 +76,8 @@
 	     "~/elisp/python-mode"
 	     "~/elisp/emacs-w3m/"
 	     "~/elisp/ledger/"
-	     "~/elisp/anything/"
-             ;"~/elisp/emacs-helm"
+             "~/elisp/emacs-helm"
+             "~/elisp/emacs-helm-extensions"
 	     "~/elisp/eev/"
              "~/elisp/elscreen"
              "~/elisp/google-maps"
@@ -170,7 +170,7 @@
 (tv-require 'usage-memo)
 (tv-require 'auth-source)
 (tv-require 'epa-file)
-(tv-require 'init-anything-thierry)
+(tv-require 'init-helm-thierry)
 (tv-require 'bookmark-extensions)
 (tv-require 'bookmark-firefox-handler)
 (tv-require 'bookmark-uzbl-handler)
@@ -233,7 +233,7 @@
 (tv-require 'org-google-weather)
 (tv-require 'markdown-mode)
 
-;; Test if this overhide `anything-command-map-prefix-key'
+;; Test if this overhide `helm-command-map-prefix-key'
 ;(global-set-key (kbd "C-x c") #'(lambda () (interactive) (message "Hello")))
 
 
@@ -272,7 +272,7 @@
 (global-set-key (kbd "<f11> l r")                  'tv-start-slime)
 (global-set-key (kbd "<f11> l e")                  'slime-scratch)
 (global-set-key (kbd "<f11> l l")                  'slime-list-connections)
-(global-set-key [remap occur]                      'anything-occur) ; M-s o
+(global-set-key [remap occur]                      'helm-occur) ; M-s o
 (global-set-key (kbd "C-s")                        'ioccur)
 (global-set-key (kbd "M-s s")                      'isearch-forward)
 (global-set-key (kbd "C-c C-o")                    'ioccur-find-buffer-matching)
@@ -294,7 +294,7 @@
 (global-set-key (kbd "C-x r h")                    'rectangle-menu)
 (global-set-key (kbd "C-x r <right>")              'rectangle-insert-at-right)
 (global-set-key (kbd "C-x r M-w")                  'copy-rectangle)
-(global-set-key (kbd "C-z l")                      'anything-elscreen)
+(global-set-key (kbd "C-z l")                      'helm-elscreen)
 (global-set-key (kbd "M-z")                        'zop-to-char)
 (global-set-key (kbd "<f5> g m")                   'google-maps)
 (global-set-key (kbd "M-\"")                       'tv-insert-double-quote)
@@ -347,10 +347,10 @@
 ;; (desktop-save-mode 1)
 ;; (setq desktop-restore-eager 5)
 ;; (add-to-list 'desktop-globals-to-save 'ioccur-history)
-;; (add-to-list 'desktop-globals-to-save 'anything-external-command-history)
-;; (add-to-list 'desktop-globals-to-save 'anything-surfraw-engines-history)
-;; (add-to-list 'desktop-globals-to-save 'anything-ff-history)
-;; (add-to-list 'desktop-globals-to-save 'anything-external-command-history)
+;; (add-to-list 'desktop-globals-to-save 'helm-external-command-history)
+;; (add-to-list 'desktop-globals-to-save 'helm-surfraw-engines-history)
+;; (add-to-list 'desktop-globals-to-save 'helm-ff-history)
+;; (add-to-list 'desktop-globals-to-save 'helm-external-command-history)
 
 
 ;;; Usage-memo
@@ -393,7 +393,7 @@
 
 ;; Use now org-keywords in gnus.
 (add-hook 'message-mode-hook #'(lambda ()
-				 (define-key message-mode-map (kbd "<f11> k") 'anything-org-keywords)))
+				 (define-key message-mode-map (kbd "<f11> k") 'helm-org-keywords)))
 
 (autoload 'gnus-dired-attach "gnus-dired.el")
 (when (require 'dired)
@@ -427,7 +427,7 @@
 ;;
 ;;
 (setq recentf-save-file "~/.emacs.d/recentf")
-;; `recentf-mode' will be started by anything when needed,
+;; `recentf-mode' will be started by helm when needed,
 ;; so no need to start it here
 
 ;; undo-limit
@@ -437,8 +437,8 @@
 ;;
 ;;
 ;; My current-font: [EVAL]: (assoc-default 'font (frame-parameters))
-;; Choose a font:   [EVAL]: (anything 'anything-c-source-xfonts)
-;; Choose a color:  [EVAL]: (anything 'anything-c-source-colors)
+;; Choose a font:   [EVAL]: (helm 'helm-c-source-xfonts)
+;; Choose a color:  [EVAL]: (helm 'helm-c-source-colors)
 
 ;; [See Initial config: EVAL]: (find-fline "~/.Xressources")
 
@@ -550,9 +550,9 @@ With a prefix arg decrease transparency."
 
 
 ;; Elscreen
-(defun anything-elscreen ()
+(defun helm-elscreen ()
   (interactive)
-  (anything-other-buffer 'anything-c-source-elscreen "*Anything Elscreen*"))
+  (helm-other-buffer 'helm-c-source-elscreen "*Helm Elscreen*"))
 
 ;; Don't fucking split this windows horizontally
 (setq split-width-threshold nil)
@@ -668,7 +668,7 @@ If you want the mouse banished to a different corner set
 ;(setq browse-url-browser-function 'browse-url-mozilla)
 
 ;; w3m-mode-map
-(define-key w3m-mode-map (kbd "C-c v") 'anything-w3m-bookmarks)
+(define-key w3m-mode-map (kbd "C-c v") 'helm-w3m-bookmarks)
 (define-key w3m-mode-map (kbd "C-c M") 'w3m-view-this-page-in-uzbl)
 (substitute-key-definition 'w3m-view-url-with-external-browser
                            'tv-w3m-view-this-page-in-firefox
@@ -707,7 +707,7 @@ Localhost is used for yahoo messenger.
 I will have to register <password> on others
 and also to add an account with
 account add <protocol> moi@mail.com password."
-  (interactive (list (anything-comp-read "Choose a Bitlbee Server: "
+  (interactive (list (helm-comp-read "Choose a Bitlbee Server: "
                                          '(("LocalServer yahoo+gmail" . "localhost:6667")
                                            ("GoogleTalk on Pub server" . "im.uk.bitlbee.org:6667")
                                            "im.bitlbee.org:6667"
@@ -938,15 +938,15 @@ account add <protocol> moi@mail.com password."
 
 ;; Python-config
 ;; Ipython completion is provided by rlcompleter2
-;; And anything-ipython.el (need ipython.el)
+;; And helm-ipython.el (need ipython.el)
 ;; pymacs/Pycomplete can be used also but are not needed for make
-;; working anything-ipython.
+;; working helm-ipython.
 
 ;; terminal-ipython
 ;; (setenv "PYTHONSTARTUP" "/home/thierry/.pythonstartup")
 (define-key py-shell-map (kbd "\t") 'ipython-complete)
 ;; ;(setq ipython-completion-command-string "print(';'.join(__IP.Completer.all_completions('%s')))\n")
-(define-key py-mode-map (kbd "C-c C-b") 'anything-browse-code)
+(define-key py-mode-map (kbd "C-c C-b") 'helm-browse-code)
 ;; ;; Pymacs
 ;; (setenv "PYMACS_PYTHON" "python2.6")
 ;; (autoload 'pymacs-apply "pymacs")
@@ -1043,14 +1043,14 @@ account add <protocol> moi@mail.com password."
 (add-hook 'eshell-mode-hook #'(lambda ()
                                 (set-face-attribute 'eshell-prompt nil :foreground "DeepSkyBlue")))
 
-;; anything completion with pcomplete
+;; helm completion with pcomplete
 (add-hook 'eshell-mode-hook
           #'(lambda ()
-              (define-key eshell-mode-map [remap pcomplete] 'anything-esh-pcomplete)))
+              (define-key eshell-mode-map [remap pcomplete] 'helm-esh-pcomplete)))
 
 (add-hook 'eshell-mode-hook
           #'(lambda ()
-              (define-key eshell-mode-map (kbd "M-p") 'anything-eshell-history)))
+              (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)))
 
 ;; Eshell history size
 (setq eshell-history-size 1000) ; Same as env var HISTSIZE.
@@ -1141,7 +1141,7 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 With prefix arg always start and let me choose dictionary."
   (interactive "P")
   (if arg
-      (let ((dic (anything-comp-read
+      (let ((dic (helm-comp-read
                   "Dictionnaire: "
                   '("francais" "english"))))
         (unless flyspell-mode (flyspell-mode 1))
@@ -1156,7 +1156,7 @@ With prefix arg always start and let me choose dictionary."
 
 ;;; Printing config
 ;;
-;(setq anything-ff-printer-list (anything-ff-find-printers))
+;(setq helm-ff-printer-list (helm-ff-find-printers))
 (setq lpr-command "gtklp")
 (setq lpr-switches '("-P"))
 (setq printer-name "Epson-Stylus-Photo-R265")
@@ -1471,7 +1471,7 @@ With prefix arg always start and let me choose dictionary."
 ;;
 (setq isearch-allow-scroll t)
 
-;; Implement a decent "online" help like anything. (i.e show help without quitting).
+;; Implement a decent "online" help like helm. (i.e show help without quitting).
 (defun isearch-help-internal (bufname insert-content-fn)
   (save-window-excursion
     (switch-to-buffer (get-buffer-create bufname))
@@ -1705,7 +1705,7 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
       (dotimes (_ (window-width))
         (sit-for 0.01)
         (dotimes (n 3)
-          (anything-goto-line (+ h-pos n 2) t)
+          (helm-goto-line (+ h-pos n 2) t)
           (move-to-column 0)
           (insert " "))))
     (kill-buffer mouse-buffer)))

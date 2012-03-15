@@ -7,7 +7,7 @@
 (setq inhibit-startup-message t)
 
 (add-to-list 'load-path "~/elisp/")
-(add-to-list 'load-path "~/elisp/anything")
+(add-to-list 'load-path "~/elisp/helm")
 (add-to-list 'load-path "~/.emacs.d/emacs-config-laptop")
 ;(add-to-list 'load-path "~/elisp/DA-libs")
 
@@ -104,19 +104,19 @@
 
 (setq completion-cycle-threshold t)
 
-;;; Anything minimal config
-(require 'anything-config)
-;(autoload 'anything-find-files "anything-config" nil t)
-;(autoload 'anything-M-x "anything-config" nil t)
-;(require 'anything-match-plugin)
-;(require 'anything-complete)
+;;; Helm minimal config
+(require 'helm-config)
+;(autoload 'helm-find-files "helm-config" nil t)
+;(autoload 'helm-M-x "helm-config" nil t)
+;(require 'helm-match-plugin)
+;(require 'helm-complete)
 (require 'autodoc)
-(global-set-key (kbd "C-x C-f") 'anything-find-files)
-(global-set-key (kbd "M-x") 'anything-M-x)
-(global-set-key (kbd "C-x C-b") 'anything-buffers-list)
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
+(global-set-key (kbd "M-x") 'helm-M-x)
+(global-set-key (kbd "C-x C-b") 'helm-buffers-list)
 
-;; (require 'descbinds-anything)
-;; (descbinds-anything-install)            ; C-h b, C-x C-h
+;; (require 'descbinds-helm)
+;; (descbinds-helm-install)            ; C-h b, C-x C-h
 (fset 'yes-or-no-p 'y-or-n-p)
 (require 'tv-utils)
 

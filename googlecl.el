@@ -4,7 +4,7 @@
 
 (defvar google-db-file "~/.emacs.d/elisp-objects/gpicasa-album-list.el")
 (defun google-create-album (dir)
-  (interactive (list (anything-c-read-file-name "Directory: "
+  (interactive (list (helm-c-read-file-name "Directory: "
                                                 :test 'file-directory-p
                                                 :initial-input "/home/thierry/Pictures/")))
   (lexical-let ((album (car (last (split-string dir "/")))))
@@ -45,7 +45,7 @@
   (let ((comp-file (concat google-db-file "c")))
     (while (not (file-exists-p comp-file)) (sit-for 0.1))
     (unless gpicasa-album-list (load-file comp-file)))
-  (let ((album (anything-comp-read "Album: " gpicasa-album-list)))
+  (let ((album (helm-comp-read "Album: " gpicasa-album-list)))
     (insert (car album))))
 
 (defun google-post-image-to-album (arg)
@@ -54,8 +54,8 @@
   (let ((comp-file (concat google-db-file "c")))
     (while (not (file-exists-p comp-file)) (sit-for 0.1))
     (unless gpicasa-album-list (load-file comp-file)))
-  (lexical-let ((album (anything-comp-read "Album: " (loop for i in gpicasa-album-list collect (car i))))
-                (file  (anything-c-read-file-name "File: " :initial-input "~/Pictures")))
+  (lexical-let ((album (helm-comp-read "Album: " (loop for i in gpicasa-album-list collect (car i))))
+                (file  (helm-c-read-file-name "File: " :initial-input "~/Pictures")))
     (start-process-shell-command
      "gpicasa-post" nil
      (format "google picasa post --src %s %s"
@@ -69,7 +69,7 @@
 
 (defun google-post-document ()
   (interactive)
-  (lexical-let ((document (anything-c-read-file-name "Document: ")))
+  (lexical-let ((document (helm-c-read-file-name "Document: ")))
     (start-process-shell-command "google-docs-post" nil
                                  (format "google docs upload --src %s"
                                          (shell-quote-argument document)))

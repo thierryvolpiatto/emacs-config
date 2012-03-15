@@ -51,7 +51,7 @@
 ;; Use-my-func-with-ido-and-not-org-iswitchb 
 (defvar my-org-files '("agenda.org" "notes.org" "journal.org" "pwdthierry.org"))
 (defun tv-find-org-files (fname)
-  (interactive (list (anything-comp-read "OrgFiles: "
+  (interactive (list (helm-comp-read "OrgFiles: "
                                          (if (bufferp (get-buffer "*Org Agenda*"))
                                              (cons "*Org Agenda*" my-org-files)
                                              my-org-files))))
@@ -202,13 +202,13 @@
                        " "
                        amount))))
 
-;; Use-anything-in-org 
-;; (defun anything-org-headlines-only ()
+;; Use-helm-in-org 
+;; (defun helm-org-headlines-only ()
 ;;   (interactive)
-;;   (anything-other-buffer 'anything-c-source-org-headline "*org headlines*"))
+;;   (helm-other-buffer 'helm-c-source-org-headline "*org headlines*"))
 
-(define-key org-mode-map (kbd "<f11> o") 'anything-org-headlines)
-(define-key org-mode-map (kbd "<f11> k") 'anything-org-keywords)
+(define-key org-mode-map (kbd "<f11> o") 'helm-org-headlines)
+(define-key org-mode-map (kbd "<f11> k") 'helm-org-keywords)
                                              
 ;; Colorize-Diary's-entries-in-agenda 
 (defvar tv-diary-regexp "^ *[Dd]iary")
