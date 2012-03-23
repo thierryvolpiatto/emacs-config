@@ -69,8 +69,8 @@
          (date        (mapconcat 'identity (reverse split-date) "/"))
          (payee       (replace-regexp-in-string "^ *\\| *$" "" (nth 2 line-list)))
          (amount      (replace-regexp-in-string "^ *\\| *$" "" (nth 4 line-list)))
-         (categorie   (anything-comp-read "Categorie: " (ledger-collect-categories)))
-         (type        (anything-comp-read "Type: " '("Visa" "Check" "Tip" "Prelevement")))
+         (categorie   (helm-comp-read "Categorie: " (ledger-collect-categories)))
+         (type        (helm-comp-read "Type: " '("Visa" "Check" "Tip" "Prelevement")))
          (ledger-file (getenv "LEDGER_FILE"))
          numcheck defnumcheck)
     (with-current-buffer (find-file-noselect ledger-file)
@@ -103,8 +103,8 @@
   (interactive
    (list (read-string "Date: " (tv-cur-date-string :separator "/"))
          (read-string "Payee: ")
-         (anything-comp-read "Categorie: " (ledger-collect-categories))
-         (anything-comp-read "Type: " '("Visa" "Check" "Tip" "Prelevement"))
+         (helm-comp-read "Categorie: " (ledger-collect-categories))
+         (helm-comp-read "Type: " '("Visa" "Check" "Tip" "Prelevement"))
          (read-string "Amount: ")))
   (let ((ledger-file (getenv "LEDGER_FILE"))
         numcheck defnumcheck)
@@ -137,8 +137,8 @@
          (date        (mapconcat 'identity (reverse split-date) "/"))
          (payee       (replace-regexp-in-string "^ *\\| *$" "" (nth 2 line-list)))
          (amount      (replace-regexp-in-string "^ *\\| *$" "" (nth 3 line-list)))
-         (categorie   (anything-comp-read "Categorie: " (ledger-collect-categories)))
-         (account     (anything-comp-read "Account: " '("Socgen:Checking" "Socgen:Prelevement")))
+         (categorie   (helm-comp-read "Categorie: " (ledger-collect-categories)))
+         (account     (helm-comp-read "Account: " '("Socgen:Checking" "Socgen:Prelevement")))
          (ledger-file (getenv "LEDGER_FILE")))
     (with-current-buffer (find-file-noselect ledger-file)
       (goto-char (point-max))
@@ -159,8 +159,8 @@
   (interactive
    (list (read-string "Date: " (tv-cur-date-string :separator "/"))
          (read-string "Payee: ")
-         (anything-comp-read "Categorie: " (ledger-collect-categories))
-         (anything-comp-read "Account: " '("Socgen:Checking" "Socgen:Prelevement")) ;; TODO add completion here
+         (helm-comp-read "Categorie: " (ledger-collect-categories))
+         (helm-comp-read "Account: " '("Socgen:Checking" "Socgen:Prelevement")) ;; TODO add completion here
          (read-string "Amount: ")))
   (let ((ledger-file (getenv "LEDGER_FILE")))
     (with-current-buffer (find-file-noselect ledger-file)

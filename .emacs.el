@@ -5,7 +5,7 @@
 ;; Author: thierry
 ;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
-; Time-stamp: <2012-03-15 12:09:36 thierry>
+; Time-stamp: <2012-03-22 21:38:17 thierry>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -547,12 +547,6 @@ With a prefix arg decrease transparency."
                                       (alpha . nil)
                                       (fullscreen . nil))))
 
-
-
-;; Elscreen
-(defun helm-elscreen ()
-  (interactive)
-  (helm-other-buffer 'helm-c-source-elscreen "*Helm Elscreen*"))
 
 ;; Don't fucking split this windows horizontally
 (setq split-width-threshold nil)
