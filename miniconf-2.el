@@ -7,7 +7,8 @@
 (setq inhibit-startup-message t)
 
 (add-to-list 'load-path "~/elisp/")
-(add-to-list 'load-path "~/elisp/helm")
+(add-to-list 'load-path "~/elisp/emacs-helm")
+(add-to-list 'load-path "~/elisp/emacs-helm-extensions/")
 (add-to-list 'load-path "~/.emacs.d/emacs-config-laptop")
 
 (setq default-frame-alist '((foreground-color . "Wheat")

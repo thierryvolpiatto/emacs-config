@@ -5,7 +5,7 @@
 ;; Author: thierry
 ;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
-; Time-stamp: <2012-03-22 21:38:17 thierry>
+; Time-stamp: <2012-03-30 10:40:43 thierry>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -191,7 +191,6 @@
 (tv-require 'dvc-init)
 ;(tv-require 'emms-mplayer-config)
 (tv-require 'emms-mpd-config)
-;(tv-require 'yaoddmuse)
 (tv-require 'dired-aux)
 (tv-require 'dired-x)
 (tv-require 'dired-extension)
@@ -210,14 +209,10 @@
 (tv-require 'slime-autoloads)
 (tv-require 'slime)
 (tv-require 'cl-info)
-;; (tv-require 'moz)
 (tv-require 'ioccur)
 (tv-require 'mb-depth)
-(tv-require 'autodoc)
-;(tv-require 'auto-document)
 (tv-require 'tv-utils)
 (tv-require 'rectangle-utils)
-;(tv-require 'xml-weather)
 (tv-require 'smallurl)
 (tv-require 'elscreen)
 (tv-require 'zop-to-char)
@@ -280,9 +275,6 @@
 (global-set-key (kbd "<M-up>")                     'tv-scroll-up)
 (global-set-key (kbd "<C-M-down>")                 'tv-scroll-other-down)
 (global-set-key (kbd "<C-M-up>")                   'tv-scroll-other-up)
-(global-set-key (kbd "C-h K")                      'find-function-on-key)
-(global-set-key (kbd "C-h F")                      'find-function-at-point)
-(global-set-key (kbd "C-h V")                      'find-variable-at-point)
 (global-set-key (kbd "<C-prior>")                  'text-scale-decrease)
 (global-set-key (kbd "<C-next>")                   'text-scale-increase)
 (global-set-key (kbd "C-x C-²")                    'delete-other-windows)
