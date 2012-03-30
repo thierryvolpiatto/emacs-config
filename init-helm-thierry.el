@@ -2,6 +2,7 @@
 ;;; Code:
 
 (require 'helm-config)
+;(load "helm-autoload")
 
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
@@ -72,7 +73,7 @@
 ;;; Describe key-bindings
 ;;
 ;;
-;(require 'helm-descbinds)
+(require 'helm-descbinds)
 (helm-descbinds-install)            ; C-h b, C-x C-h
 
 ;; My-helm-describe-keybindings
