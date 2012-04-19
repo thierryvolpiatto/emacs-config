@@ -3,6 +3,9 @@
 
 ;; Code:
 (require 'w3m)
+
+(setq w3m-bookmark-file "~/.w3m/bookmark.html")
+
 ;; test 
 ;; Kill-other-windows-when-using-w3m- 
 ;(add-hook 'w3m-mode-hook 'delete-other-windows)
@@ -90,7 +93,8 @@ With prefix arg open another window to diplay result"
 
 
 
-;; search-gmane 
+;; search-gmane
+;;;###autoload
 (defun tv-search-gmane (query &optional group author)
   (interactive (list
                 (read-from-minibuffer "Query: ")

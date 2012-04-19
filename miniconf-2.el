@@ -28,19 +28,19 @@
 (minibuffer-depth-indicate-mode 1)
 
 ;;; Helm minimal config
-(require 'helm-config)
-;(autoload 'helm-find-files "helm-config" nil t)
-;(autoload 'helm-M-x "helm-config" nil t)
-;(require 'helm-match-plugin)
-;(require 'helm-complete)
-(require 'autodoc)
+(require 'helm-config) ; Contain all autoloads
+
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
 
 ;; (require 'descbinds-helm)
 ;; (descbinds-helm-install)            ; C-h b, C-x C-h
+
+
 (fset 'yes-or-no-p 'y-or-n-p)
+
+;; Tv-utils
 (require 'tv-utils)
 
 

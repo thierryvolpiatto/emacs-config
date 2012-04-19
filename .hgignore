@@ -1,7 +1,0 @@
-syntax: glob
-*.orig
-*.rej
-*~
-*.elc
-TAGS
-locate.db

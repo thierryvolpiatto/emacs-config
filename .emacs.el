@@ -5,7 +5,7 @@
 ;; Author: thierry
 ;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
-; Time-stamp: <2012-03-30 10:37:11 thierry>
+; Time-stamp: <2012-04-19 09:17:55 thierry>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -53,7 +53,7 @@
              "/usr/local/share/emacs/site-lisp/auctex"
 	     "~/elisp/"
              "~/elisp/dvc/lisp/"
-	     ;"~/elisp/auctex"
+	     "~/elisp/magit"
 	     "~/elisp/autoconf-mode"
 	     "~/elisp/bzr"
 	     "~/elisp/cmake"
@@ -173,7 +173,6 @@
 (tv-require 'init-helm-thierry)
 (tv-require 'bookmark-extensions)
 (tv-require 'bookmark-firefox-handler)
-(tv-require 'bookmark-uzbl-handler)
 (tv-require 'firefox-protocol)
 (tv-require 'addressbook-bookmark)
 (tv-require 'config-w3m)
@@ -188,6 +187,7 @@
 (tv-require 'muse-colors)
 (tv-require 'htmlize-hack)
 ;; (tv-require 'psvn)
+(tv-require 'magit)
 (tv-require 'dvc-init)
 ;(tv-require 'emms-mplayer-config)
 (tv-require 'emms-mpd-config)
@@ -547,68 +547,13 @@ With a prefix arg decrease transparency."
 (setq use-file-dialog nil)
 
 
-;;; Mouse avoidance - Push the mouse out of the way.
+;;; Banish mouse on bottom right
 ;;
-;;
-(when (and (display-mouse-p) (require 'avoid nil t))
-
-  (defcustom mouse-avoidance-banish-position '((frame-or-window . frame)
-                                               (side . right)
-                                               (side-pos . -2)
-                                               (top-or-bottom . bottom)
-                                               (top-or-bottom-pos . 1))
-    "Position to which Mouse Avoidance mode `banish' moves the mouse.
-An alist where keywords mean:
-FRAME-OR-WINDOW: banish the mouse to corner of frame or window.
-SIDE: banish the mouse on right or left corner of frame or window.
-SIDE-POS: Distance from right or left edge of frame or window.
-TOP-OR-BOTTOM: banish the mouse to top or bottom of frame or window.
-TOP-OR-BOTTOM-POS: Distance from top or bottom edge of frame or window."
-    :group   'avoid
-    :type    '(alist :key-type symbol :value-type symbol)
-    :options '(frame-or-window side (side-pos integer)
-               top-or-bottom (top-or-bottom-pos integer)))
-
-
-  (defun mouse-avoidance-banish-destination ()
-    "The position to which Mouse Avoidance mode `banish' moves the mouse.
-
-If you want the mouse banished to a different corner set
-`mouse-avoidance-banish-position' as you need."
-    (let* ((fra-or-win         (assoc-default
-                                'frame-or-window
-                                mouse-avoidance-banish-position 'eq))
-           (list-values        (case fra-or-win
-                                 (frame (list 0 0 (frame-width) (frame-height)))
-                                 (window (window-edges))))
-           (alist              (loop for v in list-values
-                                     for k in '(left top right bottom)
-                                     collect (cons k v)))
-           (side               (assoc-default
-                                'side
-                                mouse-avoidance-banish-position 'eq))
-           (side-dist          (assoc-default
-                                'side-pos
-                                mouse-avoidance-banish-position 'eq))
-           (top-or-bottom      (assoc-default
-                                'top-or-bottom
-                                mouse-avoidance-banish-position 'eq))
-           (top-or-bottom-dist (assoc-default
-                                'top-or-bottom-pos
-                                mouse-avoidance-banish-position 'eq))
-           (side-fn            (case side
-                                 (left '+)
-                                 (right '-)))
-           (top-or-bottom-fn   (case top-or-bottom
-                                 (top '+)
-                                 (bottom '-))))
-      (cons (funcall side-fn                      ; -/+
-                     (assoc-default side alist 'eq) ; right or left
-                     side-dist)         ; distance from side
-            (funcall top-or-bottom-fn   ; -/+
-                     (assoc-default top-or-bottom alist 'eq) ; top/bottom
-                     top-or-bottom-dist)))) ; distance from top/bottom
-  (mouse-avoidance-mode 'banish))
+(setq mouse-avoidance-banish-position '((frame-or-window . frame)
+                                        (side . right)
+                                        (side-pos . -2)
+                                        (top-or-bottom . bottom)
+                                        (top-or-bottom-pos . 1)))
 
 
 ;;; Bookmarks
@@ -888,6 +833,13 @@ account add <protocol> moi@mail.com password."
 
 (when (require 'eldoc)
   (set-face-attribute 'eldoc-highlight-function-argument nil :underline "red"))
+
+;; Tooltip face
+(set-face-attribute 'tooltip nil
+                    :foreground "black"
+                    :background "NavajoWhite"
+                    :family "unknown-DejaVu Sans Mono-bold-normal-normal"
+		    :underline t)
 
 (defadvice edebug-eval-expression (around with-eldoc activate)
   "This advice enable eldoc support."
@@ -1627,9 +1579,70 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 ;; Possible values: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
 (setq vc-handled-backends '(RCS Hg Git Bzr))
 
-;;; Temporary Bugfixs until fixed in trunk.
+;;; Temporary Bugfixes until fixed in trunk.
 ;;
-; None actually.
+;; ----Empty---
+
+;;; winner-mode config
+;;
+;;
+(setq winner-boring-buffers '("*Completions*"
+                              "*Compile-Log*"
+                              "*inferior-lisp*"
+                              "*Fuzzy Completions*"
+                              "*Apropos*"
+                              "*dvc-error*"
+                              "*Help*"
+                              "*cvs*"
+                              "*Buffer List*"
+                              "*Ibuffer*"
+                              ))
+
+(when (require 'winner)
+  (defvar winner-boring-buffers-regexp
+    "\*[hH]elm.*\\|\*xhg.*\\|\*xgit.*")
+  (defun winner-set1 (conf)
+    ;; For the format of `conf', see `winner-conf'.
+    (let* ((buffers nil)
+           (alive
+            ;; Possibly update `winner-point-alist'
+            (loop for buf in (mapcar 'cdr (cdr conf))
+               for pos = (winner-get-point buf nil)
+               if (and pos (not (memq buf buffers)))
+               do (push buf buffers)
+               collect pos)))
+      (winner-set-conf (car conf))
+      (let (xwins)                      ; to be deleted
+
+        ;; Restore points
+        (dolist (win (winner-sorted-window-list))
+          (unless (and (pop alive)
+                       (setf (window-point win)
+                             (winner-get-point (window-buffer win) win))
+                       (not (or (member (buffer-name (window-buffer win))
+                                        winner-boring-buffers)
+                                (string-match winner-boring-buffers-regexp
+                                              (buffer-name (window-buffer win))))))
+            (push win xwins)))          ; delete this window
+
+        ;; Restore marks
+        (letf (((current-buffer)))
+          (loop for buf in buffers
+             for entry = (cadr (assq buf winner-point-alist))
+             do (progn (set-buffer buf)
+                       (set-mark (car entry))
+                       (setf (winner-active-region) (cdr entry)))))
+        ;; Delete windows, whose buffers are dead or boring.
+        ;; Return t if this is still a possible configuration.
+        (or (null xwins)
+            (progn
+              (mapc 'delete-window (cdr xwins)) ; delete all but one
+              (unless (one-window-p t)
+                (delete-window (car xwins))
+                t))))))
+
+  (defalias 'winner-set 'winner-set1))
+(winner-mode 1)
 
 ;;; Elpa
 ;; (eval-after-load 'package
@@ -1695,6 +1708,12 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
           (move-to-column 0)
           (insert " "))))
     (kill-buffer mouse-buffer)))
+
+;;; markdown-mode
+;;
+;;
+(add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
 
 ;;; Report bug
 ;;
