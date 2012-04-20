@@ -3,9 +3,7 @@
 ;; Filename: .emacs.el
 ;; Description: My .emacs for thievol
 ;; Author: thierry
-;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
-; Time-stamp: <2012-04-20 11:28:15 thierry>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -14,10 +12,7 @@
 
 ;(defvar on-laptop t)
 
-;; Save Timestamp
-(add-hook 'before-save-hook 'time-stamp)
-
-;; Environment
+;;; Environment
 ;; See: (find-fline "~/.emacs.d/.eshell/login")
 ;; For eshell env settings.
 (setenv "STARDICT_DATA_DIR" "~/.stardict/dic")
@@ -157,14 +152,18 @@
 (setq lua-default-application "/usr/bin/lua")
 
 ;;; emacs-wget site-lisp configuration
+;;
+;;
 (autoload 'wget "wget" "wget interface for Emacs." t)
 (autoload 'wget-web-page "wget" "wget interface to download whole web page." t)
 (load "w3m-wget")
 (add-hook 'w3m-mode-hook '(lambda () (require 'w3m-wget)))
 
-;; Emacs-customize-have-it's-own-file
+;;; Emacs customize have it's own file
+;;
 (setq custom-file "~/.emacs.d/.emacs-custom.el")
 (load custom-file)
+
 
 ;;; Require's
 ;;
@@ -558,6 +557,7 @@ With a prefix arg decrease transparency."
                                         (side-pos . -2)
                                         (top-or-bottom . bottom)
                                         (top-or-bottom-pos . 1)))
+(mouse-avoidance-mode 1)
 
 
 ;;; Bookmarks
@@ -1272,7 +1272,8 @@ With prefix arg always start and let me choose dictionary."
 
 ;;; Tramp-config
 ;;
-;(require 'tramp)
+;;
+(require 'tramp)
 ;(setq tramp-default-method "ssh") ; methode par defaut
 
 ;; No messages
@@ -1281,7 +1282,8 @@ With prefix arg always start and let me choose dictionary."
 ;; Allow connecting as root on all remote Linux machines except this one.
 ;; Use e.g /sudo:host:/path
 (add-to-list 'tramp-default-proxies-alist
-             '(nil "\\`root\\'" "/ssh:%h:"))
+             '("\\`thievol\\'" "\\`root\\'" "/ssh:%h:"))
+
 (add-to-list 'tramp-default-proxies-alist
              '((regexp-quote (system-name)) nil nil))
 
@@ -1297,8 +1299,11 @@ With prefix arg always start and let me choose dictionary."
 
 ;; Mode-lecture-photo-auto
 (auto-image-file-mode 1)
+
 
-;; slime-config
+;;; Slime config
+;;
+;;
 (setq inferior-lisp-program "/usr/bin/sbcl")
 (setq slime-backend "/home/thierry/elisp/slime/swank-loader.lisp")
 (slime-setup '(slime-fancy
