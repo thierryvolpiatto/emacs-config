@@ -5,7 +5,7 @@
 ;; Author: thierry
 ;; Maintainer:
 ;; Created: sam aoû 16 19:06:09 2008 (+0200)
-; Time-stamp: <2012-04-19 09:17:55 thierry>
+; Time-stamp: <2012-04-20 11:28:15 thierry>
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -32,8 +32,12 @@
 ;; Require with messages to debug more easily.
 (defun tv-require (feature &optional filename noerror)
   (message "Loading %s..." (symbol-name feature))
-  (require feature filename noerror)
-  (message "Loading %s done." (symbol-name feature)))
+  (condition-case err
+      (if (require feature filename noerror)
+          (message "Loading %s done" (symbol-name feature))
+          (message "Loading %s Failed" (symbol-name feature)))
+    (error
+     (signal 'error (list feature (car err) (cadr err))))))
 
 ;; load-paths
 ;; For Info paths see:
@@ -53,7 +57,7 @@
              "/usr/local/share/emacs/site-lisp/auctex"
 	     "~/elisp/"
              "~/elisp/dvc/lisp/"
-	     "~/elisp/magit"
+	     ;"~/elisp/magit"
 	     "~/elisp/autoconf-mode"
 	     "~/elisp/bzr"
 	     "~/elisp/cmake"
@@ -187,9 +191,9 @@
 (tv-require 'muse-colors)
 (tv-require 'htmlize-hack)
 ;; (tv-require 'psvn)
-(tv-require 'magit)
+;; (tv-require 'magit)
 (tv-require 'dvc-init)
-;(tv-require 'emms-mplayer-config)
+;; (tv-require 'emms-mplayer-config)
 (tv-require 'emms-mpd-config)
 (tv-require 'dired-aux)
 (tv-require 'dired-x)
