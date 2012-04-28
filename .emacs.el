@@ -53,6 +53,8 @@
 	     "~/elisp/"
              "~/elisp/dvc/lisp/"
 	     ;"~/elisp/magit"
+             "~/elisp/auctex"
+             "~/elisp/auctex/preview"
 	     "~/elisp/autoconf-mode"
 	     "~/elisp/bzr"
 	     "~/elisp/cmake"
@@ -280,7 +282,7 @@
 (global-set-key (kbd "<C-M-up>")                   'tv-scroll-other-up)
 (global-set-key (kbd "<C-prior>")                  'text-scale-decrease)
 (global-set-key (kbd "<C-next>")                   'text-scale-increase)
-(global-set-key (kbd "C-x C-²")                    'delete-other-windows)
+(global-set-key (kbd "C-x C-œ")                    'delete-other-windows)
 (global-set-key (kbd "C-x C-&")                    'delete-window)
 (global-set-key (kbd "C-x C-é")                    'split-window-vertically)
 (global-set-key (kbd "C-x C-\"")                   'split-window-horizontally)
@@ -1723,6 +1725,7 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 ;;
 (add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.mdpp$" . markdown-mode))
 
 ;;; Report bug
 ;;
