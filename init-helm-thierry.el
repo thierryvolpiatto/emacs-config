@@ -12,7 +12,7 @@
 ;;
 (require 'helm-mercurial)
 (require 'helm-delicious)
-(require 'helm-ipython)
+;(require 'helm-ipython)
 (require 'helm-descbinds)
 
 ;;; Helm-command-map
@@ -29,9 +29,9 @@
 ;;; Ipython
 ;;
 ;;
-(define-key py-mode-map (kbd "M-<tab>")  'helm-ipython-complete)
-(define-key py-shell-map (kbd "M-<tab>") 'helm-ipython-complete)
-(define-key py-mode-map (kbd "C-c M")    'helm-ipython-import-modules-from-buffer)
+;; (define-key py-mode-map (kbd "M-<tab>")  'helm-ipython-complete)
+;; (define-key py-shell-map (kbd "M-<tab>") 'helm-ipython-complete)
+;; (define-key py-mode-map (kbd "C-c M")    'helm-ipython-import-modules-from-buffer)
 
 ;;; Global-map
 ;;

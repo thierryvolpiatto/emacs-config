@@ -203,7 +203,7 @@
 (tv-require 'regex-tool)
 (tv-require 'no-word)
 (tv-require 'eldoc-eval)
-(tv-require 'ipython)
+;(tv-require 'ipython)
 (tv-require 'python-mode)
 (tv-require 'flymake)
 ;(tv-require 'em-xtra)
@@ -937,37 +937,15 @@ account add <protocol> moi@mail.com password."
 ;; Indent-only-with-spaces
 (setq-default indent-tabs-mode nil)
 
-;; Lua-mode
-;; (setq auto-mode-alist (cons '("\\.lua$" . lua-mode) auto-mode-alist))
-;; (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
-;; (add-hook 'lua-mode-hook 'turn-on-font-lock)
-;; (add-hook 'lua-mode-hook 'hs-minor-mode)
 
-;; Python-config
-;; Ipython completion is provided by rlcompleter2
-;; And helm-ipython.el (need ipython.el)
-;; pymacs/Pycomplete can be used also but are not needed for make
-;; working helm-ipython.
-
-;; terminal-ipython
-;; (setenv "PYTHONSTARTUP" "/home/thierry/.pythonstartup")
-(define-key py-shell-map (kbd "\t") 'ipython-complete)
-;; ;(setq ipython-completion-command-string "print(';'.join(__IP.Completer.all_completions('%s')))\n")
+;;; Python config
+;;
+;;
 (define-key py-mode-map (kbd "C-c C-b") 'helm-browse-code)
-;; ;; Pymacs
-;; (setenv "PYMACS_PYTHON" "python2.6")
-;; (autoload 'pymacs-apply "pymacs")
-;; (autoload 'pymacs-call "pymacs")
-;; (autoload 'pymacs-eval "pymacs" nil t)
-;; (autoload 'pymacs-exec "pymacs" nil t)
-;; (autoload 'pymacs-load "pymacs" nil t)
-
-;; Pycomplete
-;(require 'pycomplete)
 
 ;; config-python-mode
 (setq auto-mode-alist (cons '("\\.py$" . python-mode) auto-mode-alist))
-(setq interpreter-mode-alist (cons '("ipython" . python-mode) interpreter-mode-alist))
+(setq interpreter-mode-alist (cons '("python" . python-mode) interpreter-mode-alist))
 (autoload 'python-mode "python-mode" "Python editing mode." t)
 
 ;; Search-in-python-library
@@ -1012,7 +990,6 @@ account add <protocol> moi@mail.com password."
           "## Author:Thierry Volpiatto<thierry dot volpiatto FROM gmail DOT com>\n"
           "## Commentary:\n\n"))
 
-;(global-set-key (kbd "C-c e p") 'tv-insert-python-header)
 
 ;; shell-config
 
@@ -1095,7 +1072,7 @@ account add <protocol> moi@mail.com password."
 ;; Eshell-visual
 (setq eshell-term-name "eterm-color")
 (when (require 'em-term)
-  (dolist (i '("kop" "ledger" "htop"))
+  (dolist (i '("kop" "ledger" "htop" "ipython"))
     (add-to-list 'eshell-visual-commands i)))
 
 ;;; pcomplete Completion functions on specific commands
@@ -1718,12 +1695,6 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
   (defalias 'winner-set 'winner-set1))
 (winner-mode 1)
 
-;;; Elpa
-;; (eval-after-load 'package
-;;   '(add-to-list 'package-directory-list "~/download/emacs-bzr/elpa/site"))
-;; (setq package-load-list '((auctex nil) all))
-;; (if (fboundp 'package-initialize) (package-initialize))
-
 ;;; google weather
 ;;
 ;;
@@ -1789,6 +1760,16 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 (add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.mdpp$" . markdown-mode))
+
+;;; Semantic
+;;
+;;
+;; (require 'semantic)
+;; (global-semantic-idle-completions-mode t)
+;; (global-semantic-decoration-mode t)
+;; (global-semantic-highlight-func-mode t)
+;; (global-semantic-show-unmatched-syntax-mode t)
+;; (semantic-mode 1)
 
 ;;; Report bug
 ;;

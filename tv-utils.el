@@ -331,7 +331,7 @@ START and END are buffer positions indicating what to append."
 ;; Stardict 
 (defun translate-at-point ()
   (interactive)
-  (let* ((word (thing-at-point 'word))
+  (let* ((word (or (thing-at-point 'word) (read-string "Translate Word: ")))
          (tooltip-hide-delay 30)
          (result
           (condition-case nil
@@ -840,17 +840,6 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
                  (w3m-print-current-url))))
     (firefox-browse-url url)))
 
-(defun w3m-view-this-page-in-uzbl ()
-  (interactive)
-  (let ((url (or (w3m-print-this-url)
-                 (w3m-print-current-url))))
-    (ac-browse-url-uzbl url)))
-
-(defun w3m-view-this-page-in-chrome ()
-  (interactive)
-  (let ((url (or (w3m-print-this-url)
-                 (w3m-print-current-url))))
-    (ac-browse-url-chromium url)))
 
 ;; Easypg 
 (defun epa-sign-to-armored ()
