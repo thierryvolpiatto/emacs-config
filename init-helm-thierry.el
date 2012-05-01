@@ -85,10 +85,22 @@
 ;;; Enable pushing album to google from `helm-find-files'.
 ;;
 ;;
+(defun helm-push-image-to-google (file)
+  (when helm-current-prefix-arg (google-update-album-list-db))
+  (let ((album (helm-comp-read
+                "Album: "
+                (loop for i in gpicasa-album-list collect (car i)))))
+    (google-post-image-to-album-1 file album)))
+
 (when (require 'helm-files)
+  ;; Album.
   (helm-add-action-to-source
    "Push album to google"
-   'google-create-album-1 helm-c-source-find-files))
+   'google-create-album-1 helm-c-source-find-files)
+  ;; Single file.
+  (helm-add-action-to-source
+   "Push file to google album"
+   'helm-push-image-to-google helm-c-source-find-files))
 
 ;;; Enable helm-mode
 ;;
