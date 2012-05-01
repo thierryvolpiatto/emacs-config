@@ -203,7 +203,7 @@
 (tv-require 'regex-tool)
 (tv-require 'no-word)
 (tv-require 'eldoc-eval)
-;(tv-require 'ipython)
+(tv-require 'ipython)
 (tv-require 'python-mode)
 (tv-require 'flymake)
 ;(tv-require 'em-xtra)
@@ -945,7 +945,7 @@ account add <protocol> moi@mail.com password."
 
 ;; config-python-mode
 (setq auto-mode-alist (cons '("\\.py$" . python-mode) auto-mode-alist))
-(setq interpreter-mode-alist (cons '("python" . python-mode) interpreter-mode-alist))
+(setq interpreter-mode-alist (cons '("ipython" . python-mode) interpreter-mode-alist))
 (autoload 'python-mode "python-mode" "Python editing mode." t)
 
 ;; Search-in-python-library
@@ -971,9 +971,9 @@ account add <protocol> moi@mail.com password."
   (defun flymake-pylint-init ()
     (let* ((temp-file (flymake-init-create-temp-buffer-copy
                        'flymake-create-temp-inplace))
-       (local-file (file-relative-name
-                    temp-file
-                    (file-name-directory buffer-file-name))))
+           (local-file (file-relative-name
+                        temp-file
+                        (file-name-directory buffer-file-name))))
       (list "epylint" (list local-file))))
 
   (add-to-list 'flymake-allowed-file-name-masks

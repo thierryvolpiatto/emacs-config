@@ -12,7 +12,6 @@
 ;;
 (require 'helm-mercurial)
 (require 'helm-delicious)
-;(require 'helm-ipython)
 (require 'helm-descbinds)
 
 ;;; Helm-command-map
@@ -25,13 +24,6 @@
 (define-key helm-command-map (kbd "y p") 'helm-yaoddmuse-emacswiki-post-library)
 (define-key helm-command-map (kbd "g")   'helm-apt)
 (define-key helm-command-map (kbd "DEL") 'helm-resume)
-
-;;; Ipython
-;;
-;;
-;; (define-key py-mode-map (kbd "M-<tab>")  'helm-ipython-complete)
-;; (define-key py-shell-map (kbd "M-<tab>") 'helm-ipython-complete)
-;; (define-key py-mode-map (kbd "C-c M")    'helm-ipython-import-modules-from-buffer)
 
 ;;; Global-map
 ;;
