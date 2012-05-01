@@ -82,6 +82,14 @@
   (message "Helm Debug is now %s"
            (if helm-debug "Enabled" "Disabled")))
 
+;;; Enable pushing album to google from `helm-find-files'.
+;;
+;;
+(when (require 'helm-files)
+  (helm-add-action-to-source
+   "Push album to google"
+   'google-create-album-1 helm-c-source-find-files))
+
 ;;; Enable helm-mode
 ;;
 ;;

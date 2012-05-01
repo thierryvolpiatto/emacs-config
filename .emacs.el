@@ -282,7 +282,7 @@
 (global-set-key (kbd "<C-M-up>")                   'tv-scroll-other-up)
 (global-set-key (kbd "<C-prior>")                  'text-scale-decrease)
 (global-set-key (kbd "<C-next>")                   'text-scale-increase)
-(global-set-key (kbd "C-x C-œ")                    'delete-other-windows)
+(global-set-key (kbd "C-x C-²")                    'delete-other-windows)
 (global-set-key (kbd "C-x C-&")                    'delete-window)
 (global-set-key (kbd "C-x C-é")                    'split-window-vertically)
 (global-set-key (kbd "C-x C-\"")                   'split-window-horizontally)
@@ -991,22 +991,15 @@ account add <protocol> moi@mail.com password."
           "## Commentary:\n\n"))
 
 
-;; shell-config
+;;; Shell config
+;;
+;; Set `undo-outer-limit' to high value to avoid messages on long output.
+(setq undo-outer-limit 6000000)
 
-;; Set `undo-outer-limit' to hight value to avoid messages when gentoo emerge
-;(setq undo-outer-limit 6000000)
-
-;; prompt-shell-read-only
+;; Prompt shell read only
 (setq comint-prompt-read-only t)
 
-;; [obsolete]
-;; couleur-dans-le-shell
-;; (j'ai ajouté dumb dans /etc/LS_COLOR egalement)
-;(require 'ansi-color)
-;; (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
-;; (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-
-;; newline-and-indent-in-sh-mode
+;; Newline and indent in `sh-mode'.
 (add-hook 'sh-mode-hook #'(lambda ()
                             (define-key sh-mode-map (kbd "RET") 'newline-and-indent)))
 

@@ -3,10 +3,8 @@
 ;;; Code:
 
 (defvar google-db-file "~/.emacs.d/elisp-objects/gpicasa-album-list.el")
-(defun google-create-album (dir)
-  (interactive (list (helm-c-read-file-name "Directory: "
-                                                :test 'file-directory-p
-                                                :initial-input "/home/thierry/Pictures/")))
+
+(defun google-create-album-1 (dir)
   (lexical-let ((album (car (last (split-string dir "/")))))
     (message "Syncing `%s' album to google..." album)
     (start-process-shell-command
@@ -18,6 +16,12 @@
                           #'(lambda (process event)
                               (when (string= event "finished\n")
                                 (message "Syncing `%s' album to google done." album))))))
+
+(defun google-create-album (dir)
+  (interactive (list (helm-c-read-file-name "Directory: "
+                                                :test 'file-directory-p
+                                                :initial-input "/home/thierry/Pictures/")))
+  (google-create-album-1 dir))
 
 (defvar gpicasa-album-list nil)
 (defun google-update-album-list-db ()
