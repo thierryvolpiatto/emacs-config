@@ -87,9 +87,12 @@
 ;;
 (defun helm-push-image-to-google (file)
   (when helm-current-prefix-arg (google-update-album-list-db))
-  (let ((album (helm-comp-read
+  (let ((comp-file (concat google-db-file "c"))
+        (album (helm-comp-read
                 "Album: "
                 (loop for i in gpicasa-album-list collect (car i)))))
+    (while (not (file-exists-p comp-file)) (sit-for 0.1))
+    (unless gpicasa-album-list (load-file comp-file))
     (google-post-image-to-album-1 file album)))
 
 (when (require 'helm-files)

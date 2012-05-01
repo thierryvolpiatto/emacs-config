@@ -56,9 +56,6 @@
     (insert (car album))))
 
 (defun google-post-image-to-album-1 (file album)
-  (let ((comp-file (concat google-db-file "c")))
-    (while (not (file-exists-p comp-file)) (sit-for 0.1))
-    (unless gpicasa-album-list (load-file comp-file)))
   (start-process-shell-command
    "gpicasa-post" nil
    (format "google picasa post --src %s %s"
@@ -71,23 +68,16 @@
                               (when (string= event "finished\n")
                                 (message "`%s' pushed to `%s'" fname album-dir))))))
 
+
 (defun google-post-image-to-album (arg)
   (interactive "P")
   (when arg (google-update-album-list-db))
-  (let ((comp-file (concat google-db-file "c")))
+  (let ((comp-file (concat google-db-file "c"))
+        (album (helm-comp-read "Album: " (loop for i in gpicasa-album-list collect (car i))))
+        (file  (helm-c-read-file-name "File: " :initial-input "~/Pictures")))
     (while (not (file-exists-p comp-file)) (sit-for 0.1))
-    (unless gpicasa-album-list (load-file comp-file)))
-  (lexical-let ((album (helm-comp-read "Album: " (loop for i in gpicasa-album-list collect (car i))))
-                (file  (helm-c-read-file-name "File: " :initial-input "~/Pictures")))
-    (start-process-shell-command
-     "gpicasa-post" nil
-     (format "google picasa post --src %s %s"
-             (shell-quote-argument file)
-             album))
-    (set-process-sentinel (get-process "gpicasa-post")
-                          #'(lambda (process event)
-                              (when (string= event "finished\n")
-                                (message "`%s' pushed to `%s'" file album))))))
+    (unless gpicasa-album-list (load-file comp-file))
+    (google-post-image-to-album-1 file album)))
 
 
 (defun google-post-document ()
