@@ -5,6 +5,9 @@
 (defvar google-db-file "~/.emacs.d/elisp-objects/gpicasa-album-list.el")
 
 (defun google-create-album-1 (dir)
+  (assert (and (file-directory-p dir)
+               (not (file-symlink-p dir)))
+          nil (format "Error: `%s' is not a directory" dir))
   (lexical-let ((album (car (last (split-string dir "/")))))
     (message "Syncing `%s' album to google..." album)
     (start-process-shell-command
