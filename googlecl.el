@@ -26,6 +26,11 @@
                                                 :initial-input "/home/thierry/Pictures/")))
   (google-create-album-1 dir))
 
+(defun google-maybe-load-dbfile ()
+  (let ((comp-file (concat google-db-file "c")))
+    (while (not (file-exists-p comp-file)) (sit-for 0.1))
+    (unless gpicasa-album-list (load-file comp-file))))
+
 (defvar gpicasa-album-list nil)
 (defun google-update-album-list-db ()
   (setq gpicasa-album-list nil)
@@ -49,9 +54,7 @@
 (defun google-insert-link-to-album-at-point (arg)
   (interactive "P")
   (when arg (google-update-album-list-db))
-  (let ((comp-file (concat google-db-file "c")))
-    (while (not (file-exists-p comp-file)) (sit-for 0.1))
-    (unless gpicasa-album-list (load-file comp-file)))
+  (google-maybe-load-dbfile)
   (let ((album (helm-comp-read "Album: " gpicasa-album-list)))
     (insert (car album))))
 
@@ -72,19 +75,15 @@
 (defun google-post-image-to-album (arg)
   (interactive "P")
   (when arg (google-update-album-list-db))
-  (let ((comp-file (concat google-db-file "c"))
-        (album (helm-comp-read "Album: " (loop for i in gpicasa-album-list collect (car i))))
+  (google-maybe-load-dbfile)
+  (let ((album (helm-comp-read "Album: " (loop for i in gpicasa-album-list collect (car i))))
         (file  (helm-c-read-file-name "File: " :initial-input "~/Pictures")))
-    (while (not (file-exists-p comp-file)) (sit-for 0.1))
-    (unless gpicasa-album-list (load-file comp-file))
     (google-post-image-to-album-1 file album)))
 
 (defun google-ls-album (arg)
   (interactive "P")
   (when arg (google-update-album-list-db))
-  (let ((comp-file (concat google-db-file "c")))
-    (while (not (file-exists-p comp-file)) (sit-for 0.1))
-    (unless gpicasa-album-list (load-file comp-file)))
+  (google-maybe-load-dbfile)
   (let* ((album (helm-comp-read "Album: " (mapcar 'car gpicasa-album-list)))
          (ls-album (with-temp-buffer
                      (apply #'call-process "google" nil t nil
