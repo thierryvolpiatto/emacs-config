@@ -79,6 +79,25 @@
     (unless gpicasa-album-list (load-file comp-file))
     (google-post-image-to-album-1 file album)))
 
+(defun google-ls-album (arg)
+  (interactive "P")
+  (when arg (google-update-album-list-db))
+  (let ((comp-file (concat google-db-file "c")))
+    (while (not (file-exists-p comp-file)) (sit-for 0.1))
+    (unless gpicasa-album-list (load-file comp-file)))
+  (let* ((album (helm-comp-read "Album: " (mapcar 'car gpicasa-album-list)))
+         (ls-album (with-temp-buffer
+                     (apply #'call-process "google" nil t nil
+                            (list "picasa" "list" album))
+                     (loop for a in (split-string (buffer-string) "\n" t)
+                           for line = (split-string a "," t)
+                           collect (cons (car line) (cadr line))))))
+    (helm :sources '((name . "Google albums")
+                     (candidates . ls-album)
+                     (action . (("View online" . browse-url)
+                                ("copy link to kill-ring" . kill-new)))
+                     (persistent-action . browse-url)))))
+
 
 (defun google-post-document ()
   (interactive)
