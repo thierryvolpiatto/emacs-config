@@ -555,9 +555,9 @@ With a prefix arg decrease transparency."
 ;;; Banish mouse on bottom right
 ;;
 ;;
-(if (and (not (boundp 'mouse-avoidance-banish-position))
-         (display-mouse-p)
-         (require 'avoid nil t))
+(if (and (display-mouse-p)
+         (require 'avoid nil t)
+         (not (boundp 'mouse-avoidance-banish-position)))
     (progn
       (defcustom mouse-avoidance-banish-position '((frame-or-window . frame)
                                                    (side . right)
