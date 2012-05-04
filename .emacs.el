@@ -1170,11 +1170,12 @@ With prefix arg always start and let me choose dictionary."
 (setq TeX-parse-self t)
 
 (require 'xdvi-search)
-(setq TeX-view-program-selection '(((output-dvi style-pstricks)
-                                    "dvips and gv")
-                                   (output-dvi "xdvi")
-                                   (output-pdf "xpdf")
-                                   (output-html "xdg-open")))
+
+;; (setq TeX-view-program-selection '(((output-dvi style-pstricks)
+;;                                     "dvips and gv")
+;;                                    (output-dvi "xdvi")
+;;                                    (output-pdf "Evince")
+;;                                    (output-html "xdg-open")))
 
 ;; To turn on RefTeX Minor Mode for all LaTeX files,
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
@@ -1609,9 +1610,6 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 
 ;; Minibuffers completion
 (setq completion-cycle-threshold t) ; always cycle, no completion buffers.
-
-;; Uzbl
-;(setq ac-browse-url-uzbl-program "uzbl-browser")
 
 ;; Remove undesired hooks.
 ;(remove-hook 'find-file-hook 'vc-find-file-hook)
