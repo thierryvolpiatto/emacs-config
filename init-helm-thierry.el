@@ -71,6 +71,7 @@
       helm-c-kill-ring-max-lines-number         5
       helm-c-default-external-file-browser      "thunar"
       helm-c-use-adaptative-sorting             t
+      helm-c-pdfgrep-default-read-command       "evince --page-label=%p '%f'"
       )
 
 ;;; Debugging
