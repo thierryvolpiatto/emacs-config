@@ -5,6 +5,35 @@
 
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
+(defvar helm-hg-files-cache (make-hash-table :test 'equal))
+(defun helm-hg-list-files ()
+  (let ((dir (with-temp-buffer
+               (call-process "hg" nil t nil "root")
+               (file-name-as-directory
+                (replace-regexp-in-string "\n" "" (buffer-string))))))
+    (if (file-directory-p dir)
+        (helm-aif (gethash dir helm-hg-files-cache)
+            it
+          (with-temp-buffer
+            (apply #'call-process "hg" nil t nil
+                   (list "manifest" "--all"))
+            (loop with ls = (split-string (buffer-string) "\n" t)
+                  for f in ls
+                  collect (concat dir f) into tmpls
+                  finally return (puthash dir tmpls helm-hg-files-cache))))
+        (error "Error: Not an hg repo (no .hg found)"))))
+
+(defvar helm-c-source-hg-list-files
+  '((name . "Hg files list")
+    (init . (lambda ()
+              (helm-init-candidates-in-buffer
+               "*helm hg*" (helm-hg-list-files))))
+    (candidates-in-buffer)
+    (type . file)))
+
+(defun helm-hg-find-files-in-project ()
+  (interactive)
+  (helm :sources 'helm-c-source-hg-list-files :buffer "*hg files*"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -110,6 +139,11 @@
 ;;
 ;;
 (helm-mode 1)
+
+;;; Enable match-plugin mode
+;;
+;;
+;(helm-match-plugin-mode 1)
 
 (provide 'init-helm-thierry)
 

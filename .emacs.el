@@ -52,7 +52,7 @@
              "/usr/local/share/emacs/site-lisp/auctex"
 	     "~/elisp/"
              "~/elisp/dvc/lisp/"
-	     ;"~/elisp/magit"
+	     "~/elisp/magit"
              "~/elisp/auctex"
              "~/elisp/auctex/preview"
 	     "~/elisp/autoconf-mode"
@@ -192,7 +192,7 @@
 (tv-require 'muse-colors)
 (tv-require 'htmlize-hack)
 ;; (tv-require 'psvn)
-;; (tv-require 'magit)
+(tv-require 'magit)
 (tv-require 'dvc-init)
 ;; (tv-require 'emms-mplayer-config)
 (tv-require 'emms-mpd-config)
@@ -1591,7 +1591,9 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
   (interactive)
   (setq show-trailing-whitespace (not show-trailing-whitespace)))
 
-;; World-time
+;;; World-time
+;;
+;;
 (add-to-list 'display-time-world-list '("Australia/Sydney" "Sydney"))
 (add-to-list 'display-time-world-list '("America/Chicago" "Chicago"))
 (add-to-list 'display-time-world-list '("America/Denver" "Denver"))
@@ -1761,6 +1763,22 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 ;; (global-semantic-highlight-func-mode t)
 ;; (global-semantic-show-unmatched-syntax-mode t)
 ;; (semantic-mode 1)
+
+;;; opendns
+;;
+;;
+(defun opendns-status ()
+  (interactive)
+  (with-current-buffer (url-retrieve-synchronously "http://www.opendns.com/welcome")
+    (goto-char (point-min))
+    (when (or (search-forward "You aren't using OpenDNS yet" nil t)
+              (search-forward "Your Internet is safer, faster, and smarter<br />because you're using OpenDNS" nil t))
+      (message "%s" (replace-regexp-in-string "<br />" " " (match-string 0))))))
+
+;;; Ido virtual buffers
+;;
+;;
+(setq ido-use-virtual-buffers t)
 
 ;;; Report bug
 ;;
