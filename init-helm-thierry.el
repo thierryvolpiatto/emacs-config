@@ -23,8 +23,7 @@
         (helm-aif (gethash dir helm-hg-files-cache)
             it
           (with-temp-buffer
-            (apply #'call-process "hg" nil t nil
-                   (list "manifest" "--all"))
+            (call-process "hg" nil t nil "manifest")
             (loop with ls = (split-string (buffer-string) "\n" t)
                   for f in ls
                   collect (concat dir f) into tmpls
