@@ -1597,9 +1597,14 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 (add-to-list 'display-time-world-list '("Australia/Sydney" "Sydney"))
 (add-to-list 'display-time-world-list '("America/Chicago" "Chicago"))
 (add-to-list 'display-time-world-list '("America/Denver" "Denver"))
+(add-to-list 'display-time-world-list '("America/Los_Angeles" "Los_Angeles/Seattle"))
+(add-to-list 'display-time-world-list '("America/Denver" "Moab"))
+(add-to-list 'display-time-world-list '("America/Vancouver" "Vancouver"))
+(add-to-list 'display-time-world-list '("America/Montreal" "Montreal"))
 
 
-;; Trash
+;;; Trash
+;;
 ;(setq delete-by-moving-to-trash t)
 
 

@@ -2,6 +2,14 @@
 ;;; Code:
 
 (require 'helm-config)
+(require 'helm-locate)
+
+;;;; Extensions
+;;
+(require 'helm-mercurial)
+(require 'helm-delicious)
+(require 'helm-descbinds)
+(require 'helm-git)
 
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
@@ -24,24 +32,42 @@
         (error "Error: Not an hg repo (no .hg found)"))))
 
 (defvar helm-c-source-hg-list-files
-  '((name . "Hg files list")
+  `((name . "Hg files list")
     (init . (lambda ()
               (helm-init-candidates-in-buffer
                "*helm hg*" (helm-hg-list-files))))
+    (keymap . ,helm-generic-files-map)
     (candidates-in-buffer)
     (type . file)))
 
 (defun helm-hg-find-files-in-project ()
   (interactive)
-  (helm :sources 'helm-c-source-hg-list-files :buffer "*hg files*"))
+  (helm :sources 'helm-c-source-hg-list-files
+        :buffer "*hg files*"))
+
+(defun helm-ff-hg-find-files (candidate)
+  (let ((default-directory (file-name-as-directory
+                            (if (file-directory-p candidate)
+                                (expand-file-name candidate)
+                                (file-name-directory candidate)))))
+    (helm-run-after-quit
+     #'(lambda (d)
+         (let ((default-directory d))
+           (helm-hg-find-files-in-project)))
+     default-directory)))
+
+(defun helm-ff-git-find-files (candidate)
+  (let ((default-directory (file-name-as-directory
+                            (if (file-directory-p candidate)
+                                (expand-file-name candidate)
+                                (file-name-directory candidate))))) 
+    (helm-run-after-quit
+     #'(lambda (d)
+         (let ((default-directory d))
+           (helm-git-find-files)))
+     default-directory)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;; Extensions
-;;
-(require 'helm-mercurial)
-(require 'helm-delicious)
-(require 'helm-descbinds)
 
 ;;; Helm-command-map
 ;;
@@ -126,14 +152,23 @@
     (google-post-image-to-album-1 file album)))
 
 (when (require 'helm-files)
-  ;; Album.
+  ;; Push album to google.
   (helm-add-action-to-source
    "Push album to google"
    'google-create-album-1 helm-c-source-find-files)
-  ;; Single file.
+  ;; Push single file to google.
   (helm-add-action-to-source
    "Push file to google album"
-   'helm-push-image-to-google helm-c-source-find-files))
+   'helm-push-image-to-google helm-c-source-find-files)
+  ;; List Hg files in project.
+  (helm-add-action-to-source
+   "List hg files"
+   'helm-ff-hg-find-files helm-c-source-find-files)
+  ;; List Git files in project.
+  (helm-add-action-to-source
+   "List git files"
+   'helm-ff-git-find-files helm-c-source-find-files)
+  )
 
 ;;; Enable helm-mode
 ;;
