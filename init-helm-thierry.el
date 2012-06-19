@@ -126,6 +126,7 @@
       helm-c-default-external-file-browser      "thunar"
       helm-c-use-adaptative-sorting             t
       helm-c-pdfgrep-default-read-command       "evince --page-label=%p '%f'"
+      helm-ff-transformer-show-only-basename    t
       )
 
 ;;; Debugging

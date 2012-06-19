@@ -80,7 +80,7 @@
              "~/elisp/emacs-helm"
              "~/elisp/emacs-helm-extensions"
 	     "~/elisp/eev/"
-             "~/elisp/elscreen"
+             ;"~/elisp/elscreen"
              "~/elisp/google-maps"
              ;"~/elisp/org-active"
              ;"~/elisp/org-active/lisp"
@@ -219,7 +219,7 @@
 (tv-require 'tv-utils)
 (tv-require 'rectangle-utils)
 (tv-require 'smallurl)
-(tv-require 'elscreen)
+;(tv-require 'elscreen)
 (tv-require 'zop-to-char)
 (tv-require 'iedit)
 (tv-require 'csv2org)
@@ -291,7 +291,7 @@
 (global-set-key (kbd "C-x r h")                    'rectangle-menu)
 (global-set-key (kbd "C-x r <right>")              'rectangle-insert-at-right)
 (global-set-key (kbd "C-x r M-w")                  'copy-rectangle)
-(global-set-key (kbd "C-z l")                      'helm-elscreen)
+;(global-set-key (kbd "C-z l")                      'helm-elscreen)
 (global-set-key (kbd "M-z")                        'zop-to-char)
 (global-set-key (kbd "<f5> g m")                   'google-maps)
 (global-set-key (kbd "M-\"")                       'tv-insert-double-quote)
