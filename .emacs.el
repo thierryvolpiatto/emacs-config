@@ -90,6 +90,7 @@
              "~/.emacs.d/"
              "~/.emacs.d/themes/"
 	     "~/.emacs.d/emacs-config-laptop/"
+             ;"~/elisp/emacs-async"
 	     ))
   (add-to-list 'load-path i))
 

@@ -155,19 +155,19 @@
   ;; Push album to google.
   (helm-add-action-to-source
    "Push album to google"
-   'google-create-album-1 helm-c-source-find-files)
+   'google-create-album-1 helm-c-source-find-files 1)
   ;; Push single file to google.
   (helm-add-action-to-source
    "Push file to google album"
-   'helm-push-image-to-google helm-c-source-find-files)
+   'helm-push-image-to-google helm-c-source-find-files 2)
   ;; List Hg files in project.
   (helm-add-action-to-source
    "List hg files"
-   'helm-ff-hg-find-files helm-c-source-find-files)
+   'helm-ff-hg-find-files helm-c-source-find-files 3)
   ;; List Git files in project.
   (helm-add-action-to-source
    "List git files"
-   'helm-ff-git-find-files helm-c-source-find-files)
+   'helm-ff-git-find-files helm-c-source-find-files 4)
   )
 
 ;;; Enable helm-mode
