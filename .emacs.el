@@ -308,7 +308,7 @@
 (global-set-key [C-left]                           'screen-top)
 (global-set-key [C-right]                          'screen-bottom)
 (global-set-key (kbd "C-<")                        'other-window-backward)
-(global-set-key (kbd "C->")                        'other-window)
+(global-set-key (kbd "C->")                        'other-window-forward)
 (global-set-key (kbd "<f11> s c")                  'go-to-scratch)
 (global-set-key (kbd "C-x r a")                    'tv-append-to-register)
 (global-set-key (kbd "C-x r L")                    'list-registers)
@@ -1774,6 +1774,7 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 ;;
 ;;
 (defun opendns-status ()
+  "Check if I am using opendns or not."
   (interactive)
   (with-current-buffer (url-retrieve-synchronously "http://www.opendns.com/welcome")
     (goto-char (point-min))

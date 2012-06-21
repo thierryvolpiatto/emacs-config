@@ -269,7 +269,8 @@ You can specify input function to use."
       (multiread))))
 
 
-;; move-to-window-line 
+;;; move-to-window-line 
+
 ;;;###autoload
 (defun screen-top (&optional n)
   "Move the point to the top of the screen."
@@ -282,18 +283,26 @@ You can specify input function to use."
   (interactive "P")
   (move-to-window-line (- (prefix-numeric-value n))))
 
-;; switch-other-window 
-;; C-x o inversé de n windows(optional)
+;;; switch-other-window 
+
 ;;;###autoload
 (defun other-window-backward (&optional n)
+  "Move backward to other window or frame."
+  (interactive "p")
+  (other-window (- n) t)
+  (select-frame-set-input-focus (selected-frame)))
+
+;;;###autoload
+(defun other-window-forward (&optional n)
   "Move to other window or frame.
 With a prefix arg move N window forward or backward
 depending the value of N is positive or negative."
   (interactive "p")
-  (other-window (- (or n 1)) t)
+  (other-window n t)
   (select-frame-set-input-focus (selected-frame)))
 
-;; Persistent-scratch 
+;;; Persistent-scratch
+
 ;;;###autoload
 (defun go-to-scratch ()
   (interactive)
@@ -310,9 +319,9 @@ depending the value of N is positive or negative."
         (insert ";; SCRATCH BUFFER\n;; ==============\n\n"))
       (current-buffer)))
 
-;; registers-config 
-
+;;; registers-config 
 ;; Redefine append-to-register with a "\n"
+
 ;;;###autoload
 (defun tv-append-to-register (register start end &optional delete-flag)
   "Append region to text in register REGISTER.
@@ -328,7 +337,8 @@ START and END are buffer positions indicating what to append."
                     (t (error "Register does not contain text")))))
   (if delete-flag (delete-region start end)))
 
-;; Stardict 
+;;; Stardict
+;;
 (defun translate-at-point ()
   (interactive)
   (let* ((word (or (thing-at-point 'word) (read-string "Translate Word: ")))
@@ -348,7 +358,8 @@ START and END are buffer positions indicating what to append."
           (view-mode 1))
         (message "Nothing found."))))
 
-;; Get-mime-type-of-file 
+;;; Get-mime-type-of-file
+;;
 (defun file-mime-type (fname &optional arg)
   "Get the mime-type of fname"
   (interactive "fFileName: \np")
@@ -583,9 +594,8 @@ DIR is a regular directory name.
     (insert (make-string len-bol-pt ? ))
     (insert (concat (*string ustr len-str) "\n"))))
 
-;; Insert-pairs 
-;; Yes i hate paredit.
-;; (find-fline "/usr/share/emacs/23.1.50/lisp/emacs-lisp/lisp.el" "defun insert-pair")
+;;; Insert-pairs 
+
 (setq parens-require-spaces t)
 
 (defun tv-insert-double-quote (&optional arg)
@@ -657,7 +667,7 @@ DIR is a regular directory name.
            (throw 'break nil)))))))
 
 
-;; Open-file-in-gimp 
+;;; Open-file-in-gimp 
 ;; <2009-08-13 Jeu. 10:29>
 (defun tv-gimp-open-file (file)
   (interactive
@@ -678,7 +688,7 @@ DIR is a regular directory name.
                              event))))
 
 
-;; Insert-an-image-at-point 
+;;; Insert-an-image-at-point 
 (defun tv-insert-image-at-point (image)
   (interactive "fImage: ")
   (let ((img (create-image image)))
@@ -690,7 +700,7 @@ DIR is a regular directory name.
     (forward-line)
     (tv-insert-image-at-point img)))
 
-;; Show-message-buffer-a-few-seconds 
+;;; Show-message-buffer-a-few-seconds 
 (autoload 'View-scroll-to-buffer-end "view")
 (defun tv-tail-echo-area-messages ()
   (interactive)
@@ -700,7 +710,7 @@ DIR is a regular directory name.
     (View-scroll-to-buffer-end)
     (sit-for 10)))
 
-;; Align-for-sections-in-loop 
+;;; Align-for-sections-in-loop 
 (defun align-loop-region-for (beg end)
   (interactive "r")
   (align-regexp beg end "\\(\\s-*\\) = " 1 1 nil)
