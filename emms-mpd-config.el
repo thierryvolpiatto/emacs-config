@@ -56,16 +56,6 @@
 (setq scroll-up-aggressively 0.0)
 (setq scroll-down-aggressively 0.0)
 
-;; «Browser-filters» (to ".Browser-filters")
-
-;; «show-all-files-(no-streamlists,-etc)» (to ".show-all-files-(no-streamlists,-etc)")
-(emms-browser-make-filter
- "all-files" (emms-browser-filter-only-type 'file))
-
-;; «show-only-tracks-in-one-folder» (to ".show-only-tracks-in-one-folder")
-(emms-browser-make-filter
- "Sky_radios" (emms-browser-filter-only-dir "~/.mpd/playlists"))
-
 ;; «Mode-line» (to ".Mode-line")
 (setq emms-mode-line-icon-color "Gold1")
 (setq emms-mode-line-icon-before-format "[")
