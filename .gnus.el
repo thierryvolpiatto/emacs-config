@@ -63,7 +63,6 @@
 
 (setq user-mail-address "thierry.volpiatto@gmail.com")
 (setq user-full-name "Thierry Volpiatto")
-
 (setq message-send-mail-function 'smtpmail-send-it
       smtpmail-debug-info t
       ;smtpmail-debug-verb t        ; Uncomment to debug

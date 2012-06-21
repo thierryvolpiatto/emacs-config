@@ -194,6 +194,7 @@
 (tv-require 'htmlize-hack)
 ;; (tv-require 'psvn)
 (tv-require 'magit)
+(tv-require 'magit-stgit)
 (tv-require 'dvc-init)
 ;; (tv-require 'emms-mplayer-config)
 (tv-require 'emms-mpd-config)
@@ -803,6 +804,7 @@ account add <protocol> moi@mail.com password."
                                              (image-dired-show-all-from-dir default-directory)))
 (define-key dired-mode-map (kbd ": a") 'epa-sign-to-armored)
 
+
 ;; Backup when overwriting from dired (nil, always, ask).
 ;(setq dired-backup-overwrite 'always)
 (setq dired-backup-overwrite nil)
@@ -811,6 +813,10 @@ account add <protocol> moi@mail.com password."
 (setq dired-isearch-filenames 'dwim)
 
 (setq dired-listing-switches (purecopy "-alh"))
+
+;;; Dired async functions
+;; (eval-after-load "dired-aux"
+;;   '(require 'dired-async))
 
 ;; y-or-n-p
 (fset 'yes-or-no-p 'y-or-n-p)

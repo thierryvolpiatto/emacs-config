@@ -1,25 +1,25 @@
 ;;; init-helm-thierry.el --- My startup file for helm. 
 ;;; Code:
 
-(require 'helm-config)
-(require 'helm-locate)
+(tv-require 'helm-config)
+(tv-require 'helm-locate) ; Needed actually for `helm-generic-files-map'.
 
 ;;;; Extensions
 ;;
-(require 'helm-mercurial)
-(require 'helm-delicious)
-(require 'helm-descbinds)
-(require 'helm-git)
+(tv-require 'helm-mercurial)
+(tv-require 'helm-delicious)
+(tv-require 'helm-descbinds)
+(tv-require 'helm-git)
 
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
 (defvar helm-hg-files-cache (make-hash-table :test 'equal))
 (defun helm-hg-list-files ()
   (let ((dir (with-temp-buffer
-               (call-process "hg" nil t nil "root")
-               (file-name-as-directory
-                (replace-regexp-in-string "\n" "" (buffer-string))))))
-    (if (file-directory-p dir)
+               (when (= 0 (call-process "hg" nil t nil "root"))
+                 (file-name-as-directory
+                  (replace-regexp-in-string "\n" "" (buffer-string)))))))
+    (if (and dir (file-directory-p dir))
         (helm-aif (gethash dir helm-hg-files-cache)
             it
           (with-temp-buffer
@@ -55,16 +55,6 @@
            (helm-hg-find-files-in-project)))
      default-directory)))
 
-(defun helm-ff-git-find-files (candidate)
-  (let ((default-directory (file-name-as-directory
-                            (if (file-directory-p candidate)
-                                (expand-file-name candidate)
-                                (file-name-directory candidate))))) 
-    (helm-run-after-quit
-     #'(lambda (d)
-         (let ((default-directory d))
-           (helm-git-find-files)))
-     default-directory)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -74,8 +64,6 @@
 (define-key helm-command-map (kbd "q")   'helm-qpatchs)
 (define-key helm-command-map (kbd "v")   'helm-eev-anchors)
 (define-key helm-command-map (kbd "d")   'helm-delicious)
-(define-key helm-command-map (kbd "y e") 'helm-yaoddmuse-emacswiki-edit-or-view)
-(define-key helm-command-map (kbd "y p") 'helm-yaoddmuse-emacswiki-post-library)
 (define-key helm-command-map (kbd "g")   'helm-apt)
 (define-key helm-command-map (kbd "DEL") 'helm-resume)
 
@@ -94,7 +82,6 @@
 (global-set-key (kbd "C-,")                    'helm-calcul-expression)
 (global-set-key (kbd "C-c h f")                'helm-info-at-point)
 (global-set-key (kbd "C-c g")                  'helm-google-suggest)
-(global-set-key (kbd "C-c y")                  'helm-yahoo-suggest)
 (global-set-key (kbd "M-g s")                  'helm-do-grep)
 (define-key global-map [remap insert-register] 'helm-register)
 (define-key global-map [remap list-buffers]    'helm-buffers-list)
@@ -163,12 +150,8 @@
   ;; List Hg files in project.
   (helm-add-action-to-source
    "List hg files"
-   'helm-ff-hg-find-files helm-c-source-find-files 3)
-  ;; List Git files in project.
-  (helm-add-action-to-source
-   "List git files"
-   'helm-ff-git-find-files helm-c-source-find-files 4)
-  )
+   'helm-ff-hg-find-files helm-c-source-find-files 3))
+
 
 ;;; Enable helm-mode
 ;;

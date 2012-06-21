@@ -36,7 +36,7 @@
   (setq gpicasa-album-list nil)
   (let ((comp-file (concat google-db-file "c")))
     (when (file-exists-p comp-file) (delete-file comp-file)))
-  (lexical-let ((album-list ()))
+  (lexical-let (album-list)
     (start-process-shell-command "gpicasa-list" nil "google picasa list-albums")
     (set-process-filter (get-process "gpicasa-list")
                         #'(lambda (process output)
@@ -82,7 +82,8 @@
 
 (defun google-ls-album (arg)
   (interactive "P")
-  (when arg (google-update-album-list-db))
+  (when (or arg (not gpicasa-album-list))
+    (google-update-album-list-db))
   (google-maybe-load-dbfile)
   (let* ((album (helm-comp-read "Album: " (mapcar 'car gpicasa-album-list)))
          (ls-album (with-temp-buffer
