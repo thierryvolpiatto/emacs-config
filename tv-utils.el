@@ -1264,8 +1264,6 @@ In this case, sexps are searched before point."
                  (goto-char pos-err))
         (message "No paren error found")))) 
 
-(defun quickping (host)
-  (= 0 (call-process "ping" nil nil nil "-c1" "-W50" "-q" host)))
 
 ;; Provide 
 (provide 'tv-utils)

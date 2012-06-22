@@ -90,7 +90,7 @@
              "~/.emacs.d/"
              "~/.emacs.d/themes/"
 	     "~/.emacs.d/emacs-config-laptop/"
-             ;"~/elisp/emacs-async"
+             "~/elisp/emacs-async"
 	     ))
   (add-to-list 'load-path i))
 
@@ -385,10 +385,14 @@
 (add-hook 'message-mode-hook 'tv-load-gnus-init-may-be)
 (add-hook 'gnus-before-startup-hook 'tv-load-gnus-init-may-be)
 
+(defun quickping (host)
+  (= 0 (call-process "ping" nil nil nil "-c1" "-W50" "-q" host)))
+
 (defun tv-gnus (arg)
   (interactive "P")
-  (let ((gc-cons-threshold 3500000))
-    (if arg (gnus-unplugged) (gnus))))
+  (if (or arg (not (quickping "imap.gmail.com")))
+      (gnus-unplugged)
+      (gnus)))
 
 ;; Use now org-keywords in gnus.
 (add-hook 'message-mode-hook #'(lambda ()
@@ -814,9 +818,10 @@ account add <protocol> moi@mail.com password."
 
 (setq dired-listing-switches (purecopy "-alh"))
 
-;;; Dired async functions
+;;; Async
 ;; (eval-after-load "dired-aux"
 ;;   '(require 'dired-async))
+(tv-require 'async)
 
 ;; y-or-n-p
 (fset 'yes-or-no-p 'y-or-n-p)

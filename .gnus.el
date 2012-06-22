@@ -17,15 +17,16 @@
 ;; Secondary methods are mails and possibly other nntp servers.
 (setq gnus-secondary-select-methods '((nnml "")
                                       (nnimap "gmail"
-                                       (nnimap-address "imap.gmail.com"))
+                                       (nnimap-address "imap.gmail.com")
+                                       (nnimap-fetch-partial-articles "text/")) ; [1]
                                       (nnimap "yahoo"
-                                       (nnimap-address "imap.mail.yahoo.com"))
+                                       (nnimap-address "imap.mail.yahoo.com")
+                                       (nnimap-fetch-partial-articles "text/")) ; [1]
                                       ;(nntp "news.gwene.org")
                                       ))
 
-;; Don't load mime parts when receiving mail, only text part.
+;; [1] Don't load mime parts when receiving mail, only text part.
 ;; Use `A-C' to see entire mail.
-;(setq nnimap-fetch-partial-articles "text")
 
 ;; Nnml mail directory 
 (setq nnml-directory "~/Mail")
@@ -63,7 +64,9 @@
 
 (setq user-mail-address "thierry.volpiatto@gmail.com")
 (setq user-full-name "Thierry Volpiatto")
-(setq message-send-mail-function 'smtpmail-send-it
+
+(require 'smtpmail-async) ; Experimental, use `smtpmail-send-it' otherwise. 
+(setq message-send-mail-function 'async-smtpmail-send-it ;'smtpmail-send-it
       smtpmail-debug-info t
       ;smtpmail-debug-verb t        ; Uncomment to debug
       mail-specify-envelope-from t ; Use from field to specify sender name.
