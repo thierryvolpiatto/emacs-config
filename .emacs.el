@@ -60,18 +60,12 @@
 	     "~/elisp/cmake"
 	     "~/elisp/desktop-file-utils"
 	     "~/elisp/emacs-wget"
-	     ;"~/elisp/gentoo-syntax"
 	     "~/elisp/git"
-	     ;"~/elisp/lua-mode"
-	     ;"~/elisp/subversion"
 	     "~/elisp/tex-utils"
 	     "~/elisp/flim"
 	     "~/elisp/apel"
-	     ;"~/elisp/libidn"
-	     ;"~/elisp/librep"
 	     "~/elisp/muse/lisp"
 	     "~/elisp/muse/contrib"
-             ;"~/elisp/AC/"
              "~/elisp/emms/lisp/"
 	     "~/elisp/ipython"
 	     "~/elisp/python-mode"
@@ -80,10 +74,7 @@
              "~/elisp/emacs-helm"
              "~/elisp/emacs-helm-extensions"
 	     "~/elisp/eev/"
-             ;"~/elisp/elscreen"
              "~/elisp/google-maps"
-             ;"~/elisp/org-active"
-             ;"~/elisp/org-active/lisp"
              "~/elisp/org-active/contrib/lisp" ; Contain htmlize.el
              "~/elisp/slime"
              "~/elisp/slime/contrib"
@@ -192,11 +183,9 @@
 (tv-require 'muse-docbook)
 (tv-require 'muse-colors)
 (tv-require 'htmlize-hack)
-;; (tv-require 'psvn)
 (tv-require 'magit)
 (tv-require 'magit-stgit)
 (tv-require 'dvc-init)
-;; (tv-require 'emms-mplayer-config)
 (tv-require 'emms-mpd-config)
 (tv-require 'dired-aux)
 (tv-require 'dired-x)
@@ -208,9 +197,7 @@
 (tv-require 'ipython)
 (tv-require 'python-mode)
 (tv-require 'flymake)
-;(tv-require 'em-xtra)
 (tv-require 'esh-toggle)
-;(tv-require 'woman)
 (tv-require 'tex-site)
 (tv-require 'ledger-config)
 (tv-require 'slime-autoloads)
@@ -221,7 +208,6 @@
 (tv-require 'tv-utils)
 (tv-require 'rectangle-utils)
 (tv-require 'smallurl)
-;(tv-require 'elscreen)
 (tv-require 'zop-to-char)
 (tv-require 'iedit)
 (tv-require 'csv2org)
@@ -234,6 +220,9 @@
 (tv-require 'google-weather)
 (tv-require 'org-google-weather)
 (tv-require 'markdown-mode)
+(when (require 'dired-aux)
+  (tv-require 'dired-async))
+(tv-require 'smtpmail-async)
 
 ;; Test if this overhide `helm-command-map-prefix-key'
 ;(global-set-key (kbd "C-x c") #'(lambda () (interactive) (message "Hello")))
@@ -242,6 +231,7 @@
 ;;; Global keys
 ;;
 ;;
+(global-set-key (kbd "C-z")                        nil) ; Disable `suspend-frame'.
 (global-set-key (kbd "C-!")                        'eshell-command)
 (global-set-key (kbd "C-c R")                      'revert-buffer)
 (global-set-key (kbd "C-c v")                      'yank-from-X)
@@ -799,8 +789,8 @@ account add <protocol> moi@mail.com password."
 ;; use the directory in the other windows as default target
 (setq dired-dwim-target t)
 (setq dired-auto-revert-buffer t) ; Emacs vcs only
-(define-key dired-mode-map (kbd "C-k") #'(lambda () (interactive) (dired-do-delete 1)))
-(define-key dired-mode-map (kbd "b") #'(lambda () (interactive) (dired-do-byte-compile 1)))
+(define-key dired-mode-map (kbd "C-k")   #'(lambda () (interactive) (dired-do-delete 1)))
+(define-key dired-mode-map (kbd "b")     #'(lambda () (interactive) (dired-do-byte-compile 1)))
 (define-key dired-mode-map (kbd "C-t -") 'thumb-convert-current-dir)
 (define-key dired-mode-map (kbd "C-c c") 'csv2org-dired)
 (define-key dired-mode-map (kbd "C-t !") #'(lambda ()
@@ -817,11 +807,6 @@ account add <protocol> moi@mail.com password."
 (setq dired-isearch-filenames 'dwim)
 
 (setq dired-listing-switches (purecopy "-alh"))
-
-;;; Async
-;; (eval-after-load "dired-aux"
-;;   '(require 'dired-async))
-(tv-require 'async)
 
 ;; y-or-n-p
 (fset 'yes-or-no-p 'y-or-n-p)
