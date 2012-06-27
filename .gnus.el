@@ -353,7 +353,6 @@ This will run in `message-send-hook'."
 ;;       '(gnus-thread-sort-by-number
 ;;         gnus-thread-sort-by-date))
 
-(gnus-compile)
 
 ;;; .gnus.el ends here
 

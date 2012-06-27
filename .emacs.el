@@ -10,8 +10,6 @@
 ;;
 ;;; Code:
 
-;(defvar on-laptop t)
-
 ;;; Environment
 ;; See: (find-fline "~/.emacs.d/.eshell/login")
 ;; For eshell env settings.

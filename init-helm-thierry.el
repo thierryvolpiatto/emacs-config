@@ -150,7 +150,10 @@
   ;; List Hg files in project.
   (helm-add-action-to-source
    "List hg files"
-   'helm-ff-hg-find-files helm-c-source-find-files 3))
+   'helm-ff-hg-find-files helm-c-source-find-files 3)
+  (helm-add-action-to-source "Byte compile file async"
+                           'async-byte-compile-file
+                           helm-c-source-find-files 6))
 
 
 ;;; Enable helm-mode
