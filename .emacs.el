@@ -151,7 +151,7 @@
 (autoload 'wget "wget" "wget interface for Emacs." t)
 (autoload 'wget-web-page "wget" "wget interface to download whole web page." t)
 (load "w3m-wget")
-(add-hook 'w3m-mode-hook '(lambda () (require 'w3m-wget)))
+(add-hook 'w3m-mode-hook '(lambda () (tv-require 'w3m-wget)))
 
 ;;; Emacs customize have it's own file
 ;;
@@ -220,7 +220,7 @@
 (tv-require 'google-weather)
 (tv-require 'org-google-weather)
 (tv-require 'markdown-mode)
-(when (require 'dired-aux)
+(when (tv-require 'dired-aux)
   (tv-require 'dired-async))
 (tv-require 'smtpmail-async)
 
@@ -326,8 +326,8 @@
 
 
 ;; libidn is not in gentoo.d. load it
-;(require 'idna)
-;(require 'punycode)
+;(tv-require 'idna)
+;(tv-require 'punycode)
 
 ;; column-number
 (column-number-mode 1)
@@ -358,7 +358,7 @@
 ;;; Gnus-config
 ;;
 ;;
-(require 'gnus-async)
+(tv-require 'gnus-async)
 (setq gnus-asynchronous t)
 
 (setq mail-user-agent 'gnus-user-agent)
@@ -389,7 +389,7 @@
 				 (define-key message-mode-map (kbd "<f11> k") 'helm-org-keywords)))
 
 (autoload 'gnus-dired-attach "gnus-dired.el")
-(when (require 'dired)
+(when (tv-require 'dired)
   (define-key dired-mode-map (kbd "C-c C-a") 'gnus-dired-attach))
 
 (setq gnus-read-active-file 'some)
@@ -552,7 +552,7 @@ With a prefix arg decrease transparency."
 ;;
 ;;
 (if (and (display-mouse-p)
-         (require 'avoid nil t)
+         (tv-require 'avoid nil t)
          (not (boundp 'mouse-avoidance-banish-position)))
     (progn
       (defcustom mouse-avoidance-banish-position '((frame-or-window . frame)
@@ -649,10 +649,10 @@ If you want the mouse banished to a different corner set
   (interactive)
   (w3m-find-file (dired-get-filename)))
 
-(when (require 'dired)
+(when (tv-require 'dired)
   (progn
-    (require 'w3m-load)
-    (require 'mime-w3m)
+    (tv-require 'w3m-load)
+    (tv-require 'mime-w3m)
     (define-key dired-mode-map (kbd "C-c F") 'dired-w3m-find-file)))
 
 ;;; Default web browser
@@ -880,7 +880,7 @@ account add <protocol> moi@mail.com password."
 
 
 ;; Whitespace-mode
-(when (require 'whitespace)
+(when (tv-require 'whitespace)
   (add-to-list 'whitespace-style 'lines-tail)
   (setq whitespace-line-column 80))
 
@@ -897,7 +897,7 @@ account add <protocol> moi@mail.com password."
 (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'eshell-mode-hook 'turn-on-eldoc-mode)
 
-(when (require 'eldoc)
+(when (tv-require 'eldoc)
   (set-face-attribute 'eldoc-highlight-function-argument nil :underline "red"))
 
 ;; Tooltip face
@@ -1061,14 +1061,14 @@ account add <protocol> moi@mail.com password."
 
 ;; Eshell-visual
 (setq eshell-term-name "eterm-color")
-(when (require 'em-term)
+(when (tv-require 'em-term)
   (dolist (i '("kop" "ledger" "htop" "ipython"))
     (add-to-list 'eshell-visual-commands i)))
 
 ;;; pcomplete Completion functions on specific commands
 ;;
 ;;
-(require 'pcomplete-extension)
+(tv-require 'pcomplete-extension)
 
 ;; Finally load eshell on startup.
 (add-hook 'emacs-startup-hook #'(lambda ()
@@ -1166,7 +1166,7 @@ With prefix arg always start and let me choose dictionary."
 ;; detect needed steps after rebuild
 (setq TeX-parse-self t)
 
-(require 'xdvi-search)
+(tv-require 'xdvi-search)
 
 ;; (setq TeX-view-program-selection '(((output-dvi style-pstricks)
 ;;                                     "dvips and gv")
@@ -1297,7 +1297,7 @@ With prefix arg always start and let me choose dictionary."
   (let ((line-move-visual t))
     (next-line)))
 
-(when (require 'newsticker)
+(when (tv-require 'newsticker)
   (define-key newsticker-mode-map (kbd "Q") 'newsticker-quit-and-stop)
   (define-key newsticker-mode-map (kbd "b") 'newsticker-previous-feed))
 
@@ -1306,7 +1306,7 @@ With prefix arg always start and let me choose dictionary."
 ;;; Tramp-config
 ;;
 ;;
-(require 'tramp)
+(tv-require 'tramp)
 ;(setq tramp-default-method "ssh") ; methode par defaut
 
 ;; No messages
@@ -1354,7 +1354,7 @@ With prefix arg always start and let me choose dictionary."
 (setq lisp-loop-keyword-indentation 6)
 (setq lisp-loop-forms-indentation 6)
 
-(add-hook 'slime-load-hook (lambda () (require 'slime-tramp)))
+(add-hook 'slime-load-hook (lambda () (tv-require 'slime-tramp)))
 
 (defun tv-slime-port (process)
   (let ((slime-port (or (process-id process)
@@ -1518,7 +1518,7 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 
 ;;; Undo-tree
 ;;
-(require 'undo-tree)
+(tv-require 'undo-tree)
 (global-undo-tree-mode)
 
 
@@ -1718,7 +1718,7 @@ is nil and `use-dialog-box' is non-nil."
                               "*Ibuffer*"
                               ))
 
-(when (require 'winner)
+(when (tv-require 'winner)
   (defvar winner-boring-buffers-regexp
     "\*[hH]elm.*\\|\*xhg.*\\|\*xgit.*")
   (defun winner-set1 (conf)
@@ -1802,7 +1802,7 @@ is nil and `use-dialog-box' is non-nil."
 (defun cat-command ()
   "A command for cats."
   (interactive)
-  (require 'animate)
+  (tv-require 'animate)
   (let ((mouse "
            ___(00)
         ~~/_____^'>
@@ -1833,7 +1833,7 @@ is nil and `use-dialog-box' is non-nil."
 ;;; Semantic
 ;;
 ;;
-;; (require 'semantic)
+;; (tv-require 'semantic)
 ;; (global-semantic-idle-completions-mode t)
 ;; (global-semantic-decoration-mode t)
 ;; (global-semantic-highlight-func-mode t)
