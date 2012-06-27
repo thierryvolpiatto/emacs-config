@@ -1623,10 +1623,84 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 ;;
 ;;
 ;; Possible values: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
-(setq vc-handled-backends '(RCS Hg Git Bzr))
+(setq vc-handled-backends '(RCS CVS SVN Hg Git Bzr))
 
 ;;; Temporary Bugfixes until fixed in trunk.
 ;;
+
+(defun y-or-n-p (prompt)
+  "Ask user a \"y or n\" question.  Return t if answer is \"y\".
+PROMPT is the string to display to ask the question.  It should
+end in a space; `y-or-n-p' adds \"(y or n) \" to it.
+
+No confirmation of the answer is requested; a single character is enough.
+Also accepts Space to mean yes, or Delete to mean no.  \(Actually, it uses
+the bindings in `query-replace-map'; see the documentation of that variable
+for more information.  In this case, the useful bindings are `act', `skip',
+`recenter', and `quit'.\)
+
+Under a windowing system a dialog box will be used if `last-nonmenu-event'
+is nil and `use-dialog-box' is non-nil."
+  ;; ¡Beware! when I tried to edebug this code, Emacs got into a weird state
+  ;; where all the keys were unbound (i.e. it somehow got triggered
+  ;; within read-key, apparently).  I had to kill it.
+  (let ((answer 'recenter))
+    (cond
+     (noninteractive
+      (setq prompt (concat prompt
+                           (if (eq ?\s (aref prompt (1- (length prompt))))
+                               "" " ")
+                           "(y or n) "))
+      (let ((temp-prompt prompt))
+	(while (not (memq answer '(act skip)))
+	  (let ((str (read-string temp-prompt)))
+	    (cond ((member str '("y" "Y")) (setq answer 'act))
+		  ((member str '("n" "N")) (setq answer 'skip))
+		  (t (setq temp-prompt (concat "Please answer y or n.  "
+					       prompt))))))))
+     ((and (display-popup-menus-p)
+	   (listp last-nonmenu-event)
+	   use-dialog-box)
+      (setq answer
+	    (x-popup-dialog t `(,prompt ("Yes" . act) ("No" . skip)))))
+     (t
+      (setq prompt (concat prompt
+                           (if (eq ?\s (aref prompt (1- (length prompt))))
+                               "" " ")
+                           "(y or n) "))
+      (while
+          (let* ((key
+                  (let ((cursor-in-echo-area t))
+                    (when minibuffer-auto-raise
+                      (raise-frame (window-frame (minibuffer-window))))
+                    (read-key (propertize (if (or (eq answer 'recenter)
+                                                  (eq answer 'scroll))
+                                              prompt
+                                            (concat "Please answer y or n.  "
+                                                    prompt))
+                                          'face 'minibuffer-prompt)))))
+            (setq answer (lookup-key query-replace-map (vector key) t))
+            (cond
+             ((memq answer '(skip act)) nil)
+             ((eq answer 'recenter) (recenter) t)
+             ((memq answer '(exit-prefix quit)) (signal 'quit nil) t)
+             ((eq key ?\C-v)
+              (setq answer 'scroll)
+              (condition-case nil (scroll-up 1) (error nil)) t)
+             ((eq key ?\M-v)
+              (setq answer 'scroll)
+              (condition-case nil (scroll-down 1) (error nil)) t)
+             (t t)))
+        (ding)
+        (discard-input))))
+    (let ((ret (eq answer 'act)))
+      (unless noninteractive
+        ;; FIXME this prints one too many spaces, since prompt
+        ;; already ends in a space.  Eg "... (y or n)  y".
+        (message "%s %s" prompt (if ret "y" "n")))
+      ret)))
+
+
 ;; ----Empty---
 
 ;;; winner-mode config
