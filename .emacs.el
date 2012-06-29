@@ -20,7 +20,15 @@
 (setq calendar-date-style 'european)
 
 ;; Turn off bidi everywhere.
-(setq-default bidi-display-reordering nil)
+(add-hook 'emacs-startup-hook #'(lambda ()
+                                  (setq-default bidi-display-reordering nil)) t)
+
+;; Kill emacs
+(defun tv-stop-emacs ()
+  (interactive)
+  (if (daemonp)
+      (save-buffers-kill-emacs)
+      (save-buffers-kill-terminal)))
 
 ;; Require with messages to debug more easily.
 (defun tv-require (feature &optional filename noerror)
@@ -949,7 +957,7 @@ account add <protocol> moi@mail.com password."
 
 ;;pdb==> python debugger (installation de gdb neccessaire)
 (setq gud-pdb-command-name "/home/thierry/bin/pdb.py")
-(load "pdbtrack.el")
+(tv-require 'pdbtrack)
 
 ;; Pylint-via-flymake
 ;; fonctionne avec le script python /usr/local/bin/epylint
@@ -1596,19 +1604,12 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 (add-to-list 'display-time-world-list '("America/Denver" "Moab"))
 (add-to-list 'display-time-world-list '("America/Vancouver" "Vancouver"))
 (add-to-list 'display-time-world-list '("America/Montreal" "Montreal"))
+(add-to-list 'display-time-world-list '("America/New_York" "Ottawa"))
 
 
 ;;; Trash
 ;;
 ;(setq delete-by-moving-to-trash t)
-
-
-;; Kill emacs
-(defun tv-stop-emacs ()
-  (interactive)
-  (if (daemonp)
-      (save-buffers-kill-emacs)
-      (save-buffers-kill-terminal)))
 
 ;; Minibuffers completion
 (setq completion-cycle-threshold t) ; always cycle, no completion buffers.
@@ -1854,6 +1855,14 @@ is nil and `use-dialog-box' is non-nil."
 ;;
 ;;
 (setq ido-use-virtual-buffers t)
+
+;;; Printing variables
+;;
+;;
+(setq print-gensym t
+      print-level 12
+      print-circle t
+      eval-expression-print-level 12)
 
 ;;; Report bug
 ;;

@@ -13,12 +13,24 @@
 
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
+
 (defvar helm-hg-files-cache (make-hash-table :test 'equal))
+
+(defun helm-hg-root ()
+  (with-temp-buffer
+    (when (= 0 (call-process "hg" nil t nil "root"))
+      (file-name-as-directory
+       (replace-regexp-in-string "\n" "" (buffer-string))))))
+
+(defun helm-hg-root-p (candidate)
+  (let ((default-directory (if (file-directory-p candidate)
+                               (file-name-as-directory candidate)
+                               (file-name-as-directory
+                                helm-ff-default-directory))))
+    (stringp (helm-hg-root))))
+
 (defun helm-hg-list-files ()
-  (let ((dir (with-temp-buffer
-               (when (= 0 (call-process "hg" nil t nil "root"))
-                 (file-name-as-directory
-                  (replace-regexp-in-string "\n" "" (buffer-string)))))))
+  (let ((dir (helm-hg-root)))
     (if (and dir (file-directory-p dir))
         (helm-aif (gethash dir helm-hg-files-cache)
             it
@@ -138,22 +150,37 @@
     (unless gpicasa-album-list (load-file comp-file))
     (google-post-image-to-album-1 file album)))
 
+(defun helm-ff-candidates-lisp-p (candidate)
+  (loop for cand in (helm-marked-candidates)
+        always (string-match "\.el$" cand)))
+
+;;; Add new actions to sources
+;;
+;; From `helm-c-source-find-files' do:
+
 (when (require 'helm-files)
   ;; Push album to google.
   (helm-add-action-to-source
    "Push album to google"
-   'google-create-album-1 helm-c-source-find-files 1)
+   'google-create-album-1
+   helm-c-source-find-files 1)
   ;; Push single file to google.
   (helm-add-action-to-source
    "Push file to google album"
-   'helm-push-image-to-google helm-c-source-find-files 2)
+   'helm-push-image-to-google
+   helm-c-source-find-files 2)
   ;; List Hg files in project.
-  (helm-add-action-to-source
+  (helm-add-action-to-source-if
    "List hg files"
-   'helm-ff-hg-find-files helm-c-source-find-files 3)
-  (helm-add-action-to-source "Byte compile file async"
-                           'async-byte-compile-file
-                           helm-c-source-find-files 6))
+   'helm-ff-hg-find-files
+   helm-c-source-find-files
+   'helm-hg-root-p)
+  ;; Byte compile files async
+  (helm-add-action-to-source-if
+   "Byte compile file(s) async"
+   'async-byte-compile-file
+   helm-c-source-find-files
+   'helm-ff-candidates-lisp-p))
 
 
 ;;; Enable helm-mode
@@ -164,7 +191,7 @@
 ;;; Enable match-plugin mode
 ;;
 ;;
-;(helm-match-plugin-mode 1)
+(helm-match-plugin-mode 1)
 
 (provide 'init-helm-thierry)
 
