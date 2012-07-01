@@ -16,9 +16,12 @@
 
 ;; Secondary methods are mails and possibly other nntp servers.
 (setq gnus-secondary-select-methods '((nnml "")
-                                      (nnimap "gmail"
+                                      (nnimap "gmail" ; Label for reference in .authinfo for machine name.
                                        (nnimap-address "imap.gmail.com")
                                        (nnimap-fetch-partial-articles "text/")) ; [1]
+                                      ;; (nnimap "gmail_jaky"
+                                      ;;  (nnimap-address "imap.gmail.com")
+                                      ;;  (nnimap-fetch-partial-articles "text/"))
                                       (nnimap "yahoo"
                                        (nnimap-address "imap.mail.yahoo.com")
                                        (nnimap-fetch-partial-articles "text/")) ; [1]

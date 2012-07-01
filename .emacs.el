@@ -19,10 +19,6 @@
 ;; calendar-date-style
 (setq calendar-date-style 'european)
 
-;; Turn off bidi everywhere.
-(add-hook 'emacs-startup-hook #'(lambda ()
-                                  (setq-default bidi-display-reordering nil)) t)
-
 ;; Kill emacs
 (defun tv-stop-emacs ()
   (interactive)
@@ -75,7 +71,7 @@
              "~/elisp/emms/lisp/"
 	     "~/elisp/ipython"
 	     "~/elisp/python-mode"
-	     "~/elisp/emacs-w3m/"
+	     "~/elisp/w3m/"
 	     "~/elisp/ledger/"
              "~/elisp/emacs-helm"
              "~/elisp/emacs-helm-extensions"
@@ -1859,10 +1855,10 @@ is nil and `use-dialog-box' is non-nil."
 ;;; Printing variables
 ;;
 ;;
-(setq print-gensym t
-      print-level 12
-      print-circle t
-      eval-expression-print-level 12)
+;; (setq print-gensym t
+;;       print-level 12
+;;       print-circle t
+;;       eval-expression-print-level 12)
 
 ;;; Report bug
 ;;
@@ -1879,6 +1875,11 @@ is nil and `use-dialog-box' is non-nil."
 ;; This have to be loaded at the end to overhide emacs vanilla scratch buffer
 ;; with splash-screen etc... This important for versions of emacs starting at
 ;; Fri Jun 17 21:55:55 2011
+;; Turn OFF bidi everywhere.
+(add-hook 'emacs-startup-hook
+          #'(lambda ()
+              (setq-default bidi-display-reordering nil))
+          'append)
 (add-hook 'emacs-startup-hook 'go-to-scratch 'append)
 (add-hook 'emacs-startup-hook 'cat-command 'append)
 

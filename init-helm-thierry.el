@@ -9,63 +9,12 @@
 (tv-require 'helm-mercurial)
 (tv-require 'helm-delicious)
 (tv-require 'helm-descbinds)
-(tv-require 'helm-git)
+;(tv-require 'helm-git)
+(tv-require 'helm-tv-git)
 
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
 
-(defvar helm-hg-files-cache (make-hash-table :test 'equal))
-
-(defun helm-hg-root ()
-  (with-temp-buffer
-    (when (= 0 (call-process "hg" nil t nil "root"))
-      (file-name-as-directory
-       (replace-regexp-in-string "\n" "" (buffer-string))))))
-
-(defun helm-hg-root-p (candidate)
-  (let ((default-directory (if (file-directory-p candidate)
-                               (file-name-as-directory candidate)
-                               (file-name-as-directory
-                                helm-ff-default-directory))))
-    (stringp (helm-hg-root))))
-
-(defun helm-hg-list-files ()
-  (let ((dir (helm-hg-root)))
-    (if (and dir (file-directory-p dir))
-        (helm-aif (gethash dir helm-hg-files-cache)
-            it
-          (with-temp-buffer
-            (call-process "hg" nil t nil "manifest")
-            (loop with ls = (split-string (buffer-string) "\n" t)
-                  for f in ls
-                  collect (concat dir f) into tmpls
-                  finally return (puthash dir tmpls helm-hg-files-cache))))
-        (error "Error: Not an hg repo (no .hg found)"))))
-
-(defvar helm-c-source-hg-list-files
-  `((name . "Hg files list")
-    (init . (lambda ()
-              (helm-init-candidates-in-buffer
-               "*helm hg*" (helm-hg-list-files))))
-    (keymap . ,helm-generic-files-map)
-    (candidates-in-buffer)
-    (type . file)))
-
-(defun helm-hg-find-files-in-project ()
-  (interactive)
-  (helm :sources 'helm-c-source-hg-list-files
-        :buffer "*hg files*"))
-
-(defun helm-ff-hg-find-files (candidate)
-  (let ((default-directory (file-name-as-directory
-                            (if (file-directory-p candidate)
-                                (expand-file-name candidate)
-                                (file-name-directory candidate)))))
-    (helm-run-after-quit
-     #'(lambda (d)
-         (let ((default-directory d))
-           (helm-hg-find-files-in-project)))
-     default-directory)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

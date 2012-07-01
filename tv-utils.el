@@ -1264,28 +1264,28 @@ In this case, sexps are searched before point."
                  (goto-char pos-err))
         (message "No paren error found")))) 
 
-(tv-require 'async)
-(defun async-byte-compile-file (file)
-  (interactive "fFile: ")
-  (let ((proc
-         (async-start
-          `(lambda ()
-             (require 'bytecomp)
-             ,(async-inject-variables "\\`load-path\\'")
-             (let ((default-directory ,(file-name-directory file)))
-               (add-to-list 'load-path default-directory)
-               (ignore-errors
-                 (load ,file))
-               ;; returns nil if there were any errors
-               (prog1
-                   (byte-compile-file ,file)
-                 (load ,file)))))))
+(when (require 'async)
+  (defun async-byte-compile-file (file)
+    (interactive "fFile: ")
+    (let ((proc
+           (async-start
+            `(lambda ()
+               (require 'bytecomp)
+               ,(async-inject-variables "\\`load-path\\'")
+               (let ((default-directory ,(file-name-directory file)))
+                 (add-to-list 'load-path default-directory)
+                 (ignore-errors
+                   (load ,file))
+                 ;; returns nil if there were any errors
+                 (prog1
+                     (byte-compile-file ,file)
+                   (load ,file)))))))
 
-    (unless (condition-case err
-                (async-get proc)
-              (error
-               (ignore (message "Error: %s" (car err)))))
-      (ignore (message "Recompiling %s...FAILED" file)))))
+      (unless (condition-case err
+                  (async-get proc)
+                (error
+                 (ignore (message "Error: %s" (car err)))))
+        (ignore (message "Recompiling %s...FAILED" file))))))
 
 ;; Provide 
 (provide 'tv-utils)
