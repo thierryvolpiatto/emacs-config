@@ -367,7 +367,7 @@
 (setq mail-user-agent 'gnus-user-agent)
 (setq read-mail-command 'gnus)
 (setq send-mail-command 'gnus-msg-mail)
-(setq gnus-init-file "~/.emacs.d/emacs-config-laptop/.gnus.el")
+(setq gnus-init-file "~/.emacs.d/.gnus.el")
 
 (defvar tv-gnus-loaded-p nil)
 (defun tv-load-gnus-init-may-be ()
@@ -379,6 +379,7 @@
 (add-hook 'gnus-before-startup-hook 'tv-load-gnus-init-may-be)
 
 (defun quickping (host)
+  "Return non--nil when host is reachable."
   (= 0 (call-process "ping" nil nil nil "-c1" "-W50" "-q" host)))
 
 (defun tv-gnus (arg)
