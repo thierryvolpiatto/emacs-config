@@ -9,8 +9,7 @@
 (tv-require 'helm-mercurial)
 (tv-require 'helm-delicious)
 (tv-require 'helm-descbinds)
-;(tv-require 'helm-git)
-(tv-require 'helm-tv-git)
+(tv-require 'helm-ls-git)
 
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
@@ -75,6 +74,7 @@
       helm-c-use-adaptative-sorting             t
       helm-c-pdfgrep-default-read-command       "evince --page-label=%p '%f'"
       helm-ff-transformer-show-only-basename    t
+      ;helm-candidate-number-limit               9999
       )
 
 ;;; Debugging
@@ -120,7 +120,7 @@
    helm-c-source-find-files 2)
   ;; List Hg files in project.
   (helm-add-action-to-source-if
-   "List hg files"
+   "Hg list files"
    'helm-ff-hg-find-files
    helm-c-source-find-files
    'helm-hg-root-p)

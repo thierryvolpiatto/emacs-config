@@ -14,14 +14,20 @@
 (setq gnus-select-method '(nntp "news.gmane.org"
                            (nnir-search-engine gmane)))
 
+;;; To add a mail account:
+;;
+;;  1) Add an nnimap entry in `gnus-secondary-select-methods'.
+;;  2) Add an entry in `gnus-posting-styles'
+;;  3) Add an entry in `tv-smtp-accounts'
+
 ;; Secondary methods are mails and possibly other nntp servers.
 (setq gnus-secondary-select-methods '((nnml "")
+                                      ;; Add as many gmail account as needed with a label.
+                                      ;; Add then an entry in .authinfo:
+                                      ;; machine label port xxx login xxx password xxx
                                       (nnimap "gmail" ; Label for reference in .authinfo for machine name.
                                        (nnimap-address "imap.gmail.com")
                                        (nnimap-fetch-partial-articles "text/")) ; [1]
-                                      ;; (nnimap "gmail_jaky"
-                                      ;;  (nnimap-address "imap.gmail.com")
-                                      ;;  (nnimap-fetch-partial-articles "text/"))
                                       (nnimap "yahoo"
                                        (nnimap-address "imap.mail.yahoo.com")
                                        (nnimap-fetch-partial-articles "text/")) ; [1]
@@ -38,7 +44,10 @@
 ;;
 (setq gnus-message-archive-group '((when (message-news-p) "sent-news")))
 
-;;; Posting-styles - must be set correctly for
+;;; Smtp settings - Sending mail
+;;
+;;
+;; Posting-styles - must be set correctly for
 ;;  following smtp settings.
 ;;
 ;; [EVAL] (info "(gnus) Posting Styles")
@@ -56,10 +65,11 @@
          (from "Thierry Volpiatto <tvolpiatto@yahoo.fr>")
          (signature-file "~/.signature"))))
 
-;;; Smtp settings - Sending mail
-;;
-;;
 ;; [README] (find-fline "/usr/local/share/emacs/24.0.92/lisp/mail/smtpmail.el.gz" "Please")
+
+(defvar tv-smtp-accounts
+  '(("thierry.volpiatto@gmail.com" "smtp.gmail.com" 587)
+    ("tvolpiatto@yahoo.fr" "smtp.mail.yahoo.com" 587)))
 
 ;; To queue mail, set `smtpmail-queue-mail' to t and use
 ;; `smtpmail-send-queued-mail' to send.
@@ -76,15 +86,12 @@
       mail-envelope-from 'header)  ; otherwise `user-mail-address' is used. 
 
 ;; Default settings.
-;; `smtpmail-starttls-credentials' have been removed since 24.0.92.1
-;; smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
+;; This are default setting, they could be modified
+;; by `tv-change-smtp-server' according to `tv-smtp-accounts'
+;; and `gnus-posting-styles'.
 (setq smtpmail-default-smtp-server "smtp.gmail.com"
       smtpmail-smtp-server "smtp.gmail.com"
       smtpmail-smtp-service 587)
-
-(defvar tv-smtp-accounts
-  '(("thierry.volpiatto@gmail.com" "smtp.gmail.com" 587)
-    ("tvolpiatto@yahoo.fr" "smtp.mail.yahoo.com" 587)))
 
 (defun tv-change-smtp-server ()
   "Use account found in `tv-smtp-accounts' according to from header.
@@ -97,10 +104,6 @@ This will run in `message-send-hook'."
       (let* ((from (message-fetch-field "from"))
              (account (loop for account in tv-smtp-accounts thereis
                             (and (string-match (car account) from) account))))
-        ;; `smtpmail-starttls-credentials' have been removed since 24.0.92.1
-        ;; (setq smtpmail-starttls-credentials (list (list (nth 1 account)
-        ;;                                                 (nth 2 account)
-        ;;                                                 nil nil)))
         (setq smtpmail-default-smtp-server  (nth 1 account)
               smtpmail-smtp-server          (nth 1 account)
               smtpmail-smtp-service         (nth 2 account))))))

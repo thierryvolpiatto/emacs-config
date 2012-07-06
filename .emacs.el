@@ -53,8 +53,9 @@
 (dolist (i '("/usr/local/share/emacs/site-lisp"
              "/usr/local/share/emacs/site-lisp/auctex"
 	     "~/elisp/"
+             "~/elisp/bbdb/lisp"
              "~/elisp/dvc/lisp/"
-	     "~/elisp/magit"
+	     ;"~/elisp/magit"
              "~/elisp/auctex"
              "~/elisp/auctex/preview"
 	     "~/elisp/autoconf-mode"
@@ -185,8 +186,8 @@
 (tv-require 'muse-docbook)
 (tv-require 'muse-colors)
 (tv-require 'htmlize-hack)
-(tv-require 'magit)
-(tv-require 'magit-stgit)
+;(tv-require 'magit)
+;(tv-require 'magit-stgit)
 (tv-require 'dvc-init)
 (tv-require 'emms-mpd-config)
 (tv-require 'dired-aux)
@@ -223,7 +224,7 @@
 (tv-require 'org-google-weather)
 (tv-require 'markdown-mode)
 (when (tv-require 'dired-aux)
-  (tv-require 'dired-async))
+  (tv-require 'helm-async))
 (tv-require 'smtpmail-async)
 
 ;; Test if this overhide `helm-command-map-prefix-key'
@@ -486,17 +487,19 @@
 With a prefix arg decrease transparency."
     (interactive "P")
     (let* ((ini-alpha (frame-parameter nil 'alpha))
-           (def-alpha (or ini-alpha 100))
-           (mod-alpha (if arg (+ def-alpha 10) (- def-alpha 10))))
-      (when (and (>= mod-alpha frame-alpha-lower-limit) (<= mod-alpha 100))
-        (modify-frame-parameters nil (list (cons 'alpha mod-alpha)))
-        (message "Alpha[%s]" mod-alpha))))
+           (def-alpha (or ini-alpha 90))
+           (mod-alpha (if arg
+                          (min (+ def-alpha 10) 100)
+                          (max (- def-alpha 10)
+                               frame-alpha-lower-limit)))) ; 20
+      (modify-frame-parameters nil (list (cons 'alpha mod-alpha)))
+      (message "Alpha[%s]" mod-alpha)))
   (global-set-key (kbd "C-8") 'tv-transparency-modify))
 
 ;;; Special buffer display.
 ;;
 ;;
-(setq special-display-buffer-names '(("*Help*"
+(setq special-display-buffer-names `(("*Help*"
                                       (minibuffer . nil)
                                       (width . 80)
                                       (height . 24)
@@ -1711,6 +1714,7 @@ is nil and `use-dialog-box' is non-nil."
                               "*cvs*"
                               "*Buffer List*"
                               "*Ibuffer*"
+                              "*esh command on file*"
                               ))
 
 (when (tv-require 'winner)
