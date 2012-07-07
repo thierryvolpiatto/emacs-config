@@ -55,7 +55,7 @@
 	     "~/elisp/"
              "~/elisp/bbdb/lisp"
              "~/elisp/dvc/lisp/"
-	     ;"~/elisp/magit"
+	     "~/elisp/magit"
              "~/elisp/auctex"
              "~/elisp/auctex/preview"
 	     "~/elisp/autoconf-mode"
@@ -186,8 +186,8 @@
 (tv-require 'muse-docbook)
 (tv-require 'muse-colors)
 (tv-require 'htmlize-hack)
-;(tv-require 'magit)
-;(tv-require 'magit-stgit)
+(tv-require 'magit)
+(tv-require 'magit-stgit)
 (tv-require 'dvc-init)
 (tv-require 'emms-mpd-config)
 (tv-require 'dired-aux)

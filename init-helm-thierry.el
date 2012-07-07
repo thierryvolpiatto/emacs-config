@@ -10,6 +10,7 @@
 (tv-require 'helm-delicious)
 (tv-require 'helm-descbinds)
 (tv-require 'helm-ls-git)
+(setq helm-ls-git-status-command 'magit-status)
 
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
