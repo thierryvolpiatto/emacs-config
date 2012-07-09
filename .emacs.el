@@ -70,8 +70,6 @@
 	     "~/elisp/muse/lisp"
 	     "~/elisp/muse/contrib"
              "~/elisp/emms/lisp/"
-	     "~/elisp/ipython"
-	     "~/elisp/python-mode"
 	     "~/elisp/w3m/"
 	     "~/elisp/ledger/"
              "~/elisp/emacs-helm"
@@ -197,8 +195,6 @@
 (tv-require 'regex-tool)
 (tv-require 'no-word)
 (tv-require 'eldoc-eval)
-(tv-require 'ipython)
-(tv-require 'python-mode)
 (tv-require 'flymake)
 (tv-require 'esh-toggle)
 (tv-require 'tex-site)
@@ -256,7 +252,7 @@
 (global-set-key (kbd "<f11> s h")                  'shell)
 (global-set-key (kbd "<f11> t")                    'tv-term)
 (global-set-key (kbd "<f11> i")                    'ielm)
-(global-set-key (kbd "<f11> p")                    'py-shell)
+(global-set-key (kbd "<f11> p")                    'python-shell-switch-to-shell)
 (global-set-key (kbd "C-%")                        'calculator)
 (global-set-key (kbd "<f2>")                       'tv-flyspell)
 (global-set-key (kbd "<f5> p s b")                 'tv-ps-print-buffer)
@@ -286,7 +282,6 @@
 (global-set-key (kbd "C-x r h")                    'rectangle-menu)
 (global-set-key (kbd "C-x r <right>")              'rectangle-insert-at-right)
 (global-set-key (kbd "C-x r M-w")                  'copy-rectangle)
-;(global-set-key (kbd "C-z l")                      'helm-elscreen)
 (global-set-key (kbd "M-z")                        'zop-to-char)
 (global-set-key (kbd "<f5> g m")                   'google-maps)
 (global-set-key (kbd "M-\"")                       'tv-insert-double-quote)
@@ -944,43 +939,25 @@ account add <protocol> moi@mail.com password."
 ;;; Python config
 ;;
 ;;
-(define-key py-mode-map (kbd "C-c C-b") 'helm-browse-code)
+(tv-require 'python)
+(tv-require 'helm-ipython)
+(define-key python-mode-map (kbd "C-c C-b") 'helm-browse-code)
+(define-key python-mode-map (kbd "<M-tab>") 'helm-ipython-complete)
+(define-key python-mode-map (kbd "C-c C-i") 'helm-ipython-import-modules-from-buffer)
 
-;; config-python-mode
-(setq auto-mode-alist (cons '("\\.py$" . python-mode) auto-mode-alist))
-(setq interpreter-mode-alist (cons '("ipython" . python-mode) interpreter-mode-alist))
-(autoload 'python-mode "python-mode" "Python editing mode." t)
-
-;; Search-in-python-library
-;; (find-fline "~/.emacs.d/emacs-config-laptop/.emacs-config-w3m.el" "tv-python-search")
-(define-key py-mode-map (kbd "<f7> s p") 'tv-python-search)
-
-;;pdb==> python debugger (installation de gdb neccessaire)
-(setq gud-pdb-command-name "/home/thierry/bin/pdb.py")
-(tv-require 'pdbtrack)
-
-;; Pylint-via-flymake
-;; fonctionne avec le script python /usr/local/bin/epylint
-
-(defvar flymake-mode-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "<f4> f e") 'flymake-display-err-menu-for-current-line)
-    (define-key map (kbd "<f4> f n") 'flymake-goto-next-error)
-    map)
-   "Keymap used for flymake commands.")
-
-;; Flymake-pour-python
-(when (load "flymake" t)
-  (defun flymake-pylint-init ()
-    (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                       'flymake-create-temp-inplace))
-           (local-file (file-relative-name
-                        temp-file
-                        (file-name-directory buffer-file-name))))
-      (list "epylint" (list local-file))))
-
-  (add-to-list 'flymake-allowed-file-name-masks
-               '("\\.py\\'" flymake-pylint-init)))
+(setq
+ python-shell-interpreter "ipython"
+ python-shell-interpreter-args ""
+ python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+ python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+ python-shell-completion-setup-code
+ "import rlcompleter2
+rlcompleter2.setup()
+from IPython.core.completerlib import module_completion"
+ python-shell-completion-module-string-code
+ "';'.join(module_completion('''%s'''))\n"
+ python-shell-completion-string-code
+ "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
 
 ;; Entete-py
 (defun tv-insert-python-header ()
