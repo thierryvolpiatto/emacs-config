@@ -16,6 +16,13 @@
 ;;   !!!WARNING EXPERIMENTAL!!!
 
 
+(defun helm-browse-project ()
+  (interactive)
+  (cond ((helm-ls-git-root-dir)
+         (helm-ls-git-ls))
+        ((helm-hg-root)
+         (helm-hg-find-files-in-project))
+        (t (helm-find-files nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -44,6 +51,7 @@
 (global-set-key (kbd "C-c h f")                'helm-info-at-point)
 (global-set-key (kbd "C-c g")                  'helm-google-suggest)
 (global-set-key (kbd "M-g s")                  'helm-do-grep)
+(global-set-key (kbd "C-x C-d")                'helm-browse-project)
 (define-key global-map [remap insert-register] 'helm-register)
 (define-key global-map [remap list-buffers]    'helm-buffers-list)
 

@@ -1,13 +1,5 @@
 ;;; .emacs.el ---
-;;
-;; Filename: .emacs.el
-;; Description: My .emacs for thievol
-;; Author: thierry
-;; Created: sam aoû 16 19:06:09 2008 (+0200)
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;
+
 ;;; Code:
 
 ;;; Environment
@@ -1313,6 +1305,7 @@ With prefix arg always start and let me choose dictionary."
 (setq ange-ftp-passive-host-alist '(("mafreebox.freebox.fr" . "on")
                                     ("dl.free.fr" . "on")))
 
+
 ;; Mode-lecture-photo-auto
 (auto-image-file-mode 1)
 
@@ -1865,5 +1858,4 @@ is nil and `use-dialog-box' is non-nil."
 (add-hook 'emacs-startup-hook 'go-to-scratch 'append)
 (add-hook 'emacs-startup-hook 'cat-command 'append)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; .emacs.el ends here
