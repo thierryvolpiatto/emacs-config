@@ -19,6 +19,7 @@
 ;;  1) Add an nnimap entry in `gnus-secondary-select-methods'.
 ;;  2) Add an entry in `gnus-posting-styles'
 ;;  3) Add an entry in `tv-smtp-accounts'
+;;  4) Add an entries in authinfo for imap and smtp refering to labels. (See below)
 
 ;; Secondary methods are mails and possibly other nntp servers.
 (setq gnus-secondary-select-methods '((nnml "")
@@ -78,7 +79,7 @@
 (setq user-mail-address "thierry.volpiatto@gmail.com")
 (setq user-full-name "Thierry Volpiatto")
 
-;; (require 'smtpmail-async) ; Experimental, use `smtpmail-send-it' otherwise. 
+(require 'smtpmail-async) ; Experimental, use `smtpmail-send-it' otherwise. 
 (setq message-send-mail-function 'async-smtpmail-send-it
       smtpmail-debug-info t
       ;smtpmail-debug-verb t        ; Uncomment to debug
@@ -90,8 +91,19 @@
 ;; by `tv-change-smtp-server' according to `tv-smtp-accounts'
 ;; and `gnus-posting-styles'.
 (setq smtpmail-default-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-user user-mail-address
       smtpmail-smtp-server "smtp.gmail.com"
       smtpmail-smtp-service 587)
+
+(defvar tv-smtp-accounts
+  '(("thierry.volpiatto@gmail.com"
+     (:server "smtp.gmail.com"
+      :port 587
+      :name "Thierry Volpiatto"))
+    ("tvolpiatto@yahoo.fr"
+     (:server "smtp.mail.yahoo.com"
+      :port 587
+      :name "Thierry Volpiatto"))))
 
 (defun tv-change-smtp-server ()
   "Use account found in `tv-smtp-accounts' according to from header.
@@ -101,32 +113,16 @@ This will run in `message-send-hook'."
   (save-excursion
     (save-restriction
       (message-narrow-to-headers)
-      (let* ((from (message-fetch-field "from"))
-             (account (loop for account in tv-smtp-accounts thereis
-                            (and (string-match (car account) from) account))))
-        (setq smtpmail-default-smtp-server  (nth 1 account)
-              smtpmail-smtp-server          (nth 1 account)
-              smtpmail-smtp-service         (nth 2 account))))))
+      (let* ((from         (message-fetch-field "from"))
+             (user-account (loop for account in tv-smtp-accounts thereis
+                                 (and (string-match (car account) from)
+                                      account))))
+        (setq smtpmail-smtp-user            (car user-account)
+              smtpmail-default-smtp-server  (getf (cadr user-account) :server)
+              smtpmail-smtp-server          (getf (cadr user-account) :server)
+              smtpmail-smtp-service         (getf (cadr user-account) :port))))))
 
 (add-hook 'message-send-hook 'tv-change-smtp-server)
-
-(defun tv-toggle-from-header ()
-  "Toggle from header manually between yahoo and gmail."
-  (interactive)
-  (save-excursion
-    (let* ((from (save-restriction
-                   (message-narrow-to-headers)
-                   (message-fetch-field "from"))))
-      (message-goto-from)
-      (forward-line 0)
-      (re-search-forward ": " (point-at-eol))
-      (delete-region (point) (point-at-eol))
-      (if (string-match "yahoo" from)
-          (insert (message-make-from user-full-name
-                                     "thierry.volpiatto@gmail.com"))
-          (insert (message-make-from user-full-name
-                                     "tvolpiatto@yahoo.fr"))))))
-(define-key message-mode-map (kbd "C-c p") 'tv-toggle-from-header)
 
 (defun tv-send-mail-with-account ()
   "Change mail account to send this mail."
@@ -135,15 +131,17 @@ This will run in `message-send-hook'."
     (let* ((from (save-restriction
                    (message-narrow-to-headers)
                    (message-fetch-field "from")))
-           (mail (anything-comp-read
-                  "Use account: " (mapcar 'car tv-smtp-accounts)))
-           (new-from (message-make-from user-full-name mail)))
+           (mail (helm-comp-read
+                  "Use account: "
+                  (mapcar 'car tv-smtp-accounts)))
+           (name (getf (cadr (assoc mail tv-smtp-accounts)) :name))
+           (new-from (message-make-from name mail)))
         (message-goto-from)
         (forward-line 0)
         (re-search-forward ": " (point-at-eol))
         (delete-region (point) (point-at-eol))
         (insert new-from))))
-
+(define-key message-mode-map (kbd "C-c p") 'tv-send-mail-with-account)
 
 ;;; Junk-mail
 ;;

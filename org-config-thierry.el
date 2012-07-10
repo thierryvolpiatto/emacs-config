@@ -285,8 +285,7 @@
 (require 'ob-sh)
 (require 'ob-emacs-lisp)
 
-;; Provide 
+
 (provide 'org-config-thierry)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; org-config-thierry.el ends here

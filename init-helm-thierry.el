@@ -14,7 +14,30 @@
 
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
+(defun helm-ls-bzr-list-files (directory)
+  (when (file-exists-p "/tmp/helm-bzr.log")
+    (delete-file "/tmp/helm-bzr.log"))
+  (with-output-to-string
+      (with-current-buffer standard-output
+        (apply #'process-file "bzr" nil '(t "/tmp/helm-bzr.log") nil
+               (list "ls" "-R" "-v")))))
 
+;(defun helm-bzr-root-dir ())
+;bzr root ~/download/emacs-bzr/trunk/lisp/gnus
+(defvar helm-c-source-ls-bzr
+  `((name . "bzr ls")
+    (init . (lambda ()
+              (helm-init-candidates-in-buffer
+               "*hbzr ls*" (helm-ls-bzr-list-files default-directory))))
+    (candidates-in-buffer)
+    (filtered-candidate-transformer
+     . (lambda (candidates source)
+         (loop for f in candidates
+               for disp = (propertize f 'face '((:foreground "LightSteelBlue")))
+               for real = (expand-file-name (cadr (split-string f " " t))
+                                            default-directory)
+               collect (cons disp real))))
+    (action . ,(helm-attr 'action helm-c-source-ls-git))))
 
 (defun helm-browse-project ()
   (interactive)
