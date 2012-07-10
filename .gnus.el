@@ -68,10 +68,6 @@
 
 ;; [README] (find-fline "/usr/local/share/emacs/24.0.92/lisp/mail/smtpmail.el.gz" "Please")
 
-(defvar tv-smtp-accounts
-  '(("thierry.volpiatto@gmail.com" "smtp.gmail.com" 587)
-    ("tvolpiatto@yahoo.fr" "smtp.mail.yahoo.com" 587)))
-
 ;; To queue mail, set `smtpmail-queue-mail' to t and use
 ;; `smtpmail-send-queued-mail' to send.
 ;(setq smtpmail-queue-mail t) ; Use M-x smtpmail-send-queued-mail when online.
