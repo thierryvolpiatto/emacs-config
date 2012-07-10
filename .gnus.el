@@ -112,11 +112,14 @@ This will run in `message-send-hook'."
       (let* ((from         (message-fetch-field "from"))
              (user-account (loop for account in tv-smtp-accounts thereis
                                  (and (string-match (car account) from)
-                                      account))))
-        (setq smtpmail-smtp-user            (car user-account)
-              smtpmail-default-smtp-server  (getf (cadr user-account) :server)
-              smtpmail-smtp-server          (getf (cadr user-account) :server)
-              smtpmail-smtp-service         (getf (cadr user-account) :port))))))
+                                      account)))
+             (server (getf (cadr user-account) :server))
+             (port (getf (cadr user-account) :port))
+             (user (car user-account)))
+        (setq smtpmail-smtp-user            user
+              smtpmail-default-smtp-server  server
+              smtpmail-smtp-server          server
+              smtpmail-smtp-service         port)))))
 
 (add-hook 'message-send-hook 'tv-change-smtp-server)
 
