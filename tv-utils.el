@@ -1287,6 +1287,32 @@ In this case, sexps are searched before point."
                  (ignore (message "Error: %s" (car err)))))
         (ignore (message "Recompiling %s...FAILED" file))))))
 
+;;; Generate strong passwords.
+;;
+(defun* genpasswd (&optional (limit 12))
+  "Generate strong password of length LIMIT.
+LIMIT should be a number divisible by 2, otherwise
+the password will be of length (floor LIMIT)."
+  (loop with alph = ["a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k"
+                     "l" "m" "n" "o" "p" "q" "r" "s" "t" "u" "v"
+                     "w" "x" "y" "z" "A" "B" "C" "D" "E" "F" "G"
+                     "H" "I" "J" "K" "L" "M" "N" "O" "P" "Q" "R"
+                     "S" "T" "U" "V" "W" "X" "Y" "Z" "#" "!" "$"]
+        ;; Divide by 2 because collecting 2 list.
+        for i from 1 to (floor (/ limit 2))
+        for rand1 = (int-to-string (random* 9))
+        for alphaindex = (random* (length alph))
+        ;; Collect a random number between O-9
+        collect rand1 into ls
+        for rand2 = (aref alph alphaindex)
+        ;; collect a random alpha between a-zA-Z.
+        collect rand2 into ls
+        finally return
+        ;; Now shuffle ls.
+        (loop for n in ls
+              for elm = (nth (random* (length ls)) ls)
+              concat elm)))
+
 ;; Provide 
 (provide 'tv-utils)
 
