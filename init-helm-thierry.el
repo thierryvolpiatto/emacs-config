@@ -23,11 +23,12 @@
                (list "ls" "-R" "-v")))))
 
 (defun helm-bzr-root-dir ()
-  (replace-regexp-in-string
-   "\n" ""
-   (with-output-to-string
-       (with-current-buffer standard-output
-         (process-file "bzr" nil '(t nil) nil "root")))))
+  (let ((result (with-output-to-string
+                    (with-current-buffer standard-output
+                      (process-file "bzr" nil '(t nil) nil "root")))))
+    (unless (string= result "")
+      (replace-regexp-in-string "\n" "" result))))
+
 
 (defvar helm-bzr-ls-root-directory nil)
 (defvar helm-c-source-ls-bzr

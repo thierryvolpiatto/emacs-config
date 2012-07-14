@@ -966,7 +966,7 @@ from IPython.core.completerlib import module_completion"
 ;;; Shell config
 ;;
 ;; Set `undo-outer-limit' to high value to avoid messages on long output.
-(setq undo-outer-limit 6000000)
+(setq undo-outer-limit 20000000)
 
 ;; Prompt shell read only
 (setq comint-prompt-read-only t)
