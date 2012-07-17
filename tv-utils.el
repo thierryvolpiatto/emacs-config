@@ -36,40 +36,35 @@
 (defun mount-sshfs (fs mp)
   (interactive (list (read-string "FileSystem: "
                                   "thievol:/home/thierry")
-                     (read-directory-name "MountPoint: "
+                     (expand-file-name
+                      (read-directory-name "MountPoint: "
                                           "/home/thierry/"
                                           "/home/thierry/sshfs-thievol/"
                                           t
-                                          "sshfs-thievol")))
-  (set-buffer (get-buffer-create "*sshfs*"))
-  (text-mode) (erase-buffer) (insert "=====*sshfs*=====\n\n")
+                                          "sshfs-thievol"))))
   (if (> (length (cddr (directory-files mp))) 0)
-      (insert (format "Directory %s is busy, mountsshfs aborted" mp))
-      (call-process-shell-command "sshfs" nil t nil (format "%s %s" fs mp))
-      (if (= (length (cddr (directory-files mp))) 0)
-          (insert (format "Failed to mount remote filesystem %s on %s" fs mp))
-          (insert (format "%s Mounted successfully on %s" fs mp)))))
-  
+      (message "Directory %s is busy, mountsshfs aborted" mp)
+      (if (= (call-process-shell-command "sshfs" nil t nil
+                                         (format "%s %s" fs mp)) 0)
+          (message "%s Mounted successfully on %s" fs mp)
+          (message "Failed to mount remote filesystem %s on %s" fs mp))))
 
 ;;;###autoload
 (defun umount-sshfs (mp)
-  (interactive (list (read-directory-name "MountPoint: "
-                                          "/home/thierry/"
-                                          "/home/thierry/sshfs-thievol/"
-                                          t
-                                          "sshfs-thievol")))
+  (interactive (list (expand-file-name
+                      (read-directory-name "MountPoint: "
+                                           "/home/thierry/"
+                                           "/home/thierry/sshfs-thievol/"
+                                           t
+                                           "sshfs-thievol"))))
   (if (equal (pwd) (format "Directory %s" mp))
       (message "Filesystem is busy can't umount!")
       (progn
         (if (>= (length (cddr (directory-files mp))) 0)
-            (progn
-              (set-buffer (get-buffer-create "*sshfs*"))
-              (erase-buffer) (insert "=====*sshfs*=====\n\n")
-              (text-mode) (goto-char (point-min))
-              (forward-line 2) (delete-region (point) (point-max))
-              (and (call-process-shell-command "fusermount" nil t nil (format "-u %s" mp))
-                   (insert (format "%s Successfully unmounted" mp)))
-              (display-buffer "*sshfs*"))
+            (if (= (call-process-shell-command "fusermount" nil t nil
+                                               (format "-u %s" mp)) 0)
+                (message "%s Successfully unmounted" mp)
+                (message "Failed to unmount %s" mp))
             (message "No existing remote filesystem to unmount!")))))
 
 ;;;###autoload
@@ -307,17 +302,19 @@ depending the value of N is positive or negative."
 (defun go-to-scratch ()
   (interactive)
   (unless (buffer-file-name (get-buffer "*scratch*"))
-    (when (get-buffer "*scratch*") (kill-buffer "*scratch*")))
+    (and (get-buffer "*scratch*") (kill-buffer "*scratch*")))
   (if (and (get-buffer "*scratch*")
            (buffer-file-name (get-buffer "*scratch*")))
       (progn (switch-to-buffer "*scratch*") (lisp-interaction-mode))
       (find-file "~/.emacs.d/save-scratch.el")
       (rename-buffer "*scratch*")
       (lisp-interaction-mode)
-      (use-local-map lisp-interaction-mode-map)
-      (when (eq (point-min) (point-max))
-        (insert ";; SCRATCH BUFFER\n;; ==============\n\n"))
-      (current-buffer)))
+      (use-local-map lisp-interaction-mode-map))
+  (when (or (eq (point-min) (point-max))
+            ;; For some reason the scratch buffer have not a zero size.
+            (<= (buffer-size) 1))
+    (insert ";; SCRATCH BUFFER\n;; ==============\n\n"))
+  (current-buffer))
 
 ;;; registers-config 
 ;; Redefine append-to-register with a "\n"
@@ -1038,7 +1035,8 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
 ;; switch to emacs version
 (defun eselect-emacs ()
   (interactive)
-  (let ((execs '("b2m" "ctags" "ebrowse" "emacs" "emacsclient" "etags" "grep-changelog" "rcs-checkin")))
+  (let ((execs '("b2m" "ctags" "ebrowse" "emacs" "emacsclient" "etags" "grep-changelog" "rcs-checkin"))
+        helm-async-be-async) ; Turn off async because we are removing the emacs executable 'emacs'.
     (let* ((src-bin (expand-file-name (helm-comp-read
                                        "EmacsVersion: "
                                        (directory-files "/sudo::/usr/local/sbin"

@@ -1283,6 +1283,9 @@ With prefix arg always start and let me choose dictionary."
 ;;
 (tv-require 'tramp)
 ;(setq tramp-default-method "ssh") ; methode par defaut
+;(setq tramp-verbose 6)
+;(setq helm-tramp-verbose 6)
+
 
 ;; No messages
 (setq tramp-message-show-message nil)
@@ -1302,8 +1305,8 @@ With prefix arg always start and let me choose dictionary."
 ;;; Ange-ftp
 ;;
 ;;
-(setq ange-ftp-passive-host-alist '(("mafreebox.freebox.fr" . "on")
-                                    ("dl.free.fr" . "on")))
+(setq ange-ftp-try-passive-mode t)
+(setq ange-ftp-passive-host-alist '(("mafreebox.freebox.fr" . "on")))
 
 
 ;; Mode-lecture-photo-auto
@@ -1857,6 +1860,5 @@ is nil and `use-dialog-box' is non-nil."
               (setq-default bidi-display-reordering nil))
           'append)
 (add-hook 'emacs-startup-hook 'go-to-scratch 'append)
-(add-hook 'emacs-startup-hook 'cat-command 'append)
 
 ;;; .emacs.el ends here
