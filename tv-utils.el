@@ -312,7 +312,7 @@ depending the value of N is positive or negative."
       (use-local-map lisp-interaction-mode-map))
   (when (or (eq (point-min) (point-max))
             ;; For some reason the scratch buffer have not a zero size.
-            (<= (buffer-size) 1))
+            (<= (buffer-size) 2))
     (insert ";; SCRATCH BUFFER\n;; ==============\n\n"))
   (current-buffer))
 
