@@ -78,7 +78,6 @@
 (define-key helm-command-map (kbd "v")   'helm-eev-anchors)
 (define-key helm-command-map (kbd "d")   'helm-delicious)
 (define-key helm-command-map (kbd "g")   'helm-apt)
-(define-key helm-command-map (kbd "DEL") 'helm-resume)
 
 ;;; Global-map
 ;;

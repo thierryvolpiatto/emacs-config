@@ -367,7 +367,7 @@
 
 (defun quickping (host)
   "Return non--nil when host is reachable."
-  (= 0 (call-process "ping" nil nil nil "-c1" "-W50" "-q" host)))
+  (= 0 (call-process "ping" nil nil nil "-c1" "-W30" "-q" host)))
 
 (defun tv-gnus (arg)
   (interactive "P")
