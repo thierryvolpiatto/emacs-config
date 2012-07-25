@@ -1129,7 +1129,7 @@ If a prefix arg is given choose directory, otherwise use `default-directory'."
                     (getf df-info :available)
                     (getf df-info :capacity)
                     (getf df-info :mount-point)))
-    (view-mode-enable)))
+    (view-mode 1)))
 
 (defun tv-toggle-resplit-window ()
   (interactive)
@@ -1310,6 +1310,30 @@ the password will be of length (floor LIMIT)."
         (loop for n in ls
               for elm = (nth (random* (length ls)) ls)
               concat elm)))
+
+;;; Rotate windows
+;;
+;;
+(defun rotate-windows ()
+  (interactive)
+  (require 'iterator)
+  (loop with wlist = (iter-circular (window-list))
+        with len = (length (window-list))
+        for count from 1
+        while (< count len)
+        for w1 = (iter-next wlist)
+        for b1 = (window-buffer w1)
+        for s1 = (window-start w1)
+        for w2 = (iter-next wlist)
+        for b2 = (window-buffer w2)
+        for s2 = (window-start w2)
+        do (progn (set-window-buffer w1 b2)
+                  (set-window-start w1 s2)
+                  (set-window-buffer w2 b1)
+                  (set-window-start w2 s1)
+                  (and (> count 3))
+                       (iter-next wlist))))
+(global-set-key (kbd "C-c -") 'rotate-windows)
 
 ;; Provide 
 (provide 'tv-utils)

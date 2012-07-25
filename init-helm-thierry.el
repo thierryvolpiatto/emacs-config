@@ -115,20 +115,39 @@
 ;;; Helm-variables
 ;;
 ;;
-(setq helm-google-suggest-use-curl-p            t
-      helm-kill-ring-threshold                  1
-      helm-raise-command                        "wmctrl -xa %s"
-      helm-scroll-amount                        1
-      helm-quick-update                         t
-      helm-idle-delay                           0.1
-      helm-input-idle-delay                     0.1
-      helm-c-kill-ring-max-lines-number         5
-      helm-c-default-external-file-browser      "thunar"
-      helm-c-use-adaptative-sorting             t
-      helm-c-pdfgrep-default-read-command       "evince --page-label=%p '%f'"
-      helm-ff-transformer-show-only-basename    t
-      ;helm-candidate-number-limit               9999
+(setq helm-google-suggest-use-curl-p         t
+      helm-kill-ring-threshold               1
+      helm-raise-command                     "wmctrl -xa %s"
+      helm-scroll-amount                     1
+      helm-quick-update                      t
+      helm-idle-delay                        0.1
+      helm-input-idle-delay                  0.1
+      helm-c-kill-ring-max-lines-number      5
+      helm-c-default-external-file-browser   "thunar"
+      helm-c-use-adaptative-sorting          t
+      helm-c-pdfgrep-default-read-command    "evince --page-label=%p '%f'"
+      helm-ff-transformer-show-only-basename t
+      helm-c-grep-default-command            "ack-grep -Hn --smart-case --no-group --no-color %e %p %f"
+      helm-c-grep-default-recurse-command    "ack-grep -H --smart-case --no-group --no-color %e %p %f"
       )
+
+;;; Toggle grep program
+;;
+;;
+(defun eselect-toggle-grep ()
+  (interactive)
+  (when (y-or-n-p (format "Current grep program is %s, switching? "
+                          (helm-grep-command)))
+    (if (helm-grep-use-ack-p)
+        (setq helm-c-grep-default-command
+              "grep -d skip %e -niH -e %p %f"
+              helm-c-grep-default-recurse-command
+              "grep -d recurse %e -niH -e %p %f")
+        (setq helm-c-grep-default-command
+              "ack-grep -Hn --smart-case --no-group --no-color %e %p %f"
+              helm-c-grep-default-recurse-command
+              "ack-grep -H --smart-case --no-group --no-color %e %p %f"))
+    (message "Switched to %s" (helm-grep-command))))
 
 ;;; Debugging
 ;;
