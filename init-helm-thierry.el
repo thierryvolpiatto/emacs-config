@@ -122,6 +122,7 @@
       helm-quick-update                      t
       helm-idle-delay                        0.1
       helm-input-idle-delay                  0.1
+      helm-completion-window-scroll-margin   0
       helm-c-kill-ring-max-lines-number      5
       helm-c-default-external-file-browser   "thunar"
       helm-c-use-adaptative-sorting          t

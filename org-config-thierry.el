@@ -167,14 +167,13 @@
 
 ;; Insinuate-appt 
 (require 'appt)
-(setq appt-time-msg-list nil)
 (org-agenda-to-appt)
 ;; When use 'r' (rebuild agenda) reload appt
 (add-hook 'org-agenda-mode-hook #'(lambda ()
                                     (setq appt-time-msg-list nil)
                                     (org-agenda-to-appt)))
-(setq appt-audible t)
-(setq appt-display-format nil) ;echo, window, nil
+
+(setq appt-display-format 'window) ;echo, window, nil
 (appt-activate 1)
 (global-set-key (kbd "<f5> d a") 'appt-add)
 

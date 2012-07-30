@@ -1188,15 +1188,6 @@ If a prefix arg is given choose directory, otherwise use `default-directory'."
            (insert "\n"))
          finally do (pop-to-buffer "*Euro million*")))))
 
-;; Fast remove-duplicates
-(defun* remove-dups (seq &key (test 'eq))
-  (let ((cont (make-hash-table :test test)))
-    (loop for elm in seq
-       unless (gethash elm cont)
-       do (puthash elm elm cont)
-       finally return
-         (loop for i being the hash-values in cont collect i))))
-
 ;; Just an example to use `url-retrieve'
 (defun tv-download-file-async (url &optional noheaders to)
   (lexical-let ((noheaders noheaders) (to to))
@@ -1317,22 +1308,25 @@ the password will be of length (floor LIMIT)."
 (defun rotate-windows ()
   (interactive)
   (require 'iterator)
-  (loop with wlist = (iter-circular (window-list))
-        with len = (length (window-list))
-        for count from 1
-        while (< count len)
-        for w1 = (iter-next wlist)
-        for b1 = (window-buffer w1)
-        for s1 = (window-start w1)
-        for w2 = (iter-next wlist)
-        for b2 = (window-buffer w2)
-        for s2 = (window-start w2)
-        do (progn (set-window-buffer w1 b2)
-                  (set-window-start w1 s2)
-                  (set-window-buffer w2 b1)
-                  (set-window-start w2 s1)
-                  (and (> count 3))
-                       (iter-next wlist))))
+  (assert (> (length (window-list)) 1)
+          nil "Error: Can't rotate with a single window")
+  (unless helm-alive-p
+    (loop with wlist = (iter-circular (window-list))
+          with len = (length (window-list))
+          for count from 1
+          while (< count len)
+          for w1 = (iter-next wlist)
+          for b1 = (window-buffer w1)
+          for s1 = (window-start w1)
+          for w2 = (iter-next wlist)
+          for b2 = (window-buffer w2)
+          for s2 = (window-start w2)
+          do (progn (set-window-buffer w1 b2)
+                    (set-window-start w1 s2)
+                    (set-window-buffer w2 b1)
+                    (set-window-start w2 s1)
+                    (and (> count 3))
+                    (iter-next wlist)))))
 (global-set-key (kbd "C-c -") 'rotate-windows)
 
 ;; Provide 

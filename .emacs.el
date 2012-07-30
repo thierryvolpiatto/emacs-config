@@ -415,9 +415,10 @@
 ;; so no need to start it here
 
 ;; undo-limit
-(setq undo-limit 30000)
+(setq undo-limit 100000)
+
 
-;;; Frame-parameters
+;;; Frame and window config.
 ;;
 ;;
 ;; My current-font: [EVAL]: (assoc-default 'font (frame-parameters))
@@ -451,7 +452,6 @@
                                 (cursor-color . "red")
                                 (fullscreen . nil)
                                 )))
-
 
 ;; Speedbar
 (setq speedbar-frame-parameters
@@ -534,7 +534,7 @@ With a prefix arg decrease transparency."
                                       (fullscreen . nil))))
 
 
-;; Don't fucking split this windows horizontally
+;; Don't split this windows horizontally
 (setq split-width-threshold nil)
 
 ;; Pas-de-dialog-gtk
