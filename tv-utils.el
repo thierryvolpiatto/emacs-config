@@ -794,11 +794,6 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
          (progress-reporter-update progress-reporter count)))
     (progress-reporter-done progress-reporter)))
 
-;; (add-hook 'kill-emacs-hook 'dump-object-to-file-save-alist)
-;; (add-hook 'emacs-startup-hook 'restore-objects-from-directory)
-;; (add-hook 'kill-emacs-hook 'tv-dump-some-buffers-to-list)
-;; (add-hook 'emacs-startup-hook 'tv-restore-some-buffers 'append)
-
 (defun* tv-set-emacs-session-backup (&key enable)
   (if enable
       (unless (or (memq 'dump-object-to-file-save-alist kill-emacs-hook)
@@ -1325,11 +1320,15 @@ the password will be of length (floor LIMIT)."
                     (set-window-start w1 s2)
                     (set-window-buffer w2 b1)
                     (set-window-start w2 s1)
-                    (and (> count 3))
-                    (iter-next wlist)))))
+                    (and (> len 3)
+                         (iter-next wlist))))))
 (global-set-key (kbd "C-c -") 'rotate-windows)
 
 ;; Provide 
 (provide 'tv-utils)
+
+;; Local Variables:
+;; byte-compile-warnings: (not cl-functions obsolete)
+;; End:
 
 ;;; tv-utils.el ends here
