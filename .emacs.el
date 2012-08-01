@@ -1098,10 +1098,14 @@ With prefix arg always start and let me choose dictionary."
         (flyspell-delete-all-overlays))
       (call-interactively 'flyspell-mode)))
 
-;;; Woman
+;;; Woman/man
 ;;
 ;;
 (setq woman-use-own-frame nil)
+(setq Man-notify-method 'pushy)
+(defface man-args-face '((t (:foreground "Magenta" :underline t)))
+  "*Face used in man page to show arguments and sections."
+  :group 'man)
 
 ;;; Printing config
 ;;
