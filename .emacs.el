@@ -11,6 +11,10 @@
 ;; calendar-date-style
 (setq calendar-date-style 'european)
 
+;; Annoyance number 1 is bidi
+;; Turn OFF bidi everywhere.
+(setq-default bidi-display-reordering nil)
+
 ;; Kill emacs
 (defun tv-stop-emacs ()
   (interactive)
@@ -1852,17 +1856,9 @@ is nil and `use-dialog-box' is non-nil."
 ;;
 (tv-set-emacs-session-backup :enable t)
 
-;; Link-scratch-to-file
+;;; Linkscratch-to-file
 ;;(find-fline "~/.emacs.d/emacs-config-laptop/tv-utils.el" "go-to-scratch")
-;; [For Emacs24 Fri Jun 17 21:56:29 2011]
-;; This have to be loaded at the end to overhide emacs vanilla scratch buffer
-;; with splash-screen etc... This important for versions of emacs starting at
-;; Fri Jun 17 21:55:55 2011
-;; Turn OFF bidi everywhere.
-(add-hook 'emacs-startup-hook
-          #'(lambda ()
-              (setq-default bidi-display-reordering nil))
-          'append)
+;; Need to be loaded at very end of config, use append.
 (add-hook 'emacs-startup-hook 'go-to-scratch 'append)
 
 ;;; .emacs.el ends here

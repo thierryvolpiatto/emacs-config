@@ -38,10 +38,10 @@
                                   "thievol:/home/thierry")
                      (expand-file-name
                       (read-directory-name "MountPoint: "
-                                          "/home/thierry/"
-                                          "/home/thierry/sshfs-thievol/"
-                                          t
-                                          "sshfs-thievol"))))
+                                           "/home/thierry/"
+                                           "/home/thierry/sshfs-thievol/"
+                                           t
+                                           "sshfs-thievol"))))
   (if (> (length (cddr (directory-files mp))) 0)
       (message "Directory %s is busy, mountsshfs aborted" mp)
       (if (= (call-process-shell-command "sshfs" nil t nil
@@ -100,8 +100,8 @@
 ;; network-info 
 (defun tv-network-info (network)
   (let ((info (loop for (i . n) in (network-interface-list)
-                 when (string= network i)
-                 return (network-interface-info i))))
+                    when (string= network i)
+                    return (network-interface-info i))))
     (when info
       (destructuring-bind (address broadcast netmask mac state)
           info
@@ -170,9 +170,9 @@ Run first crontab -e in shell and when emacsclient popup run M-x crontab."
   (interactive "P")
   (let* ((content  (with-current-buffer
                        (find-file-noselect screen-exchange-file)
-                       (prog1
-                           (buffer-substring (point-min) (point-max))
-                         (kill-buffer))))
+                     (prog1
+                         (buffer-substring (point-min) (point-max))
+                       (kill-buffer))))
          (len      (length content))
          (one-line (replace-regexp-in-string "\n" "" content)))
     ;; With prefix arg don't remove new lines.
@@ -235,8 +235,8 @@ input is finish and function executed"
               list-of-dir
               (multi-read-name 'read-directory-name))))
     (loop for i in final-list
-       do
-         (copy-file file i t))))
+          do
+          (copy-file file i t))))
 
 ;; Multi-read-name 
 ;;;###autoload
@@ -374,10 +374,10 @@ START and END are buffer positions indicating what to append."
 ;; like `make-string' :-)
 (defmacro *string (str num)
   `(let ((str-lis))
-    (dotimes (n ,num)
-      (push ,str str-lis))
-    (mapconcat #'(lambda (i) i) str-lis "")))
-    
+     (dotimes (n ,num)
+       (push ,str str-lis))
+     (mapconcat #'(lambda (i) i) str-lis "")))
+
 (defmacro +string (str-0 str-1)
   `(let ((str-lis (list ,str-0 ,str-1)))
      (mapconcat #'(lambda (i) i) str-lis "")))
@@ -543,11 +543,11 @@ DIR is a regular directory name.
                       for i in l
                       do
                       (tv-fad-extensions:copy-file-or-dir i d)) 
-                    (lambda (result)
-                      ;(message "%S" result)
-                      (message "%s files copied to %s"
-                               (length tv-slime-copy-files-list)
-                               tv-slime-copy-dest-dir))))
+    (lambda (result)
+                                        ;(message "%S" result)
+      (message "%s files copied to %s"
+               (length tv-slime-copy-files-list)
+               tv-slime-copy-dest-dir))))
 
 ;; Delete-files-async-with-slime 
 
@@ -567,8 +567,8 @@ DIR is a regular directory name.
                           for i in l
                           do
                           (cl:delete-file i))
-                        (lambda (result)
-                          (message "%s files deleted" (length tv-slime-delete-files-list))))))
+        (lambda (result)
+          (message "%s files deleted" (length tv-slime-delete-files-list))))))
 
 ;; Mime-types 
 (defun tv-dired-mime-type ()
@@ -669,12 +669,12 @@ DIR is a regular directory name.
 (defun tv-gimp-open-file (file)
   (interactive
    (list (helm-comp-read "Image: "
-                             (loop
-                                with f = (cddr (directory-files default-directory))
-                                with img = '("jpg" "png" "gif" "jpeg")
-                                for i in f
-                                if (member (file-name-extension i) img)
-                                collect i))))
+                         (loop
+                               with f = (cddr (directory-files default-directory))
+                               with img = '("jpg" "png" "gif" "jpeg")
+                               for i in f
+                               if (member (file-name-extension i) img)
+                               collect i))))
   (message "Starting Gimp...") (sit-for 0.2)
   (start-process "Gimp" nil "gimp" (expand-file-name file))
   (set-process-sentinel (get-process "Gimp")
@@ -766,18 +766,17 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
 ;; Get rid of desktop.el, too slow.
 
 (defun tv-save-some-buffers ()
-  (loop
-     with dired-blist = (loop for (f . b) in dired-buffers
-                           when (buffer-name b)
-                           collect b)
-     with blist = (append (buffer-list) dired-blist)
-     for b in blist
-     for buf-fname = (or (buffer-file-name b) (car (rassoc b dired-buffers)))
-     for place = (with-current-buffer b (point))
-     when (and buf-fname
-               (not (string-match tramp-file-name-regexp buf-fname))
-               (file-exists-p buf-fname))
-     collect (cons buf-fname place)))
+  (loop with dired-blist = (loop for (f . b) in dired-buffers
+                                 when (buffer-name b)
+                                 collect b)
+        with blist = (append (buffer-list) dired-blist)
+        for b in blist
+        for buf-fname = (or (buffer-file-name b) (car (rassoc b dired-buffers)))
+        for place = (with-current-buffer b (point))
+        when (and buf-fname
+                  (not (string-match tramp-file-name-regexp buf-fname))
+                  (file-exists-p buf-fname))
+        collect (cons buf-fname place)))
 
 (defvar tv-save-buffers-alist nil)
 (defun tv-dump-some-buffers-to-list ()
@@ -787,11 +786,11 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
   (let* ((max (length tv-save-buffers-alist))
          (progress-reporter (make-progress-reporter "Restoring buffers..." 0 max)))
     (loop for (f . p) in tv-save-buffers-alist
-       for count from 0
-       do
-       (with-current-buffer (find-file-noselect f 'nowarn)
-         (goto-char p)
-         (progress-reporter-update progress-reporter count)))
+          for count from 0
+          do
+          (with-current-buffer (find-file-noselect f 'nowarn)
+            (goto-char p)
+            (progress-reporter-update progress-reporter count)))
     (progress-reporter-done progress-reporter)))
 
 (defun* tv-set-emacs-session-backup (&key enable)
@@ -935,15 +934,15 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
                                                 (format "%s*" (file-name-as-directory dir)))
                                             t)))
     (loop for i in ls-dir
-         for no-ext = (file-name-sans-extension (file-name-nondirectory i))
-         for new-name = (if (and without (string-match without no-ext))
-                            (replace-match "" t t no-ext)
-                            no-ext)
-         for suffixed = (and suffix (expand-file-name (concat new-name suffix "." ext) dir))
-         for prefixed = (and prefix (expand-file-name (concat prefix new-name "." ext) dir))
-         for both = (and prefix suffix (expand-file-name (concat prefix new-name suffix "." ext) dir))
-         for replace = (expand-file-name (concat new-name "." ext) dir)
-         do (rename-file i (or both suffixed prefixed replace)))))
+          for no-ext = (file-name-sans-extension (file-name-nondirectory i))
+          for new-name = (if (and without (string-match without no-ext))
+                             (replace-match "" t t no-ext)
+                             no-ext)
+          for suffixed = (and suffix (expand-file-name (concat new-name suffix "." ext) dir))
+          for prefixed = (and prefix (expand-file-name (concat prefix new-name "." ext) dir))
+          for both = (and prefix suffix (expand-file-name (concat prefix new-name suffix "." ext) dir))
+          for replace = (expand-file-name (concat new-name "." ext) dir)
+          do (rename-file i (or both suffixed prefixed replace)))))
 
 
 (defun* rename-file-with1 (file &key suffix prefix without)
@@ -957,7 +956,7 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
          (prefixed (and prefix (expand-file-name (concat prefix new-name "." ext) dir)))
          (both (and prefix suffix (expand-file-name (concat prefix new-name suffix "." ext) dir)))
          (replace (expand-file-name (concat new-name "." ext) dir)))
-     (rename-file file (or both suffixed prefixed replace))))
+    (rename-file file (or both suffixed prefixed replace))))
 
 
 ;;; eshell-pager 
@@ -970,10 +969,10 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
                      (apply #'call-process command nil t nil args)
                      (goto-char (point-min))
                      (loop
-                        while (not (eobp))
-                        for beg = (point)
-                        do (forward-line (- height 3))
-                        collect (buffer-substring beg (point)))))
+                           while (not (eobp))
+                           for beg = (point)
+                           do (forward-line (- height 3))
+                           collect (buffer-substring beg (point)))))
          (it       (iter-list split)) ; Initialize with a simple iterator.
          (last-elm (iter-next it)))
     (flet ((print-result ()
@@ -1023,9 +1022,9 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
     (narrow-to-region beg end)
     (goto-char (point-min))
     (loop while (re-search-forward "^.*$" nil t)
-       for count from 1 do
-         (replace-match
-          (concat (format "%d " count) (match-string 0))))))
+          for count from 1 do
+          (replace-match
+           (concat (format "%d " count) (match-string 0))))))
 
 ;; switch to emacs version
 (defun eselect-emacs ()
@@ -1053,10 +1052,10 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
               do (delete-file (expand-file-name i "/sudo::/usr/local/bin/")))
         (delete-file "/sudo::/usr/local/share/info")
         (helm-dired-action "/sudo::/usr/local/bin/"
-                               :action 'symlink
-                               :files bin-list)
+                           :action 'symlink
+                           :files bin-list)
         (helm-dired-action "/sudo::/usr/local/share/info"
-                               :action 'symlink :files (list src-info))
+                           :action 'symlink :files (list src-info))
         (message "Switched to %s version" (file-name-nondirectory src-bin))))))
 
 ;; Permutations
@@ -1074,15 +1073,15 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
              ;; And add e to the front of each of these.
              ;; Do this for all possible e to generate all permutations.
              (loop for e in bag append
-                  (loop for p in (permutations (remove e bag))
-                     collect (cons e p))))))
+                   (loop for p in (permutations (remove e bag))
+                         collect (cons e p))))))
     (when (or result-as-string print)
-        (setq result (loop for i in result collect (mapconcat 'identity i ""))))
+      (setq result (loop for i in result collect (mapconcat 'identity i ""))))
     (if print
         (with-current-buffer (get-buffer-create "*permutations*")
           (erase-buffer)
           (loop for i in result
-             do (insert (concat i "\n")))
+                do (insert (concat i "\n")))
           (pop-to-buffer (current-buffer)))
         result)))
 
@@ -1159,29 +1158,29 @@ If a prefix arg is given choose directory, otherwise use `default-directory'."
          (result ()
            ;; Collect random numbers without  dups.
            (loop with L repeat 5
-              for r = (star-num 51)
-              if (not (member r L))
-              collect r into L
-              else
-              collect (let ((n (star-num 51)))
-                        (while (memq n L)
-                          (setq n (star-num 51)))
-                        n) into L
-              finally return L)))
+                 for r = (star-num 51)
+                 if (not (member r L))
+                 collect r into L
+                 else
+                 collect (let ((n (star-num 51)))
+                           (while (memq n L)
+                             (setq n (star-num 51)))
+                           n) into L
+                 finally return L)))
     (with-current-buffer (get-buffer-create "*Euro million*")
       (erase-buffer)
       (insert "Grille aléatoire pour l'Euro Million\n\n")
       (loop with ls = (loop repeat 5 collect (result))  
-         for i in ls do
-         (progn
-           (insert (mapconcat #'(lambda (x)
-                                  (let ((elm (number-to-string x)))
-                                    (if (= (length elm) 1) (concat elm " ") elm)))
-                              i " "))
-           (insert " Stars: ")
-           (insert (mapconcat 'identity (get-stars) " "))
-           (insert "\n"))
-         finally do (pop-to-buffer "*Euro million*")))))
+            for i in ls do
+            (progn
+              (insert (mapconcat #'(lambda (x)
+                                     (let ((elm (number-to-string x)))
+                                       (if (= (length elm) 1) (concat elm " ") elm)))
+                                 i " "))
+              (insert " Stars: ")
+              (insert (mapconcat 'identity (get-stars) " "))
+              (insert "\n"))
+            finally do (pop-to-buffer "*Euro million*")))))
 
 ;; Just an example to use `url-retrieve'
 (defun tv-download-file-async (url &optional noheaders to)
@@ -1214,22 +1213,22 @@ In this case, sexps are searched before point."
         (fun (if arg 're-search-backward 're-search-forward))
         (sep (and (y-or-n-p "Separate sexp with newline? ") "\n")))
     (loop while (funcall fun regexp nil t)
-      do (progn
-           (beginning-of-defun)
-           (let ((beg (point))
-                 (end (save-excursion (end-of-defun) (point))))
-             (save-excursion
-               (forward-line -1)
-               (when (search-forward "###autoload" (point-at-eol) t)
-                 (setq beg (point-at-bol))))
-             (kill-region beg end)
-             (delete-blank-lines))
-           (save-excursion
-             (goto-char pos)
-             (yank)
-             (insert (concat "\n" sep))
-             (setq pos (point))))
-       finally do (goto-char pos))))
+          do (progn
+               (beginning-of-defun)
+               (let ((beg (point))
+                     (end (save-excursion (end-of-defun) (point))))
+                 (save-excursion
+                   (forward-line -1)
+                   (when (search-forward "###autoload" (point-at-eol) t)
+                     (setq beg (point-at-bol))))
+                 (kill-region beg end)
+                 (delete-blank-lines))
+               (save-excursion
+                 (goto-char pos)
+                 (yank)
+                 (insert (concat "\n" sep))
+                 (setq pos (point))))
+          finally do (goto-char pos))))
 
 ;; Check paren errors
 (defun tv-check-paren-error ()
@@ -1278,10 +1277,10 @@ In this case, sexps are searched before point."
 LIMIT should be a number divisible by 2, otherwise
 the password will be of length (floor LIMIT)."
   (loop with alph = ["a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k"
-                     "l" "m" "n" "o" "p" "q" "r" "s" "t" "u" "v"
-                     "w" "x" "y" "z" "A" "B" "C" "D" "E" "F" "G"
-                     "H" "I" "J" "K" "L" "M" "N" "O" "P" "Q" "R"
-                     "S" "T" "U" "V" "W" "X" "Y" "Z" "#" "!" "$"]
+                         "l" "m" "n" "o" "p" "q" "r" "s" "t" "u" "v"
+                         "w" "x" "y" "z" "A" "B" "C" "D" "E" "F" "G"
+                         "H" "I" "J" "K" "L" "M" "N" "O" "P" "Q" "R"
+                         "S" "T" "U" "V" "W" "X" "Y" "Z" "#" "!" "$"]
         ;; Divide by 2 because collecting 2 list.
         for i from 1 to (floor (/ limit 2))
         for rand1 = (int-to-string (random* 9))
