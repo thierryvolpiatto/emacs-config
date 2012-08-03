@@ -49,7 +49,6 @@
 (dolist (i '("/usr/local/share/emacs/site-lisp"
              "/usr/local/share/emacs/site-lisp/auctex"
 	     "~/elisp/"
-             "~/elisp/bbdb/lisp"
              "~/elisp/dvc/lisp/"
 	     "~/elisp/magit"
              "~/elisp/auctex"
@@ -61,12 +60,9 @@
 	     "~/elisp/emacs-wget"
 	     "~/elisp/git"
 	     "~/elisp/tex-utils"
-	     "~/elisp/flim"
-	     "~/elisp/apel"
 	     "~/elisp/muse/lisp"
 	     "~/elisp/muse/contrib"
              "~/elisp/emms/lisp/"
-	     "~/elisp/w3m/"
 	     "~/elisp/ledger/"
              "~/elisp/emacs-helm"
              "~/elisp/emacs-helm-extensions"
@@ -97,11 +93,6 @@
 
 (tv-maybe-load-ngnus)
 
-;; Load-all-gentoo's-files-from-site-lisp
-;; Reuse gentoo's old autoload files for external packages.
-;; (mapc 'load
-;;       (directory-files "~/elisp/site-gentoo.d" t directory-files-no-dot-files-regexp))
-
 ;;; autoconf-mode site-lisp configuration
 (autoload 'autoconf-mode "autoconf-mode"
   "Major mode for editing autoconf files." t)
@@ -127,16 +118,6 @@
 ;;; app-office/ledger site-lisp configuration
 (autoload 'ledger-mode "ledger" "A mode for editing ledger data files." t)
 
-;;; libidn site-lisp configuration
-(autoload 'idna-to-ascii "idna"
-  "Returns an ASCII Compatible Encoding (ACE) of STR.")
-(autoload 'idna-to-unicode "idna"
-  "Returns a possibly multibyte string after decoding STR.")
-(autoload 'punycode-encode "punycode"
-  "Returns a Punycode encoding of STR.")
-(autoload 'punycode-decode "punycode"
-  "Returns a possibly multibyte string which is the punycode decoding of STR.")
-
 ;;; lua-mode site-lisp configuration
 (autoload 'lua-mode "lua-mode" "Mode for editing Lua scripts" t)
 (add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-mode))
@@ -147,8 +128,6 @@
 ;;
 (autoload 'wget "wget" "wget interface for Emacs." t)
 (autoload 'wget-web-page "wget" "wget interface to download whole web page." t)
-(load "w3m-wget")
-(add-hook 'w3m-mode-hook '(lambda () (tv-require 'w3m-wget)))
 
 ;;; Emacs customize have it's own file
 ;;
@@ -169,7 +148,6 @@
 (tv-require 'bookmark-firefox-handler)
 (tv-require 'firefox-protocol)
 (tv-require 'addressbook-bookmark)
-(tv-require 'config-w3m)
 (tv-require 'org-config-thierry)
 (tv-require 'muse-autoloads)
 (tv-require 'muse-mode)
@@ -234,8 +212,6 @@
 (global-set-key (kbd "M-e")                        'eek-eval-sexp-eol)
 (global-set-key (kbd "C-M-j")                      #'(lambda () (interactive) (kill-sexp -1)))
 (global-set-key (kbd "<f7> m")                     'tv-gnus)
-(global-set-key (kbd "<f7> h")                     'w3m)
-(global-set-key (kbd "<f7> t")                     'w3m-dtree)
 (global-set-key (kbd "<f7> j")                     'webjump)
 (global-set-key (kbd "<f7> s g")                   'search-word)
 (global-set-key (kbd "<f7> s u")                   'tv-search-gmane)
@@ -417,9 +393,6 @@
 (setq recentf-save-file "~/.emacs.d/recentf")
 ;; `recentf-mode' will be started by helm when needed,
 ;; so no need to start it here
-
-;; undo-limit
-(setq undo-limit 100000)
 
 
 ;;; Frame and window config.
@@ -627,7 +600,7 @@ If you want the mouse banished to a different corner set
 (setq bookmark-automatically-show-annotations nil)
 (add-to-list 'org-agenda-files bmkext-org-annotation-directory)
 (setq bmkext-external-browse-url-function 'browse-url-firefox) ; 'browse-url-uzbl
-(setq bmkext-jump-w3m-defaut-method 'w3m) ; Set to 'external to use external browser, w3m for w3m.
+(setq bmkext-jump-w3m-defaut-method 'external) ; Set to 'external to use external browser, w3m for w3m.
 
 (defun tv-pp-bookmark-alist ()
   "Quickly print `bookmark-alist'."
@@ -636,36 +609,6 @@ If you want the mouse banished to a different corner set
   (erase-buffer)
   (dolist (i bookmark-alist)
     (pp i (current-buffer))))
-
-;;; Emacs-w3m
-;;
-;;
-(setq w3m-icon-directory "~/elisp/emacs-w3m/icons")
-
-(defun dired-w3m-find-file ()
-  (interactive)
-  (w3m-find-file (dired-get-filename)))
-
-(when (tv-require 'dired)
-  (progn
-    (tv-require 'w3m-load)
-    (tv-require 'mime-w3m)
-    (define-key dired-mode-map (kbd "C-c F") 'dired-w3m-find-file)))
-
-;;; Default web browser
-;;
-;;
-;(setq browse-url-browser-function 'w3m-browse-url)
-;(setq browse-url-browser-function 'browse-url-uzbl)
-(setq browse-url-browser-function 'browse-url-firefox)
-;(setq browse-url-browser-function 'browse-url-mozilla)
-
-;; w3m-mode-map
-(define-key w3m-mode-map (kbd "C-c v") 'helm-w3m-bookmarks)
-(define-key w3m-mode-map (kbd "C-c M") 'w3m-view-this-page-in-uzbl)
-(substitute-key-definition 'w3m-view-url-with-external-browser
-                           'tv-w3m-view-this-page-in-firefox
-                           w3m-mode-map)
 
 ;; muse-config
 (add-hook 'find-file-hooks 'muse-mode-maybe)
@@ -969,8 +912,6 @@ from IPython.core.completerlib import module_completion"
 
 ;;; Shell config
 ;;
-;; Set `undo-outer-limit' to high value to avoid messages on long output.
-(setq undo-outer-limit 20000000)
 
 ;; Prompt shell read only
 (setq comint-prompt-read-only t)
@@ -1256,7 +1197,6 @@ With prefix arg always start and let me choose dictionary."
 (setq newsticker-frontend 'newsticker-plainview)
 (setq newsticker-retrieval-method 'extern)
 (setq newsticker-show-descriptions-of-new-items nil)
-(setq newsticker-html-renderer 'w3m-region)
 
 (defun newsticker-quit-and-stop ()
   (interactive)
@@ -1505,6 +1445,10 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 
 ;;; Undo-tree
 ;;
+;; Set `undo-outer-limit' to high value to avoid messages on long output.
+;(setq undo-outer-limit 20000000)
+;; undo-limit
+;(setq undo-limit 100000)
 (tv-require 'undo-tree)
 (global-undo-tree-mode)
 

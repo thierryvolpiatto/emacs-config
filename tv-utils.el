@@ -717,7 +717,6 @@ DIR is a regular directory name.
 (define-key lisp-mode-map (kbd "C-M-&") 'align-loop-region-for)
 (define-key emacs-lisp-mode-map (kbd "C-M-&") 'align-loop-region-for)
 
-;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Persistent-objects
 ;;
 ;; Main function to save objects.
