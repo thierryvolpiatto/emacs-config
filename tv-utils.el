@@ -68,14 +68,14 @@
             (message "No existing remote filesystem to unmount!")))))
 
 ;;;###autoload
-(defun thievol-connect ()
+(defun sshfs-thievol-connect ()
   "sshfs mount of thievol."
   (interactive)
   (mount-sshfs "thievol:" "~/sshfs-thievol")
   (helm-find-files-1 "~/sshfs-thievol"))
 
 ;;;###autoload
-(defun thievol-disconnect ()
+(defun sshfs-thievol-disconnect ()
   "sshfs umount of thievol."
   (interactive)
   (umount-sshfs "~/sshfs-thievol"))
@@ -130,36 +130,6 @@ Run first crontab -e in shell and when emacsclient popup run M-x crontab."
                     (buffer-string))))
     (insert
      (concat min " " hr " " month-day " " month " " week-day " " abs-prog))))
-
-;; Madagascar 
-
-;;;###autoload
-(defun* tv-convert-euro-to-mga (eur-amount &key (eur-mga-value 3.77))
-  (interactive "nEuroAmount: ")
-  (if current-prefix-arg
-      (setq eur-mga-value (read-number "NewValueFor10000MGA: ")))
-  (let* ((1euro-value (/ 10000 eur-mga-value))
-         (result (/ (round (* 100 (* eur-amount 1euro-value)))
-                    100.00)))
-    (message "%s Euros = %s Ariary (Based on 10000 MGA = %s Euros)"
-             eur-amount
-             (int-to-string result)
-             eur-mga-value)))
-
-;;;###autoload
-(defun* tv-convert-mga-to-euro (mga-amount &key (eur-mga-value 3.77))
-  (interactive "nMgaAmount: ")
-  (if current-prefix-arg
-      (setq eur-mga-value (read-number "NewValueFor10000MGA: ")))
-  (let* ((1mga-value (/ eur-mga-value 10000))
-         (result (/ (round (* 100
-                              (* mga-amount 1mga-value)))
-                    100.00)))
-    (message "%s Ariary = %s Euro (Based on 10000 MGA = %s Euros)"
-             mga-amount
-             (int-to-string result)
-             eur-mga-value)))
-
 
 ;; tv-yank-from-screen 
 
@@ -437,20 +407,6 @@ START and END are buffer positions indicating what to append."
            ,seq)
      (progress-reporter-done progress-reporter)))
 
-;; mapcar-with-progress-reporter 
-(defmacro mapcar-with-progress-reporter (message func seq)
-  `(let* ((max               (length ,seq))
-          (progress-reporter (make-progress-reporter (message ,message) 0 max))
-          (count             0)
-          new-seq)
-     (setq new-seq (mapcar #'(lambda (x)
-                               (progress-reporter-update progress-reporter count)
-                               (incf count)
-                               (funcall ,func x))
-                           ,seq))
-     (progress-reporter-done progress-reporter)
-     new-seq))
-
 ;; Send current buffer htmlized to web browser. 
 (defun tv-htmlize-buffer-to-browser ()
   (interactive)
@@ -495,104 +451,8 @@ START and END are buffer positions indicating what to append."
     (message "Wait compiling %s..." dir)
     (shell-command "make")))
 
-
-;; get-pid-from-process-name 
-(defun tv-get-pid-from-process-name (process-name)
-  (let ((process-list (list-system-processes)))
-    (catch 'break
-      (dolist (i process-list)
-        (let ((process-attr (process-attributes i)))
-          (when process-attr
-            (when (string-match process-name
-                                (cdr (assq 'comm
-                                           process-attr)))
-              (throw 'break
-                i))))))))
-
-;; copy-files-async-with-slime 
-
-(setq slime-enable-evaluate-in-emacs t)
-(defvar tv-slime-copy-files-list nil)
-(defvar tv-slime-copy-dest-dir nil)
-(defun tv-slime-dired-copy-files-or-dir-async (&optional file-list dir)
-  "Copy a list of marked files-or-dirs async to a given directory using slime.
-give FILE-LIST as a list of files.
-DIR is a regular directory name.
-`slime-enable-evaluate-in-emacs' have to be non--nil."
-  (interactive)
-  (slime-check-connected)
-  (cond (file-list ; Non interactive call
-         (setq tv-slime-copy-files-list file-list))
-        ((eq major-mode 'dired-mode)
-         (setq tv-slime-copy-files-list (mapcar #'(lambda (x)
-                                                    (if (file-directory-p x)
-                                                        (file-name-as-directory x)
-                                                        x))
-                                                (dired-get-marked-files)))))
-  (if dir ; Non interactive call
-      (setq tv-slime-copy-dest-dir dir)
-      (setq tv-slime-copy-dest-dir
-            (expand-file-name
-             (read-directory-name (format "Copy %s files to directory: " (length tv-slime-copy-files-list))
-                                  nil nil nil
-                                  (when dired-dwim-target
-                                    (dired-dwim-target-directory))))))
-  (slime-eval-async '(cl:loop
-                      with l = (swank::eval-in-emacs 'tv-slime-copy-files-list)
-                      with d = (swank::eval-in-emacs 'tv-slime-copy-dest-dir) 
-                      for i in l
-                      do
-                      (tv-fad-extensions:copy-file-or-dir i d)) 
-    (lambda (result)
-                                        ;(message "%S" result)
-      (message "%s files copied to %s"
-               (length tv-slime-copy-files-list)
-               tv-slime-copy-dest-dir))))
-
-;; Delete-files-async-with-slime 
-
-(defvar tv-slime-delete-files-list nil)
-(defun tv-slime-dired-delete-files-async (&optional file-list)
-  (interactive)
-  (slime-check-connected)
-  (cond (file-list
-         (setq tv-slime-delete-files-list file-list))
-        ((eq major-mode 'dired-mode)
-         (setq tv-slime-delete-files-list (dired-get-marked-files)))
-        (t
-         (setq tv-slime-delete-files-list (read-file-name "File: "))))
-  (if (y-or-n-p (format "Really delete %s files?" (length tv-slime-delete-files-list))) 
-      (slime-eval-async '(cl:loop
-                          with l = (swank::eval-in-emacs 'tv-slime-delete-files-list)
-                          for i in l
-                          do
-                          (cl:delete-file i))
-        (lambda (result)
-          (message "%s files deleted" (length tv-slime-delete-files-list))))))
-
-;; Mime-types 
-(defun tv-dired-mime-type ()
-  (interactive)
-  (let ((fname (dired-filename-at-point)))
-    (message "%s" (file-mime-type fname))))
-
-;; Underline 
-(defun tv-underline (beg end &optional underline-str)
-  (interactive "r")
-  (let ((str        (buffer-substring beg end))
-        (ustr       (cond (underline-str)
-                          (current-prefix-arg
-                           (read-string "String: "))
-                          (t
-                           "=")))
-        (len-str    (- end beg))
-        (len-bol-pt (- beg (point-at-bol))))
-    (forward-line 1)
-    (insert (make-string len-bol-pt ? ))
-    (insert (concat (*string ustr len-str) "\n"))))
-
 ;;; Insert-pairs 
-
+;;
 (setq parens-require-spaces t)
 
 (defun tv-insert-double-quote (&optional arg)
@@ -828,18 +688,6 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
   (if (helm-region-active-p)
       (delete-region (region-beginning) (region-end))
       (delete-char arg)))
-
-;; Browse-url 
-(defun firefox-browse-url (url)
-  (interactive "sURL: ")
-  (helm-c-generic-browser url "firefox"))
-
-(defun tv-w3m-view-this-page-in-firefox ()
-  (interactive)
-  (let ((url (or (w3m-print-this-url)
-                 (w3m-print-current-url))))
-    (firefox-browse-url url)))
-
 
 ;; Easypg 
 (defun epa-sign-to-armored ()
@@ -1101,8 +949,7 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
       (forward-line 1))))
 
 ;; Interface to df command-line.
-;; See:
-;; [EVAL] (find-fline "~/.emacs.d/emacs-config-laptop/dired-extension.el" "defun\* tv-get-disk-info")
+;;
 (defun dfh (directory)
   "Interface to df -h command line.
 If a prefix arg is given choose directory, otherwise use `default-directory'."

@@ -3,8 +3,8 @@
 ;	$Id: dired-extension.el,v 1.36 2010/05/30 07:03:33 thierry Exp thierry $	
 
 ;;; Code:
-(require 'image-dired)
-(require 'dired)
+(eval-when-compile (require 'dired)
+                   (require 'image-dired))
 (require 'cl)
 
 ;;; Dired config
@@ -470,10 +470,12 @@ As a side effect, killed dired buffers for DIR are removed from
   (dired (cons buf-name (dired-get-marked-files))))
 (define-key dired-mode-map (kbd "C-c D") 'dired-on-marked)
 
-;; (defun dired-touch-initial (files)
-;;   "Create initial input value for `touch' command."
-;;   (format-time-string "%Y%m%d%H%M.%S" (current-time)))
-
 
 ;;; Provide
 (provide 'dired-extension)
+
+;; Local Variables:
+;; byte-compile-warnings: (not cl-functions obsolete)
+;; End:
+
+;;; dired-extension.el ends here

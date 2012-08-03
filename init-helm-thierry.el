@@ -75,7 +75,6 @@
 ;;
 ;;
 (define-key helm-command-map (kbd "q")   'helm-qpatchs)
-(define-key helm-command-map (kbd "v")   'helm-eev-anchors)
 (define-key helm-command-map (kbd "d")   'helm-delicious)
 (define-key helm-command-map (kbd "g")   'helm-apt)
 

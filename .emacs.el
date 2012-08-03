@@ -3,7 +3,6 @@
 ;;; Code:
 
 ;;; Environment
-;; See: (find-fline "~/.emacs.d/.eshell/login")
 ;; For eshell env settings.
 (setenv "STARDICT_DATA_DIR" "~/.stardict/dic")
 (prefer-coding-system 'utf-8)
@@ -66,7 +65,6 @@
 	     "~/elisp/ledger/"
              "~/elisp/emacs-helm"
              "~/elisp/emacs-helm-extensions"
-	     "~/elisp/eev/"
              "~/elisp/google-maps"
              "~/elisp/org-active/contrib/lisp" ; Contain htmlize.el
              "~/elisp/slime"
@@ -139,7 +137,6 @@
 ;;
 ;;
 (tv-require 'cl)
-(tv-require 'eev-thierry)
 (tv-require 'usage-memo)
 (tv-require 'auth-source)
 (tv-require 'epa-file)
@@ -162,8 +159,6 @@
 (tv-require 'magit-stgit)
 (tv-require 'dvc-init)
 (tv-require 'emms-mpd-config)
-(tv-require 'dired-aux)
-(tv-require 'dired-x)
 (tv-require 'dired-extension)
 (tv-require 'htmlize)
 (tv-require 'regex-tool)
@@ -209,7 +204,6 @@
 (global-set-key (kbd "C-c R")                      'revert-buffer)
 (global-set-key (kbd "C-c v")                      'yank-from-X)
 (global-set-key (kbd "C-c W")                      'whitespace-mode)
-(global-set-key (kbd "M-e")                        'eek-eval-sexp-eol)
 (global-set-key (kbd "C-M-j")                      #'(lambda () (interactive) (kill-sexp -1)))
 (global-set-key (kbd "<f7> m")                     'tv-gnus)
 (global-set-key (kbd "<f7> j")                     'webjump)
@@ -328,7 +322,7 @@
 ;;; Gnus-config
 ;;
 ;;
-(tv-require 'gnus-async)
+;(tv-require 'gnus-async)
 (setq gnus-asynchronous t)
 
 (setq mail-user-agent 'gnus-user-agent)
@@ -360,8 +354,8 @@
 				 (define-key message-mode-map (kbd "<f11> k") 'helm-org-keywords)))
 
 (autoload 'gnus-dired-attach "gnus-dired.el")
-(when (tv-require 'dired)
-  (define-key dired-mode-map (kbd "C-c C-a") 'gnus-dired-attach))
+(declare-function 'gnus-dired-attach "gnus-dired.el" (files-to-attach))
+(define-key dired-mode-map (kbd "C-c C-a") 'gnus-dired-attach)
 
 (setq gnus-read-active-file 'some)
 (setq gnus-check-new-newsgroups 'ask-server)
@@ -383,9 +377,9 @@
 ;;; Save-minibuffer-history
 ;;
 ;;
-(setq savehist-file "~/.emacs.d/history")
-(setq history-length 1000)
-(savehist-mode 1)
+;; (setq savehist-file "~/.emacs.d/history")
+;; (setq history-length 1000)
+;; (savehist-mode 1)
 
 ;;; Recentf
 ;;
@@ -401,8 +395,6 @@
 ;; My current-font: [EVAL]: (assoc-default 'font (frame-parameters))
 ;; Choose a font:   [EVAL]: (helm 'helm-c-source-xfonts)
 ;; Choose a color:  [EVAL]: (helm 'helm-c-source-colors)
-
-;; [See Initial config: EVAL]: (find-fline "~/.Xressources")
 
 (setq-default frame-background-mode 'dark)
 (setq initial-frame-alist '((fullscreen . maximized)))
@@ -1229,7 +1221,7 @@ With prefix arg always start and let me choose dictionary."
 ;;; Tramp-config
 ;;
 ;;
-(tv-require 'tramp)
+;(tv-require 'tramp)
 ;(setq tramp-default-method "ssh") ; methode par defaut
 ;(setq tramp-verbose 6)
 ;(setq helm-tramp-verbose 6)
@@ -1369,9 +1361,6 @@ With prefix arg always start and let me choose dictionary."
 (modify-coding-system-alist 'file "\\.sqlite\\'" 'raw-text-unix)
 (add-to-list 'auto-mode-alist '("\\.sqlite\\'" . sqlite-dump))
 
-;; key-for-copy-files-async
-(define-key dired-mode-map (kbd "C-c C-S-c") 'tv-slime-dired-copy-files-or-dir-async)
-(define-key dired-mode-map (kbd "C-c C-S-d") 'tv-slime-dired-delete-files-async)
 
 ;;; Isearch
 ;;
@@ -1697,9 +1686,9 @@ is nil and `use-dialog-box' is non-nil."
 ;;; Battery
 ;;
 ;;
-(ignore-errors
-  (setq battery-mode-line-format "[Bat:%b%p%%,%L]")
-  (display-battery-mode 1))
+;; (ignore-errors
+;;   (setq battery-mode-line-format "[Bat:%b%p%%,%L]")
+;;   (display-battery-mode 1))
 
 ;;; Display time in mode-line
 ;;
@@ -1801,7 +1790,7 @@ is nil and `use-dialog-box' is non-nil."
 (tv-set-emacs-session-backup :enable t)
 
 ;;; Linkscratch-to-file
-;;(find-fline "~/.emacs.d/emacs-config-laptop/tv-utils.el" "go-to-scratch")
+;;
 ;; Need to be loaded at very end of config, use append.
 (add-hook 'emacs-startup-hook 'go-to-scratch 'append)
 
