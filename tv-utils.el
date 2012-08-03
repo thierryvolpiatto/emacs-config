@@ -753,9 +753,9 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
 (defun dump-object-to-file-save-alist ()
   (when object-to-save-alist
     (loop for (o . f) in object-to-save-alist
-       for abs = (expand-file-name f elisp-objects-default-directory)
-       do (progn
-            (dump-object-to-file o abs)))))
+          for abs = (expand-file-name f elisp-objects-default-directory)
+          ;; Don't dump object when it is nil
+          when (eval o) do (dump-object-to-file o abs))))
 
 (defun* restore-objects-from-directory
     (&optional (dir elisp-objects-default-directory))
