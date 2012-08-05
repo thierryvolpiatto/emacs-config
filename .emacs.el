@@ -377,9 +377,8 @@
 ;;; Save-minibuffer-history
 ;;
 ;;
-;; (setq savehist-file "~/.emacs.d/history")
-;; (setq history-length 1000)
-;; (savehist-mode 1)
+(setq savehist-file "~/.emacs.d/history")
+(savehist-mode 1) ; default for history-length is 30
 
 ;;; Recentf
 ;;
@@ -1779,6 +1778,151 @@ is nil and `use-dialog-box' is non-nil."
 ;;       print-circle t
 ;;       eval-expression-print-level 12)
 
+;;; Edebug specs from cl-macs (they are commented in cl-macs.el)
+;;
+;;  [REMOVE WHEN THEY WILL BE IN EMACS]
+(def-edebug-spec cl-loop
+  ([&optional ["named" symbolp]]
+   [&rest
+    &or
+    ["repeat" form]
+    loop-for-as
+    loop-with
+    loop-initial-final]
+   [&rest loop-clause]
+   ))
+
+(def-edebug-spec loop-with
+  ("with" loop-var
+   loop-type-spec
+   [&optional ["=" form]]
+   &rest ["and" loop-var
+	  loop-type-spec
+	  [&optional ["=" form]]]))
+
+(def-edebug-spec loop-for-as
+  ([&or "for" "as"] loop-for-as-subclause
+   &rest ["and" loop-for-as-subclause]))
+
+(def-edebug-spec loop-for-as-subclause
+  (loop-var
+   loop-type-spec
+   &or
+   [[&or "in" "on" "in-ref" "across-ref"]
+    form &optional ["by" function-form]]
+
+   ["=" form &optional ["then" form]]
+   ["across" form]
+   ["being"
+    [&or "the" "each"]
+    &or
+    [[&or "element" "elements"]
+     [&or "of" "in" "of-ref"] form
+     &optional "using" ["index" symbolp]];; is this right?
+    [[&or "hash-key" "hash-keys"
+	  "hash-value" "hash-values"]
+     [&or "of" "in"]
+     hash-table-p &optional ["using" ([&or "hash-value" "hash-values"
+					   "hash-key" "hash-keys"] sexp)]]
+
+    [[&or "symbol" "present-symbol" "external-symbol"
+	  "symbols" "present-symbols" "external-symbols"]
+     [&or "in" "of"] package-p]
+
+    ;; Extensions for Emacs Lisp, including Lucid Emacs.
+    [[&or "frame" "frames"
+	  "screen" "screens"
+	  "buffer" "buffers"]]
+
+    [[&or "window" "windows"]
+     [&or "of" "in"] form]
+
+    [[&or "overlay" "overlays"
+	  "extent" "extents"]
+     [&or "of" "in"] form
+     &optional [[&or "from" "to"] form]]
+
+    [[&or "interval" "intervals"]
+     [&or "in" "of"] form
+     &optional [[&or "from" "to"] form]
+     ["property" form]]
+
+    [[&or "key-code" "key-codes"
+	  "key-seq" "key-seqs"
+	  "key-binding" "key-bindings"]
+     [&or "in" "of"] form
+     &optional ["using" ([&or "key-code" "key-codes"
+			      "key-seq" "key-seqs"
+			      "key-binding" "key-bindings"]
+			 sexp)]]
+    ;; For arbitrary extensions, recognize anything else.
+    [symbolp &rest &or symbolp form]
+    ]
+
+   ;; arithmetic - must be last since all parts are optional.
+   [[&optional [[&or "from" "downfrom" "upfrom"] form]]
+    [&optional [[&or "to" "downto" "upto" "below" "above"] form]]
+    [&optional ["by" form]]
+    ]))
+
+(def-edebug-spec loop-initial-final
+  (&or ["initially"
+	;; [&optional &or "do" "doing"]  ;; CLtL2 doesn't allow this.
+	&rest loop-non-atomic-expr]
+       ["finally" &or
+	[[&optional &or "do" "doing"] &rest loop-non-atomic-expr]
+	["return" form]]))
+
+(def-edebug-spec loop-and-clause
+  (loop-clause &rest ["and" loop-clause]))
+
+(def-edebug-spec loop-clause
+  (&or
+   [[&or "while" "until" "always" "never" "thereis"] form]
+
+   [[&or "collect" "collecting"
+	 "append" "appending"
+	 "nconc" "nconcing"
+	 "concat" "vconcat"] form
+	 [&optional ["into" loop-var]]]
+
+   [[&or "count" "counting"
+	 "sum" "summing"
+	 "maximize" "maximizing"
+	 "minimize" "minimizing"] form
+	 [&optional ["into" loop-var]]
+	 loop-type-spec]
+
+   [[&or "if" "when" "unless"]
+    form loop-and-clause
+    [&optional ["else" loop-and-clause]]
+    [&optional "end"]]
+
+   [[&or "do" "doing"] &rest loop-non-atomic-expr]
+
+   ["return" form]
+   loop-initial-final
+   ))
+
+(def-edebug-spec loop-non-atomic-expr
+  ([&not atom] form))
+
+(def-edebug-spec loop-var
+  ;; The symbolp must be last alternative to recognize e.g. (a b . c)
+  ;; loop-var =>
+  ;; (loop-var . [&or nil loop-var])
+  ;; (symbolp . [&or nil loop-var])
+  ;; (symbolp . loop-var)
+  ;; (symbolp . (symbolp . [&or nil loop-var]))
+  ;; (symbolp . (symbolp . loop-var))
+  ;; (symbolp . (symbolp . symbolp)) == (symbolp symbolp . symbolp)
+  (&or (loop-var . [&or nil loop-var]) [gate symbolp]))
+
+(def-edebug-spec loop-type-spec
+  (&optional ["of-type" loop-d-type-spec]))
+
+(def-edebug-spec loop-d-type-spec
+  (&or (loop-d-type-spec . [&or nil loop-d-type-spec]) cl-type-spec))
 
 ;;; Report bug
 ;;

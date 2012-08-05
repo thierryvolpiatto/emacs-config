@@ -69,6 +69,21 @@
          (helm-bzr-ls-files))
         (t (helm-find-files nil))))
 
+(defmacro with-helm-default-directory (directory &rest body)
+  (declare (indent 2) (debug t))
+  `(let ((default-directory (file-name-as-directory ,directory)))
+     ,@body))
+
+(defun helm-ff-browse-project (candidate)
+  (with-helm-default-directory helm-ff-default-directory
+      (helm-browse-project)))
+
+(defun helm-ff-run-browse-project ()
+  (interactive)
+  (when helm-alive-p
+    (helm-c-quit-and-execute-action 'helm-ff-browse-project)))
+(define-key helm-find-files-map (kbd "C-x C-d") 'helm-ff-run-browse-project)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Helm-command-map

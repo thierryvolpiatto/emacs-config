@@ -1051,7 +1051,7 @@ If a prefix arg is given choose directory, otherwise use `default-directory'."
 ;; them at point. Useful to reorder defvar, defcustoms etc...
 
 (defun tv-group-sexp-matching-regexp-at-point (arg regexp)
-  "Put all sexps matching REGEXP and put them at point.
+  "Take all sexps matching REGEXP and put them at point.
 The sexps are searched after point, unless ARG.
 In this case, sexps are searched before point."
   (interactive "P\nsRegexp: ")
@@ -1123,10 +1123,10 @@ In this case, sexps are searched before point."
 LIMIT should be a number divisible by 2, otherwise
 the password will be of length (floor LIMIT)."
   (loop with alph = ["a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k"
-                         "l" "m" "n" "o" "p" "q" "r" "s" "t" "u" "v"
-                         "w" "x" "y" "z" "A" "B" "C" "D" "E" "F" "G"
-                         "H" "I" "J" "K" "L" "M" "N" "O" "P" "Q" "R"
-                         "S" "T" "U" "V" "W" "X" "Y" "Z" "#" "!" "$"]
+                     "l" "m" "n" "o" "p" "q" "r" "s" "t" "u" "v"
+                     "w" "x" "y" "z" "A" "B" "C" "D" "E" "F" "G"
+                     "H" "I" "J" "K" "L" "M" "N" "O" "P" "Q" "R"
+                     "S" "T" "U" "V" "W" "X" "Y" "Z" "#" "!" "$"]
         ;; Divide by 2 because collecting 2 list.
         for i from 1 to (floor (/ limit 2))
         for rand1 = (int-to-string (random* 9))
