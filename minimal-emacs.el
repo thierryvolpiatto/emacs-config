@@ -7,7 +7,9 @@
 (setq inhibit-startup-message t)
 
 (add-to-list 'load-path "~/elisp/")
-(add-to-list 'load-path "~/elisp/helm")
+(add-to-list 'load-path "~/elisp/emacs-helm")
+(add-to-list 'load-path "~/elisp/emacs-async")
+(add-to-list 'load-path "~/elisp/emacs-helm-extensions")
 (add-to-list 'load-path "~/.emacs.d/emacs-config-laptop")
 ;(add-to-list 'load-path "~/elisp/DA-libs")
 
@@ -48,11 +50,14 @@
 (setq minibuffer-frame-alist
       '((top . -56) (left . 1)
         (width . 157) (height . 2)
+        (menu-bar-lines . 0)
+        (tool-bar-lines . 0)
+        (minibuffer . only)
         (background-color . "White")
         (foreground-color . "Black")
         ))
 
-(setq minibuffer-auto-raise t)
+(setq minibuffer-auto-raise nil)
 (setq eldoc-in-minibuffer-own-frame-p t)
 
 (add-hook 'window-setup-hook #'(lambda ()
@@ -106,17 +111,12 @@
 
 ;;; Helm minimal config
 (require 'helm-config)
-;(autoload 'helm-find-files "helm-config" nil t)
-;(autoload 'helm-M-x "helm-config" nil t)
-;(require 'helm-match-plugin)
-;(require 'helm-complete)
-(require 'autodoc)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
 
-;; (require 'descbinds-helm)
-;; (descbinds-helm-install)            ; C-h b, C-x C-h
+(require 'helm-descbinds)
+(helm-descbinds-install)            ; C-h b, C-x C-h
 (fset 'yes-or-no-p 'y-or-n-p)
 (require 'tv-utils)
 
