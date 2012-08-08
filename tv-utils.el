@@ -1131,9 +1131,9 @@ the password will be of length (floor LIMIT)."
         for i from 1 to (floor (/ limit 2))
         for rand1 = (int-to-string (random* 9))
         for alphaindex = (random* (length alph))
+        for rand2 = (aref alph alphaindex)
         ;; Collect a random number between O-9
         collect rand1 into ls
-        for rand2 = (aref alph alphaindex)
         ;; collect a random alpha between a-zA-Z.
         collect rand2 into ls
         finally return
@@ -1154,13 +1154,13 @@ the password will be of length (floor LIMIT)."
     (loop with wlist = (iter-circular (window-list))
           with len = (length (window-list))
           for count from 1
-          while (< count len)
           for w1 = (iter-next wlist)
           for b1 = (window-buffer w1)
           for s1 = (window-start w1)
           for w2 = (iter-next wlist)
           for b2 = (window-buffer w2)
           for s2 = (window-start w2)
+          while (< count len)
           do (progn (set-window-buffer w1 b2)
                     (set-window-start w1 s2)
                     (set-window-buffer w2 b1)

@@ -51,12 +51,16 @@
         (foreground-color . "Black")
         ))
 
-(setq minibuffer-auto-raise nil)
+(setq minibuffer-prompt-properties '(read-only t face '((:foreground "ForestGreen"))))
+(setq minibuffer-auto-raise nil) ; This is evil.
 (setq eldoc-in-minibuffer-own-frame-p t)
 
 (add-hook 'window-setup-hook #'(lambda ()
-                               (other-window 1 t)
-                               (select-frame-set-input-focus (last-nonminibuffer-frame))))
+                                 (other-window 1 t)
+                                 (select-frame-set-input-focus (last-nonminibuffer-frame))))
+
+(add-hook 'minibuffer-exit-hook #'(lambda ()
+                                    (select-frame-set-input-focus (last-nonminibuffer-frame))))
 
 (setq special-display-buffer-names `((,(help-buffer)
                                      (minibuffer . nil)

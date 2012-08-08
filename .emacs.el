@@ -1778,6 +1778,7 @@ is nil and `use-dialog-box' is non-nil."
 ;;       print-circle t
 ;;       eval-expression-print-level 12)
 
+
 ;;; Edebug specs from cl-macs (they are commented in cl-macs.el)
 ;;
 ;;  [REMOVE WHEN THEY WILL BE IN EMACS]
@@ -1924,6 +1925,7 @@ is nil and `use-dialog-box' is non-nil."
 (def-edebug-spec loop-d-type-spec
   (&or (loop-d-type-spec . [&or nil loop-d-type-spec]) cl-type-spec))
 
+
 ;;; Report bug
 ;;
 (setq report-emacs-bug-no-explanations t)
