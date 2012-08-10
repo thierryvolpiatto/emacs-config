@@ -583,19 +583,17 @@ START and END are buffer positions indicating what to append."
 (defun dump-object-to-file (obj file)
   "Save symbol object OBJ to the byte compiled version of FILE.
 OBJ can be any lisp object, list, hash-table, etc...
-FILE is an elisp file with ext *.el.(Don't give a .elc as arg!!!)
+Windows configurations and markers are not supported.
+FILE must be an elisp file with ext \"*.el\" (NOT \"*.elc\").
 Loading the *.elc file will restitute object.
-That may not work with Emacs versions <=23.1 (use vcs versions)."
+That may not work with Emacs versions <=23.1 for hash tables."
   (require 'cl) ; Be sure we use the CL version of `eval-when-compile'.
-  (if (file-exists-p file)
-      (error "dump-object-to-file: File `%s' already exists, please remove it." file)
-      (with-temp-file file
-        (erase-buffer)
-        (let* ((str-obj (symbol-name obj))
-               (fmt-obj (format "(setq %s (eval-when-compile %s))" str-obj str-obj)))
-          (insert fmt-obj)))
+  (assert (not (file-exists-p file)) nil
+          (format "dump-object-to-file: File `%s' already exists, please remove it." file))
+  (with-temp-file file
+    (prin1 `(setq ,obj (eval-when-compile ,obj)) (current-buffer)))
       (byte-compile-file file) (delete-file file)
-      (message "`%s' dumped to %sc" obj file)))
+      (message "`%s' dumped to %sc" obj file))
 
 (defvar elisp-objects-default-directory "~/.emacs.d/elisp-objects/")
 (defvar object-to-save-alist '((ioccur-history . "ioccur-history.el")
@@ -640,6 +638,7 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
 ;;; Persistents-buffer 
 ;;
 ;;
+(defvar tv-save-buffers-unwanted-buffers-regexp ".*[.]org\\|diary$")
 (defun tv-save-some-buffers ()
   (loop with dired-blist = (loop for (f . b) in dired-buffers
                                  when (buffer-name b)
@@ -650,6 +649,8 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
         for place = (with-current-buffer b (point))
         when (and buf-fname
                   (not (string-match tramp-file-name-regexp buf-fname))
+                  (not (string-match  tv-save-buffers-unwanted-buffers-regexp
+                                      buf-fname))
                   (file-exists-p buf-fname))
         collect (cons buf-fname place)))
 
