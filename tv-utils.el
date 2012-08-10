@@ -1162,28 +1162,28 @@ the password will be of length (floor LIMIT)."
 ;;; Rotate windows
 ;;
 ;;
+
 (defun rotate-windows ()
   (interactive)
   (require 'iterator)
   (assert (> (length (window-list)) 1)
           nil "Error: Can't rotate with a single window")
   (unless helm-alive-p
-    (loop with wlist = (iter-circular (window-list))
+    (loop with wlist1 = (iter-circular (window-list))
+          with wlist2 = (iter-circular (cdr (window-list))) 
           with len = (length (window-list))
           for count from 1
-          for w1 = (iter-next wlist)
+          for w1 = (iter-next wlist1)
           for b1 = (window-buffer w1)
           for s1 = (window-start w1)
-          for w2 = (iter-next wlist)
+          for w2 = (iter-next wlist2)
           for b2 = (window-buffer w2)
           for s2 = (window-start w2)
           while (< count len)
           do (progn (set-window-buffer w1 b2)
                     (set-window-start w1 s2)
                     (set-window-buffer w2 b1)
-                    (set-window-start w2 s1)
-                    (and (> len 3)
-                         (iter-next wlist))))))
+                    (set-window-start w2 s1)))))
 (global-set-key (kbd "C-c -") 'rotate-windows)
 
 ;; Provide 
