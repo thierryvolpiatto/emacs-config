@@ -1785,7 +1785,7 @@ is nil and `use-dialog-box' is non-nil."
 ;;; Save/restore emacs-session
 ;;
 ;;
-(tv-set-emacs-session-backup :enable t)
+(tv-set-emacs-session-backup :enable (not (daemonp)))
 
 ;;; Linkscratch-to-file
 ;;

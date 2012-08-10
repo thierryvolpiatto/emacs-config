@@ -638,7 +638,7 @@ That may not work with Emacs versions <=23.1 for hash tables."
 ;;; Persistents-buffer 
 ;;
 ;;
-(defvar tv-save-buffers-unwanted-buffers-regexp ".*[.]org\\|diary$")
+(defvar tv-save-buffers-unwanted-buffers-regexp ".*[.]org\\|diary\\|[.]newsticker-cache$")
 (defun tv-save-some-buffers ()
   (loop with dired-blist = (loop for (f . b) in dired-buffers
                                  when (buffer-name b)
