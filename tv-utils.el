@@ -607,23 +607,39 @@ That may not work with Emacs versions <=23.1 (use vcs versions)."
                                (helm-c-grep-history . "helm-c-grep-history.el")
                                (kill-ring . "kill-ring.el")
                                (kill-ring-yank-pointer . "kill-ring-yank-pointer.el")
+                               (register-alist . "register-alist.el")
                                ))
 
 (defun dump-object-to-file-save-alist ()
   (when object-to-save-alist
     (loop for (o . f) in object-to-save-alist
           for abs = (expand-file-name f elisp-objects-default-directory)
+          ;; Registers are treated specially.
+          if (and (eq o 'register-alist)
+                  (eval o))
+          do (tv-dump-object-save-register-alist f)
+          else do
           ;; Don't dump object when it is nil
-          when (eval o) do (dump-object-to-file o abs))))
+          (and (eval o) (dump-object-to-file o abs)))))
 
 (defun* restore-objects-from-directory
     (&optional (dir elisp-objects-default-directory))
   (let ((file-list (cddr (directory-files dir t))))
     (mapc 'load file-list)))
 
-;; Persistents-buffer 
-;; Get rid of desktop.el, too slow.
+(defun* tv-dump-object-save-register-alist (&optional (file "register-alist.el"))
+  "Save `register-alist' but only supported objects."
+  (let ((register-alist (loop for (char . val) in register-alist
+                              unless (or (markerp val)
+                                         (vectorp val)
+                                         (and (consp val) (window-configuration-p (car val))))
+                              collect (cons char val)))
+        (def-file (expand-file-name file elisp-objects-default-directory)))
+    (dump-object-to-file 'register-alist def-file)))
 
+;;; Persistents-buffer 
+;;
+;;
 (defun tv-save-some-buffers ()
   (loop with dired-blist = (loop for (f . b) in dired-buffers
                                  when (buffer-name b)
