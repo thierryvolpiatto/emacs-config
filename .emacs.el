@@ -925,17 +925,21 @@ from IPython.core.completerlib import module_completion"
          ":"
          (abbreviate-file-name (eshell/pwd))
          (if (= (user-uid) 0) " # " " $ "))))
+
 (add-hook 'eshell-mode-hook #'(lambda ()
+                                ;; Eshell smart initialize
+                                (require 'em-smart)
+                                (setq eshell-where-to-jump 'begin)
+                                (setq eshell-review-quick-commands nil)
+                                (setq eshell-smart-space-goes-to-end t)
+                                (eshell-smart-initialize)
+                                ;; helm completion with pcomplete
+                                (define-key eshell-mode-map [remap pcomplete] 'helm-esh-pcomplete)
+                                ;; helm completion on eshell history.
+                                (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)
+                                ;; Eshell prompt
                                 (set-face-attribute 'eshell-prompt nil :foreground "DeepSkyBlue")))
-
-;; helm completion with pcomplete
-(add-hook 'eshell-mode-hook
-          #'(lambda ()
-              (define-key eshell-mode-map [remap pcomplete] 'helm-esh-pcomplete)))
-
-(add-hook 'eshell-mode-hook
-          #'(lambda ()
-              (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)))
+                                
 
 ;; Eshell history size
 (setq eshell-history-size 1000) ; Same as env var HISTSIZE.
@@ -976,7 +980,7 @@ from IPython.core.completerlib import module_completion"
   (dolist (i '("kop" "ledger" "htop" "ipython"))
     (add-to-list 'eshell-visual-commands i)))
 
-;;; pcomplete Completion functions on specific commands
+;;; pcomplete Completion functions on specific commands (Find, hg etc...)
 ;;
 ;;
 (tv-require 'pcomplete-extension)
