@@ -30,8 +30,8 @@
           (message "Loading %s Failed" (symbol-name feature)))
     (error
      (signal 'error (list feature (car err) (cadr err))))))
-
-;; load-paths
+
+;;; load-paths
 ;; For Info paths see:
 ;; [EVAL] (find-fline "~/.profile" "INFOPATH")
 ;; [EVAL] (getenv "INFOPATH")
@@ -76,20 +76,11 @@
 	     ))
   (add-to-list 'load-path i))
 
+
 (when (< emacs-major-version 24)
   (dolist (lib '("~/elisp/org-active"
                  "~/elisp/org-active/lisp"))
     (add-to-list 'load-path lib)))
-
-(defun tv-maybe-load-ngnus (&optional force)
-  (when (or force (< emacs-major-version 24))
-    (add-to-list 'load-path "~/elisp/ngnus/lisp")
-    (tv-require 'gnus-load "~/elisp/ngnus/lisp/gnus-load.el")
-    (tv-require 'info)
-    (add-to-list 'Info-directory-list "~/elisp/ngnus/texi/")
-    (add-to-list 'Info-default-directory-list "~/elisp/ngnus/texi/")))
-
-(tv-maybe-load-ngnus)
 
 ;;; autoconf-mode site-lisp configuration
 (autoload 'autoconf-mode "autoconf-mode"
@@ -322,9 +313,16 @@
 ;;; Gnus-config
 ;;
 ;;
-;(tv-require 'gnus-async)
-(setq gnus-asynchronous t)
+(defun tv-maybe-load-ngnus (&optional force)
+  (when (or force (< emacs-major-version 24))
+    (add-to-list 'load-path "~/elisp/ngnus/lisp")
+    (tv-require 'gnus-load "~/elisp/ngnus/lisp/gnus-load.el")
+    (tv-require 'info)
+    (add-to-list 'Info-directory-list "~/elisp/ngnus/texi/")
+    (add-to-list 'Info-default-directory-list "~/elisp/ngnus/texi/")))
+(tv-maybe-load-ngnus)
 
+(setq gnus-asynchronous t)
 (setq mail-user-agent 'gnus-user-agent)
 (setq read-mail-command 'gnus)
 (setq send-mail-command 'gnus-msg-mail)
@@ -935,6 +933,8 @@ from IPython.core.completerlib import module_completion"
                                 (eshell-smart-initialize)
                                 ;; helm completion with pcomplete
                                 (define-key eshell-mode-map [remap pcomplete] 'helm-esh-pcomplete)
+                                ;; helm lisp completion
+                                (define-key eshell-mode-map [remap lisp-complete-symbol] 'helm-lisp-completion-at-point)
                                 ;; helm completion on eshell history.
                                 (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)
                                 ;; Eshell prompt
@@ -1768,6 +1768,19 @@ is nil and `use-dialog-box' is non-nil."
     (when (or (search-forward "You aren't using OpenDNS yet" nil t)
               (search-forward "Your Internet is safer, faster, and smarter<br />because you're using OpenDNS" nil t))
       (message "%s" (replace-regexp-in-string "<br />" " " (match-string 0))))))
+
+;; Webjump sites 
+(setq webjump-sites
+      '(("pythonlib" .  "http://docs.python.org/lib/genindex.html")
+        ("pythondoc" . "http://docs.python.org/index.html")
+        ("tkinter-tuto" . "http://infohost.nmt.edu/tcc/help/pubs/tkinter/")
+        ("pygtk-tuto" . "http://www.pygtk.org/pygtk2tutorial/index.html")
+        ("emacsmanfr" . "http://www.linux-france.org/article/appli/emacs/manuel/html/index.html")
+        ("emacswiki" . "http://www.emacswiki.org/cgi-bin/wiki/SiteMap")
+        ("wikipedia" . "http://fr.wikipedia.org/wiki/Accueil")
+        ("elispcode" . "http://www.emacswiki.org/cgi-bin/wiki/Cat%c3%a9gorieCode")
+        ("elisp-reference-manual" . "http://www.gnu.org/software/emacs/elisp/html_node/index.html")
+        ))
 
 ;;; Ido virtual buffers
 ;;

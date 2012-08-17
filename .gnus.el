@@ -41,7 +41,7 @@
 ;; Nnml mail directory 
 (setq nnml-directory "~/Mail")
 
-;;; Archivage-des-mails-envoyés
+;;; Archivage des mails envoyés
 ;;
 (setq gnus-message-archive-group '((when (message-news-p) "sent-news")))
 
@@ -67,10 +67,6 @@
          (signature-file "~/.signature"))))
 
 ;; [README] (find-fline "/usr/local/share/emacs/24.0.92/lisp/mail/smtpmail.el.gz" "Please")
-
-;; To queue mail, set `smtpmail-queue-mail' to t and use
-;; `smtpmail-send-queued-mail' to send.
-;(setq smtpmail-queue-mail t) ; Use M-x smtpmail-send-queued-mail when online.
 
 (setq user-mail-address "thierry.volpiatto@gmail.com")
 (setq user-full-name "Thierry Volpiatto")
@@ -142,7 +138,7 @@ This will run in `message-send-hook'."
         (insert new-from))))
 (define-key message-mode-map (kbd "C-c p") 'tv-send-mail-with-account)
 
-;;; Junk-mail
+;;; Junk mail
 ;;
 ;;
 (when (require 'mm-decode)
@@ -169,7 +165,7 @@ This will run in `message-send-hook'."
         mm-file-name-collapse-whitespace
         mm-file-name-replace-whitespace))
 
-;;; Show-all-these-headers
+;;; Show all these headers
 ;;
 ;;
 (setq gnus-visible-headers
@@ -195,7 +191,7 @@ This will run in `message-send-hook'."
 	"^X-User-Agent:"
 	"^User-Agent:"))
 
-;;; Order-of-headers
+;;; Order of headers
 ;;
 ;;
 (setq gnus-sorted-header-list '("^From:"
@@ -326,7 +322,7 @@ This will run in `message-send-hook'."
                                                          (interactive)
                                                          (scroll-other-window -1)))
 
-;; Default-directory-to-save-attached-files 
+;; Default directory to save attached files 
 (setq mm-default-directory "~/download/")
 
 ;; timestamp 
