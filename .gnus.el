@@ -71,10 +71,10 @@
 (setq user-mail-address "thierry.volpiatto@gmail.com")
 (setq user-full-name "Thierry Volpiatto")
 
-(require 'smtpmail-async) ; Experimental, use `smtpmail-send-it' otherwise. 
+;; [smtpmail-async] Experimental, use `smtpmail-send-it' otherwise. 
 (setq message-send-mail-function 'async-smtpmail-send-it
-      smtpmail-debug-info t
-      ;smtpmail-debug-verb t        ; Uncomment to debug
+      ;smtpmail-debug-info t        ; Uncomment to debug
+      ;smtpmail-debug-verb t        ; Uncomment to debug on server
       mail-specify-envelope-from t ; Use from field to specify sender name.
       mail-envelope-from 'header)  ; otherwise `user-mail-address' is used. 
 

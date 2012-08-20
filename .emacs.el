@@ -30,6 +30,16 @@
           (message "Loading %s Failed" (symbol-name feature)))
     (error
      (signal 'error (list feature (car err) (cadr err))))))
+
+(defun tv-maybe-load-ngnus (&optional force)
+  (when (or force (< emacs-major-version 24))
+    (add-to-list 'load-path "~/elisp/ngnus/lisp")
+    (tv-require 'gnus-load "~/elisp/ngnus/lisp/gnus-load.el")
+    (tv-require 'info)
+    (add-to-list 'Info-directory-list "~/elisp/ngnus/texi/")
+    (add-to-list 'Info-default-directory-list "~/elisp/ngnus/texi/")))
+(tv-maybe-load-ngnus)
+
 
 ;;; load-paths
 ;; For Info paths see:
@@ -313,15 +323,6 @@
 ;;; Gnus-config
 ;;
 ;;
-(defun tv-maybe-load-ngnus (&optional force)
-  (when (or force (< emacs-major-version 24))
-    (add-to-list 'load-path "~/elisp/ngnus/lisp")
-    (tv-require 'gnus-load "~/elisp/ngnus/lisp/gnus-load.el")
-    (tv-require 'info)
-    (add-to-list 'Info-directory-list "~/elisp/ngnus/texi/")
-    (add-to-list 'Info-default-directory-list "~/elisp/ngnus/texi/")))
-(tv-maybe-load-ngnus)
-
 (setq gnus-asynchronous t)
 (setq mail-user-agent 'gnus-user-agent)
 (setq read-mail-command 'gnus)

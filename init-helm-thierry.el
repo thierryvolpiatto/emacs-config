@@ -14,59 +14,12 @@
 
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
-(defun helm-ls-bzr-list-files (directory)
-  (when (file-exists-p "/tmp/helm-bzr.log")
-    (delete-file "/tmp/helm-bzr.log"))
-  (with-output-to-string
-      (with-current-buffer standard-output
-        (apply #'process-file "bzr" nil '(t "/tmp/helm-bzr.log") nil
-               (list "ls" "-R" "-v")))))
-
-(defun helm-bzr-root-dir ()
-  (let ((result (with-output-to-string
-                    (with-current-buffer standard-output
-                      (process-file "bzr" nil '(t nil) nil "root")))))
-    (unless (string= result "")
-      (replace-regexp-in-string "\n" "" result))))
-
-
-(defvar helm-bzr-ls-root-directory nil)
-(defvar helm-c-source-ls-bzr
-  `((name . "bzr ls")
-    (init . (lambda ()
-              (helm-init-candidates-in-buffer
-               "*hbzr ls*" (helm-ls-bzr-list-files default-directory))))
-    (candidates-in-buffer)
-    (filtered-candidate-transformer
-     . (lambda (candidates source)
-         (loop with root = (let ((default-directory
-                                  (or helm-bzr-ls-root-directory
-                                      (with-helm-current-buffer
-                                        default-directory))))
-                             (helm-bzr-root-dir))
-               for f in candidates
-               for disp = (propertize f 'face 'helm-ff-file)
-               for real = (expand-file-name (cadr (split-string f " " t))
-                                            root)
-               collect (cons disp real))))
-    (action . ,(helm-attr 'action helm-c-source-ls-git))))
-
-(defun helm-bzr-ls-files ()
-  (interactive)
-  (setq helm-bzr-ls-root-directory default-directory)
-  (unwind-protect
-       (helm :sources 'helm-c-source-ls-bzr
-             :buffer "*helm bzr ls*")
-    (setq helm-bzr-ls-root-directory nil)))
-  
 (defun helm-browse-project ()
   (interactive)
   (cond ((helm-ls-git-root-dir)
          (helm-ls-git-ls))
         ((helm-hg-root)
          (helm-hg-find-files-in-project))
-        ((helm-bzr-root-dir)
-         (helm-bzr-ls-files))
         (t (helm-find-files nil))))
 
 (defmacro with-helm-default-directory (directory &rest body)

@@ -57,7 +57,7 @@
 (define-key dired-mode-map (kbd "C-c R") 'dvc-dired-rename)
 
 ;; «git-config» (to ".git-config")
-(setq xgit-use-index 'never)
+(setq xgit-use-index 'never) ; xgit doesn't support index and have no command to stage.
 (xgit-insinuate-gnus)
 (defalias 'xgit-dvc-export-via-email 'xgit-gnus-send-commit-notification)
 
