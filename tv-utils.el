@@ -1143,7 +1143,8 @@ the password will be of length (floor LIMIT)."
                      "l" "m" "n" "o" "p" "q" "r" "s" "t" "u" "v"
                      "w" "x" "y" "z" "A" "B" "C" "D" "E" "F" "G"
                      "H" "I" "J" "K" "L" "M" "N" "O" "P" "Q" "R"
-                     "S" "T" "U" "V" "W" "X" "Y" "Z" "#" "!" "$"]
+                     "S" "T" "U" "V" "W" "X" "Y" "Z" "#" "!" "$"
+                     "&" "~" ";"]
         ;; Divide by 2 because collecting 2 list.
         for i from 1 to (floor (/ limit 2))
         for rand1 = (int-to-string (random* 9))

@@ -89,6 +89,7 @@
       helm-quick-update                      t
       helm-idle-delay                        0.1
       helm-input-idle-delay                  0.1
+      helm-m-occur-idle-delay                0.1
       helm-completion-window-scroll-margin   0
       helm-c-kill-ring-max-lines-number      5
       helm-c-default-external-file-browser   "thunar"
@@ -108,9 +109,9 @@
                           (helm-grep-command)))
     (if (helm-grep-use-ack-p)
         (setq helm-c-grep-default-command
-              "grep -d skip %e -niH -e %p %f"
+              "grep -d skip %e -n%cH -e %p %f"
               helm-c-grep-default-recurse-command
-              "grep -d recurse %e -niH -e %p %f")
+              "grep -d recurse %e -n%cH -e %p %f")
         (setq helm-c-grep-default-command
               "ack-grep -Hn --smart-case --no-group --no-color %e %p %f"
               helm-c-grep-default-recurse-command
