@@ -1147,8 +1147,8 @@ the password will be of length (floor LIMIT)."
                      "&" "~" ";"]
         ;; Divide by 2 because collecting 2 list.
         for i from 1 to (floor (/ limit 2))
-        for rand1 = (int-to-string (random* 9))
-        for alphaindex = (random* (length alph))
+        for rand1 = (int-to-string (random 9))
+        for alphaindex = (random (length alph))
         for rand2 = (aref alph alphaindex)
         ;; Collect a random number between O-9
         collect rand1 into ls
@@ -1157,7 +1157,7 @@ the password will be of length (floor LIMIT)."
         finally return
         ;; Now shuffle ls.
         (loop for n in ls
-              for elm = (nth (random* (length ls)) ls)
+              for elm = (nth (random (length ls)) ls)
               concat elm)))
 
 ;;; Rotate windows

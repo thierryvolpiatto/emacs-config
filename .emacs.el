@@ -1770,7 +1770,9 @@ is nil and `use-dialog-box' is non-nil."
               (search-forward "Your Internet is safer, faster, and smarter<br />because you're using OpenDNS" nil t))
       (message "%s" (replace-regexp-in-string "<br />" " " (match-string 0))))))
 
-;; Webjump sites 
+;;; Webjump sites
+;;
+;;
 (setq webjump-sites
       '(("pythonlib" .  "http://docs.python.org/lib/genindex.html")
         ("pythondoc" . "http://docs.python.org/index.html")
@@ -1782,6 +1784,12 @@ is nil and `use-dialog-box' is non-nil."
         ("elispcode" . "http://www.emacswiki.org/cgi-bin/wiki/Cat%c3%a9gorieCode")
         ("elisp-reference-manual" . "http://www.gnu.org/software/emacs/elisp/html_node/index.html")
         ))
+
+;;; Ffap
+;;
+;;
+;; Tramp/ange behave badly in 99.9% of the time for ftp, disable.
+(setq ffap-url-unwrap-remote (remove "ftp" ffap-url-unwrap-remote))
 
 ;;; Ido virtual buffers
 ;;
