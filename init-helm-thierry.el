@@ -7,6 +7,7 @@
 ;;;; Extensions
 ;;
 (tv-require 'helm-mercurial)
+(tv-require 'helm-ls-hg)
 (tv-require 'helm-delicious)
 (tv-require 'helm-descbinds)
 (tv-require 'helm-ls-git)
