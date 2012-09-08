@@ -689,8 +689,13 @@ That may not work with Emacs versions <=23.1 for hash tables."
         (remove-hook 'emacs-startup-hook 'tv-restore-some-buffers))))
 
 ;; Kill-backward 
-(defun tv-kill-backward ()
+(defun tv-kill-whole-line ()
+  "Similar to `kill-whole-line' but don't kill new line.
+Also alow killing whole line in a shell prompt without trying
+to kill prompt.
+Can be used from any place in the line."
   (interactive)
+  (end-of-line)
   (let ((end (point)) beg)
     (forward-line 0)
     (while (get-text-property (point) 'read-only)

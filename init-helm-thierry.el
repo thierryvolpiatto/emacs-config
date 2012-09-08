@@ -99,6 +99,7 @@
       helm-ff-transformer-show-only-basename t
       helm-c-grep-default-command            "ack-grep -Hn --smart-case --no-group --no-color %e %p %f"
       helm-c-grep-default-recurse-command    "ack-grep -H --smart-case --no-group --no-color %e %p %f"
+      helm-reuse-last-window-split-state     t
       )
 
 ;;; Toggle grep program

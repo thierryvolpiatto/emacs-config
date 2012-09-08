@@ -58,9 +58,11 @@
       '((".*"
          (name "Thierry Volpiatto")
          (address "thierry.volpiatto@gmail.com")
+         (organization "Emacs Helm")
          (signature-file "~/.signature"))
         ((header "to" "thierry.volpiatto@gmail.com")
          (from "Thierry Volpiatto <thierry.volpiatto@gmail.com>")
+         (organization "Emacs Helm")
          (signature-file "~/.signature"))
         ((header "to" "tvolpiatto@yahoo.fr")
          (from "Thierry Volpiatto <tvolpiatto@yahoo.fr>")
