@@ -1542,8 +1542,8 @@ C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))
 
 ;;; Temporary Bugfixes until fixed in trunk.
 ;;
-(when (or (version< emacs-version "24.2"
-          (version= emacs-version "24.2")))
+(when (or (version< emacs-version "24.2")
+          (version= emacs-version "24.2"))
   (defun y-or-n-p (prompt)
     "Ask user a \"y or n\" question.  Return t if answer is \"y\".
 PROMPT is the string to display to ask the question.  It should
