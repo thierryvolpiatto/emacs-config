@@ -269,7 +269,9 @@
 (global-set-key (kbd "C-c t r")                    'translate-at-point)
 (global-set-key (kbd "<f5> c")                     'tv-toggle-calendar)
 (global-set-key (kbd "C-c h e")                    'tv-tail-echo-area-messages)
-(global-set-key (kbd "C-c k")                      'tv-kill-whole-line)
+;(global-set-key (kbd "C-c k")                      'tv-kill-whole-line)
+(global-set-key [remap kill-whole-line]            'tv-kill-whole-line)
+(global-set-key (kbd "M-e")                        'tv-eval-last-sexp-at-eol)
 (global-set-key (kbd "C-d")                        'tv-delete-char)
 (global-set-key (kbd "C-x C-'")                    'tv-toggle-resplit-window)
 (global-set-key (kbd "C-§")                        'iedit-mode-on-function)
@@ -375,7 +377,8 @@
 ;;
 ;;
 (setq savehist-file "~/.emacs.d/history")
-(savehist-mode 1) ; default for history-length is 30
+(setq history-length 50) ; default is 30.
+(savehist-mode 1)
 
 ;;; Recentf
 ;;
@@ -1665,10 +1668,11 @@ is nil and `use-dialog-box' is non-nil."
         ;; Restore marks
         (letf (((current-buffer)))
           (loop for buf in buffers
-             for entry = (cadr (assq buf winner-point-alist))
-             do (progn (set-buffer buf)
+                for entry = (cadr (assq buf winner-point-alist))
+                for win-ac-reg = (winner-active-region)
+                do (progn (set-buffer buf)
                        (set-mark (car entry))
-                       (setf (winner-active-region) (cdr entry)))))
+                       (setf win-ac-reg (cdr entry)))))
         ;; Delete windows, whose buffers are dead or boring.
         ;; Return t if this is still a possible configuration.
         (or (null xwins)
@@ -1795,13 +1799,18 @@ is nil and `use-dialog-box' is non-nil."
 ;;
 (setq ido-use-virtual-buffers t)
 
+;;; Deactivate mouse scrolling
+;;
+(mouse-wheel-mode -1)
+
 ;;; Printing variables
 ;;
 ;;
 ;; (setq print-gensym t
-;;       print-level 12
+;;       print-length nil
+;;       print-level nil
 ;;       print-circle t
-;;       eval-expression-print-level 12)
+;;       eval-expression-print-level nil)
 
 ;;; Report bug
 ;;

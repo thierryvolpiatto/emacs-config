@@ -7,6 +7,10 @@
 ;;
 (require 'nnir)
 
+;; Don't read/write to the .newrc file, go straight to the *.eld.
+(setq gnus-save-newsrc-file nil
+      gnus-read-newsrc-file nil)
+
 ;;; Gnus methods
 ;;
 ;;
@@ -268,6 +272,21 @@ This will run in `message-send-hook'."
 ;; Integration dans dired
 (require 'gnus-dired)
 (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
+
+;;; Registry
+;;
+;;
+(when (eq emacs-major-version 24)
+  ;(setq gnus-registry-cache-file "~/.gnus.registry.eioio")
+  (setq gnus-registry-max-entries 2500)
+  (gnus-registry-initialize)
+
+  (setq gnus-registry-split-strategy 'majority
+        gnus-registry-ignored-groups '(("nntp" t)
+                                       ("nnrss" t))
+        gnus-registry-max-entries 500000
+        ;; this is the default
+        gnus-registry-track-extra '(sender subject)))
 
 ;; fortune 
 (add-hook 'gnus-article-mode-hook

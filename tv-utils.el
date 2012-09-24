@@ -590,10 +590,13 @@ That may not work with Emacs versions <=23.1 for hash tables."
   (require 'cl) ; Be sure we use the CL version of `eval-when-compile'.
   (assert (not (file-exists-p file)) nil
           (format "dump-object-to-file: File `%s' already exists, please remove it." file))
-  (with-temp-file file
-    (prin1 `(setq ,obj (eval-when-compile ,obj)) (current-buffer)))
-      (byte-compile-file file) (delete-file file)
-      (message "`%s' dumped to %sc" obj file))
+  (let ((print-length nil)
+        (print-level nil)
+        (print-circle t))
+    (with-temp-file file
+      (prin1 `(setq ,obj (eval-when-compile ,obj)) (current-buffer)))
+    (byte-compile-file file) (delete-file file)
+    (message "`%s' dumped to %sc" obj file)))
 
 (defvar elisp-objects-default-directory "~/.emacs.d/elisp-objects/")
 (defvar object-to-save-alist '((ioccur-history . "ioccur-history.el")
@@ -703,6 +706,12 @@ Can be used from any place in the line."
     (setq beg (point)) (kill-region beg end))
   (when (eq (point-at-bol) (point-at-eol))
     (delete-blank-lines) (skip-chars-forward " ")))
+
+;; Similar to what eev does
+(defun tv-eval-last-sexp-at-eol ()
+  (interactive)
+  (end-of-line)
+  (call-interactively 'eval-last-sexp))
 
 ;; Delete-char-or-region 
 (defun tv-delete-char (arg)
