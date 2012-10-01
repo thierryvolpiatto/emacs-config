@@ -14,6 +14,12 @@
 ;; Turn OFF bidi everywhere.
 (setq-default bidi-display-reordering nil)
 
+;; No-startup-screen
+(setq inhibit-startup-message t)
+
+;; consequent-log-file
+(setq message-log-max 1000)
+
 ;; Kill emacs
 (defun tv-stop-emacs ()
   (interactive)
@@ -281,7 +287,6 @@
 ;;
 ;;
 (defvar tv-theme-directory "~/.emacs.d/themes/")
-;; Fix the last stupid changes of 24.
 (unless (< emacs-major-version 24)
   (setq custom-theme-directory tv-theme-directory))
 
@@ -376,7 +381,8 @@
 ;;; Save-minibuffer-history
 ;;
 ;;
-(setq savehist-file "~/.emacs.d/history")
+(setq savehist-file "~/.emacs.d/history"
+      history-delete-duplicates t)
 (setq history-length 50) ; default is 30.
 (savehist-mode 1)
 
@@ -704,14 +710,8 @@ account add <protocol> moi@mail.com password."
 ;; confirm-quit-emacs
 (setq confirm-kill-emacs 'y-or-n-p)
 
-;; consequent-log-file
-(setq message-log-max 1000)
-
 ;; Add-newline-at-end-of-files
 (setq require-final-newline t)
-
-;; No-startup-screen
-(setq inhibit-startup-message t)
 
 ;; Ediff-config
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
@@ -722,7 +722,6 @@ account add <protocol> moi@mail.com password."
 (setq dired-auto-revert-buffer t) ; Emacs vcs only
 (define-key dired-mode-map (kbd "C-k")   #'(lambda () (interactive) (dired-do-delete 1)))
 (define-key dired-mode-map (kbd "b")     #'(lambda () (interactive) (dired-do-byte-compile 1)))
-(define-key dired-mode-map (kbd "C-t -") 'thumb-convert-current-dir)
 (define-key dired-mode-map (kbd "C-c c") 'csv2org-dired)
 (define-key dired-mode-map (kbd "C-t !") #'(lambda ()
                                              (interactive)

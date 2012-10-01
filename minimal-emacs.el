@@ -1,4 +1,7 @@
-;;; Minimal-emacs.el - Minimal config for Emacs.
+;;; Minimal-emacs.el --- Minimal config for Emacs.
+
+;; Use own frame for minibuffer.
+
 ;;; Code:
 
 (require 'cl)
@@ -7,11 +10,10 @@
 (setq inhibit-startup-message t)
 
 (add-to-list 'load-path "~/elisp/")
-(add-to-list 'load-path "~/elisp/emacs-helm")
+(add-to-list 'load-path "~/elisp/helm")
 (add-to-list 'load-path "~/elisp/emacs-async")
-(add-to-list 'load-path "~/elisp/emacs-helm-extensions")
+(add-to-list 'load-path "~/elisp/helm-extensions")
 (add-to-list 'load-path "~/.emacs.d/emacs-config-laptop")
-;(add-to-list 'load-path "~/elisp/DA-libs")
 
 ;;; Frames setting for own minibuffer frame.
 ;;
@@ -41,9 +43,9 @@
                             ))
 
 (setq minibuffer-frame-alist
-      '((top . -56) (left . 1)
+      '((top . -40) (left . 1)
         (vertical-scroll-bars . nil)
-        (width . 157) (height . 2)
+        (width . 157) (height . 1)
         (menu-bar-lines . 0)
         (tool-bar-lines . 0)
         (minibuffer . only)
