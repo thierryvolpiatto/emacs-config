@@ -276,17 +276,17 @@ This will run in `message-send-hook'."
 ;;; Registry
 ;;
 ;;
-(when (eq emacs-major-version 24)
-  ;(setq gnus-registry-cache-file "~/.gnus.registry.eioio")
-  (setq gnus-registry-max-entries 2500)
-  (gnus-registry-initialize)
+;; (when (eq emacs-major-version 24)
+;;   ;(setq gnus-registry-cache-file "~/.gnus.registry.eioio")
+;;   (setq gnus-registry-max-entries 2500)
+;;   (gnus-registry-initialize)
 
-  (setq gnus-registry-split-strategy 'majority
-        gnus-registry-ignored-groups '(("nntp" t)
-                                       ("nnrss" t))
-        gnus-registry-max-entries 500000
-        ;; this is the default
-        gnus-registry-track-extra '(sender subject)))
+;;   (setq gnus-registry-split-strategy 'majority
+;;         gnus-registry-ignored-groups '(("nntp" t)
+;;                                        ("nnrss" t))
+;;         gnus-registry-max-entries 500000
+;;         ;; this is the default
+;;         gnus-registry-track-extra '(sender subject)))
 
 ;; fortune 
 (add-hook 'gnus-article-mode-hook

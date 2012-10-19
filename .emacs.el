@@ -44,7 +44,7 @@
     (tv-require 'info)
     (add-to-list 'Info-directory-list "~/elisp/ngnus/texi/")
     (add-to-list 'Info-default-directory-list "~/elisp/ngnus/texi/")))
-(tv-maybe-load-ngnus)
+(tv-maybe-load-ngnus 'force)
 
 
 ;;; load-paths
@@ -194,6 +194,7 @@
 (tv-require 'google-weather)
 (tv-require 'org-google-weather)
 (tv-require 'markdown-mode)
+(tv-require 'boxquote)
 (when (tv-require 'dired-aux)
   (tv-require 'helm-async))
 (tv-require 'smtpmail-async)
@@ -332,7 +333,7 @@
 (setq mail-user-agent 'gnus-user-agent)
 (setq read-mail-command 'gnus)
 (setq send-mail-command 'gnus-msg-mail)
-(setq gnus-init-file "~/.emacs.d/.gnus.el")
+(setq gnus-init-file "~/.emacs.d/emacs-config-laptop/.gnus.el")
 
 (defvar tv-gnus-loaded-p nil)
 (defun tv-load-gnus-init-may-be ()
@@ -415,7 +416,7 @@
                                 (cursor-color . "red")))
 
     (setq default-frame-alist `((foreground-color . "Wheat")
-                                (background-color . "DarkSlateGray")
+                                (background-color . "DarkSlateBlue")
                                 (alpha . nil)
                                 ;; New frames go in right corner.
                                 (left . ,(- (* (window-width) 8) 160)) ; Chars are 8 bits long.
@@ -715,6 +716,7 @@ account add <protocol> moi@mail.com password."
 
 ;; Ediff-config
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+(setq ediff-split-window-function 'split-window-horizontally)
 
 ;; Dired
 ;; use the directory in the other windows as default target
@@ -751,8 +753,9 @@ account add <protocol> moi@mail.com password."
 (setq max-lisp-eval-depth '40000)
 (setq max-specpdl-size '100000)
 
-;; emacs-backup-config
-;; Backup
+
+;;; emacs-backup-config
+;;
 (setq backup-directory-alist '(("" . "/home/thierry/.emacs.d/emacs_backup"))
       backup-by-copying t
       version-control t
@@ -763,7 +766,6 @@ account add <protocol> moi@mail.com password."
 (setq auto-save-file-name-transforms nil)
 
 
-;; Eval==> (describe-variable 'case-fold-search)
 (setq case-fold-search t)
 
 ;; Mark-ring
@@ -1305,20 +1307,11 @@ With prefix arg always start and let me choose dictionary."
 
 ;; Save-slime-scratch-buffer
 (setq slime-scratch-file "~/.emacs.d/slime-scratch.lisp")
-
-;; mozilla-javascript
-;; Javascript and mozilla (interaction with firefox)
-;; (autoload 'moz-minor-mode "moz" "Mozilla Minor and Inferior Mozilla Modes" t)
 
-;; (defun tv-pop-to-moz-repl ()
-;;   (interactive)
-;;   (if (tv-get-pid-from-process-name "firefox")
-;;       (inferior-moz-switch-to-mozilla)
-;;       (message "Please start first firefox and repl!")))
+
 
 ;; ioccur
 (define-key org-mode-map (kbd "C-c C-o") 'ioccur-find-buffer-matching)
-;(setq ioccur-fontify-buffer-p nil)
 
 ;; Enable-commands-disabled-by-default
 (put 'narrow-to-region 'disabled nil)          ; C-x n n
@@ -1355,7 +1348,7 @@ With prefix arg always start and let me choose dictionary."
 (define-key org-mode-map (kbd "<C-M-up>") 'tv-scroll-other-up)
 
 ;; xmodmap
-(load "xmodmap.elc")
+(load "xmodmap")
 
 ;; sql-mode
 (setq sql-sqlite-program "sqlite3")
@@ -1365,57 +1358,6 @@ With prefix arg always start and let me choose dictionary."
 (modify-coding-system-alist 'file "\\.sqlite\\'" 'raw-text-unix)
 (add-to-list 'auto-mode-alist '("\\.sqlite\\'" . sqlite-dump))
 
-
-;;; Isearch
-;;
-;;
-(setq isearch-allow-scroll t)
-
-;; Implement a decent "online" help like helm. (i.e show help without quitting).
-(defun isearch-help-internal (bufname insert-content-fn)
-  (save-window-excursion
-    (switch-to-buffer (get-buffer-create bufname))
-    (erase-buffer)
-    (funcall insert-content-fn)
-    (setq mode-line-format "%b (SPC,C-v:NextPage  b,M-v:PrevPage  other:Exit)")
-    (setq cursor-type nil)
-    (goto-char 1)
-    (isearch-help-event-loop)))
-
-(defun isearch-help-event-loop ()
-  (ignore-errors
-    (catch 'exit-isearch-help
-      (loop for event = (read-event) do
-           (case event
-             ((?\C-v ? ) (scroll-up))
-             ((?\M-v ?b) (scroll-down))
-             (t (throw 'exit-isearch-help (isearch-update))))))))
-
-(defun isearch-help ()
-  (interactive)
-  (isearch-help-internal
-   " *Isearch Help*"
-   (lambda ()
-     (insert (substitute-command-keys isearch-help-message))
-     (org-mode))))
-
-(defvar isearch-help-message "\\{isearch-mode-map}")
-(define-key isearch-mode-map (kbd "C-?") 'isearch-help)
-(define-key isearch-mode-map [remap isearch-describe-bindings] 'isearch-help)
-
-;; Isearch mode-line help.
-(defvar isearch-old-mode-line nil)
-(defun isearch-mode-line-help ()
-  (let (mode-line-in-non-selected-windows)
-    (setq isearch-old-mode-line mode-line-format)
-    (setq mode-line-format '(" " mode-line-buffer-identification " "
-                             (line-number-mode "%l") " "
-                             "C-?:Help,C-s:Forward,C-b:Backward,C-w:Yank at Point,\
-C-y:Yank,M-n/p:kill-ring nav,C/M-%%:Query replace/regexp,M-s r:toggle-regexp."))))
-(add-hook 'isearch-mode-hook 'isearch-mode-line-help)
-(defun isearch-mode-line-help-restore ()
-  (setq mode-line-format isearch-old-mode-line))
-(add-hook 'isearch-mode-end-hook 'isearch-mode-line-help-restore)
 
 ;; align-let
 (autoload 'align-let-keybinding "align-let" nil t)
