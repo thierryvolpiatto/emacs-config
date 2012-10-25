@@ -16,6 +16,7 @@
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Helm-command-map
@@ -72,7 +73,6 @@
       helm-completion-window-scroll-margin   0
       helm-c-kill-ring-max-lines-number      5
       helm-c-default-external-file-browser   "thunar"
-      helm-c-use-adaptative-sorting          t
       helm-c-pdfgrep-default-read-command    "evince --page-label=%p '%f'"
       helm-ff-transformer-show-only-basename t
       helm-c-grep-default-command            "ack-grep -Hn --smart-case --no-group --no-color %e %p %f"
@@ -153,16 +153,11 @@
    helm-c-source-find-files
    'helm-ff-candidates-lisp-p))
 
-
-;;; Enable helm-mode
-;;
+;;; enable Modes
 ;;
 (helm-mode 1)
-
-;;; Enable match-plugin mode
-;;
-;;
 (helm-match-plugin-mode 1)
+(helm-adaptative-mode 1)
 
 (provide 'init-helm-thierry)
 

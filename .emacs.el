@@ -39,6 +39,10 @@
 
 (defun tv-maybe-load-ngnus (&optional force)
   (when (or force (< emacs-major-version 24))
+    (tv-require 'cl)
+    (setq load-path (loop for i in load-path
+                          unless (string-match "gnus" i)
+                          collect i))
     (add-to-list 'load-path "~/elisp/ngnus/lisp")
     (tv-require 'gnus-load "~/elisp/ngnus/lisp/gnus-load.el")
     (tv-require 'info)
@@ -46,10 +50,19 @@
     (add-to-list 'Info-default-directory-list "~/elisp/ngnus/texi/")))
 (tv-maybe-load-ngnus 'force)
 
+(defun tv-maybe-add-org-load-path (&optional force)
+  (when (or (< emacs-major-version 24) force)
+    (setq load-path (loop for i in load-path
+                          unless (string-match "org" i)
+                          collect i))
+    (dolist (lib '("~/elisp/org-active"
+                   "~/elisp/org-active/lisp"))
+      (add-to-list 'load-path lib))))
+(tv-maybe-add-org-load-path 'force)
+
 
 ;;; load-paths
 ;; For Info paths see:
-;; [EVAL] (find-fline "~/.profile" "INFOPATH")
 ;; [EVAL] (getenv "INFOPATH")
 (tv-require 'info)
 (add-to-list 'Info-directory-list "/usr/local/share/info")
@@ -90,14 +103,9 @@
 	     "~/.emacs.d/emacs-config-laptop/"
              "~/elisp/emacs-async"
 	     ))
-  (add-to-list 'load-path i))
+  (add-to-list 'load-path i t)) ; Add all at end of `load-path' to avoid conflicts.
 
 
-(when (< emacs-major-version 24)
-  (dolist (lib '("~/elisp/org-active"
-                 "~/elisp/org-active/lisp"))
-    (add-to-list 'load-path lib)))
-
 ;;; autoconf-mode site-lisp configuration
 (autoload 'autoconf-mode "autoconf-mode"
   "Major mode for editing autoconf files." t)
