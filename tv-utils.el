@@ -1002,6 +1002,20 @@ If a prefix arg is given choose directory, otherwise use `default-directory'."
                     (getf df-info :mount-point)))
     (view-mode 1)))
 
+;; Interface to du (directory size)
+(defun duh (directory)
+  (interactive "DDirectory: ")
+  (let* ((lst
+          (with-temp-buffer
+            (apply #'call-process "du" nil t nil
+                   (list "-h" (expand-file-name directory)))
+            (split-string (buffer-string) "\n" t)))
+         (result (mapconcat 'identity
+                            (reverse (split-string (car (last lst))
+                                                   " \\|\t")) " => ")))
+    (if (called-interactively-p 'interactive) 
+        (message "%s" result) result)))
+
 (defun tv-toggle-resplit-window ()
   (interactive)
   (when (> (count-windows) 1)

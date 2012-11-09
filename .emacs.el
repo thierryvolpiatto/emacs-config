@@ -341,7 +341,7 @@
 (setq mail-user-agent 'gnus-user-agent)
 (setq read-mail-command 'gnus)
 (setq send-mail-command 'gnus-msg-mail)
-(setq gnus-init-file "~/.emacs.d/emacs-config-laptop/.gnus.el")
+(setq gnus-init-file "~/.emacs.d/.gnus.el")
 
 (defvar tv-gnus-loaded-p nil)
 (defun tv-load-gnus-init-may-be ()
@@ -1062,8 +1062,8 @@ With prefix arg always start and let me choose dictionary."
 ;;
 ;(setq helm-ff-printer-list (helm-ff-find-printers))
 (setq lpr-command "gtklp")
-(setq lpr-switches '("-P"))
-(setq printer-name "Epson-Stylus-Photo-R265")
+;(setq lpr-switches '("-P"))
+(setq printer-name "Epson")
 (setq-default ps-print-header nil)
 (setq ps-font-size   '(10 . 11.5))
 (setq ps-font-family 'Courier)
