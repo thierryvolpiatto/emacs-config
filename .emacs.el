@@ -2,6 +2,8 @@
 
 ;;; Code:
 
+(require 'cl)
+
 ;;; Environment
 ;; For eshell env settings.
 (setenv "STARDICT_DATA_DIR" "~/.stardict/dic")
@@ -39,7 +41,6 @@
 
 (defun tv-maybe-load-ngnus (&optional force)
   (when (or force (< emacs-major-version 24))
-    (tv-require 'cl)
     (setq load-path (loop for i in load-path
                           unless (string-match "gnus" i)
                           collect i))
@@ -48,7 +49,7 @@
     (tv-require 'info)
     (add-to-list 'Info-directory-list "~/elisp/ngnus/texi/")
     (add-to-list 'Info-default-directory-list "~/elisp/ngnus/texi/")))
-(tv-maybe-load-ngnus 'force)
+(tv-maybe-load-ngnus t)
 
 (defun tv-maybe-add-org-load-path (&optional force)
   (when (or (< emacs-major-version 24) force)
@@ -58,7 +59,7 @@
     (dolist (lib '("~/elisp/org-active"
                    "~/elisp/org-active/lisp"))
       (add-to-list 'load-path lib))))
-(tv-maybe-add-org-load-path 'force)
+(tv-maybe-add-org-load-path t)
 
 
 ;;; load-paths
@@ -86,6 +87,7 @@
 	     "~/elisp/cmake"
 	     "~/elisp/desktop-file-utils"
 	     "~/elisp/emacs-wget"
+             "~/elisp/w3m"
 	     "~/elisp/git"
 	     "~/elisp/tex-utils"
 	     "~/elisp/muse/lisp"
@@ -151,7 +153,6 @@
 ;;; Require's
 ;;
 ;;
-(tv-require 'cl)
 (tv-require 'usage-memo)
 (tv-require 'auth-source)
 (tv-require 'epa-file)
@@ -203,12 +204,10 @@
 (tv-require 'org-google-weather)
 (tv-require 'markdown-mode)
 (tv-require 'boxquote)
+(tv-require 'config-w3m)
 (when (tv-require 'dired-aux)
   (tv-require 'helm-async))
 (tv-require 'smtpmail-async)
-
-;; Test if this overhide `helm-command-map-prefix-key'
-;(global-set-key (kbd "C-x c") #'(lambda () (interactive) (message "Hello")))
 
 
 ;;; Global keys
@@ -1287,7 +1286,7 @@ With prefix arg always start and let me choose dictionary."
 (setq lisp-loop-keyword-indentation 6)
 (setq lisp-loop-forms-indentation 6)
 
-(add-hook 'slime-load-hook (lambda () (tv-require 'slime-tramp)))
+(add-hook 'slime-load-hook #'(lambda () (tv-require 'slime-tramp)))
 
 (defun tv-slime-port (process)
   (let ((slime-port (or (process-id process)
@@ -1770,7 +1769,7 @@ is nil and `use-dialog-box' is non-nil."
 ;;
 (tv-set-emacs-session-backup :enable (not (daemonp)))
 
-;;; Linkscratch-to-file
+;;; Link scratch buffer to file
 ;;
 ;; Need to be loaded at very end of config, use append.
 (add-hook 'emacs-startup-hook 'go-to-scratch 'append)

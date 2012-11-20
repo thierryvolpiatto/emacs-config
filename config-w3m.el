@@ -3,7 +3,7 @@
 ;; Code:
 (require 'w3m-load)
 (setq w3m-bookmark-file "~/.w3m/bookmark.html")
-
+(setq w3m-icon-directory "~/elisp/w3m/icons")
 (setq w3m-default-save-directory "~/download/")
 
 (setq w3m-coding-system 'utf-8
@@ -54,9 +54,10 @@
 ;; netscape-vs-firefox 
 (setq browse-url-netscape-program "firefox")
 
-;; Change tabs easily 
-(define-key w3m-mode-map (kbd "M-<right>") 'w3m-next-buffer)
-(define-key w3m-mode-map (kbd "M-<left>") 'w3m-previous-buffer)
+;; Change tabs easily
+(when (require 'w3m)
+  (define-key w3m-mode-map (kbd "M-<right>") 'w3m-next-buffer)
+  (define-key w3m-mode-map (kbd "M-<left>") 'w3m-previous-buffer))
 
 ;; Remove-trailing-white-space-in-w3m-buffers 
 (add-hook 'w3m-display-hook

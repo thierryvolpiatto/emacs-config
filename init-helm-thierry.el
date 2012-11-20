@@ -78,7 +78,7 @@
       helm-c-grep-default-command            "ack-grep -Hn --smart-case --no-group --no-color %e %p %f"
       helm-c-grep-default-recurse-command    "ack-grep -H --smart-case --no-group --no-color %e %p %f"
       helm-reuse-last-window-split-state     t
-      helm-ff-file-name-history-use-recentf  t
+      ;helm-ff-file-name-history-use-recentf  t
       )
 
 ;;; Toggle grep program

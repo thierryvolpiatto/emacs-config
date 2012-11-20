@@ -290,7 +290,7 @@ This will run in `message-send-hook'."
 
 ;; fortune 
 (add-hook 'gnus-article-mode-hook
-          '(lambda ()
+          #'(lambda ()
              (define-key gnus-article-mode-map "i" 'fortune-from-region)))
 ;; (add-hook 'message-setup-hook 'fortune-to-signature)
 ;; (message "Making new signature: %s" (fortune-to-signature "~/docs/ascii/misc/fortunes/usenet"))

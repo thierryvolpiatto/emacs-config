@@ -19,7 +19,11 @@
 ;;  1) Add an nnimap entry in `gnus-secondary-select-methods'.
 ;;  2) Add an entry in `gnus-posting-styles'
 ;;  3) Add an entry in `tv-smtp-accounts'
-;;  4) Add an entries in authinfo for imap and smtp refering to labels. (See below)
+;;  4) Add an entries in authinfo for imap and smtp refering to labels:
+;;     imap:=> machine label port xxx login xxx password xxx
+;;     smtp:=> machine smtp.gmail.com port xxx login xxx password xxx
+;;     Note: for smtp it is not important to have independent machine names
+;;     as the info is provided by the from header.
 
 ;; Secondary methods are mails and possibly other nntp servers.
 (setq gnus-secondary-select-methods '((nnml "")
@@ -282,7 +286,7 @@ This will run in `message-send-hook'."
 
 ;; fortune 
 (add-hook 'gnus-article-mode-hook
-          '(lambda ()
+          #'(lambda ()
              (define-key gnus-article-mode-map "i" 'fortune-from-region)))
 ;; (add-hook 'message-setup-hook 'fortune-to-signature)
 ;; (message "Making new signature: %s" (fortune-to-signature "~/docs/ascii/misc/fortunes/usenet"))
