@@ -4,6 +4,10 @@
 
 (require 'cl)
 
+(add-hook 'emacs-startup-hook #'(lambda ()
+                                  (when (get-buffer "*Compile-Log*")
+                                    (kill-buffer "*Compile-Log*")
+                                    (delete-other-windows))))
 ;;; Environment
 ;; For eshell env settings.
 (setenv "STARDICT_DATA_DIR" "~/.stardict/dic")
@@ -925,14 +929,23 @@ from IPython.core.completerlib import module_completion"
 ;;
 ;; Eshell-prompt
 (setq eshell-prompt-function
-      (lambda nil
-        (concat
-         (getenv "USER")
-         "@"
-         (system-name)
-         ":"
-         (abbreviate-file-name (eshell/pwd))
-         (if (= (user-uid) 0) " # " " $ "))))
+      #'(lambda nil
+          (concat
+           (getenv "USER")
+           "@"
+           (system-name)
+           ":"
+           (abbreviate-file-name (eshell/pwd))
+           (if (= (user-uid) 0) " # " " $ "))))
+
+;; Compatibility 24.2/24.3
+(unless (fboundp 'eshell-pcomplete)
+  (defun eshell-pcomplete ()
+    "Eshell wrapper for `pcomplete'."
+    (interactive)
+    (condition-case nil
+        (pcomplete)
+      (text-read-only (completion-at-point))))) ; Workaround for bug#12838.
 
 (add-hook 'eshell-mode-hook #'(lambda ()
                                 ;; Eshell smart initialize
@@ -942,7 +955,7 @@ from IPython.core.completerlib import module_completion"
                                 (setq eshell-smart-space-goes-to-end t)
                                 (eshell-smart-initialize)
                                 ;; helm completion with pcomplete
-                                (define-key eshell-mode-map [remap pcomplete] 'helm-esh-pcomplete)
+                                (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
                                 ;; helm lisp completion
                                 (define-key eshell-mode-map [remap lisp-complete-symbol] 'helm-lisp-completion-at-point)
                                 ;; helm completion on eshell history.
@@ -1062,7 +1075,7 @@ With prefix arg always start and let me choose dictionary."
 ;(setq helm-ff-printer-list (helm-ff-find-printers))
 (setq lpr-command "gtklp")
 ;(setq lpr-switches '("-P"))
-(setq printer-name "Epson")
+(setq printer-name "EpsonStylus")
 (setq-default ps-print-header nil)
 (setq ps-font-size   '(10 . 11.5))
 (setq ps-font-family 'Courier)
@@ -1117,7 +1130,7 @@ With prefix arg always start and let me choose dictionary."
 (setq TeX-parse-self t)
 (setq-default TeX-master nil)
 (add-hook 'TeX-language-fr-hook
-               (lambda () (ispell-change-dictionary "french")))
+          #'(lambda () (ispell-change-dictionary "french")))
 (add-hook 'LaTeX-mode-hook 'visual-line-mode)
 ;(add-hook 'LaTeX-mode-hook 'flyspell-mode)
 (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)

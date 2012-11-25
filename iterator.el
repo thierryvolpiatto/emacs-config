@@ -28,7 +28,7 @@
 
 ;;; Code:
 
-(eval-when-compile (require 'cl))
+(require 'cl)
 
 (defsubst* iter-position (item seq &key (test 'eq))
   "A simple replacement of CL `position'."
@@ -134,5 +134,11 @@
                   
 ;;; Provide
 (provide 'iterator)
+
+;; Local Variables:
+;; byte-compile-warnings: (not cl-functions obsolete)
+;; coding: utf-8
+;; indent-tabs-mode: nil
+;; End:
 
 ;;; iterator.el ends here

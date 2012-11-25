@@ -61,9 +61,9 @@
 
 ;; Remove-trailing-white-space-in-w3m-buffers 
 (add-hook 'w3m-display-hook
-          (lambda (url)
-            (let ((buffer-read-only nil))
-              (delete-trailing-whitespace))))
+          #'(lambda (url)
+              (let ((buffer-read-only nil))
+                (delete-trailing-whitespace))))
 
 (global-set-key (kbd "<f7> h") 'w3m)
 
