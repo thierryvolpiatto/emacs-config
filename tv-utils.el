@@ -39,10 +39,11 @@
                      (expand-file-name
                       (read-directory-name "MountPoint: "
                                            "/home/thierry/"
-                                           "/home/thierry/sshfs-thievol/"
+                                           "/home/thierry/sshfs/"
                                            t
-                                           "sshfs-thievol"))))
-  (if (> (length (cddr (directory-files mp))) 0)
+                                           "sshfs"))))
+  (if (> (length (directory-files
+                  mp nil directory-files-no-dot-files-regexp)) 0)
       (message "Directory %s is busy, mountsshfs aborted" mp)
       (if (= (call-process-shell-command "sshfs" nil t nil
                                          (format "%s %s" fs mp)) 0)
@@ -54,9 +55,9 @@
   (interactive (list (expand-file-name
                       (read-directory-name "MountPoint: "
                                            "/home/thierry/"
-                                           "/home/thierry/sshfs-thievol/"
+                                           "/home/thierry/sshfs/"
                                            t
-                                           "sshfs-thievol"))))
+                                           "sshfs"))))
   (if (equal (pwd) (format "Directory %s" mp))
       (message "Filesystem is busy can't umount!")
       (progn
@@ -68,17 +69,17 @@
             (message "No existing remote filesystem to unmount!")))))
 
 ;;;###autoload
-(defun sshfs-thievol-connect ()
+(defun sshfs-connect ()
   "sshfs mount of thievol."
   (interactive)
-  (mount-sshfs "thievol:" "~/sshfs-thievol")
-  (helm-find-files-1 "~/sshfs-thievol"))
+  (mount-sshfs "thievol:" "~/sshfs")
+  (helm-find-files-1 "~/sshfs"))
 
 ;;;###autoload
-(defun sshfs-thievol-disconnect ()
+(defun sshfs-disconnect ()
   "sshfs umount of thievol."
   (interactive)
-  (umount-sshfs "~/sshfs-thievol"))
+  (umount-sshfs "~/sshfs"))
 
 ;; find-file-as-root 
 ;;;###autoload

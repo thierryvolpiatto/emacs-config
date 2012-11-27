@@ -16,6 +16,36 @@
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
 
+(defvar helm-c-source-findutils
+  `((name . "Find")
+    (candidates-process . (lambda ()
+                            (helm-find-shell-command-fn directory)))
+    (type . file)
+    (keymap . ,helm-generic-files-map)
+    (delayed)))
+
+(defun helm-find-shell-command-fn (directory)
+  (prog1
+      (apply #'start-process "hfind" helm-buffer "find"
+             (list directory
+                   (if case-fold-search "-name" "-iname")
+                   helm-pattern "-type" "f"))
+    (set-process-sentinel (get-process "hfind")
+                          #'(lambda (process event)
+                              (when (string= event "finished\n")
+                                nil)))))
+
+(defun helm-find-shell-command (arg)
+  (interactive "P")
+  (declare (special directory))
+  (let ((directory (if arg
+                       (file-name-as-directory
+                        (read-directory-name "DefaultDirectory: "))
+                       default-directory))
+        (helm-ff-transformer-show-only-basename nil))
+    (helm :sources 'helm-c-source-findutils :buffer "*helm find*")))
+
+(global-set-key (kbd "<f1>") 'helm-find-shell-command)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
