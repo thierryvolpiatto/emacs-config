@@ -31,7 +31,8 @@
 (require 'cl)
 
 (defsubst* iter-position (item seq &key (test 'eq))
-  "A simple replacement of CL `position'."
+  "Get position of ITEM in SEQ.
+A simple replacement of CL `position'."
   (loop for i in seq for index from 0
      when (funcall test i item) return index))
 
@@ -97,7 +98,7 @@
 
 
 (defmacro iter-apply-fun-on-list (fun seq)
-  "Create an iterator that apply function FUN on each elm of seq."
+  "Create an iterator that apply function FUN on each elm of SEQ."
   `(lexical-let ((lis ,seq)
                  (fn ,fun))
      (lambda ()
@@ -108,7 +109,7 @@
 
 
 (defmacro iter-scroll-list (seq size)
-  "Create an iterator of the subseq of the cdr of seq ending to size."
+  "Create an iterator of the subseq of the cdr of SEQ ending to SIZE."
   `(lexical-let* ((lis ,seq)
                   (end ,size))
      (lambda ()

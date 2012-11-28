@@ -11,7 +11,6 @@
 (tv-require 'helm-delicious)
 (tv-require 'helm-descbinds)
 (tv-require 'helm-ls-git)
-(setq helm-ls-git-status-command 'magit-status)
 
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
@@ -22,6 +21,7 @@
                             (helm-find-shell-command-fn directory)))
     (type . file)
     (keymap . ,helm-generic-files-map)
+    (requires-pattern . 3)
     (delayed)))
 
 (defun helm-find-shell-command-fn (directory)
@@ -108,6 +108,8 @@
       helm-c-grep-default-command            "ack-grep -Hn --smart-case --no-group --no-color %e %p %f"
       helm-c-grep-default-recurse-command    "ack-grep -H --smart-case --no-group --no-color %e %p %f"
       helm-reuse-last-window-split-state     t
+      helm-ls-git-status-command             'magit-status
+      helm-ls-hg-status-command              'dvc-status
       ;helm-ff-file-name-history-use-recentf  t
       )
 
