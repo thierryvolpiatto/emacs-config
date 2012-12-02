@@ -4,10 +4,11 @@
 
 (require 'cl)
 
-(add-hook 'emacs-startup-hook #'(lambda ()
-                                  (when (get-buffer "*Compile-Log*")
-                                    (kill-buffer "*Compile-Log*")
-                                    (delete-other-windows))))
+;; (add-hook 'emacs-startup-hook #'(lambda ()
+;;                                   (when (get-buffer "*Compile-Log*")
+;;                                     (kill-buffer "*Compile-Log*")
+;;                                     (delete-other-windows))))
+
 ;;; Environment
 ;; For eshell env settings.
 (setenv "STARDICT_DATA_DIR" "~/.stardict/dic")
@@ -84,6 +85,7 @@
 	     "~/elisp/"
              "~/elisp/dvc/lisp/"
 	     "~/elisp/magit"
+             "~/elisp/Emacs-wgrep"
              "~/elisp/auctex"
              "~/elisp/auctex/preview"
 	     "~/elisp/autoconf-mode"
@@ -209,6 +211,7 @@
 (tv-require 'markdown-mode)
 (tv-require 'boxquote)
 (tv-require 'config-w3m)
+(tv-require 'wgrep-helm)
 (when (tv-require 'dired-aux)
   (tv-require 'helm-async))
 (tv-require 'smtpmail-async)
@@ -946,6 +949,7 @@ from IPython.core.completerlib import module_completion"
         (pcomplete)
       (text-read-only (completion-at-point))))) ; Workaround for bug#12838.
 
+
 (add-hook 'eshell-mode-hook #'(lambda ()
                                 ;; Eshell smart initialize
                                 (require 'em-smart)
@@ -962,7 +966,6 @@ from IPython.core.completerlib import module_completion"
                                 ;; Eshell prompt
                                 (set-face-attribute 'eshell-prompt nil :foreground "DeepSkyBlue")))
                                 
-
 ;; Eshell history size
 (setq eshell-history-size 1000) ; Same as env var HISTSIZE.
 

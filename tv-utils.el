@@ -168,21 +168,15 @@ Run first crontab -e in shell and when emacsclient popup run M-x crontab."
       (shell-command "screen -X readbuf > /dev/null")
       (kill-buffer))))
 
-;; Chrono-func 
-;;;###autoload
-(defmacro chrono-func (fn &rest args)
-  `(let* ((init-time    (float-time))
-          (final-result (funcall ,fn ,@args))
-          (final-time   (- (float-time) init-time)))
-     (message "Time: %.5f s" final-time)
-     final-result))
-
-;; cat-like-cat 
-;;;###autoload
-(defun cat (file)
-  (with-temp-buffer
-    (insert-file-contents file)
-    (buffer-string)))
+;; Benchmark
+(defmacro tv-time (&rest body)
+  "Return a list (time result) of time execution of BODY and result of BODY."
+  (declare (indent 0))
+  `(let ((tm (float-time)))
+     (reverse
+      (list
+       ,@body
+       (- (float-time) tm)))))
 
 ;; Show-current-face 
 ;;;###autoload
@@ -1215,6 +1209,7 @@ the password will be of length (floor LIMIT)."
                     (set-window-buffer w2 b1)
                     (set-window-start w2 s1)))))
 (global-set-key (kbd "C-c -") 'rotate-windows)
+
 
 ;; Provide 
 (provide 'tv-utils)
