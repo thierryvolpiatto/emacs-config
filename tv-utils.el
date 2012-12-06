@@ -736,7 +736,8 @@ Can be used from any place in the line."
 ;; Insert-log-from-patch 
 (defun tv-insert-log-from-patch (patch)
   (interactive (list (helm-c-read-file-name
-                      "Patch: ")))
+                      "Patch: "
+                      :preselect ".*[Pp]atch.*")))
   (let (beg end data)
     (with-current-buffer (find-file-noselect patch)
       (goto-char (point-min))
@@ -1210,6 +1211,18 @@ the password will be of length (floor LIMIT)."
                     (set-window-start w2 s1)))))
 (global-set-key (kbd "C-c -") 'rotate-windows)
 
+(defun tv-delete-duplicate-lines (beg end &optional arg)
+  "Delete duplicate lines in region omiting new lines.
+With a prefix arg remove new lines."
+  (interactive "r\nP")
+  (save-excursion
+    (save-restriction
+      (narrow-to-region beg end)
+      (let ((lines (helm-fast-remove-dups
+                    (split-string (buffer-string) "\n" arg)
+                    :test 'equal)))
+        (delete-region (point-min) (point-max))
+        (loop for l in lines do (insert (concat l "\n")))))))
 
 ;; Provide 
 (provide 'tv-utils)

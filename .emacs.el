@@ -621,9 +621,16 @@ If you want the mouse banished to a different corner set
   (dolist (i bookmark-alist)
     (pp i (current-buffer))))
 
-;; muse-config
+;;; Muse
+;;
+;;
 (add-hook 'find-file-hooks 'muse-mode-maybe)
 (setq muse-wiki-allow-nonexistent-wikiword t)
+
+;;; Browse url
+;;
+;;
+;(setq browse-url-browser-function 'browse-url-firefox)
 
 ;;; Erc config
 ;;
