@@ -29,23 +29,24 @@
       (apply #'start-process "hfind" helm-buffer "find"
              (list directory
                    (if case-fold-search "-name" "-iname")
-                   helm-pattern "-type" "f"))
+                   (concat "*" helm-pattern "*") "-type" "f"))
     (set-process-sentinel (get-process "hfind")
                           #'(lambda (process event)
                               (when (string= event "finished\n")
-                                nil)))))
+                                (ignore))))))
 
 (defun helm-find-shell-command (arg)
   (interactive "P")
-  (declare (special directory))
-  (let ((directory (if arg
-                       (file-name-as-directory
-                        (read-directory-name "DefaultDirectory: "))
-                       default-directory))
-        (helm-ff-transformer-show-only-basename nil))
+  (progv '(directory
+           helm-ff-transformer-show-only-basename)
+      (list (if arg
+                (file-name-as-directory
+                 (read-directory-name "DefaultDirectory: "))
+                default-directory))
     (helm :sources 'helm-c-source-findutils :buffer "*helm find*")))
 
 (global-set-key (kbd "<f1>") 'helm-find-shell-command)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -100,7 +101,8 @@
       helm-idle-delay                        0.1
       helm-input-idle-delay                  0.1
       helm-m-occur-idle-delay                0.1
-      helm-completion-window-scroll-margin   0
+      ;helm-completion-window-scroll-margin   0
+      helm-ff-search-library-in-sexp         t
       helm-c-kill-ring-max-lines-number      5
       helm-c-default-external-file-browser   "thunar"
       helm-c-pdfgrep-default-read-command    "evince --page-label=%p '%f'"
