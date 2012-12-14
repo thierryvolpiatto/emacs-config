@@ -70,7 +70,6 @@
 ;;; Find completion
 ;;
 ;;
-
 (defun pcomplete/find ()
   (let ((prec (pcomplete-arg 'last -1)))
     (cond ((and (pcomplete-match "^-" 'last)
@@ -103,6 +102,13 @@
            (while (pcomplete-here* (funcall pcomplete-command-completion-function)
                                    (pcomplete-arg 'last) t))))
     (while (pcomplete-here (pcomplete-entries) nil 'identity))))
+
+(defun pcomplete/sudo ()
+  (let ((prec (pcomplete-arg 'last -1)))
+    (cond ((string= "sudo" prec)
+           (while (pcomplete-here*
+                   (funcall pcomplete-command-completion-function)
+                   (pcomplete-arg 'last) t))))))
 
 (provide 'pcomplete-extension)
 

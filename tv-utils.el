@@ -748,7 +748,8 @@ Can be used from any place in the line."
         (setq end (point)))
       (setq data (buffer-substring beg end))
       (kill-buffer))
-    (insert data)))
+    (insert data)
+    (delete-file patch)))
 
 ;; Show infos on files using an easy interface for `file-attributes'.
 ;; [DEPRECATED] Use `helm-ff-attributes'
