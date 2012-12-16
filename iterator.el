@@ -50,20 +50,20 @@ A simple replacement of CL `position'."
 
 (defun* iter-sub-next (seq elm &key (test 'eq))
   "Create iterator from position of ELM to end of SEQ."
-  (lexical-let* ((pos      (ioccur-position elm seq :test test))
+  (lexical-let* ((pos      (iter-position elm seq :test test))
                  (sub      (nthcdr (1+ pos) seq))
-                 (iterator (ioccur-iter-list sub)))
+                 (iterator (iter-list sub)))
      (lambda ()
-       (ioccur-iter-next iterator))))
+       (iter-next iterator))))
 
 (defun* iter-sub-prec (seq elm &key (test 'eq))
   "Create iterator from position of ELM to beginning of SEQ."
   (lexical-let* ((rev-seq  (reverse seq))
-                 (pos      (ioccur-position elm rev-seq :test test))
+                 (pos      (iter-position elm rev-seq :test test))
                  (sub      (nthcdr (1+ pos) rev-seq))
-                 (iterator (ioccur-iter-list sub)))
+                 (iterator (iter-list sub)))
      (lambda ()
-       (ioccur-iter-next iterator))))
+       (iter-next iterator))))
 
 (defun iter-circular (seq)
   "Infinite iteration on SEQ."

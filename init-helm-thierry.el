@@ -74,7 +74,9 @@
 (global-set-key (kbd "C-c g")                  'helm-google-suggest)
 (global-set-key (kbd "M-g s")                  'helm-do-grep)
 (global-set-key (kbd "C-x C-d")                'helm-browse-project)
-(global-set-key (kbd "<f1>")                   'helm-c-apropos)
+(global-set-key (kbd "<f1>")                   'helm-resume)
+(global-set-key (kbd "C-h f")                  'helm-c-apropos)
+(global-set-key (kbd "C-h v")                  'helm-c-apropos)
 
 (define-key global-map [remap insert-register] 'helm-register)
 (define-key global-map [remap list-buffers]    'helm-buffers-list)

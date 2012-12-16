@@ -4,10 +4,17 @@
 
 (require 'cl)
 
+;;; Annoyances section
+;;
+(global-set-key (kbd "<f11>") nil)
 ;; (add-hook 'emacs-startup-hook #'(lambda ()
 ;;                                   (when (get-buffer "*Compile-Log*")
 ;;                                     (kill-buffer "*Compile-Log*")
 ;;                                     (delete-other-windows))))
+
+;; Annoyance number 1 is bidi
+;; Turn OFF bidi everywhere.
+(setq-default bidi-display-reordering nil)
 
 ;;; Environment
 ;; For eshell env settings.
@@ -16,10 +23,6 @@
 
 ;; calendar-date-style
 (setq calendar-date-style 'european)
-
-;; Annoyance number 1 is bidi
-;; Turn OFF bidi everywhere.
-(setq-default bidi-display-reordering nil)
 
 ;; No-startup-screen
 (setq inhibit-startup-message t)
