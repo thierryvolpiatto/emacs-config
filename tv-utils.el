@@ -1225,43 +1225,6 @@ With a prefix arg remove new lines."
         (delete-region (point-min) (point-max))
         (loop for l in lines do (insert (concat l "\n")))))))
 
-;;; Define multi action key
-;;
-;;
-(defun tv-run-multi-key-command (functions iterator)
-  (let ((fn #'(lambda ()
-                (loop for count from 1 to (length functions)
-                      collect count)))
-        next)
-    (unless (symbol-value iterator)
-      (set iterator (iter-list (funcall fn))))
-    (setq next (iter-next (symbol-value iterator)))
-    (unless next
-      (set iterator (iter-list (funcall fn)))
-      (setq next (iter-next (symbol-value iterator))))
-    (and next (eval iterator) (funcall (nth (1- next) functions)))))
-
-(defun tv-define-multi-key (keymap key functions)
-  "In KEYMAP, define key sequence KEY for function list FUNCTIONS.
-Each time KEY is pressed a function of FUNCTIONS list is run.
-FUNCTIONS are executed in sequential order."
-  (require 'iterator)
-  (lexical-let ((funs functions)
-                (iter (gensym "iter-key")))
-    (eval (list 'defvar iter nil))
-    (define-key keymap (kbd key) #'(lambda ()
-                                     (interactive)
-                                     (tv-run-multi-key-command funs iter)))))
-;; Example:
-;;
-;; (defun foo ()
-;;   (message "Run foo"))
-;; (defun bar ()
-;;   (message "run bar"))
-;; (defun baz ()
-;;   (message "run baz"))
-
-;; (tv-define-multi-key global-map "<f5> q" '(foo bar baz))
  
 (provide 'tv-utils)
 
