@@ -114,6 +114,7 @@
       helm-c-grep-default-command            "ack-grep -Hn --smart-case --no-group --no-color %e %p %f"
       helm-c-grep-default-recurse-command    "ack-grep -H --smart-case --no-group --no-color %e %p %f"
       helm-reuse-last-window-split-state     t
+      ;helm-split-window-default-side         'same
       helm-ls-git-status-command             'magit-status
       helm-ls-hg-status-command              'dvc-status
       ;helm-tramp-verbose                     6
@@ -169,16 +170,6 @@
 ;; From `helm-c-source-find-files' do:
 
 (when (require 'helm-files)
-  ;; Push album to google.
-  (helm-add-action-to-source
-   "Push album to google"
-   'google-create-album-1
-   helm-c-source-find-files 1)
-  ;; Push single file to google.
-  (helm-add-action-to-source
-   "Push file to google album"
-   'helm-push-image-to-google
-   helm-c-source-find-files 2)
   ;; List Hg files in project.
   (helm-add-action-to-source-if
    "Hg list files"
