@@ -70,7 +70,7 @@
 (global-set-key (kbd "C-c C-b")                'helm-browse-code)
 (global-set-key (kbd "C-:")                    'helm-eval-expression-with-eldoc)
 (global-set-key (kbd "C-,")                    'helm-calcul-expression)
-(global-set-key (kbd "C-c h f")                'helm-info-at-point)
+(global-set-key (kbd "C-h d")                  'helm-info-at-point)
 (global-set-key (kbd "C-c g")                  'helm-google-suggest)
 (global-set-key (kbd "M-g s")                  'helm-do-grep)
 (global-set-key (kbd "C-x C-d")                'helm-browse-project)
@@ -81,9 +81,18 @@
 (define-key global-map [remap insert-register] 'helm-register)
 (define-key global-map [remap list-buffers]    'helm-buffers-list)
 
-;; Lisp complete or indent.
-(define-key lisp-interaction-mode-map [remap indent-for-tab-command] 'helm-lisp-completion-at-point-or-indent)
-(define-key emacs-lisp-mode-map       [remap indent-for-tab-command] 'helm-lisp-completion-at-point-or-indent)
+;;; Lisp complete or indent.
+;;
+(helm-define-multi-key lisp-interaction-mode-map
+                       [remap indent-for-tab-command] ;"<tab>"
+                       '(helm-lisp-indent
+                         helm-lisp-completion-or-file-name-at-point)
+                       0.3)
+(helm-define-multi-key emacs-lisp-mode-map
+                       [remap indent-for-tab-command] ;"<tab>"
+                       '(helm-lisp-indent
+                         helm-lisp-completion-or-file-name-at-point)
+                       0.3)
 
 ;; lisp complete.
 (define-key lisp-interaction-mode-map [remap completion-at-point] 'helm-lisp-completion-at-point)

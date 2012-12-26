@@ -298,6 +298,8 @@
 (global-set-key (kbd "C-d")                        'tv-delete-char)
 (global-set-key (kbd "C-x C-'")                    'tv-toggle-resplit-window)
 (global-set-key (kbd "C-§")                        'iedit-mode-on-function)
+(global-set-key (kbd "C-}")                        'tv-enlarge-window)
+(global-set-key (kbd "C-{")                        'tv-shrink-window)
 
 
 ;;; Themes
@@ -530,6 +532,27 @@ With a prefix arg decrease transparency."
 
 ;; Pas-de-dialog-gtk
 (setq use-file-dialog nil)
+
+(defun tv-enlarge-window (arg)
+  (interactive "p")
+  (cond ((one-window-p t)
+         (error "Can't resize main frame"))
+        ((and (or (window-in-direction 'right)
+                  (window-in-direction 'left))
+              (or (window-in-direction 'above)
+                  (window-in-direction 'below)))
+         (enlarge-window arg))
+        ((and (or (window-in-direction 'right)
+                  (window-in-direction 'left)))
+         (enlarge-window-horizontally arg))
+        ((or (window-in-direction 'above)
+             (window-in-direction 'below))
+         (enlarge-window arg))
+        (t (error "tv-enlarge-window: unknow case fix it!"))))
+
+(defun tv-shrink-window ()
+  (interactive)
+  (tv-enlarge-window -1))
 
 
 ;;; Banish mouse on bottom right
@@ -1310,6 +1333,19 @@ With prefix arg always start and let me choose dictionary."
 (setq lisp-simple-loop-indentation 1)
 (setq lisp-loop-keyword-indentation 6)
 (setq lisp-loop-forms-indentation 6)
+
+;; Fix indentation in cl-flet and cl-labels
+(eval-after-load "cl-indent.el"
+  (let ((l '((flet ((&whole 4 &rest (&whole 1 &lambda &body)) &body))
+             (labels . flet)
+             (cl-flet . flet)
+             (cl-labels . flet)
+             (cl-macrolet . flet))))
+    (dolist (el l)
+      (put (car el) 'common-lisp-indent-function
+           (if (symbolp (cdr el))
+               (get (cdr el) 'common-lisp-indent-function)
+               (car (cdr el)))))))
 
 (add-hook 'slime-load-hook #'(lambda () (tv-require 'slime-tramp)))
 
