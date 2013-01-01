@@ -8,44 +8,12 @@
 ;;
 (tv-require 'helm-mercurial)
 (tv-require 'helm-ls-hg)
-(tv-require 'helm-delicious)
 (tv-require 'helm-descbinds)
 (tv-require 'helm-ls-git)
 
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
 
-(defvar helm-c-source-findutils
-  `((name . "Find")
-    (candidates-process . (lambda ()
-                            (helm-find-shell-command-fn directory)))
-    (type . file)
-    (keymap . ,helm-generic-files-map)
-    (requires-pattern . 3)
-    (delayed)))
-
-(defun helm-find-shell-command-fn (directory)
-  (prog1
-      (apply #'start-process "hfind" helm-buffer "find"
-             (list directory
-                   (if case-fold-search "-name" "-iname")
-                   (concat "*" helm-pattern "*") "-type" "f"))
-    (set-process-sentinel (get-process "hfind")
-                          #'(lambda (process event)
-                              (when (string= event "finished\n")
-                                (ignore))))))
-
-(defun helm-find (arg)
-  (interactive "P")
-  (progv '(directory
-           helm-ff-transformer-show-only-basename)
-      (list (if arg
-                (file-name-as-directory
-                 (read-directory-name "DefaultDirectory: "))
-                default-directory))
-    (helm :sources 'helm-c-source-findutils :buffer "*helm find*")))
-
-(global-set-key (kbd "<f5> s") 'helm-find)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -54,7 +22,6 @@
 ;;
 ;;
 (define-key helm-command-map (kbd "q")   'helm-qpatchs)
-(define-key helm-command-map (kbd "d")   'helm-delicious)
 (define-key helm-command-map (kbd "g")   'helm-apt)
 
 ;;; Global-map
@@ -77,24 +44,26 @@
 (global-set-key (kbd "<f1>")                   'helm-resume)
 (global-set-key (kbd "C-h f")                  'helm-c-apropos)
 (global-set-key (kbd "C-h v")                  'helm-c-apropos)
-
-(define-key global-map [remap insert-register] 'helm-register)
+(global-set-key (kbd "<f5> s")                 'helm-find)
+(define-key global-map [remap jump-to-register] 'helm-register)
 (define-key global-map [remap list-buffers]    'helm-buffers-list)
 
-;;; Lisp complete or indent.
+;;; Lisp complete or indent. (Rebing <tab>)
 ;;
 (helm-define-multi-key lisp-interaction-mode-map
                        [remap indent-for-tab-command] ;"<tab>"
                        '(helm-lisp-indent
-                         helm-lisp-completion-or-file-name-at-point)
+                         helm-lisp-completion-at-point)
                        0.3)
+
 (helm-define-multi-key emacs-lisp-mode-map
                        [remap indent-for-tab-command] ;"<tab>"
                        '(helm-lisp-indent
-                         helm-lisp-completion-or-file-name-at-point)
-                       0.3)
+                         helm-lisp-completion-at-point)
+                        0.3)
 
-;; lisp complete.
+;;; lisp complete. (Rebind M-<tab>)
+;;
 (define-key lisp-interaction-mode-map [remap completion-at-point] 'helm-lisp-completion-at-point)
 (define-key emacs-lisp-mode-map       [remap completion-at-point] 'helm-lisp-completion-at-point)
 
@@ -174,7 +143,7 @@
   (loop for cand in (helm-marked-candidates)
         always (string-match "\.el$" cand)))
 
-;;; Add new actions to sources
+;;; Modify source attributes
 ;;
 ;; From `helm-c-source-find-files' do:
 
@@ -191,6 +160,10 @@
    'async-byte-compile-file
    helm-c-source-find-files
    'helm-ff-candidates-lisp-p))
+
+;; Imenu
+(when (require 'helm-imenu) 
+  (helm-attrset 'candidate-number-limit 9999 helm-c-source-imenu))
 
 ;;; enable Modes
 ;;

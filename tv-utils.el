@@ -329,10 +329,27 @@ START and END are buffer positions indicating what to append."
       (message "%s" (mailcap-extension-to-mime (file-name-extension fname t)))
       (mailcap-extension-to-mime (file-name-extension fname t))))
 
-;; Eval-region 
+;;; Eval-region
+;;
+;;
 (defun tv-eval-region (beg end)
   (interactive "r")
-  (eval-region beg end t))
+  (let ((str (buffer-substring beg end))
+        expr
+        store)
+    (with-temp-buffer
+      (save-excursion
+        (insert str))
+      (condition-case err
+          (while (setq expr (read (current-buffer)))
+            (push (eval expr) store))
+        (end-of-file nil)))
+    (message "Evaluated in Region:\n- %s"
+             (mapconcat 'identity
+                        (mapcar #'(lambda (x)
+                                    (format "`%s'" x))
+                                (reverse store))
+                        "\n- "))))
 
 ;; String-processing 
 

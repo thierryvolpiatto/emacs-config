@@ -57,7 +57,7 @@
     (tv-require 'info)
     (add-to-list 'Info-directory-list "~/elisp/ngnus/texi/")
     (add-to-list 'Info-default-directory-list "~/elisp/ngnus/texi/")))
-(tv-maybe-load-ngnus t)
+(tv-maybe-load-ngnus)
 
 (defun tv-maybe-add-org-load-path (&optional force)
   (when (or (< emacs-major-version 24) force)
@@ -67,7 +67,7 @@
     (dolist (lib '("~/elisp/org-active"
                    "~/elisp/org-active/lisp"))
       (add-to-list 'load-path lib))))
-(tv-maybe-add-org-load-path t)
+(tv-maybe-add-org-load-path)
 
 
 ;;; load-paths
@@ -289,7 +289,6 @@
 (global-set-key (kbd "C->")                        'other-window-forward)
 (global-set-key (kbd "<f11> s c")                  'go-to-scratch)
 (global-set-key (kbd "C-x r a")                    'tv-append-to-register)
-(global-set-key (kbd "C-x r L")                    'list-registers)
 (global-set-key (kbd "C-c t r")                    'translate-at-point)
 (global-set-key (kbd "<f5> c")                     'tv-toggle-calendar)
 (global-set-key (kbd "C-h C-e")                    'tv-tail-echo-area-messages)
@@ -298,8 +297,7 @@
 (global-set-key (kbd "C-d")                        'tv-delete-char)
 (global-set-key (kbd "C-x C-'")                    'tv-toggle-resplit-window)
 (global-set-key (kbd "C-§")                        'iedit-mode-on-function)
-(global-set-key (kbd "C-}")                        'tv-enlarge-window)
-(global-set-key (kbd "C-{")                        'tv-shrink-window)
+(global-set-key (kbd "C-x C-(")                    'tv-resize-window)
 
 
 ;;; Themes
@@ -533,26 +531,32 @@ With a prefix arg decrease transparency."
 ;; Pas-de-dialog-gtk
 (setq use-file-dialog nil)
 
-(defun tv-enlarge-window (arg)
-  (interactive "p")
-  (cond ((one-window-p t)
-         (error "Can't resize main frame"))
-        ((and (or (window-in-direction 'right)
-                  (window-in-direction 'left))
-              (or (window-in-direction 'above)
-                  (window-in-direction 'below)))
-         (enlarge-window arg))
-        ((and (or (window-in-direction 'right)
-                  (window-in-direction 'left)))
-         (enlarge-window-horizontally arg))
-        ((or (window-in-direction 'above)
-             (window-in-direction 'below))
-         (enlarge-window arg))
-        (t (error "tv-enlarge-window: unknow case fix it!"))))
-
-(defun tv-shrink-window ()
+(defun tv-resize-window ()
   (interactive)
-  (tv-enlarge-window -1))
+  (assert (not (one-window-p t)) nil "Can't resize main frame!")
+  (while (let ((input (read-key (propertize "Resize window (Arrow keys, split h/v |_, Ow `C-<')"
+                                            'face 'minibuffer-prompt))))
+           (case input
+             (right
+              (and (or (window-in-direction 'right)
+                       (window-in-direction 'left))
+                   (enlarge-window-horizontally 1)))
+             (left
+              (and (or (window-in-direction 'right)
+                       (window-in-direction 'left))
+                   (shrink-window-horizontally 1)))
+             (down
+              (and (or (window-in-direction 'above)
+                       (window-in-direction 'below))
+                   (enlarge-window 1)))
+             (up
+              (and (or (window-in-direction 'above)
+                       (window-in-direction 'below))
+                   (shrink-window 1)))
+             (?| (split-window-horizontally))
+             (?_ (split-window-vertically))
+             (?\C-< (other-window-backward 1) t)
+             (t nil)))))
 
 
 ;;; Banish mouse on bottom right
@@ -1337,6 +1341,7 @@ With prefix arg always start and let me choose dictionary."
 ;; Fix indentation in cl-flet and cl-labels
 (eval-after-load "cl-indent.el"
   (let ((l '((flet ((&whole 4 &rest (&whole 1 &lambda &body)) &body))
+             (cl-flet* . flet)
              (labels . flet)
              (cl-flet . flet)
              (cl-labels . flet)
@@ -1346,6 +1351,12 @@ With prefix arg always start and let me choose dictionary."
            (if (symbolp (cdr el))
                (get (cdr el) 'common-lisp-indent-function)
                (car (cdr el)))))))
+
+(dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
+  (font-lock-add-keywords
+   mode
+   '(("(\\<\\(cl-flet[*]?\\|cl-labels\\|cl-macrolet\\)\\>" 1 font-lock-keyword-face)
+     ("(\\<\\(cl-loop\\|cl-dolist\\)\\>" 1 font-lock-keyword-face))))
 
 (add-hook 'slime-load-hook #'(lambda () (tv-require 'slime-tramp)))
 
