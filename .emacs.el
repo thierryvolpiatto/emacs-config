@@ -57,7 +57,7 @@
     (tv-require 'info)
     (add-to-list 'Info-directory-list "~/elisp/ngnus/texi/")
     (add-to-list 'Info-default-directory-list "~/elisp/ngnus/texi/")))
-(tv-maybe-load-ngnus)
+(tv-maybe-load-ngnus t)
 
 (defun tv-maybe-add-org-load-path (&optional force)
   (when (or (< emacs-major-version 24) force)
@@ -67,7 +67,7 @@
     (dolist (lib '("~/elisp/org-active"
                    "~/elisp/org-active/lisp"))
       (add-to-list 'load-path lib))))
-(tv-maybe-add-org-load-path)
+;; (tv-maybe-add-org-load-path t)
 
 
 ;;; load-paths
@@ -1562,6 +1562,7 @@ With prefix arg always start and let me choose dictionary."
 ;;
 ;; Possible values: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
 (setq vc-handled-backends '(RCS CVS SVN Hg Git Bzr))
+;(setq vc-handled-backends '(RCS Hg Git))
 
 ;;; Temporary Bugfixes until fixed in trunk.
 ;;

@@ -14,7 +14,10 @@
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
 
-
+;; (defun helm-put-triangle-in-fringe ()
+;;   (with-current-buffer helm-buffer
+;;     (set (make-local-variable 'overlay-arrow-position) (point-marker))))
+;; (add-hook 'helm-move-selection-after-hook 'helm-put-triangle-in-fringe)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -42,8 +45,7 @@
 (global-set-key (kbd "M-g s")                  'helm-do-grep)
 (global-set-key (kbd "C-x C-d")                'helm-browse-project)
 (global-set-key (kbd "<f1>")                   'helm-resume)
-(global-set-key (kbd "C-h f")                  'helm-c-apropos)
-(global-set-key (kbd "C-h v")                  'helm-c-apropos)
+(global-set-key (kbd "C-h C-f")                'helm-c-apropos)
 (global-set-key (kbd "<f5> s")                 'helm-find)
 (define-key global-map [remap jump-to-register] 'helm-register)
 (define-key global-map [remap list-buffers]    'helm-buffers-list)
@@ -93,8 +95,11 @@
       helm-c-grep-default-recurse-command    "ack-grep -H --smart-case --no-group --no-color %e %p %f"
       helm-reuse-last-window-split-state     t
       ;helm-split-window-default-side         'same
+      helm-buffers-favorite-modes            (append helm-buffers-favorite-modes
+                                                     '(picture-mode artist-mode))
       helm-ls-git-status-command             'magit-status
       helm-ls-hg-status-command              'dvc-status
+      helm-never-delay-on-input              nil
       ;helm-tramp-verbose                     6
       ;helm-ff-file-name-history-use-recentf  t
       )

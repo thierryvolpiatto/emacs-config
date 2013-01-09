@@ -263,12 +263,6 @@ This will run in `message-send-hook'."
 ;; Suppression de la signature quand on quote. 
 (setq message-cite-function 'message-cite-original-without-signature)
 
-;; shimbun 
-;; (add-to-list 'load-path "~/elisp/emacs-w3m/shimbun/")
-;; (setq shimbun-server-additional-path '("~/elisp"))
-;; (require 'nnshimbun)
-;; (autoload 'gnus-group-make-shimbun-group "nnshimbun" nil t)
-
 ;; Integration dans dired
 (require 'gnus-dired)
 (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
@@ -309,12 +303,6 @@ This will run in `message-send-hook'."
         (gnus-del-mark (from -2) (subject -5))
         (gnus-read-mark (from 2) (subject 1))
         (gnus-killed-mark (from 0) (subject -3))))
-                                        ;(gnus-killed-mark (from -1) (subject -3))))
-                                        ;(gnus-kill-file-mark (from -9999)))
-                                        ;(gnus-expirable-mark (from -1) (subject -1))
-                                        ;(gnus-ancient-mark (subject -1))
-                                        ;(gnus-low-score-mark (subject -1))
-                                        ;(gnus-catchup-mark (subject -1))))
 
 (setq gnus-score-decay-constant 1)      ;default = 3
 (setq gnus-score-decay-scale 0.03)      ;default = 0.05
@@ -367,11 +355,6 @@ This will run in `message-send-hook'."
 ;; Gravatar
 (setq gnus-treat-from-gravatar 'head) ; in From header
 (setq gnus-treat-mail-gravatar 'head) ; in To/Cc header
-
-;; sort
-;; (setq gnus-thread-sort-functions
-;;       '(gnus-thread-sort-by-number
-;;         gnus-thread-sort-by-date))
 
 
 ;;; .gnus.el ends here
