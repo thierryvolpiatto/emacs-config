@@ -1562,7 +1562,6 @@ With prefix arg always start and let me choose dictionary."
 ;;
 ;; Possible values: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
 (setq vc-handled-backends '(RCS CVS SVN Hg Git Bzr))
-;(setq vc-handled-backends '(RCS Hg Git))
 
 ;;; Temporary Bugfixes until fixed in trunk.
 ;;
