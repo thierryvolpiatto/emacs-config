@@ -57,7 +57,7 @@
     (tv-require 'info)
     (add-to-list 'Info-directory-list "~/elisp/ngnus/texi/")
     (add-to-list 'Info-default-directory-list "~/elisp/ngnus/texi/")))
-(tv-maybe-load-ngnus t)
+;; (tv-maybe-load-ngnus t)
 
 (defun tv-maybe-add-org-load-path (&optional force)
   (when (or (< emacs-major-version 24) force)
