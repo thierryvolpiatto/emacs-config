@@ -86,7 +86,7 @@
 (dolist (i '("/usr/local/share/emacs/site-lisp"
              "/usr/local/share/emacs/site-lisp/auctex"
 	     "~/elisp/"
-             "~/elisp/dvc/lisp/"
+             ;"~/elisp/dvc/lisp/"
 	     "~/elisp/magit"
              "~/elisp/Emacs-wgrep"
              "~/elisp/auctex"
@@ -182,7 +182,7 @@
 (tv-require 'htmlize-hack)
 (tv-require 'magit)
 (tv-require 'magit-stgit)
-(tv-require 'dvc-init)
+;(tv-require 'dvc-init)
 (tv-require 'emms-mpd-config)
 (tv-require 'dired-extension)
 (tv-require 'htmlize)
@@ -1561,7 +1561,8 @@ With prefix arg always start and let me choose dictionary."
 ;;
 ;;
 ;; Possible values: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
-(setq vc-handled-backends '(RCS CVS SVN Hg Git Bzr))
+;(setq vc-handled-backends '(RCS CVS SVN Hg Git Bzr))
+(setq vc-handled-backends '(RCS CVS SVN Hg Git))
 
 ;;; Temporary Bugfixes until fixed in trunk.
 ;;

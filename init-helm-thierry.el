@@ -6,7 +6,7 @@
 
 ;;;; Extensions
 ;;
-(tv-require 'helm-mercurial)
+;(tv-require 'helm-mercurial)
 (tv-require 'helm-ls-hg)
 (tv-require 'helm-descbinds)
 (tv-require 'helm-ls-git)
@@ -24,7 +24,7 @@
 ;;; Helm-command-map
 ;;
 ;;
-(define-key helm-command-map (kbd "q")   'helm-qpatchs)
+;(define-key helm-command-map (kbd "q")   'helm-qpatchs)
 (define-key helm-command-map (kbd "g")   'helm-apt)
 
 ;;; Global-map
