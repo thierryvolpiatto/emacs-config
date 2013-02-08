@@ -304,6 +304,14 @@ This will run in `message-send-hook'."
         (gnus-read-mark (from 2) (subject 1))
         (gnus-killed-mark (from 0) (subject -3))))
 
+;; Original value
+;; '((gnus-kill-file-mark)
+;;   (gnus-unread-mark)
+;;   (gnus-read-mark (from 3) (subject 28))
+;;   (gnus-catchup-mark (subject -8))
+;;   (gnus-killed-mark (from -2) (subject -18))
+;;   (gnus-del-mark (from -2) (subject -13)))
+
 (setq gnus-score-decay-constant 1)      ;default = 3
 (setq gnus-score-decay-scale 0.03)      ;default = 0.05
 

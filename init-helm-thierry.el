@@ -98,7 +98,6 @@
       helm-buffers-favorite-modes            (append helm-buffers-favorite-modes
                                                      '(picture-mode artist-mode))
       helm-ls-git-status-command             'magit-status
-      helm-ls-hg-status-command              'dvc-status
       helm-never-delay-on-input              nil
       ;helm-tramp-verbose                     6
       ;helm-ff-file-name-history-use-recentf  t
@@ -150,8 +149,7 @@
 
 ;;; Modify source attributes
 ;;
-;; From `helm-c-source-find-files' do:
-
+;; Add actions to `helm-c-source-find-files' IF:
 (when (require 'helm-files)
   ;; List Hg files in project.
   (helm-add-action-to-source-if
@@ -165,6 +163,14 @@
    'async-byte-compile-file
    helm-c-source-find-files
    'helm-ff-candidates-lisp-p))
+
+;; Add magit to `helm-c-source-ls-git'
+(helm-add-action-to-source
+ "Magit status"
+ #'(lambda (_candidate)
+     (with-helm-buffer (magit-status helm-default-directory)))
+ helm-c-source-ls-git
+ 4)
 
 ;; Imenu
 (when (require 'helm-imenu) 

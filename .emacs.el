@@ -7,10 +7,10 @@
 ;;; Annoyances section
 ;;
 (global-set-key (kbd "<f11>") nil)
-;; (add-hook 'emacs-startup-hook #'(lambda ()
-;;                                   (when (get-buffer "*Compile-Log*")
-;;                                     (kill-buffer "*Compile-Log*")
-;;                                     (delete-other-windows))))
+(add-hook 'emacs-startup-hook #'(lambda ()
+                                  (when (get-buffer "*Compile-Log*")
+                                    (kill-buffer "*Compile-Log*")
+                                    (delete-other-windows))))
 
 ;; Annoyance number 1 is bidi
 ;; Turn OFF bidi everywhere.
@@ -86,7 +86,7 @@
 (dolist (i '("/usr/local/share/emacs/site-lisp"
              "/usr/local/share/emacs/site-lisp/auctex"
 	     "~/elisp/"
-             ;"~/elisp/dvc/lisp/"
+             ;"~/elisp/monky"
 	     "~/elisp/magit"
              "~/elisp/Emacs-wgrep"
              "~/elisp/auctex"
@@ -96,7 +96,7 @@
 	     "~/elisp/cmake"
 	     "~/elisp/desktop-file-utils"
 	     "~/elisp/emacs-wget"
-             "~/elisp/w3m"
+             "~/elisp/iedit"
 	     "~/elisp/git"
 	     "~/elisp/tex-utils"
 	     "~/elisp/muse/lisp"
@@ -182,7 +182,7 @@
 (tv-require 'htmlize-hack)
 (tv-require 'magit)
 (tv-require 'magit-stgit)
-;(tv-require 'dvc-init)
+;(tv-require 'monky)
 (tv-require 'emms-mpd-config)
 (tv-require 'dired-extension)
 (tv-require 'htmlize)
@@ -202,6 +202,7 @@
 (tv-require 'smallurl)
 (tv-require 'zop-to-char)
 (tv-require 'iedit)
+(tv-require 'iedit-rect)
 (tv-require 'csv2org)
 (tv-require 'el-expectations)
 (tv-require 'el-mock)
@@ -213,7 +214,7 @@
 (tv-require 'org-google-weather)
 (tv-require 'markdown-mode)
 (tv-require 'boxquote)
-(tv-require 'config-w3m)
+;(tv-require 'config-w3m)
 (tv-require 'wgrep-helm)
 (when (tv-require 'dired-aux)
   (tv-require 'helm-async))
@@ -226,7 +227,6 @@
 (global-set-key (kbd "C-z")                        nil) ; Disable `suspend-frame'.
 (global-set-key (kbd "C-!")                        'eshell-command)
 (global-set-key (kbd "C-c R")                      'revert-buffer)
-(global-set-key (kbd "C-c v")                      'yank-from-X)
 (global-set-key (kbd "C-c W")                      'whitespace-mode)
 (global-set-key (kbd "C-M-j")                      #'(lambda () (interactive) (kill-sexp -1)))
 (global-set-key (kbd "<f7> m")                     'tv-gnus)
@@ -362,7 +362,7 @@
 
 (defun quickping (host)
   "Return non--nil when host is reachable."
-  (= 0 (call-process "ping" nil nil nil "-c1" "-W30" "-q" host)))
+  (= 0 (call-process "ping" nil nil nil "-c1" "-W10" "-q" host)))
 
 (defun tv-gnus (arg)
   (interactive "P")
@@ -838,7 +838,7 @@ account add <protocol> moi@mail.com password."
 
 ;; Copy-and-cut-to-x-clipboard
 ;; Don't add to emacs kill-ring use yank-from-clipboard instead (C-c v)
-(setq interprogram-paste-function nil)
+;(setq interprogram-paste-function nil)
 
 ;; This enable pushing x-selection to emacs kill-ring
 ;; X-apps ==> emacs kill-ring
@@ -847,19 +847,19 @@ account add <protocol> moi@mail.com password."
 (setq select-active-regions t)
 
 ;; Emacs kill-ring ==> X-apps
-(setq x-select-enable-clipboard t)
-(when (boundp 'x-select-enable-clipboard-manager)
-  (setq x-select-enable-clipboard-manager nil))
+;; (setq x-select-enable-clipboard t)
+;; (when (boundp 'x-select-enable-clipboard-manager)
+;;   (setq x-select-enable-clipboard-manager nil))
 
-(defun yank-from-X ()
-  "Yank from X-apps to Emacs."
-  (interactive)
-  (let ((primary (x-get-selection 'PRIMARY))
-        (clip    (x-get-selection 'CLIPBOARD)))
-    (cond (primary (insert primary))
-          (clip    (insert clip))
-          (t       (yank)))))
-
+;; (defun yank-from-X ()
+;;   "Yank from X-apps to Emacs."
+;;   (interactive)
+;;   (let ((primary (x-get-selection 'PRIMARY))
+;;         (clip    (x-get-selection 'CLIPBOARD)))
+;;     (cond (primary (insert primary))
+;;           (clip    (insert clip))
+;;           (t       (yank)))))
+;;(global-set-key (kbd "C-c v")                      'yank-from-X)
 
 ;; Whitespace-mode
 (when (tv-require 'whitespace)
@@ -928,7 +928,7 @@ account add <protocol> moi@mail.com password."
 
 (setq
  python-shell-interpreter "ipython"
- python-shell-interpreter-args ""
+ python-shell-interpreter-args "-i --autoindent"
  python-shell-prompt-regexp "In \\[[0-9]+\\]: "
  python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
  python-shell-completion-setup-code
@@ -939,6 +939,10 @@ from IPython.core.completerlib import module_completion"
  "';'.join(module_completion('''%s'''))\n"
  python-shell-completion-string-code
  "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
+
+(add-hook 'python-mode-hook
+  #'(lambda ()
+      (define-key python-mode-map (kbd "C-m") 'newline-and-indent)))
 
 ;; Entete-py
 (defun tv-insert-python-header ()
@@ -1553,92 +1557,14 @@ With prefix arg always start and let me choose dictionary."
 ;; Minibuffers completion
 (setq completion-cycle-threshold t) ; always cycle, no completion buffers.
 
-;; Remove undesired hooks.
-;(remove-hook 'find-file-hook 'vc-find-file-hook)
-(remove-hook 'find-file-hook 'tla-find-file-hook)
-
-;;; vc
+;;; VC
 ;;
 ;;
 ;; Possible values: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
-;(setq vc-handled-backends '(RCS CVS SVN Hg Git Bzr))
-(setq vc-handled-backends '(RCS CVS SVN Hg Git))
+(setq vc-handled-backends '(RCS Hg Git))
 
 ;;; Temporary Bugfixes until fixed in trunk.
 ;;
-(when (or (version< emacs-version "24.2")
-          (version= emacs-version "24.2"))
-  (defun y-or-n-p (prompt)
-    "Ask user a \"y or n\" question.  Return t if answer is \"y\".
-PROMPT is the string to display to ask the question.  It should
-end in a space; `y-or-n-p' adds \"(y or n) \" to it.
-
-No confirmation of the answer is requested; a single character is enough.
-Also accepts Space to mean yes, or Delete to mean no.  \(Actually, it uses
-the bindings in `query-replace-map'; see the documentation of that variable
-for more information.  In this case, the useful bindings are `act', `skip',
-`recenter', and `quit'.\)
-
-Under a windowing system a dialog box will be used if `last-nonmenu-event'
-is nil and `use-dialog-box' is non-nil."
-    ;; ¡Beware! when I tried to edebug this code, Emacs got into a weird state
-    ;; where all the keys were unbound (i.e. it somehow got triggered
-    ;; within read-key, apparently).  I had to kill it.
-    (let ((answer 'recenter))
-      (cond
-        (noninteractive
-         (setq prompt (concat prompt
-                              (if (eq ?\s (aref prompt (1- (length prompt))))
-                                  "" " ")
-                              "(y or n) "))
-         (let ((temp-prompt prompt))
-           (while (not (memq answer '(act skip)))
-             (let ((str (read-string temp-prompt)))
-               (cond ((member str '("y" "Y")) (setq answer 'act))
-                     ((member str '("n" "N")) (setq answer 'skip))
-                     (t (setq temp-prompt (concat "Please answer y or n.  "
-                                                  prompt))))))))
-        ((and (display-popup-menus-p)
-              (listp last-nonmenu-event)
-              use-dialog-box)
-         (setq answer
-               (x-popup-dialog t `(,prompt ("Yes" . act) ("No" . skip)))))
-        (t
-         (setq prompt (concat prompt
-                              (if (eq ?\s (aref prompt (1- (length prompt))))
-                                  "" " ")
-                              "(y or n) "))
-         (while
-             (let* ((key
-                     (let ((cursor-in-echo-area t))
-                       (when minibuffer-auto-raise
-                         (raise-frame (window-frame (minibuffer-window))))
-                       (read-key (propertize (if (or (eq answer 'recenter)
-                                                     (eq answer 'scroll))
-                                                 prompt
-                                                 (concat "Please answer y or n.  "
-                                                         prompt))
-                                             'face 'minibuffer-prompt)))))
-               (setq answer (lookup-key query-replace-map (vector key) t))
-               (cond
-                 ((memq answer '(skip act)) nil)
-                 ((eq answer 'recenter) (recenter) t)
-                 ((memq answer '(exit-prefix quit)) (signal 'quit nil) t)
-                 ((eq key ?\C-v)
-                  (setq answer 'scroll)
-                  (condition-case nil (scroll-up 1) (error nil)) t)
-                 ((eq key ?\M-v)
-                  (setq answer 'scroll)
-                  (condition-case nil (scroll-down 1) (error nil)) t)
-                 (t t)))
-           (ding)
-           (discard-input))))
-      (let ((ret (eq answer 'act)))
-        (unless noninteractive
-          ;; FIXME this prints one too many spaces, since prompt
-          ;; already ends in a space.  Eg "... (y or n)  y".
-          (message "%s %s" prompt (if ret "y" "n")))
-        ret))))
 
 
 ;; ----Empty---
@@ -1741,29 +1667,6 @@ is nil and `use-dialog-box' is non-nil."
         ;; mail
         ""))
 
-(defun cat-command ()
-  "A command for cats."
-  (interactive)
-  (tv-require 'animate)
-  (let ((mouse "
-           ___(00)
-        ~~/_____^'>
-          /    \\")
-        (h-pos (floor (/ (window-height) 2)))
-        (contents (buffer-string))
-        (mouse-buffer (generate-new-buffer "*mouse*")))
-    (save-excursion
-      (switch-to-buffer mouse-buffer)
-      (insert contents)
-      (setq truncate-lines t)
-      (animate-string mouse h-pos 0)
-      (dotimes (_ (window-width))
-        (sit-for 0.01)
-        (dotimes (n 3)
-          (helm-goto-line (+ h-pos n 2) t)
-          (move-to-column 0)
-          (insert " "))))
-    (kill-buffer mouse-buffer)))
 
 ;;; markdown-mode
 ;;
@@ -1832,6 +1735,10 @@ is nil and `use-dialog-box' is non-nil."
 ;;       print-level nil
 ;;       print-circle t
 ;;       eval-expression-print-level nil)
+
+;;; Monky - hg frontend
+;;
+;(setq monky-process-type 'cmdserver)
 
 ;;; Report bug
 ;;
