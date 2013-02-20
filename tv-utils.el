@@ -1242,7 +1242,28 @@ With a prefix arg remove new lines."
         (delete-region (point-min) (point-max))
         (loop for l in lines do (insert (concat l "\n")))))))
 
- 
+(defun tv-search-gmane (query &optional group author)
+  (interactive (list
+                (read-from-minibuffer "Query: ")
+                (helm-comp-read "Group: "
+                                '("gmane.emacs.gnus.general"
+                                  "gmane.emacs.gnus.user"
+                                  "gmane.emacs.help"
+                                  "gmane.emacs.devel"
+                                  "gmane.emacs.bugs"
+                                  )
+                                :must-match t)
+                (read-from-minibuffer "Author(Optional): ")))
+  (browse-url (concat "http://search.gmane.org/?query="
+                      query
+                      "&author="
+                      author
+                      "&group="
+                      group
+                      "&sort=relevance&DEFAULTOP=and&TOPDOC=80&xP=Zemac&xFILTERS=A"
+                      author
+                      "---A")))
+
 (provide 'tv-utils)
 
 ;; Local Variables:

@@ -14,6 +14,24 @@
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
 
+(defun helm-get-actions-from-source (source)
+  (interactive (list (helm-comp-read
+                      "Source: " (loop for s being the symbol
+                                       for str = (symbol-name s)
+                                       when (string-match "^helm-c-source" str)
+                                       collect str))))
+  (let* ((actions (helm-attr 'action (symbol-value (intern source))))
+         (act (helm-comp-read "Action: " (cdr actions))))
+    (kill-new (car (rassq act actions)))))
+
+(defun helm-version ()
+  (with-current-buffer (find-file-noselect (find-library-name "helm-pkg"))
+    (save-excursion
+      (goto-char (point-min))
+      (when (re-search-forward
+             "\\([0-9]+?\\)\\.\\([0-9]+?\\)\\.\\([0-9]+?\\)\\.?[0-9]*" nil t)
+      (prog1 (match-string-no-properties 0) (kill-buffer))))))
+
 ;; (defun helm-put-triangle-in-fringe ()
 ;;   (with-current-buffer helm-buffer
 ;;     (set (make-local-variable 'overlay-arrow-position) (point-marker))))
@@ -95,6 +113,7 @@
       helm-c-grep-default-recurse-command    "ack-grep -H --smart-case --no-group --no-color %e %p %f"
       helm-reuse-last-window-split-state     t
       ;helm-split-window-default-side         'same
+      helm-persistent-action-use-special-display t
       helm-buffers-favorite-modes            (append helm-buffers-favorite-modes
                                                      '(picture-mode artist-mode))
       helm-ls-git-status-command             'magit-status

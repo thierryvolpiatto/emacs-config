@@ -524,7 +524,6 @@ With a prefix arg decrease transparency."
                                       (alpha . nil)
                                       (fullscreen . nil))))
 
-
 ;; Don't split this windows horizontally
 (setq split-width-threshold nil)
 
@@ -1290,11 +1289,21 @@ With prefix arg always start and let me choose dictionary."
 ;;; Tramp-config
 ;;
 ;;
-;(tv-require 'tramp)
-;(setq tramp-default-method "ssh") ; methode par defaut
-;(setq tramp-verbose 6)
-;(setq helm-tramp-verbose 6)
+(tv-require 'tramp)
+(setq tramp-default-method "ssh") ; methode par defaut
+(setq tramp-verbose 6)
+(setq helm-tramp-verbose 6)
 
+;; Android settings (Only available on trunk)
+;;
+(when (boundp 'tramp-connection-properties)
+  (add-to-list 'tramp-connection-properties
+               (list (regexp-quote "192.168.0.24") "remote-shell" "sh"))
+  (add-to-list 'tramp-connection-properties
+               (list (regexp-quote "zte") "remote-shell" "sh"))
+  (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+  (pushnew "/system/xbin" tramp-remote-path :test 'equal)
+  (add-to-list 'tramp-remote-process-environment "TMPDIR=$HOME/tmp"))
 
 ;; No messages
 (setq tramp-message-show-message nil)
@@ -1565,7 +1574,37 @@ With prefix arg always start and let me choose dictionary."
 
 ;;; Temporary Bugfixes until fixed in trunk.
 ;;
+(defun push-mark (&optional location nomsg activate)
+  "Set mark at LOCATION (point, by default) and push old mark on mark ring.
+If the last global mark pushed was not in the current buffer,
+also push LOCATION on the global mark ring.
+Display `Mark set' unless the optional second arg NOMSG is non-nil.
 
+Novice Emacs Lisp programmers often try to use the mark for the wrong
+purposes.  See the documentation of `set-mark' for more information.
+
+In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
+  (unless (null (mark t))
+    (setq mark-ring (cons (copy-marker (mark-marker)) mark-ring))
+    (when (> (length mark-ring) mark-ring-max)
+      (move-marker (car (nthcdr mark-ring-max mark-ring)) nil)
+      (setcdr (nthcdr (1- mark-ring-max) mark-ring) nil)))
+  (set-marker (mark-marker) (or location (point)) (current-buffer))
+  ;; Now push the mark on the global mark ring.
+  (if (and global-mark-ring
+	   (eq (marker-buffer (car global-mark-ring)) (current-buffer)))
+      ;; The last global mark pushed was in this same buffer.
+      ;; Don't push another one.
+      (setcar global-mark-ring (copy-marker (mark-marker)))
+      (setq global-mark-ring (cons (copy-marker (mark-marker)) global-mark-ring))
+      (when (> (length global-mark-ring) global-mark-ring-max)
+        (move-marker (car (nthcdr global-mark-ring-max global-mark-ring)) nil)
+        (setcdr (nthcdr (1- global-mark-ring-max) global-mark-ring) nil)))
+  (or nomsg executing-kbd-macro (> (minibuffer-depth) 0)
+      (message "Mark set"))
+  (if (or activate (not transient-mark-mode))
+      (set-mark (mark t)))
+  nil)
 
 ;; ----Empty---
 
