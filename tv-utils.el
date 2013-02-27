@@ -617,7 +617,7 @@ That may not work with Emacs versions <=23.1 for hash tables."
                                (helm-surfraw-engines-history . "helm-surfraw-engines-history.el")
                                (tv-save-buffers-alist . "tv-save-buffers-alist.el")
                                (helm-ff-history . "helm-ff-history.el")
-                               (helm-c-grep-history . "helm-c-grep-history.el")
+                               (helm-grep-history . "helm-grep-history.el")
                                (kill-ring . "kill-ring.el")
                                (kill-ring-yank-pointer . "kill-ring-yank-pointer.el")
                                (register-alist . "register-alist.el")
@@ -752,7 +752,7 @@ Can be used from any place in the line."
 
 ;; Insert-log-from-patch 
 (defun tv-insert-log-from-patch (patch)
-  (interactive (list (helm-c-read-file-name
+  (interactive (list (helm-read-file-name
                       "Patch: "
                       :preselect ".*[Pp]atch.*")))
   (let (beg end data)
@@ -999,7 +999,7 @@ Can be used from any place in the line."
   "Interface to df -h command line.
 If a prefix arg is given choose directory, otherwise use `default-directory'."
   (interactive (list (if current-prefix-arg
-                         (helm-c-read-file-name
+                         (helm-read-file-name
                           "Directory: " :test 'file-directory-p)
                          default-directory)))
   (let ((df-info (tv-get-disk-info directory t)))

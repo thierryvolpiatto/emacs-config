@@ -74,6 +74,11 @@
 
 ;; [README] (find-fline "/usr/local/share/emacs/24.0.92/lisp/mail/smtpmail.el.gz" "Please")
 
+;; Don't send to these address in wide reply.
+(setq message-dont-reply-to-names '("notifications@github.com"
+                                    "helm@noreply.github.com"
+                                    "thierry.volpiatto@gmail.com"))
+
 (setq user-mail-address "thierry.volpiatto@gmail.com")
 (setq user-full-name "Thierry Volpiatto")
 
@@ -317,7 +322,7 @@ This will run in `message-send-hook'."
 
 (setq gnus-decay-scores t)              ;(gnus-decay-score 1000)
 
-;;Use a global score file to filter gmane spam articles. That is a really cool feature.
+;; Use a global score file to filter gmane spam articles.
 (setq gnus-global-score-files
       '("~/News/scores/all.SCORE"))
 
@@ -328,7 +333,7 @@ This will run in `message-send-hook'."
 
 ;; gnus-demon (start with `gnus-demon-init')
 ;; Scan for new news
-;; (gnus-demon-add-handler 'gnus-demon-scan-news 5 1)
+;;(gnus-demon-add-handler 'gnus-demon-scan-news 5 1)
 
 ;; Scroll-other-window 
 (define-key gnus-summary-mode-map (kbd "<C-M-down>") #'(lambda ()

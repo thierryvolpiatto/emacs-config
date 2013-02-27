@@ -57,7 +57,7 @@
     (tv-require 'info)
     (add-to-list 'Info-directory-list "~/elisp/ngnus/texi/")
     (add-to-list 'Info-default-directory-list "~/elisp/ngnus/texi/")))
-;; (tv-maybe-load-ngnus t)
+;(tv-maybe-load-ngnus t)
 
 (defun tv-maybe-add-org-load-path (&optional force)
   (when (or (< emacs-major-version 24) force)
@@ -191,7 +191,7 @@
 (tv-require 'flymake)
 (tv-require 'esh-toggle)
 (tv-require 'tex-site)
-(tv-require 'ledger-config)
+;(tv-require 'ledger-config)
 (tv-require 'slime-autoloads)
 (tv-require 'slime)
 (tv-require 'cl-info)
@@ -203,7 +203,7 @@
 (tv-require 'zop-to-char)
 (tv-require 'iedit)
 (tv-require 'iedit-rect)
-(tv-require 'csv2org)
+;(tv-require 'csv2org)
 (tv-require 'el-expectations)
 (tv-require 'el-mock)
 (tv-require 'simple-call-tree)
@@ -349,7 +349,7 @@
 (setq mail-user-agent 'gnus-user-agent)
 (setq read-mail-command 'gnus)
 (setq send-mail-command 'gnus-msg-mail)
-(setq gnus-init-file "~/.emacs.d/.gnus.el")
+(setq gnus-init-file "~/.emacs.d/emacs-config-laptop/.gnus.el")
 
 (defvar tv-gnus-loaded-p nil)
 (defun tv-load-gnus-init-may-be ()
@@ -365,10 +365,17 @@
   (= 0 (call-process "ping" nil nil nil "-c1" "-W10" "-q" host)))
 
 (defun tv-gnus (arg)
+  "Start Gnus.
+If Gnus have been started and a *Group* buffer exists,
+switch to it, otherwise check if a connection is available and
+in this case start Gnus plugged, otherwise start it unplugged."
   (interactive "P")
-  (if (or arg (not (quickping "imap.gmail.com")))
-      (gnus-unplugged)
-      (gnus)))
+  (let ((buf (get-buffer "*Group*")))
+    (if (buffer-live-p buf)
+        (switch-to-buffer buf)
+        (if (or arg (not (quickping "imap.gmail.com")))
+            (gnus-unplugged)
+            (gnus)))))
 
 ;; Use now org-keywords in gnus.
 (add-hook 'message-mode-hook #'(lambda ()
@@ -636,7 +643,7 @@ If you want the mouse banished to a different corner set
 ;;
 (setq bookmark-bmenu-toggle-filenames nil)
 (add-hook 'bookmark-bmenu-mode-hook 'hl-line-mode)
-
+(setq bookmark-default-file "~/.emacs.d/.emacs.bmk")
 (setq bookmark-automatically-show-annotations nil)
 (add-to-list 'org-agenda-files bmkext-org-annotation-directory)
 (setq bmkext-external-browse-url-function 'browse-url-firefox) ; 'browse-url-uzbl
@@ -767,26 +774,13 @@ account add <protocol> moi@mail.com password."
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 (setq ediff-split-window-function 'split-window-horizontally)
 
-;; Dired
-;; use the directory in the other windows as default target
+;;; Dired
+;;
+;
 (setq dired-dwim-target t)
-(setq dired-auto-revert-buffer t) ; Emacs vcs only
-(define-key dired-mode-map (kbd "C-k")   #'(lambda () (interactive) (dired-do-delete 1)))
-(define-key dired-mode-map (kbd "b")     #'(lambda () (interactive) (dired-do-byte-compile 1)))
-(define-key dired-mode-map (kbd "C-c c") 'csv2org-dired)
-(define-key dired-mode-map (kbd "C-t !") #'(lambda ()
-                                             (interactive)
-                                             (image-dired-show-all-from-dir default-directory)))
-(define-key dired-mode-map (kbd ": a") 'epa-sign-to-armored)
-
-
-;; Backup when overwriting from dired (nil, always, ask).
-;(setq dired-backup-overwrite 'always)
-(setq dired-backup-overwrite nil)
-
-;; Search only in filenames.
+(setq dired-auto-revert-buffer t)
+(setq dired-backup-overwrite nil) ; nil, always, ask.
 (setq dired-isearch-filenames 'dwim)
-
 (setq dired-listing-switches (purecopy "-alh"))
 
 ;; y-or-n-p
@@ -835,30 +829,8 @@ account add <protocol> moi@mail.com password."
 ;; Path-to-abbrev-file
 (setq abbrev-file-name "/home/thierry/.emacs.d/.abbrev_defs")
 
-;; Copy-and-cut-to-x-clipboard
-;; Don't add to emacs kill-ring use yank-from-clipboard instead (C-c v)
-;(setq interprogram-paste-function nil)
-
-;; This enable pushing x-selection to emacs kill-ring
-;; X-apps ==> emacs kill-ring
-;; (setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
-;; (setq x-select-enable-primary t)
+;; Copy/paste
 (setq select-active-regions t)
-
-;; Emacs kill-ring ==> X-apps
-;; (setq x-select-enable-clipboard t)
-;; (when (boundp 'x-select-enable-clipboard-manager)
-;;   (setq x-select-enable-clipboard-manager nil))
-
-;; (defun yank-from-X ()
-;;   "Yank from X-apps to Emacs."
-;;   (interactive)
-;;   (let ((primary (x-get-selection 'PRIMARY))
-;;         (clip    (x-get-selection 'CLIPBOARD)))
-;;     (cond (primary (insert primary))
-;;           (clip    (insert clip))
-;;           (t       (yank)))))
-;;(global-set-key (kbd "C-c v")                      'yank-from-X)
 
 ;; Whitespace-mode
 (when (tv-require 'whitespace)
@@ -1572,6 +1544,7 @@ With prefix arg always start and let me choose dictionary."
 ;; Possible values: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
 (setq vc-handled-backends '(RCS Hg Git))
 
+
 ;;; Temporary Bugfixes until fixed in trunk.
 ;;
 (defun push-mark (&optional location nomsg activate)
@@ -1606,6 +1579,162 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
       (set-mark (mark t)))
   nil)
 
+(unless (version< emacs-version "24.3.50")
+  (eval-after-load "font-lock.el"
+    (setq lisp-font-lock-keywords-2
+          (append lisp-font-lock-keywords-1
+                  (eval-when-compile
+                    `( ;; Control structures.  Emacs Lisp forms.
+                      (,(concat
+                         "(" (regexp-opt
+                              '("cond" "if" "while" "while-no-input" "let" "let*" "letrec"
+                                "pcase" "pcase-let" "pcase-let*" "prog" "progn" "progv"
+                                "prog1" "prog2" "prog*" "inline" "lambda"
+                                "save-restriction" "save-excursion" "save-selected-window"
+                                "save-window-excursion" "save-match-data" "save-current-buffer"
+                                "combine-after-change-calls" "unwind-protect"
+                                "condition-case" "condition-case-unless-debug"
+                                "track-mouse" "eval-after-load" "eval-and-compile"
+                                "eval-when-compile" "eval-when" "eval-next-after-load"
+                                "with-case-table" "with-category-table"
+                                "with-current-buffer" "with-demoted-errors"
+                                "with-electric-help"
+                                "with-local-quit" "with-no-warnings"
+                                "with-output-to-string" "with-output-to-temp-buffer"
+                                "with-selected-window" "with-selected-frame"
+                                "with-silent-modifications" "with-syntax-table"
+                                "with-temp-buffer" "with-temp-file" "with-temp-message"
+                                "with-timeout" "with-timeout-handler" "with-wrapper-hook") t)
+                         "\\_>")
+                        .  1)
+                      ;; Control structures.  Common Lisp forms.
+                      (,(concat
+                         "(" (regexp-opt
+                              '("when" "unless" "case" "ecase" "typecase" "etypecase"
+                                "ccase" "ctypecase" "handler-case" "handler-bind"
+                                "restart-bind" "restart-case" "in-package"
+                                "break" "ignore-errors"
+                                "loop" "do" "do*" "dotimes" "dolist" "the" "locally"
+                                "proclaim" "declaim" "declare" "symbol-macrolet" "letf"
+                                "lexical-let" "lexical-let*" "flet" "labels" "compiler-let"
+                                "destructuring-bind" "macrolet" "tagbody" "block" "go"
+                                "multiple-value-bind" "multiple-value-prog1"
+                                "return" "return-from"
+                                "with-accessors" "with-compilation-unit"
+                                "with-condition-restarts" "with-hash-table-iterator"
+                                "with-input-from-string" "with-open-file"
+                                "with-open-stream" "with-output-to-string"
+                                "with-package-iterator" "with-simple-restart"
+                                "with-slots" "with-standard-io-syntax") t)
+                         "\\_>")
+                        . 1)
+                      ;; Exit/Feature symbols as constants.
+                      (,(concat "(\\(catch\\|throw\\|featurep\\|provide\\|require\\)\\>"
+                                "[ \t']*\\(\\(?:\\sw\\|\\s_\\)+\\)?")
+                        (1 font-lock-keyword-face)
+                        (2 font-lock-constant-face nil t))
+                      ;; Erroneous structures.
+                      ("(\\(abort\\|assert\\|warn\\|check-type\\|cerror\\|error\\|signal\\)\\>" 1 font-lock-warning-face)
+                      ;; Words inside \\[] tend to be for `substitute-command-keys'.
+                      ("\\\\\\\\\\[\\(\\(?:\\sw\\|\\s_\\)+\\)\\]"
+                       (1 font-lock-constant-face prepend))
+                      ;; Words inside `' tend to be symbol names.
+                      ("`\\(\\(?:\\sw\\|\\s_\\)\\(?:\\sw\\|\\s_\\)+\\)'"
+                       (1 font-lock-constant-face prepend))
+                      ;; Constant values.
+                      ("\\_<:\\(?:\\sw\\|\\s_\\)+\\_>" 0 font-lock-builtin-face)
+                      ;; ELisp and CLisp `&' keywords as types.
+                      ("\\_<\\&\\(?:\\sw\\|\\s_\\)+\\_>" . font-lock-type-face)
+                      ;; ELisp regexp grouping constructs
+                      ((lambda (bound)
+                         (catch 'found
+                           ;; The following loop is needed to continue searching after matches
+                           ;; that do not occur in strings.  The associated regexp matches one
+                           ;; of `\\\\' `\\(' `\\(?:' `\\|' `\\)'.  `\\\\' has been included to
+                           ;; avoid highlighting, for example, `\\(' in `\\\\('.
+                           (while (re-search-forward "\\(\\\\\\\\\\)\\(?:\\(\\\\\\\\\\)\\|\\((\\(?:\\?[0-9]*:\\)?\\|[|)]\\)\\)" bound t)
+                             (unless (match-beginning 2)
+                               (let ((face (get-text-property (1- (point)) 'face)))
+                                 (when (or (and (listp face)
+                                                (memq 'font-lock-string-face face))
+                                           (eq 'font-lock-string-face face))
+                                   (throw 'found t)))))))
+                       (1 'font-lock-regexp-grouping-backslash prepend)
+                       (3 'font-lock-regexp-grouping-construct prepend))
+                      ;; This is too general -- rms.
+                      ;; A user complained that he has functions whose names start with `do'
+                      ;; and that they get the wrong color.
+                      ;; ;; CL `with-' and `do-' constructs
+                      ;;("(\\(\\(do-\\|with-\\)\\(\\s_\\|\\w\\)*\\)" 1 font-lock-keyword-face)
+                      ))))))
+
+(defadvice net-utils-mode (after revert-buffer-fn activate)
+  (set (make-local-variable 'revert-buffer-function)
+       'net-utils-revert-function)
+  (define-key net-utils-mode-map (kbd "g") 'revert-buffer))
+
+(defvar net-utils-program-name nil)
+(defvar net-utils-program-args nil)
+(defun net-utils-revert-function (&optional ignore-auto noconfirm)
+  (message "Reverting `%s'..." (buffer-name))
+  (let ((proc (get-process net-utils-program-name))
+        (inhibit-read-only t)) 
+    (when proc (set-process-filter proc t) (delete-process proc))
+    (erase-buffer)
+    (setq proc (apply 'start-process net-utils-program-name
+                      (buffer-name) net-utils-program-name
+                      net-utils-program-args))
+    (set-process-filter
+     proc
+     #'(lambda (process output-string)
+         (let ((filtered-string output-string))
+           (set-buffer (process-buffer process))
+           (let ((inhibit-read-only t))
+             (while (string-match "\r" filtered-string)
+               (setq filtered-string
+                     (replace-match "" nil nil filtered-string)))
+             (save-excursion
+               ;; Insert the text, moving the process-marker.
+               (goto-char (process-mark process))
+               (insert filtered-string)
+               (set-marker (process-mark process) (point)))))))
+    (set-process-sentinel
+     proc
+     #'(lambda (process event)
+         (when (string= event "finished\n")
+           (message "reverting `%s' done" (buffer-name)))))))
+
+(when (require 'net-utils)
+  (progn
+    (defun net-utils-run-simple (buffer-name program-name args)
+      "Run a network utility for diagnostic output only."
+      (when (get-buffer buffer-name)
+        (kill-buffer buffer-name))
+      (get-buffer-create buffer-name)
+      (with-current-buffer buffer-name
+        (net-utils-mode)
+        (set (make-local-variable 'net-utils-program-name) program-name)
+        (set (make-local-variable 'net-utils-program-args) args)
+        (set-process-filter
+         (apply 'start-process (format "%s" program-name)
+                buffer-name program-name args)
+         'net-utils-remove-ctrl-m-filter)
+        (goto-char (point-min)))
+      (display-buffer buffer-name))
+
+    (defun traceroute (target)
+      "Run traceroute program for TARGET."
+      (interactive "sTarget: ")
+      (let ((options
+             (if traceroute-program-options
+                 (append traceroute-program-options (list target))
+                 (list target))))
+        (net-utils-run-simple
+         (concat "Traceroute" " " target)
+         traceroute-program
+         options)))))
+
+
 ;; ----Empty---
 
 ;;; winner-mode config
