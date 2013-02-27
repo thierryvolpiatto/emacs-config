@@ -1547,38 +1547,6 @@ With prefix arg always start and let me choose dictionary."
 
 ;;; Temporary Bugfixes until fixed in trunk.
 ;;
-(defun push-mark (&optional location nomsg activate)
-  "Set mark at LOCATION (point, by default) and push old mark on mark ring.
-If the last global mark pushed was not in the current buffer,
-also push LOCATION on the global mark ring.
-Display `Mark set' unless the optional second arg NOMSG is non-nil.
-
-Novice Emacs Lisp programmers often try to use the mark for the wrong
-purposes.  See the documentation of `set-mark' for more information.
-
-In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
-  (unless (null (mark t))
-    (setq mark-ring (cons (copy-marker (mark-marker)) mark-ring))
-    (when (> (length mark-ring) mark-ring-max)
-      (move-marker (car (nthcdr mark-ring-max mark-ring)) nil)
-      (setcdr (nthcdr (1- mark-ring-max) mark-ring) nil)))
-  (set-marker (mark-marker) (or location (point)) (current-buffer))
-  ;; Now push the mark on the global mark ring.
-  (if (and global-mark-ring
-	   (eq (marker-buffer (car global-mark-ring)) (current-buffer)))
-      ;; The last global mark pushed was in this same buffer.
-      ;; Don't push another one.
-      (setcar global-mark-ring (copy-marker (mark-marker)))
-      (setq global-mark-ring (cons (copy-marker (mark-marker)) global-mark-ring))
-      (when (> (length global-mark-ring) global-mark-ring-max)
-        (move-marker (car (nthcdr global-mark-ring-max global-mark-ring)) nil)
-        (setcdr (nthcdr (1- global-mark-ring-max) global-mark-ring) nil)))
-  (or nomsg executing-kbd-macro (> (minibuffer-depth) 0)
-      (message "Mark set"))
-  (if (or activate (not transient-mark-mode))
-      (set-mark (mark t)))
-  nil)
-
 (unless (version< emacs-version "24.3.50")
   (eval-after-load "font-lock.el"
     (setq lisp-font-lock-keywords-2
@@ -1668,6 +1636,10 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
                       ;;("(\\(\\(do-\\|with-\\)\\(\\s_\\|\\w\\)*\\)" 1 font-lock-keyword-face)
                       ))))))
 
+
+;;; net-utils improvements
+;;
+;;
 (defadvice net-utils-mode (after revert-buffer-fn activate)
   (set (make-local-variable 'revert-buffer-function)
        'net-utils-revert-function)
@@ -1677,32 +1649,32 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 (defvar net-utils-program-args nil)
 (defun net-utils-revert-function (&optional ignore-auto noconfirm)
   (message "Reverting `%s'..." (buffer-name))
-  (let ((proc (get-process net-utils-program-name))
-        (inhibit-read-only t)) 
+  (let ((proc (get-process net-utils-program-name))) 
     (when proc (set-process-filter proc t) (delete-process proc))
-    (erase-buffer)
-    (setq proc (apply 'start-process net-utils-program-name
-                      (buffer-name) net-utils-program-name
-                      net-utils-program-args))
-    (set-process-filter
-     proc
-     #'(lambda (process output-string)
-         (let ((filtered-string output-string))
-           (set-buffer (process-buffer process))
-           (let ((inhibit-read-only t))
-             (while (string-match "\r" filtered-string)
-               (setq filtered-string
-                     (replace-match "" nil nil filtered-string)))
-             (save-excursion
-               ;; Insert the text, moving the process-marker.
-               (goto-char (process-mark process))
-               (insert filtered-string)
-               (set-marker (process-mark process) (point)))))))
-    (set-process-sentinel
-     proc
-     #'(lambda (process event)
-         (when (string= event "finished\n")
-           (message "reverting `%s' done" (buffer-name)))))))
+    (let ((inhibit-read-only t))
+      (erase-buffer)
+      (setq proc (apply 'start-process net-utils-program-name
+                        (buffer-name) net-utils-program-name
+                        net-utils-program-args))
+      (set-process-filter
+       proc
+       #'(lambda (process output-string)
+           (let ((filtered-string output-string))
+             (set-buffer (process-buffer process))
+             (let ((inhibit-read-only t))
+               (while (string-match "\r" filtered-string)
+                 (setq filtered-string
+                       (replace-match "" nil nil filtered-string)))
+               (save-excursion
+                 ;; Insert the text, moving the process-marker.
+                 (goto-char (process-mark process))
+                 (insert filtered-string)
+                 (set-marker (process-mark process) (point)))))))
+      (set-process-sentinel
+       proc
+       #'(lambda (process event)
+           (when (string= event "finished\n")
+             (message "reverting `%s' done" (process-buffer process))))))))
 
 (when (require 'net-utils)
   (progn
@@ -1735,8 +1707,6 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
          options)))))
 
 
-;; ----Empty---
-
 ;;; winner-mode config
 ;;
 ;;
