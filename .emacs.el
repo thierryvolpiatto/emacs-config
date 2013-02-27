@@ -1547,117 +1547,33 @@ With prefix arg always start and let me choose dictionary."
 
 ;;; Temporary Bugfixes until fixed in trunk.
 ;;
-(unless (version< emacs-version "24.3.50")
-  (eval-after-load "font-lock.el"
-    (setq lisp-font-lock-keywords-2
-          (append lisp-font-lock-keywords-1
-                  (eval-when-compile
-                    `( ;; Control structures.  Emacs Lisp forms.
-                      (,(concat
-                         "(" (regexp-opt
-                              '("cond" "if" "while" "while-no-input" "let" "let*" "letrec"
-                                "pcase" "pcase-let" "pcase-let*" "prog" "progn" "progv"
-                                "prog1" "prog2" "prog*" "inline" "lambda"
-                                "save-restriction" "save-excursion" "save-selected-window"
-                                "save-window-excursion" "save-match-data" "save-current-buffer"
-                                "combine-after-change-calls" "unwind-protect"
-                                "condition-case" "condition-case-unless-debug"
-                                "track-mouse" "eval-after-load" "eval-and-compile"
-                                "eval-when-compile" "eval-when" "eval-next-after-load"
-                                "with-case-table" "with-category-table"
-                                "with-current-buffer" "with-demoted-errors"
-                                "with-electric-help"
-                                "with-local-quit" "with-no-warnings"
-                                "with-output-to-string" "with-output-to-temp-buffer"
-                                "with-selected-window" "with-selected-frame"
-                                "with-silent-modifications" "with-syntax-table"
-                                "with-temp-buffer" "with-temp-file" "with-temp-message"
-                                "with-timeout" "with-timeout-handler" "with-wrapper-hook") t)
-                         "\\_>")
-                        .  1)
-                      ;; Control structures.  Common Lisp forms.
-                      (,(concat
-                         "(" (regexp-opt
-                              '("when" "unless" "case" "ecase" "typecase" "etypecase"
-                                "ccase" "ctypecase" "handler-case" "handler-bind"
-                                "restart-bind" "restart-case" "in-package"
-                                "break" "ignore-errors"
-                                "loop" "do" "do*" "dotimes" "dolist" "the" "locally"
-                                "proclaim" "declaim" "declare" "symbol-macrolet" "letf"
-                                "lexical-let" "lexical-let*" "flet" "labels" "compiler-let"
-                                "destructuring-bind" "macrolet" "tagbody" "block" "go"
-                                "multiple-value-bind" "multiple-value-prog1"
-                                "return" "return-from"
-                                "with-accessors" "with-compilation-unit"
-                                "with-condition-restarts" "with-hash-table-iterator"
-                                "with-input-from-string" "with-open-file"
-                                "with-open-stream" "with-output-to-string"
-                                "with-package-iterator" "with-simple-restart"
-                                "with-slots" "with-standard-io-syntax") t)
-                         "\\_>")
-                        . 1)
-                      ;; Exit/Feature symbols as constants.
-                      (,(concat "(\\(catch\\|throw\\|featurep\\|provide\\|require\\)\\>"
-                                "[ \t']*\\(\\(?:\\sw\\|\\s_\\)+\\)?")
-                        (1 font-lock-keyword-face)
-                        (2 font-lock-constant-face nil t))
-                      ;; Erroneous structures.
-                      ("(\\(abort\\|assert\\|warn\\|check-type\\|cerror\\|error\\|signal\\)\\>" 1 font-lock-warning-face)
-                      ;; Words inside \\[] tend to be for `substitute-command-keys'.
-                      ("\\\\\\\\\\[\\(\\(?:\\sw\\|\\s_\\)+\\)\\]"
-                       (1 font-lock-constant-face prepend))
-                      ;; Words inside `' tend to be symbol names.
-                      ("`\\(\\(?:\\sw\\|\\s_\\)\\(?:\\sw\\|\\s_\\)+\\)'"
-                       (1 font-lock-constant-face prepend))
-                      ;; Constant values.
-                      ("\\_<:\\(?:\\sw\\|\\s_\\)+\\_>" 0 font-lock-builtin-face)
-                      ;; ELisp and CLisp `&' keywords as types.
-                      ("\\_<\\&\\(?:\\sw\\|\\s_\\)+\\_>" . font-lock-type-face)
-                      ;; ELisp regexp grouping constructs
-                      ((lambda (bound)
-                         (catch 'found
-                           ;; The following loop is needed to continue searching after matches
-                           ;; that do not occur in strings.  The associated regexp matches one
-                           ;; of `\\\\' `\\(' `\\(?:' `\\|' `\\)'.  `\\\\' has been included to
-                           ;; avoid highlighting, for example, `\\(' in `\\\\('.
-                           (while (re-search-forward "\\(\\\\\\\\\\)\\(?:\\(\\\\\\\\\\)\\|\\((\\(?:\\?[0-9]*:\\)?\\|[|)]\\)\\)" bound t)
-                             (unless (match-beginning 2)
-                               (let ((face (get-text-property (1- (point)) 'face)))
-                                 (when (or (and (listp face)
-                                                (memq 'font-lock-string-face face))
-                                           (eq 'font-lock-string-face face))
-                                   (throw 'found t)))))))
-                       (1 'font-lock-regexp-grouping-backslash prepend)
-                       (3 'font-lock-regexp-grouping-construct prepend))
-                      ;; This is too general -- rms.
-                      ;; A user complained that he has functions whose names start with `do'
-                      ;; and that they get the wrong color.
-                      ;; ;; CL `with-' and `do-' constructs
-                      ;;("(\\(\\(do-\\|with-\\)\\(\\s_\\|\\w\\)*\\)" 1 font-lock-keyword-face)
-                      ))))))
+
 
 
 ;;; net-utils improvements
 ;;
 ;;
-(defadvice net-utils-mode (after revert-buffer-fn activate)
-  (set (make-local-variable 'revert-buffer-function)
-       'net-utils-revert-function)
-  (define-key net-utils-mode-map (kbd "g") 'revert-buffer))
+(unless (fboundp 'net-utils-revert-function)
+  (defadvice net-utils-mode (after revert-buffer-fn activate)
+    (set (make-local-variable 'revert-buffer-function)
+         'net-utils-revert-function)
+    (define-key net-utils-mode-map (kbd "g") 'revert-buffer))
 
-(defvar net-utils-program-name nil)
-(defvar net-utils-program-args nil)
-(defun net-utils-revert-function (&optional ignore-auto noconfirm)
-  (message "Reverting `%s'..." (buffer-name))
-  (let ((proc (get-process net-utils-program-name))) 
-    (when proc (set-process-filter proc t) (delete-process proc))
+  (defvar net-utils-program-name nil)
+  (defvar net-utils-program-args nil)
+  (defvar net-utils-mode-process nil)
+  (defun net-utils-revert-function (&optional ignore-auto noconfirm)
+    (message "Reverting `%s'..." (buffer-name))
+    (when net-utils-mode-process
+      (set-process-filter net-utils-mode-process t)
+      (delete-process net-utils-mode-process))
     (let ((inhibit-read-only t))
       (erase-buffer)
-      (setq proc (apply 'start-process net-utils-program-name
-                        (buffer-name) net-utils-program-name
-                        net-utils-program-args))
+      (setq net-utils-mode-process (apply 'start-process net-utils-program-name
+                                          (buffer-name) net-utils-program-name
+                                          net-utils-program-args))
       (set-process-filter
-       proc
+       net-utils-mode-process
        #'(lambda (process output-string)
            (let ((filtered-string output-string))
              (set-buffer (process-buffer process))
@@ -1671,40 +1587,41 @@ With prefix arg always start and let me choose dictionary."
                  (insert filtered-string)
                  (set-marker (process-mark process) (point)))))))
       (set-process-sentinel
-       proc
+       net-utils-mode-process
        #'(lambda (process event)
            (when (string= event "finished\n")
-             (message "reverting `%s' done" (process-buffer process))))))))
+             (message "Reverting `%s' done" (process-buffer process)))))))
 
-(when (require 'net-utils)
-  (progn
-    (defun net-utils-run-simple (buffer-name program-name args)
-      "Run a network utility for diagnostic output only."
-      (when (get-buffer buffer-name)
-        (kill-buffer buffer-name))
-      (get-buffer-create buffer-name)
-      (with-current-buffer buffer-name
-        (net-utils-mode)
-        (set (make-local-variable 'net-utils-program-name) program-name)
-        (set (make-local-variable 'net-utils-program-args) args)
-        (set-process-filter
-         (apply 'start-process (format "%s" program-name)
-                buffer-name program-name args)
-         'net-utils-remove-ctrl-m-filter)
-        (goto-char (point-min)))
-      (display-buffer buffer-name))
-
-    (defun traceroute (target)
-      "Run traceroute program for TARGET."
-      (interactive "sTarget: ")
-      (let ((options
-             (if traceroute-program-options
-                 (append traceroute-program-options (list target))
-                 (list target))))
-        (net-utils-run-simple
-         (concat "Traceroute" " " target)
-         traceroute-program
-         options)))))
+  (when (require 'net-utils)
+    (progn
+      (defun net-utils-run-simple (buffer-name program-name args)
+        "Run a network utility for diagnostic output only."
+        (when (get-buffer buffer-name)
+          (kill-buffer buffer-name))
+        (get-buffer-create buffer-name)
+        (with-current-buffer buffer-name
+          (net-utils-mode)
+          (set (make-local-variable 'net-utils-program-name) program-name)
+          (set (make-local-variable 'net-utils-program-args) args)
+          (set (make-local-variable 'net-utils-mode-process)
+               (apply 'start-process (format "%s" program-name)
+                      buffer-name program-name args))
+          (set-process-filter net-utils-mode-process
+                              'net-utils-remove-ctrl-m-filter)
+          (goto-char (point-min)))
+        (display-buffer buffer-name))
+    
+      (defun traceroute (target)
+        "Run traceroute program for TARGET."
+        (interactive "sTarget: ")
+        (let ((options
+               (if traceroute-program-options
+                   (append traceroute-program-options (list target))
+                   (list target))))
+          (net-utils-run-simple
+           (concat "Traceroute" " " target)
+           traceroute-program
+           options))))))
 
 
 ;;; winner-mode config
