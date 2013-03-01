@@ -87,6 +87,7 @@
              "/usr/local/share/emacs/site-lisp/auctex"
 	     "~/elisp/"
              ;"~/elisp/monky"
+             "~/elisp/emacs-w3m"
 	     "~/elisp/magit"
              "~/elisp/Emacs-wgrep"
              "~/elisp/auctex"
@@ -214,7 +215,7 @@
 (tv-require 'org-google-weather)
 (tv-require 'markdown-mode)
 (tv-require 'boxquote)
-;(tv-require 'config-w3m)
+(tv-require 'config-w3m)
 (tv-require 'wgrep-helm)
 (when (tv-require 'dired-aux)
   (tv-require 'helm-async))
@@ -1549,79 +1550,6 @@ With prefix arg always start and let me choose dictionary."
 ;;
 
 
-
-;;; net-utils improvements
-;;
-;;
-(unless (fboundp 'net-utils-revert-function)
-  (defadvice net-utils-mode (after revert-buffer-fn activate)
-    (set (make-local-variable 'revert-buffer-function)
-         'net-utils-revert-function)
-    (define-key net-utils-mode-map (kbd "g") 'revert-buffer))
-
-  (defvar net-utils-program-name nil)
-  (defvar net-utils-program-args nil)
-  (defvar net-utils-mode-process nil)
-  (defun net-utils-revert-function (&optional ignore-auto noconfirm)
-    (message "Reverting `%s'..." (buffer-name))
-    (when net-utils-mode-process
-      (set-process-filter net-utils-mode-process t)
-      (delete-process net-utils-mode-process))
-    (let ((inhibit-read-only t))
-      (erase-buffer)
-      (setq net-utils-mode-process (apply 'start-process net-utils-program-name
-                                          (buffer-name) net-utils-program-name
-                                          net-utils-program-args))
-      (set-process-filter
-       net-utils-mode-process
-       #'(lambda (process output-string)
-           (let ((filtered-string output-string))
-             (set-buffer (process-buffer process))
-             (let ((inhibit-read-only t))
-               (while (string-match "\r" filtered-string)
-                 (setq filtered-string
-                       (replace-match "" nil nil filtered-string)))
-               (save-excursion
-                 ;; Insert the text, moving the process-marker.
-                 (goto-char (process-mark process))
-                 (insert filtered-string)
-                 (set-marker (process-mark process) (point)))))))
-      (set-process-sentinel
-       net-utils-mode-process
-       #'(lambda (process event)
-           (when (string= event "finished\n")
-             (message "Reverting `%s' done" (process-buffer process)))))))
-
-  (when (require 'net-utils)
-    (progn
-      (defun net-utils-run-simple (buffer-name program-name args)
-        "Run a network utility for diagnostic output only."
-        (when (get-buffer buffer-name)
-          (kill-buffer buffer-name))
-        (get-buffer-create buffer-name)
-        (with-current-buffer buffer-name
-          (net-utils-mode)
-          (set (make-local-variable 'net-utils-program-name) program-name)
-          (set (make-local-variable 'net-utils-program-args) args)
-          (set (make-local-variable 'net-utils-mode-process)
-               (apply 'start-process (format "%s" program-name)
-                      buffer-name program-name args))
-          (set-process-filter net-utils-mode-process
-                              'net-utils-remove-ctrl-m-filter)
-          (goto-char (point-min)))
-        (display-buffer buffer-name))
-    
-      (defun traceroute (target)
-        "Run traceroute program for TARGET."
-        (interactive "sTarget: ")
-        (let ((options
-               (if traceroute-program-options
-                   (append traceroute-program-options (list target))
-                   (list target))))
-          (net-utils-run-simple
-           (concat "Traceroute" " " target)
-           traceroute-program
-           options))))))
 
 
 ;;; winner-mode config
