@@ -205,8 +205,8 @@
 (tv-require 'iedit)
 (tv-require 'iedit-rect)
 ;(tv-require 'csv2org)
-(tv-require 'el-expectations)
-(tv-require 'el-mock)
+;(tv-require 'el-expectations)
+;(tv-require 'el-mock)
 (tv-require 'simple-call-tree)
 (tv-require 'google-maps)
 (tv-require 'googlecl)
@@ -298,8 +298,18 @@
 (global-set-key (kbd "M-e")                        'tv-eval-last-sexp-at-eol)
 (global-set-key (kbd "C-d")                        'tv-delete-char)
 (global-set-key (kbd "C-x C-'")                    'tv-toggle-resplit-window)
-(global-set-key (kbd "C-§")                        'iedit-mode-on-function)
 (global-set-key (kbd "C-x C-(")                    'tv-resize-window)
+(global-set-key (kbd "C-§")                        'iedit-narrow-to-defun)
+
+
+;;; iedit
+;;
+;;
+(defun iedit-narrow-to-defun (arg)
+  (interactive "P")
+  (save-restriction
+    (narrow-to-defun)
+    (iedit-mode arg)))
 
 
 ;;; Themes

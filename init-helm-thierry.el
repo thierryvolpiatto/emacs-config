@@ -108,6 +108,7 @@
                                                          '(picture-mode artist-mode))
       helm-ls-git-status-command                 'magit-status
       helm-never-delay-on-input                  nil
+      helm-candidate-number-limit                200
       ;helm-tramp-verbose                         6
       ;helm-ff-file-name-history-use-recentf      t
       )
@@ -168,13 +169,6 @@
      (with-helm-buffer (magit-status helm-default-directory)))
  helm-source-ls-git
  1)
-
-;; Imenu
-(when (require 'helm-imenu)
-  (helm-attrset 'candidate-number-limit 9999 helm-source-imenu))
-
-(eval-after-load "helm-buffers.el"
-  (helm-attrset 'candidate-number-limit 200 helm-source-buffers-list))
 
 ;;; enable Modes
 ;;

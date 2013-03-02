@@ -218,13 +218,13 @@ You can specify input function to use."
                                              "Directory(add + to repeat): ")
                                             (t
                                              "File(add + to repeat): ")))))
-                 (push (replace-regexp-in-string "\+" "" str) stock)
+                 (push (replace-regexp-in-string " ?[+]" "" str) stock)
                  (cond ((string-match "\+" str)
                         (push (car stock) var)
                         (multiread))
                        (t
                         (push (car stock) var)
-                        (nreverse var))))))
+                        (nreverse (delete "" var)))))))
       
       (multiread))))
 
