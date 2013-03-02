@@ -1,28 +1,18 @@
 ;;; init-helm-thierry.el --- My startup file for helm. 
 ;;; Code:
 
+
 (tv-require 'helm-config)
-(tv-require 'helm-locate) ; Needed actually for `helm-generic-files-map'.
+
 
 ;;;; Extensions
 ;;
-;(tv-require 'helm-mercurial)
 (tv-require 'helm-ls-hg)
 (tv-require 'helm-descbinds)
 (tv-require 'helm-ls-git)
 
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
-
-(defun helm-get-actions-from-source (source)
-  (interactive (list (helm-comp-read
-                      "Source: " (loop for s being the symbol
-                                       for str = (symbol-name s)
-                                       when (string-match "^helm-c-source" str)
-                                       collect str))))
-  (let* ((actions (helm-attr 'action (symbol-value (intern source))))
-         (act (helm-comp-read "Action: " (cdr actions))))
-    (kill-new (car (rassq act actions)))))
 
 (defun helm-version ()
   (with-current-buffer (find-file-noselect (find-library-name "helm-pkg"))
@@ -63,7 +53,7 @@
 (global-set-key (kbd "M-g s")                  'helm-do-grep)
 (global-set-key (kbd "C-x C-d")                'helm-browse-project)
 (global-set-key (kbd "<f1>")                   'helm-resume)
-(global-set-key (kbd "C-h C-f")                'helm-c-apropos)
+(global-set-key (kbd "C-h C-f")                'helm-apropos)
 (global-set-key (kbd "<f5> s")                 'helm-find)
 (define-key global-map [remap jump-to-register] 'helm-register)
 (define-key global-map [remap list-buffers]    'helm-buffers-list)
@@ -95,31 +85,31 @@
 ;;; Helm-variables
 ;;
 ;;
-(setq helm-google-suggest-use-curl-p         t
-      helm-kill-ring-threshold               1
-      helm-raise-command                     "wmctrl -xa %s"
-      helm-scroll-amount                     1
-      helm-quick-update                      t
-      helm-idle-delay                        0.1
-      helm-input-idle-delay                  0.1
-      helm-m-occur-idle-delay                0.1
-      ;helm-completion-window-scroll-margin   0
-      helm-ff-search-library-in-sexp         t
-      helm-c-kill-ring-max-lines-number      5
-      helm-c-default-external-file-browser   "thunar"
-      helm-c-pdfgrep-default-read-command    "evince --page-label=%p '%f'"
-      helm-ff-transformer-show-only-basename t
-      helm-c-grep-default-command            "ack-grep -Hn --smart-case --no-group --no-color %e %p %f"
-      helm-c-grep-default-recurse-command    "ack-grep -H --smart-case --no-group --no-color %e %p %f"
-      helm-reuse-last-window-split-state     t
-      ;helm-split-window-default-side         'same
+(setq helm-google-suggest-use-curl-p             t
+      helm-kill-ring-threshold                   1
+      helm-raise-command                         "wmctrl -xa %s"
+      helm-scroll-amount                         1
+      helm-quick-update                          t
+      helm-idle-delay                            0.1
+      helm-input-idle-delay                      0.1
+      helm-m-occur-idle-delay                    0.1
+      ;helm-completion-window-scroll-margin       0
+      helm-ff-search-library-in-sexp             t
+      helm-kill-ring-max-lines-number            5
+      helm-default-external-file-browser         "thunar"
+      helm-pdfgrep-default-read-command          "evince --page-label=%p '%f'"
+      helm-ff-transformer-show-only-basename     t
+      helm-grep-default-command                  "ack-grep -Hn --smart-case --no-group --no-color %e %p %f"
+      helm-grep-default-recurse-command          "ack-grep -H --smart-case --no-group --no-color %e %p %f"
+      helm-reuse-last-window-split-state         t
+      ;helm-split-window-default-side             'same
       helm-persistent-action-use-special-display t
-      helm-buffers-favorite-modes            (append helm-buffers-favorite-modes
-                                                     '(picture-mode artist-mode))
-      helm-ls-git-status-command             'magit-status
-      helm-never-delay-on-input              nil
-      ;helm-tramp-verbose                     6
-      ;helm-ff-file-name-history-use-recentf  t
+      helm-buffers-favorite-modes                (append helm-buffers-favorite-modes
+                                                         '(picture-mode artist-mode))
+      helm-ls-git-status-command                 'magit-status
+      helm-never-delay-on-input                  nil
+      ;helm-tramp-verbose                         6
+      ;helm-ff-file-name-history-use-recentf      t
       )
 
 ;;; Toggle grep program
@@ -130,13 +120,13 @@
   (when (y-or-n-p (format "Current grep program is %s, switching? "
                           (helm-grep-command)))
     (if (helm-grep-use-ack-p)
-        (setq helm-c-grep-default-command
+        (setq helm-grep-default-command
               "grep -d skip %e -n%cH -e %p %f"
-              helm-c-grep-default-recurse-command
+              helm-grep-default-recurse-command
               "grep -d recurse %e -n%cH -e %p %f")
-        (setq helm-c-grep-default-command
+        (setq helm-grep-default-command
               "ack-grep -Hn --smart-case --no-group --no-color %e %p %f"
-              helm-c-grep-default-recurse-command
+              helm-grep-default-recurse-command
               "ack-grep -H --smart-case --no-group --no-color %e %p %f"))
     (message "Switched to %s" (helm-grep-command))))
 
@@ -149,51 +139,42 @@
   (message "Helm Debug is now %s"
            (if helm-debug "Enabled" "Disabled")))
 
-;;; Enable pushing album to google from `helm-find-files'.
-;;
-;;
-(defun helm-push-image-to-google (file)
-  (when helm-current-prefix-arg (google-update-album-list-db))
-  (let ((comp-file (concat google-db-file "c"))
-        (album (helm-comp-read
-                "Album: "
-                (loop for i in gpicasa-album-list collect (car i)))))
-    (while (not (file-exists-p comp-file)) (sit-for 0.1))
-    (unless gpicasa-album-list (load-file comp-file))
-    (google-post-image-to-album-1 file album)))
-
 (defun helm-ff-candidates-lisp-p (candidate)
   (loop for cand in (helm-marked-candidates)
         always (string-match "\.el$" cand)))
 
 ;;; Modify source attributes
 ;;
-;; Add actions to `helm-c-source-find-files' IF:
-(when (require 'helm-files)
-  ;; List Hg files in project.
-  (helm-add-action-to-source-if
-   "Hg list files"
-   'helm-ff-hg-find-files
-   helm-c-source-find-files
-   'helm-hg-root-p)
-  ;; Byte compile files async
-  (helm-add-action-to-source-if
-   "Byte compile file(s) async"
-   'async-byte-compile-file
-   helm-c-source-find-files
-   'helm-ff-candidates-lisp-p))
+;; Add actions to `helm-source-find-files' IF:
+(eval-after-load "helm-files.el"
+  (progn
+    ;; List Hg files in project.
+    (helm-add-action-to-source-if
+     "Hg list files"
+     'helm-ff-hg-find-files
+     helm-source-find-files
+     'helm-hg-root-p)
+    ;; Byte compile files async
+    (helm-add-action-to-source-if
+     "Byte compile file(s) async"
+     'async-byte-compile-file
+     helm-source-find-files
+     'helm-ff-candidates-lisp-p)))
 
-;; Add magit to `helm-c-source-ls-git'
+;; Add magit to `helm-source-ls-git'
 (helm-add-action-to-source
  "Magit status"
  #'(lambda (_candidate)
      (with-helm-buffer (magit-status helm-default-directory)))
- helm-c-source-ls-git
- 4)
+ helm-source-ls-git
+ 1)
 
 ;; Imenu
-(when (require 'helm-imenu) 
-  (helm-attrset 'candidate-number-limit 9999 helm-c-source-imenu))
+(when (require 'helm-imenu)
+  (helm-attrset 'candidate-number-limit 9999 helm-source-imenu))
+
+(eval-after-load "helm-buffers.el"
+  (helm-attrset 'candidate-number-limit 200 helm-source-buffers-list))
 
 ;;; enable Modes
 ;;

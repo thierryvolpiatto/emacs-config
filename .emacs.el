@@ -216,6 +216,7 @@
 (tv-require 'markdown-mode)
 (tv-require 'boxquote)
 (tv-require 'config-w3m)
+(tv-require 'persistent-sessions)
 (tv-require 'wgrep-helm)
 (when (tv-require 'dired-aux)
   (tv-require 'helm-async))
