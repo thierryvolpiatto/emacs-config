@@ -153,6 +153,7 @@
 ;;
 (autoload 'wget "wget" "wget interface for Emacs." t)
 (autoload 'wget-web-page "wget" "wget interface to download whole web page." t)
+(tv-require 'w3m-wget)
 
 ;;; Emacs customize have it's own file
 ;;
@@ -299,16 +300,16 @@
 (global-set-key (kbd "C-d")                        'tv-delete-char)
 (global-set-key (kbd "C-x C-'")                    'tv-toggle-resplit-window)
 (global-set-key (kbd "C-x C-(")                    'tv-resize-window)
-(global-set-key (kbd "C-§")                        'iedit-narrow-to-defun)
+(global-set-key (kbd "C-§")                        'iedit-narrow-to-end)
 
 
 ;;; iedit
 ;;
 ;;
-(defun iedit-narrow-to-defun (arg)
+(defun iedit-narrow-to-end (arg)
   (interactive "P")
   (save-restriction
-    (narrow-to-defun)
+    (narrow-to-region (point-at-bol) (point-max))
     (iedit-mode arg)))
 
 
@@ -331,7 +332,8 @@
 ;; column-number
 (column-number-mode 1)
 
-;; desktop-save
+;;; desktop-save
+;;
 ;; (desktop-save-mode 1)
 ;; (setq desktop-restore-eager 5)
 ;; (add-to-list 'desktop-globals-to-save 'ioccur-history)
@@ -1559,6 +1561,89 @@ With prefix arg always start and let me choose dictionary."
 
 ;;; Temporary Bugfixes until fixed in trunk.
 ;;
+(when (require 'net-utils)
+  (defvar net-utils--revert-cmd nil)
+  (defun net-utils-run-simple (buffer program-name args &optional nodisplay)
+    "Run a network utility for diagnostic output only."
+    (with-current-buffer (if (stringp buffer) (get-buffer-create buffer) buffer)
+      (let ((proc (get-buffer-process (current-buffer))))
+        (when proc
+          (set-process-filter proc nil)
+          (delete-process proc)))
+      (let ((inhibit-read-only t))
+        (erase-buffer))
+      (net-utils-mode)
+      (setq-local net-utils--revert-cmd
+                  `(net-utils-run-simple ,(current-buffer)
+                                         ,program-name ,args nodisplay))
+      (set-process-filter
+       (apply 'start-process program-name
+              (current-buffer) program-name args)
+       'net-utils-remove-ctrl-m-filter)
+      (unless nodisplay (display-buffer (current-buffer)))))
+  
+  (defun net-utils-remove-ctrl-m-filter (process output-string)
+    "Remove trailing control Ms."
+    (with-current-buffer (process-buffer process)
+      (save-excursion
+        (let ((inhibit-read-only t)
+              (filtered-string output-string))
+          (when net-utils-remove-ctl-m
+            (while (string-match "\r" filtered-string)
+              (setq filtered-string
+                    (replace-match "" nil nil filtered-string))))
+          ;; Insert the text, moving the process-marker.
+          (goto-char (process-mark process))
+          (insert filtered-string)
+          (set-marker (process-mark process) (point))))))
+
+  (defun net-utils--revert-function (&optional ignore-auto noconfirm)
+    (message "Reverting `%s'..." (buffer-name))
+    (apply (car net-utils--revert-cmd) (cdr net-utils--revert-cmd))
+    (let ((proc (get-buffer-process (current-buffer))))
+      (when proc
+        (set-process-sentinel
+         proc
+         (lambda (process event)
+           (when (string= event "finished\n")
+             (message "Reverting `%s' done" (process-buffer process))))))))
+  (defun ping (host)
+    "Ping HOST.
+If your system's ping continues until interrupted, you can try setting
+`ping-program-options'."
+    (interactive
+     (list (read-from-minibuffer "Ping host: " (or (net-utils-machine-at-point)
+                                                   "localhost"))))
+    (let ((options
+           (if ping-program-options
+               (append ping-program-options (list host))
+               (list host))))
+      (net-utils-run-simple
+       (concat "Ping" " " host)
+       ping-program
+       options)))
+  
+  (defun net-utils-machine-at-point ()
+    (require 'ffap)
+    (ffap-machine-at-point))
+
+  (defun net-utils-url-at-point ()
+    (require 'ffap)
+    (ffap-url-at-point))
+
+  (defun run-dig (host)
+    "Run dig program."
+    (interactive
+     (list
+      (read-from-minibuffer "Lookup host: "
+                            (net-utils-machine-at-point))))
+    (net-utils-run-simple
+     (concat "** "
+             (mapconcat 'identity
+                        (list "Dig" host dig-program)
+                        " ** "))
+     dig-program
+     (list host))))
 
 
 ;;; Redefine push-mark to update mark in global-mark-ring

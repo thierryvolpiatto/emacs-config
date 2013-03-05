@@ -34,8 +34,9 @@
 ;;
 ;;;###autoload
 (defun mount-sshfs (fs mp)
-  (interactive (list (read-string "FileSystem: "
-                                  "thievol:/home/thierry")
+  (interactive (list (completing-read "FileSystem: "
+                                      '("thievol:/home/thierry"
+                                        "zte:/"))
                      (expand-file-name
                       (read-directory-name "MountPoint: "
                                            "/home/thierry/"

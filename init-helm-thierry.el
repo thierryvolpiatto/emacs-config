@@ -94,11 +94,12 @@
       helm-input-idle-delay                      0.1
       helm-m-occur-idle-delay                    0.1
       ;helm-completion-window-scroll-margin       0
+      ;helm-display-source-at-screen-top          nil
       helm-ff-search-library-in-sexp             t
       helm-kill-ring-max-lines-number            5
       helm-default-external-file-browser         "thunar"
       helm-pdfgrep-default-read-command          "evince --page-label=%p '%f'"
-      helm-ff-transformer-show-only-basename     t
+      ;helm-ff-transformer-show-only-basename     t
       helm-grep-default-command                  "ack-grep -Hn --smart-case --no-group --no-color %e %p %f"
       helm-grep-default-recurse-command          "ack-grep -H --smart-case --no-group --no-color %e %p %f"
       helm-reuse-last-window-split-state         t
