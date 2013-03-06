@@ -32,7 +32,6 @@
 ;;; Helm-command-map
 ;;
 ;;
-;(define-key helm-command-map (kbd "q")   'helm-qpatchs)
 (define-key helm-command-map (kbd "g")   'helm-apt)
 
 ;;; Global-map
@@ -104,6 +103,8 @@
       helm-grep-default-recurse-command          "ack-grep -H --smart-case --no-group --no-color %e %p %f"
       helm-reuse-last-window-split-state         t
       ;helm-split-window-default-side             'same
+      ;helm-split-window-in-side-p                t
+      helm-always-two-windows                    t
       helm-persistent-action-use-special-display t
       helm-buffers-favorite-modes                (append helm-buffers-favorite-modes
                                                          '(picture-mode artist-mode))
