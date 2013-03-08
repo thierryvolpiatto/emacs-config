@@ -229,7 +229,7 @@
 ;;
 (global-set-key (kbd "C-z")                        nil) ; Disable `suspend-frame'.
 (global-set-key (kbd "C-!")                        'eshell-command)
-(global-set-key (kbd "C-c R")                      'revert-buffer)
+(global-set-key (kbd "C-c R")                      #'(lambda () (interactive) (revert-buffer t t)))
 (global-set-key (kbd "C-c W")                      'whitespace-mode)
 (global-set-key (kbd "C-M-j")                      #'(lambda () (interactive) (kill-sexp -1)))
 (global-set-key (kbd "<f7> m")                     'tv-gnus)
