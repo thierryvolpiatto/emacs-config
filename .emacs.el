@@ -114,6 +114,7 @@
              "~/.emacs.d/themes/"
 	     "~/.emacs.d/emacs-config-laptop/"
              "~/elisp/emacs-async"
+             "~/elisp/emacs-git-gutter"
 	     ))
   (add-to-list 'load-path i t)) ; Add all at end of `load-path' to avoid conflicts.
 
@@ -210,10 +211,8 @@
 ;(tv-require 'el-mock)
 (tv-require 'simple-call-tree)
 (tv-require 'google-maps)
-(tv-require 'googlecl)
+;(tv-require 'googlecl)
 (tv-require 'iterator)
-(tv-require 'google-weather)
-(tv-require 'org-google-weather)
 (tv-require 'markdown-mode)
 (tv-require 'boxquote)
 (tv-require 'config-w3m)
@@ -662,6 +661,8 @@ If you want the mouse banished to a different corner set
 (add-to-list 'org-agenda-files bmkext-org-annotation-directory)
 (setq bmkext-external-browse-url-function 'browse-url-firefox) ; 'browse-url-uzbl
 (setq bmkext-jump-w3m-defaut-method 'external) ; Set to 'external to use external browser, w3m for w3m.
+(eval-after-load "addressbook-bookmark.el"
+  (addressbook-turn-on-mail-completion))
 
 (defun tv-pp-bookmark-alist ()
   "Quickly print `bookmark-alist'."
@@ -1848,6 +1849,12 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;       print-level nil
 ;;       print-circle t
 ;;       eval-expression-print-level nil)
+
+;;; git-gutter-mode
+(autoload 'git-gutter-mode "git-gutter")
+(add-hook 'emacs-lisp-mode-hook 'git-gutter-mode)
+(global-set-key (kbd "<f3>") 'git-gutter:previous-hunk)
+(global-set-key (kbd "<f4>") 'git-gutter:next-hunk)
 
 ;;; Monky - hg frontend
 ;;
