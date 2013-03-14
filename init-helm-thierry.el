@@ -62,13 +62,15 @@
 (helm-define-multi-key lisp-interaction-mode-map
                        [remap indent-for-tab-command] ;"<tab>"
                        '(helm-lisp-indent
-                         helm-lisp-completion-at-point)
+                         helm-lisp-completion-at-point
+                         helm-complete-file-name-at-point)
                        0.3)
 
 (helm-define-multi-key emacs-lisp-mode-map
                        [remap indent-for-tab-command] ;"<tab>"
                        '(helm-lisp-indent
-                         helm-lisp-completion-at-point)
+                         helm-lisp-completion-at-point
+                         helm-complete-file-name-at-point)
                         0.3)
 
 ;;; lisp complete. (Rebind M-<tab>)

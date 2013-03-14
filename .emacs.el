@@ -221,6 +221,7 @@
 (when (tv-require 'dired-aux)
   (tv-require 'helm-async))
 (tv-require 'smtpmail-async)
+(tv-require 'edebug-x)
 
 
 ;;; Global keys
@@ -1589,10 +1590,9 @@ With prefix arg always start and let me choose dictionary."
       (save-excursion
         (let ((inhibit-read-only t)
               (filtered-string output-string))
-          (when net-utils-remove-ctl-m
-            (while (string-match "\r" filtered-string)
-              (setq filtered-string
-                    (replace-match "" nil nil filtered-string))))
+          (while (string-match "\r" filtered-string)
+            (setq filtered-string
+                  (replace-match "" nil nil filtered-string)))
           ;; Insert the text, moving the process-marker.
           (goto-char (process-mark process))
           (insert filtered-string)
@@ -1608,6 +1608,7 @@ With prefix arg always start and let me choose dictionary."
          (lambda (process event)
            (when (string= event "finished\n")
              (message "Reverting `%s' done" (process-buffer process))))))))
+  
   (defun ping (host)
     "Ping HOST.
 If your system's ping continues until interrupted, you can try setting
@@ -1626,11 +1627,11 @@ If your system's ping continues until interrupted, you can try setting
   
   (defun net-utils-machine-at-point ()
     (require 'ffap)
-    (ffap-machine-at-point))
+    (ffap-string-at-point 'machine))
 
   (defun net-utils-url-at-point ()
     (require 'ffap)
-    (ffap-url-at-point))
+    (ffap-string-at-point 'url))
 
   (defun run-dig (host)
     "Run dig program."
