@@ -185,6 +185,7 @@
 (tv-require 'htmlize-hack)
 (tv-require 'magit)
 (tv-require 'magit-stgit)
+(tv-require 'magit-blame)
 ;(tv-require 'monky)
 (tv-require 'emms-mpd-config)
 (tv-require 'dired-extension)
@@ -221,7 +222,6 @@
 (when (tv-require 'dired-aux)
   (tv-require 'helm-async))
 (tv-require 'smtpmail-async)
-(tv-require 'edebug-x)
 
 
 ;;; Global keys
@@ -659,6 +659,9 @@ If you want the mouse banished to a different corner set
 (add-hook 'bookmark-bmenu-mode-hook 'hl-line-mode)
 (setq bookmark-default-file "~/.emacs.d/.emacs.bmk")
 (setq bookmark-automatically-show-annotations nil)
+(eval-after-load "bookmark.el"
+  (and (boundp 'bookmark-bmenu-use-header-line)
+       (setq bookmark-bmenu-use-header-line nil)))
 (add-to-list 'org-agenda-files bmkext-org-annotation-directory)
 (setq bmkext-external-browse-url-function 'browse-url-firefox) ; 'browse-url-uzbl
 (setq bmkext-jump-w3m-defaut-method 'external) ; Set to 'external to use external browser, w3m for w3m.
@@ -979,6 +982,21 @@ from IPython.core.completerlib import module_completion"
 
 
 (add-hook 'eshell-mode-hook #'(lambda ()
+                                (defun eshell-emit-prompt ()
+                                  "Emit a prompt if eshell is being used interactively."
+                                  (run-hooks 'eshell-before-prompt-hook)
+                                  (if (not eshell-prompt-function)
+                                      (set-marker eshell-last-output-end (point))
+                                      (let ((prompt (funcall eshell-prompt-function)))
+                                        (and eshell-highlight-prompt
+                                             (add-text-properties 0
+                                                                  ;; Assume `eshell-prompt-function'
+                                                                  ;; add a space at end of prompt.
+                                                                  (1- (length prompt))
+                                                                  '(read-only t face eshell-prompt)
+                                                                  prompt))
+                                        (eshell-interactive-print prompt)))
+                                  (run-hooks 'eshell-after-prompt-hook))
                                 ;; Eshell smart initialize
                                 (require 'em-smart)
                                 (setq eshell-where-to-jump 'begin)
