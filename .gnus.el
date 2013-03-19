@@ -333,7 +333,7 @@ This will run in `message-send-hook'."
 
 ;; gnus-demon (start with `gnus-demon-init')
 ;; Scan for new news
-;;(gnus-demon-add-handler 'gnus-demon-scan-news 5 1)
+(gnus-demon-add-handler 'gnus-demon-scan-news 5 0.5)
 
 ;; Scroll-other-window 
 (define-key gnus-summary-mode-map (kbd "<C-M-down>") #'(lambda ()
@@ -341,8 +341,8 @@ This will run in `message-send-hook'."
                                                          (scroll-other-window 1)))
 
 (define-key gnus-summary-mode-map (kbd "<C-M-up>") #'(lambda ()
-                                                         (interactive)
-                                                         (scroll-other-window -1)))
+                                                       (interactive)
+                                                       (scroll-other-window -1)))
 
 ;; Default directory to save attached files 
 (setq mm-default-directory "~/download/")

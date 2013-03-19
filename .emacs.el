@@ -222,6 +222,7 @@
 (when (tv-require 'dired-aux)
   (tv-require 'helm-async))
 (tv-require 'smtpmail-async)
+(tv-require 'wicd-mode)
 
 
 ;;; Global keys
@@ -512,6 +513,21 @@ With a prefix arg decrease transparency."
                                       (left . 450)
                                       (background-color . "Lightsteelblue1")
                                       (foreground-color . "black")
+                                      (alpha . nil)
+                                      (fullscreen . nil))
+                                     ("*Wicd*"
+                                      (minibuffer . nil)
+                                      (width . 65)
+                                      (height . 12)
+                                      (left-fringe . 0)
+                                      (border-width . 0)
+                                      (menu-bar-lines . 0)
+                                      (tool-bar-lines . 0)
+                                      (unsplittable . t)
+                                      (top . 50)
+                                      (left . 700)
+                                      (background-color . "black")
+                                      (foreground-color . "white")
                                       (alpha . nil)
                                       (fullscreen . nil))
                                      ("*Compile-Log*"
