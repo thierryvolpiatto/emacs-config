@@ -22,10 +22,6 @@
              "\\([0-9]+?\\)\\.\\([0-9]+?\\)\\.\\([0-9]+?\\)\\.?[0-9]*" nil t)
       (prog1 (match-string-no-properties 0) (kill-buffer))))))
 
-;; (defun helm-put-triangle-in-fringe ()
-;;   (with-current-buffer helm-buffer
-;;     (set (make-local-variable 'overlay-arrow-position) (point-marker))))
-;; (add-hook 'helm-move-selection-after-hook 'helm-put-triangle-in-fringe)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -37,25 +33,25 @@
 ;;; Global-map
 ;;
 ;;
-(global-set-key (kbd "M-x")                    'helm-M-x)
-(global-set-key (kbd "M-y")                    'helm-show-kill-ring)
-(global-set-key (kbd "C-c f")                  'helm-recentf)
-(global-set-key (kbd "C-x C-f")                'helm-find-files)
-(global-set-key (kbd "C-c <SPC>")              'helm-all-mark-rings)
-(global-set-key (kbd "C-x r b")                'helm-bookmark-ext)
-(global-set-key (kbd "C-h r")                  'helm-info-emacs)
-(global-set-key (kbd "C-c C-b")                'helm-browse-code)
-(global-set-key (kbd "C-:")                    'helm-eval-expression-with-eldoc)
-(global-set-key (kbd "C-,")                    'helm-calcul-expression)
-(global-set-key (kbd "C-h d")                  'helm-info-at-point)
-(global-set-key (kbd "C-c g")                  'helm-google-suggest)
-(global-set-key (kbd "M-g s")                  'helm-do-grep)
-(global-set-key (kbd "C-x C-d")                'helm-browse-project)
-(global-set-key (kbd "<f1>")                   'helm-resume)
-(global-set-key (kbd "C-h C-f")                'helm-apropos)
-(global-set-key (kbd "<f5> s")                 'helm-find)
+(global-set-key (kbd "M-x")                     'helm-M-x)
+(global-set-key (kbd "M-y")                     'helm-show-kill-ring)
+(global-set-key (kbd "C-c f")                   'helm-recentf)
+(global-set-key (kbd "C-x C-f")                 'helm-find-files)
+(global-set-key (kbd "C-c <SPC>")               'helm-all-mark-rings)
+(global-set-key (kbd "C-x r b")                 'helm-bookmark-ext)
+(global-set-key (kbd "C-h r")                   'helm-info-emacs)
+(global-set-key (kbd "C-c C-b")                 'helm-browse-code)
+(global-set-key (kbd "C-:")                     'helm-eval-expression-with-eldoc)
+(global-set-key (kbd "C-,")                     'helm-calcul-expression)
+(global-set-key (kbd "C-h d")                   'helm-info-at-point)
+(global-set-key (kbd "C-c g")                   'helm-google-suggest)
+(global-set-key (kbd "M-g s")                   'helm-do-grep)
+(global-set-key (kbd "C-x C-d")                 'helm-browse-project)
+(global-set-key (kbd "<f1>")                    'helm-resume)
+(global-set-key (kbd "C-h C-f")                 'helm-apropos)
+(global-set-key (kbd "<f5> s")                  'helm-find)
 (define-key global-map [remap jump-to-register] 'helm-register)
-(define-key global-map [remap list-buffers]    'helm-buffers-list)
+(define-key global-map [remap list-buffers]     'helm-buffers-list)
 
 ;;; Lisp complete or indent. (Rebing <tab>)
 ;;
@@ -173,6 +169,10 @@
      (with-helm-buffer (magit-status helm-default-directory)))
  helm-source-ls-git
  1)
+
+;;; Save current position to mark ring
+;;
+(add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
 
 ;;; enable Modes
 ;;
