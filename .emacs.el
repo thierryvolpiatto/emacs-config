@@ -1003,17 +1003,21 @@ from IPython.core.completerlib import module_completion"
                                   (run-hooks 'eshell-before-prompt-hook)
                                   (if (not eshell-prompt-function)
                                       (set-marker eshell-last-output-end (point))
-                                      (let ((prompt (funcall eshell-prompt-function)))
+                                      (let* ((prompt (funcall eshell-prompt-function))
+                                             (len (length prompt)))
                                         (and eshell-highlight-prompt
-                                             (add-text-properties 0
-                                                                  ;; Assume `eshell-prompt-function'
-                                                                  ;; add a space at end of prompt.
-                                                                  (1- (length prompt))
-                                                                  '(read-only t face eshell-prompt)
+                                             (add-text-properties 0 (1- len)
+                                                                  '(read-only t
+                                                                    face eshell-prompt)
+                                                                  prompt)
+                                             (add-text-properties (1- len) len
+                                                                  '(read-only t
+                                                                    face eshell-prompt
+                                                                    rear-nonsticky (face read-only))
                                                                   prompt))
                                         (eshell-interactive-print prompt)))
                                   (run-hooks 'eshell-after-prompt-hook))
-                                ;; Eshell smart initialize
+
                                 (require 'em-smart)
                                 (setq eshell-where-to-jump 'begin)
                                 (setq eshell-review-quick-commands nil)
@@ -1426,6 +1430,7 @@ With prefix arg always start and let me choose dictionary."
 
 ;; ioccur
 (define-key org-mode-map (kbd "C-c C-o") 'ioccur-find-buffer-matching)
+(add-hook 'ioccur-save-pos-before-jump-hook 'ioccur-save-current-pos-to-mark-ring)
 
 ;; Enable-commands-disabled-by-default
 (put 'narrow-to-region 'disabled nil)          ; C-x n n
