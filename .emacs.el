@@ -848,7 +848,7 @@ account add <protocol> moi@mail.com password."
 
 ;; Mark-ring
 (setq mark-ring-max 50)
-(setq global-mark-ring-max 32)
+(setq global-mark-ring-max 120)
 
 ;; show-paren-mode
 (show-paren-mode 1)

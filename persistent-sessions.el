@@ -95,6 +95,7 @@ That may not work with Emacs versions <=23.1 for hash tables."
           do
           (with-current-buffer (find-file-noselect f 'nowarn)
             (goto-char p)
+            (push-mark p 'nomsg)
             (progress-reporter-update progress-reporter count)))
     (progress-reporter-done progress-reporter)))
 
