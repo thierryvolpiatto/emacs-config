@@ -28,7 +28,6 @@
 
 (require 'cl)
 
-
 ;;; Sshfs
 ;;
 ;;
@@ -116,58 +115,6 @@
   (let* ((info (car (last (getf (tv-network-info network) :state))))
          (state (if info (symbol-name info) "down")))
     (if arg (message "%s is %s" network state) state)))
-
-;; Crontab 
-;;;###autoload
-(defun crontab (min hr month-day month week-day progr)
-  "Insert interactively crontab line at point.
-Run first crontab -e in shell and when emacsclient popup run M-x crontab."
-  (interactive "sMin (0 to 59 or 0-59/every_x_mn or *): \
-\nsHour (0 to 23 or 0-59/every_x_ hr or *): \
-\nsDayOfMonth (1 to 31 or *): \
-\nsMonth (1 to 12 or *): \
-\nsDayOfWeek (0 to 7 or x,y,z or *): \nsCommand: ")
-  (let ((abs-prog (with-temp-buffer
-                    (call-process "which" nil t nil (format "%s" progr))
-                    (buffer-string))))
-    (insert
-     (concat min " " hr " " month-day " " month " " week-day " " abs-prog))))
-
-;; tv-yank-from-screen 
-
-(defvar screen-exchange-file "~/.screen_exchange")
-;;;###autoload
-(defun tv-yank-from-screen (arg)
-  "Yank text copied in a GNU/screen session."
-  (interactive "P")
-  (let* ((content  (with-current-buffer
-                       (find-file-noselect screen-exchange-file)
-                     (prog1
-                         (buffer-substring (point-min) (point-max))
-                       (kill-buffer))))
-         (len      (length content))
-         (one-line (replace-regexp-in-string "\n" "" content)))
-    ;; With prefix arg don't remove new lines.
-    (if arg (insert content) (insert one-line))
-    (forward-char len)))
-
-;;;###autoload
-(defun tv-copy-for-screen (arg beg end)
-  "Copy region without newlines in `screen-exchange-file'."
-  (interactive "P\nr")
-  (let ((region (buffer-substring-no-properties beg end))
-        (require-final-newline nil))
-    (with-current-buffer
-        (find-file-noselect screen-exchange-file)
-      (goto-char (point-min))
-      (erase-buffer)
-      (if arg
-          ;; With prefix arg don't remove new lines.
-          (insert region)
-          (insert (replace-regexp-in-string "\n" "" region)))
-      (save-buffer)
-      (shell-command "screen -X readbuf > /dev/null")
-      (kill-buffer))))
 
 ;; Benchmark
 (defmacro tv-time (&rest body)
@@ -352,19 +299,6 @@ START and END are buffer positions indicating what to append."
                                 (reverse store))
                         "\n- "))))
 
-;; String-processing 
-
-;; like `make-string' :-)
-(defmacro *string (str num)
-  `(let ((str-lis))
-     (dotimes (n ,num)
-       (push ,str str-lis))
-     (mapconcat #'(lambda (i) i) str-lis "")))
-
-(defmacro +string (str-0 str-1)
-  `(let ((str-lis (list ,str-0 ,str-1)))
-     (mapconcat #'(lambda (i) i) str-lis "")))
-
 ;;; Time-functions 
 (defun* tv-time-date-in-n-days (days &key (separator "-") french)
   "Return the date in string form in n +/-DAYS."
@@ -386,27 +320,6 @@ START and END are buffer positions indicating what to append."
     (if french
         (mapconcat 'identity (reverse result) separator)
         (mapconcat 'identity result separator))))
-
-
-(defun* tv-date-string (&key (separator "-") french (date (current-time)))
-  "Return DATE under string form."
-  (let* ((year      (nth 5 (decode-time date)))
-         (month     (nth 4 (decode-time date)))
-         (month-str (substring (int-to-string (/ (float month) 100)) 2))
-         (day       (nth 3 (decode-time (current-time))))
-         (day-str   (substring (int-to-string (/ (float day) 100)) 2))
-         (result    (list (int-to-string year)
-                          (if (< (length month-str) 2) (concat month-str "0") month-str)
-                          (if (< (length day-str) 2) (concat day-str "0") day-str))))
-    (if french
-        (mapconcat 'identity (reverse result) separator)
-        (mapconcat 'identity result separator))))
-
-(defun* tv-cur-date-string (&key (separator "-") french)
-  "Return current date under string form."
-  (if french
-      (tv-date-string :separator separator :french t)
-      (tv-date-string :separator separator)))
 
 ;; mapc-with-progress-reporter 
 (defmacro mapc-with-progress-reporter (message func seq)
@@ -472,16 +385,13 @@ START and END are buffer positions indicating what to append."
   (interactive "P")
   (insert-pair arg ?\" ?\"))
 
-
 (defun tv-insert-double-backquote (&optional arg)
   (interactive "P")
   (insert-pair arg ?\` ?\'))
 
-
 (defun tv-insert-vector (&optional arg)
   (interactive "P")
   (insert-pair arg ?\[ ?\]))
-
 
 (defun tv-move-pair-forward ()
   (interactive)
@@ -497,7 +407,6 @@ START and END are buffer positions indicating what to append."
            (insert ")"))
           (t
            (throw 'break nil)))))))
-
 
 (defun tv-insert-double-quote-and-close-forward ()
   (interactive)
@@ -517,7 +426,6 @@ START and END are buffer positions indicating what to append."
           (t
            (throw 'break (when (characterp action) (insert (string action))))))))))
 
-
 (defun tv-insert-pair-and-close-forward ()
   (interactive)
   (let (action)
@@ -535,28 +443,6 @@ START and END are buffer positions indicating what to append."
           (t
            (forward-char -1)
            (throw 'break nil)))))))
-
-
-;;; Open-file-in-gimp 
-;; <2009-08-13 Jeu. 10:29>
-(defun tv-gimp-open-file (file)
-  (interactive
-   (list (helm-comp-read "Image: "
-                         (loop
-                               with f = (cddr (directory-files default-directory))
-                               with img = '("jpg" "png" "gif" "jpeg")
-                               for i in f
-                               if (member (file-name-extension i) img)
-                               collect i))))
-  (message "Starting Gimp...") (sit-for 0.2)
-  (start-process "Gimp" nil "gimp" (expand-file-name file))
-  (set-process-sentinel (get-process "Gimp")
-                        #'(lambda (process event)
-                            (message
-                             "%s process is %s"
-                             process
-                             event))))
-
 
 ;;; Insert-an-image-at-point 
 (defun tv-insert-image-at-point (image)
@@ -655,124 +541,6 @@ Can be used from any place in the line."
     (insert data)
     (delete-file patch)))
 
-;; Show infos on files using an easy interface for `file-attributes'.
-;; [DEPRECATED] Use `helm-ff-attributes'
-;;
-(defun* show-file-attributes
-    (file &key type links uid gid access-time modif-time status size mode gid-change inode device-num dired)
-  "Comprehensive reading of `file-attributes'."
-  (let ((all (destructuring-bind
-                   (type links uid gid access-time modif-time status size mode gid-change inode device-num)
-                 (file-attributes file 'string)
-               (list :type        type
-                     :links       links
-                     :uid         uid
-                     :gid         gid
-                     :access-time access-time
-                     :modif-time  modif-time
-                     :status      status
-                     :size        size
-                     :mode        mode
-                     :gid-change  gid-change
-                     :inode       inode
-                     :device-num  device-num))))
-    (cond (type
-           (let ((result (getf all :type)))
-             (cond ((stringp result)
-                    "symlink")
-                   (result "directory")
-                   (t "file"))))
-          (links (getf all :links))
-          (uid   (getf all :uid))
-          (gid   (getf all :gid))
-          (access-time
-           (format-time-string "%Y-%m-%d %R" (getf all :access-time)))
-          (modif-time
-           (format-time-string "%Y-%m-%d %R" (getf all :modif-time)))
-          (status
-           (format-time-string "%Y-%m-%d %R" (getf all :status)))
-          (size (getf all :size))
-          (mode (getf all :mode))
-          (gid-change (getf all :gid-change))
-          (inode (getf all :inode))
-          (device-num (getf all :device-num))
-          (dired
-           (concat
-            (getf all :mode) " "
-            (number-to-string (getf all :links)) " "
-            (getf all :uid) ":"
-            (getf all :gid) " "
-            (number-to-string (getf all :size)) " "
-            (format-time-string "%Y-%m-%d %R" (getf all :modif-time))))
-          (t all))))
-
-
-(defun* serial-rename-with1 (dir &key ext suffix prefix without)
-  (let* ((ls-dir     (file-expand-wildcards (if ext
-                                                (format "%s*.%s" (file-name-as-directory dir) ext)
-                                                (format "%s*" (file-name-as-directory dir)))
-                                            t)))
-    (loop for i in ls-dir
-          for no-ext = (file-name-sans-extension (file-name-nondirectory i))
-          for new-name = (if (and without (string-match without no-ext))
-                             (replace-match "" t t no-ext)
-                             no-ext)
-          for suffixed = (and suffix (expand-file-name (concat new-name suffix "." ext) dir))
-          for prefixed = (and prefix (expand-file-name (concat prefix new-name "." ext) dir))
-          for both = (and prefix suffix (expand-file-name (concat prefix new-name suffix "." ext) dir))
-          for replace = (expand-file-name (concat new-name "." ext) dir)
-          do (rename-file i (or both suffixed prefixed replace)))))
-
-
-(defun* rename-file-with1 (file &key suffix prefix without)
-  (let* ((dir (file-name-directory file))
-         (ext (file-name-extension file))
-         (no-ext (file-name-sans-extension (file-name-nondirectory file)))
-         (new-name (if (and without (string-match without no-ext))
-                       (replace-match "" t t no-ext)
-                       no-ext))
-         (suffixed (and suffix (expand-file-name (concat new-name suffix "." ext) dir)))
-         (prefixed (and prefix (expand-file-name (concat prefix new-name "." ext) dir)))
-         (both (and prefix suffix (expand-file-name (concat prefix new-name suffix "." ext) dir)))
-         (replace (expand-file-name (concat new-name "." ext) dir)))
-    (rename-file file (or both suffixed prefixed replace))))
-
-
-;;; eshell-pager 
-;;
-;;
-(defun eshell-pager (command &rest args)
-  "Display the output of COMMAND by chunk of lines."
-  (let* ((height   (/ (frame-height) 2)) ; Assume we use 1 or 2 windows.
-         (split    (with-temp-buffer
-                     (apply #'call-process command nil t nil args)
-                     (goto-char (point-min))
-                     (loop
-                           while (not (eobp))
-                           for beg = (point)
-                           do (forward-line (- height 3))
-                           collect (buffer-substring beg (point)))))
-         (it       (iter-list split)) ; Initialize with a simple iterator.
-         (last-elm (iter-next it)))
-    (flet ((print-result ()
-             (pop-to-buffer (get-buffer-create "*Pager*"))
-             (erase-buffer)
-             (save-excursion
-               (when last-elm
-                 (insert last-elm)))))
-      (save-window-excursion
-        (print-result) ; Print the first chunk of lines before starting loop.
-        (while (let ((char (read-key "===[ Next: SPACE, Prec: b, AnyKey:Exit ]===")))
-                 (case char
-                   (32 ; SPACE: Continue with a circular iterator.
-                    (setq it (iter-sub-next-circular split last-elm))
-                    (setq last-elm (iter-next it)))
-                   (98 ; b Go back.
-                    (setq it (iter-sub-prec-circular split last-elm))
-                    (setq last-elm (iter-next it)))
-                   (t nil))) ; Exit loop if any other key is pressed.
-          (print-result))))))
-
 ;; Switch indenting lisp style.
 (defun toggle-lisp-indent ()
   (interactive)
@@ -805,39 +573,7 @@ Can be used from any place in the line."
           (replace-match
            (concat (format "%d " count) (match-string 0))))))
 
-;; switch to emacs version
-(defun eselect-emacs ()
-  (interactive)
-  (let ((execs '("b2m" "ctags" "ebrowse" "emacs" "emacsclient" "etags" "grep-changelog" "rcs-checkin"))
-        helm-async-be-async) ; Turn off async because we are removing the emacs executable 'emacs'.
-    (let* ((src-bin (expand-file-name (helm-comp-read
-                                       "EmacsVersion: "
-                                       (directory-files "/sudo::/usr/local/sbin"
-                                                        nil directory-files-no-dot-files-regexp))
-                                      "/sudo::/usr/local/sbin"))
-           (bin-list (loop for i in execs
-                           for full = (expand-file-name i src-bin)
-                           when (file-exists-p full)
-                           collect full))
-           (src-info (helm-comp-read
-                      "EmacsInfoVersion: "
-                      (loop for i in
-                            (directory-files "/sudo::/usr/local/share" t directory-files-no-dot-files-regexp)
-                            when (string-match "info.*[0-9]+\\'" i) collect i))))
-      (when (y-or-n-p (format "Really switch from %s to another emacs? " emacs-version))
-        (loop for i in execs
-              for full = (expand-file-name i "/sudo::/usr/local/bin/")
-              when (file-exists-p full)
-              do (delete-file (expand-file-name i "/sudo::/usr/local/bin/")))
-        (delete-file "/sudo::/usr/local/share/info")
-        (helm-dired-action "/sudo::/usr/local/bin/"
-                           :action 'symlink
-                           :files bin-list)
-        (helm-dired-action "/sudo::/usr/local/share/info"
-                           :action 'symlink :files (list src-info))
-        (message "Switched to %s version" (file-name-nondirectory src-bin))))))
-
-;; Permutations
+;; Permutations (Too slow)
 
 (defun* permutations (bag &key result-as-string print)
   "Return a list of all the permutations of the input."
@@ -865,9 +601,9 @@ Can be used from any place in the line."
         result)))
 
 ;; Verlan.
-(defun tv-reverse-lines-in-region (beg end)
+(defun tv-reverse-chars-in-region (beg end)
+  "Verlan region. Unuseful but funny"
   (interactive "r")
-  "Verlan region."
   (save-restriction
     (narrow-to-region beg end)
     (goto-char (point-min))

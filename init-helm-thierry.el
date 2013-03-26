@@ -109,8 +109,10 @@
       helm-ls-git-status-command                 'magit-status
       helm-never-delay-on-input                  nil
       helm-candidate-number-limit                200
+      ;helm-moccur-always-search-in-current        t
       ;helm-tramp-verbose                         6
       ;helm-ff-file-name-history-use-recentf      t
+      ;helm-follow-mode-persistent                t
       )
 
 ;;; Toggle grep program

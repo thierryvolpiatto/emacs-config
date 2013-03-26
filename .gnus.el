@@ -331,10 +331,6 @@ This will run in `message-send-hook'."
 ;;  ("gmane.spam.detected" -1000 nil s)))
 (setq gnus-summary-expunge-below -999)
 
-;; gnus-demon (start with `gnus-demon-init')
-;; Scan for new news
-(gnus-demon-add-handler 'gnus-demon-scan-news 5 0.5)
-
 ;; Scroll-other-window 
 (define-key gnus-summary-mode-map (kbd "<C-M-down>") #'(lambda ()
                                                          (interactive)

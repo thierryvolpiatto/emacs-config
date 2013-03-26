@@ -69,6 +69,11 @@
       (add-to-list 'load-path lib))))
 ;; (tv-maybe-add-org-load-path t)
 
+(defun tv-maybe-add-tramp-load-path (&optional force)
+  (when (or (version< emacs-version "24.3.50") force) 
+    (add-to-list 'load-path "~/elisp/tramp/lisp")))
+(tv-maybe-add-tramp-load-path)
+
 
 ;;; load-paths
 ;; For Info paths see:
@@ -998,21 +1003,18 @@ from IPython.core.completerlib import module_completion"
 
 
 (add-hook 'eshell-mode-hook #'(lambda ()
+
                                 (defun eshell-emit-prompt ()
                                   "Emit a prompt if eshell is being used interactively."
                                   (run-hooks 'eshell-before-prompt-hook)
                                   (if (not eshell-prompt-function)
                                       (set-marker eshell-last-output-end (point))
-                                      (let* ((prompt (funcall eshell-prompt-function))
-                                             (len (length prompt)))
+                                      (let ((prompt (funcall eshell-prompt-function)))
                                         (and eshell-highlight-prompt
-                                             (add-text-properties 0 (1- len)
-                                                                  '(read-only t
-                                                                    face eshell-prompt)
-                                                                  prompt)
-                                             (add-text-properties (1- len) len
+                                             (add-text-properties 0 (length prompt)
                                                                   '(read-only t
                                                                     face eshell-prompt
+                                                                    front-sticky (face read-only)
                                                                     rear-nonsticky (face read-only))
                                                                   prompt))
                                         (eshell-interactive-print prompt)))
