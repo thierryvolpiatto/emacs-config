@@ -57,7 +57,7 @@
     (tv-require 'info)
     (add-to-list 'Info-directory-list "~/elisp/ngnus/texi/")
     (add-to-list 'Info-default-directory-list "~/elisp/ngnus/texi/")))
-;(tv-maybe-load-ngnus t)
+;; (tv-maybe-load-ngnus t)
 
 (defun tv-maybe-add-org-load-path (&optional force)
   (when (or (< emacs-major-version 24) force)
@@ -72,7 +72,7 @@
 (defun tv-maybe-add-tramp-load-path (&optional force)
   (when (or (version< emacs-version "24.3.50") force) 
     (add-to-list 'load-path "~/elisp/tramp/lisp")))
-(tv-maybe-add-tramp-load-path)
+;; (tv-maybe-add-tramp-load-path)
 
 
 ;;; load-paths
@@ -1003,23 +1003,6 @@ from IPython.core.completerlib import module_completion"
 
 
 (add-hook 'eshell-mode-hook #'(lambda ()
-
-                                (defun eshell-emit-prompt ()
-                                  "Emit a prompt if eshell is being used interactively."
-                                  (run-hooks 'eshell-before-prompt-hook)
-                                  (if (not eshell-prompt-function)
-                                      (set-marker eshell-last-output-end (point))
-                                      (let ((prompt (funcall eshell-prompt-function)))
-                                        (and eshell-highlight-prompt
-                                             (add-text-properties 0 (length prompt)
-                                                                  '(read-only t
-                                                                    face eshell-prompt
-                                                                    front-sticky (face read-only)
-                                                                    rear-nonsticky (face read-only))
-                                                                  prompt))
-                                        (eshell-interactive-print prompt)))
-                                  (run-hooks 'eshell-after-prompt-hook))
-
                                 (require 'em-smart)
                                 (setq eshell-where-to-jump 'begin)
                                 (setq eshell-review-quick-commands nil)
@@ -1710,7 +1693,7 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
   (set-marker (mark-marker) (or location (point)) (current-buffer))
   ;; Now push the mark on the global mark ring.
   (if (and global-mark-ring
-	   (eq (marker-buffer (car global-mark-ring)) (current-buffer)))
+           (eq (marker-buffer (car global-mark-ring)) (current-buffer)))
       ;; The last global mark pushed was in this same buffer.
       ;; Don't push another one but update it.
       (setcar global-mark-ring (copy-marker (mark-marker)))
