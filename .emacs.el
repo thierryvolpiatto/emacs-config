@@ -91,8 +91,7 @@
 (dolist (i '("/usr/local/share/emacs/site-lisp"
              "/usr/local/share/emacs/site-lisp/auctex"
 	     "~/elisp/"
-             ;"~/elisp/monky"
-             "~/elisp/emacs-w3m"
+             "~/elisp/w3m"
 	     "~/elisp/magit"
              "~/elisp/Emacs-wgrep"
              "~/elisp/auctex"
@@ -1419,6 +1418,7 @@ With prefix arg always start and let me choose dictionary."
 
 ;; Enable-commands-disabled-by-default
 (put 'narrow-to-region 'disabled nil)          ; C-x n n
+(put 'narrow-to-page 'disabled nil)            ; C-x n p
 (put 'scroll-left 'disabled nil)               ; C-x > or <
 (put 'downcase-region 'disabled nil)           ; C-x C-l
 (put 'upcase-region 'disabled nil)             ; C-x C-u
@@ -1900,3 +1900,4 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 (add-hook 'emacs-startup-hook 'go-to-scratch 'append)
 
 ;;; .emacs.el ends here
+
