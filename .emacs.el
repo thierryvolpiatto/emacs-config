@@ -368,7 +368,7 @@
 (setq mail-user-agent 'gnus-user-agent)
 (setq read-mail-command 'gnus)
 (setq send-mail-command 'gnus-msg-mail)
-(setq gnus-init-file "~/.emacs.d/emacs-config-laptop/.gnus.el")
+(setq gnus-init-file "~/.emacs.d/.gnus.el")
 
 (defvar tv-gnus-loaded-p nil)
 (defun tv-load-gnus-init-may-be ()
