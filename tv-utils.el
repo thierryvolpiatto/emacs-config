@@ -887,6 +887,17 @@ With a prefix arg remove new lines."
                       author
                       "---A")))
 
+(defun tv-break-long-string-list-at-point ()
+  (interactive)
+  (when (and (looking-at "(")
+             (> (point-at-eol) (+ (point) 50)))
+    (save-excursion
+      (move-to-column 50)
+      (while (or (or (looking-back "[\"]") (looking-at "[\"]"))
+                 (re-search-forward "[^ ()][\"]" (point-at-eol) t))
+        (unless (looking-at "\n")
+          (insert "\n") (move-to-column 50))))))
+
 (provide 'tv-utils)
 
 ;; Local Variables:

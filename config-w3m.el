@@ -3,7 +3,7 @@
 ;; Code:
 (require 'w3m-load)
 (setq w3m-bookmark-file "~/.w3m/bookmark.html")
-(setq w3m-icon-directory "~/elisp/w3m/icons")
+(setq w3m-icon-directory "~/elisp/jenkins/w3m/icons")
 (setq w3m-default-save-directory "~/download/")
 
 (setq w3m-coding-system 'utf-8

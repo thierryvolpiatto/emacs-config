@@ -227,6 +227,7 @@
   (tv-require 'helm-async))
 (tv-require 'smtpmail-async)
 (tv-require 'wicd-mode)
+(tv-require 'golden-ratio)
 
 
 ;;; Global keys
@@ -306,6 +307,7 @@
 (global-set-key (kbd "C-x C-'")                    'tv-toggle-resplit-window)
 (global-set-key (kbd "C-x C-(")                    'tv-resize-window)
 (global-set-key (kbd "C-§")                        'iedit-narrow-to-end)
+(global-set-key (kbd "C-²")                        'iedit-narrow-to-defun)
 
 
 ;;; iedit
@@ -315,6 +317,12 @@
   (interactive "P")
   (save-restriction
     (narrow-to-region (point-at-bol) (point-max))
+    (iedit-mode arg)))
+
+(defun iedit-narrow-to-defun (arg)
+  (interactive "P")
+  (save-restriction
+    (narrow-to-defun)
     (iedit-mode arg)))
 
 
@@ -1671,6 +1679,29 @@ If your system's ping continues until interrupted, you can try setting
      dig-program
      (list host))))
 
+(eval-after-load "message.el"
+  (progn
+    (defun message-bury (&optional buffer)
+      "Bury this mail BUFFER."
+      (bury-buffer buffer)
+      (when message-return-action
+        (apply (car message-return-action) (cdr message-return-action))))
+  
+    (defun message-send-and-exit (&optional arg)
+      "Send message like `message-send', then, if no errors, exit from mail buffer.
+The usage of ARG is defined by the instance that called Message.
+It should typically alter the sending method in some way or other."
+      (interactive "P")
+      (let ((buf (current-buffer))
+            (actions message-exit-actions))
+        (when (and (message-send arg)
+                   (buffer-name buf))
+          (message-bury)
+          (if message-kill-buffer-on-exit
+              (kill-buffer buf))
+          (message-do-actions actions)
+          t)))))
+
 
 ;;; Redefine push-mark to update mark in global-mark-ring
 ;;
@@ -1884,6 +1915,12 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;; Monky - hg frontend
 ;;
 ;(setq monky-process-type 'cmdserver)
+
+;;; Golden ratio and helm
+;;
+(defun helm-running-p () helm-alive-p)
+(setq golden-ratio-inhibit-functions '(helm-running-p))
+(golden-ratio-mode 1)
 
 ;;; Report bug
 ;;
