@@ -226,8 +226,15 @@
 (when (tv-require 'dired-aux)
   (tv-require 'helm-async))
 (tv-require 'smtpmail-async)
-(tv-require 'wicd-mode)
+;(tv-require 'wicd-mode)
 (tv-require 'golden-ratio)
+
+;; Use helm-occur as default but fallback to ioccur when helm is broken
+(defun tv-helm-or-ioccur ()
+  (interactive)
+  (condition-case nil
+      (helm-occur)
+    (error (ioccur))))
 
 
 ;;; Global keys
@@ -262,14 +269,14 @@
 (global-set-key (kbd "<f11> l e")                  'slime-scratch)
 (global-set-key (kbd "<f11> l l")                  'slime-list-connections)
 (global-set-key [remap occur]                      'helm-occur) ; M-s o
-(global-set-key (kbd "C-s")                        'ioccur)
+(global-set-key (kbd "C-s")                        'tv-helm-or-ioccur)
 (global-set-key (kbd "M-s s")                      'isearch-forward)
 (global-set-key (kbd "C-c C-o")                    'ioccur-find-buffer-matching)
 (global-set-key (kbd "<M-down>")                   'tv-scroll-down)
 (global-set-key (kbd "<M-up>")                     'tv-scroll-up)
 (global-set-key (kbd "<C-M-down>")                 'tv-scroll-other-down)
 (global-set-key (kbd "<C-M-up>")                   'tv-scroll-other-up)
-(global-set-key (kbd "<C-prior>")                  'text-scale-decrease)
+(global-set-key (kbd "<C-prior>")                  'text-scale-decrease) ; font size.
 (global-set-key (kbd "<C-next>")                   'text-scale-increase)
 (global-set-key (kbd "C-x C-²")                    'delete-other-windows)
 (global-set-key (kbd "C-x C-&")                    'delete-window)
@@ -525,21 +532,6 @@ With a prefix arg decrease transparency."
                                       (left . 450)
                                       (background-color . "Lightsteelblue1")
                                       (foreground-color . "black")
-                                      (alpha . nil)
-                                      (fullscreen . nil))
-                                     ("*Wicd*"
-                                      (minibuffer . nil)
-                                      (width . 65)
-                                      (height . 12)
-                                      (left-fringe . 0)
-                                      (border-width . 0)
-                                      (menu-bar-lines . 0)
-                                      (tool-bar-lines . 0)
-                                      (unsplittable . t)
-                                      (top . 50)
-                                      (left . 700)
-                                      (background-color . "black")
-                                      (foreground-color . "white")
                                       (alpha . nil)
                                       (fullscreen . nil))
                                      ("*Compile-Log*"
@@ -1570,6 +1562,7 @@ With prefix arg always start and let me choose dictionary."
 ;;
 ;;
 (add-to-list 'display-time-world-list '("Australia/Sydney" "Sydney"))
+(add-to-list 'display-time-world-list '("Australia/Melbourne" "Melbourne"))
 (add-to-list 'display-time-world-list '("America/Chicago" "Chicago"))
 (add-to-list 'display-time-world-list '("America/Denver" "Denver"))
 (add-to-list 'display-time-world-list '("America/Los_Angeles" "Los_Angeles/Seattle"))
@@ -1920,7 +1913,16 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;
 (defun helm-running-p () helm-alive-p)
 (setq golden-ratio-inhibit-functions '(helm-running-p))
+(setq golden-ratio-exclude-modes '("ediff-mode"))
+(add-hook 'ediff-before-setup-windows-hook #'(lambda () (golden-ratio-mode -1)))
+(add-hook 'ediff-quit-hook #'(lambda () (golden-ratio-mode 1)))
 (golden-ratio-mode 1)
+
+;;; Melpa
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(package-initialize)
 
 ;;; Report bug
 ;;
