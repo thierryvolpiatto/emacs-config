@@ -72,8 +72,6 @@
          (from "Thierry Volpiatto <tvolpiatto@yahoo.fr>")
          (signature-file "~/.signature"))))
 
-;; [README] (find-fline "/usr/local/share/emacs/24.0.92/lisp/mail/smtpmail.el.gz" "Please")
-
 ;; Don't send to these address in wide reply.
 (setq message-dont-reply-to-names '("notifications@github.com"
                                     "helm@noreply.github.com"

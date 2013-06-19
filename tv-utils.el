@@ -35,6 +35,7 @@
 (defun mount-sshfs (fs mp)
   (interactive (list (completing-read "FileSystem: "
                                       '("thievol:/home/thierry"
+                                        "thievolrem:/home/thierry"
                                         "zte:/"))
                      (expand-file-name
                       (read-directory-name "MountPoint: "

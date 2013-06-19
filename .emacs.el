@@ -1052,7 +1052,7 @@ from IPython.core.completerlib import module_completion"
 ;; Eshell-visual
 (setq eshell-term-name "eterm-color")
 (when (tv-require 'em-term)
-  (dolist (i '("kop" "ledger" "htop" "ipython"))
+  (dolist (i '("kop" "ledger" "htop" "ipython" "git-log"))
     (add-to-list 'eshell-visual-commands i)))
 
 ;;; pcomplete Completion functions on specific commands (Find, hg etc...)
@@ -1339,6 +1339,8 @@ With prefix arg always start and let me choose dictionary."
 
 ;; Mode-lecture-photo-auto
 (auto-image-file-mode 1)
+;; Allow scrolling horizontally in large images
+(add-hook 'image-mode-hook #'(lambda () (set (make-variable-buffer-local 'auto-hscroll-mode) nil)))
 
 
 ;;; Slime config

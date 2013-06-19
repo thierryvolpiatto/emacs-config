@@ -22,7 +22,6 @@
              "\\([0-9]+?\\)\\.\\([0-9]+?\\)\\.\\([0-9]+?\\)\\.?[0-9]*" nil t)
       (prog1 (match-string-no-properties 0) (kill-buffer))))))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Helm-command-map
@@ -109,6 +108,7 @@
       helm-ls-git-status-command                 'magit-status
       helm-never-delay-on-input                  nil
       helm-candidate-number-limit                200
+      helm-M-x-requires-pattern                  0
       ;helm-moccur-always-search-in-current        t
       ;helm-tramp-verbose                         6
       ;helm-ff-file-name-history-use-recentf      t
