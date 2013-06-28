@@ -230,9 +230,10 @@ This will run in `message-send-hook'."
 
 ;; w3m
 ;;
-;; (setq mm-text-html-renderer 'w3m)
+;(setq mm-text-html-renderer 'w3m)
 
-;; (setq mm-inline-text-html-with-images t)
+;; Try to inline images
+(setq mm-inline-text-html-with-images t)
 
 ;; Passage à la ligne automatique
 ;;
