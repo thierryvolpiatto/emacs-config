@@ -24,38 +24,26 @@
 
 ;;; Dabbrev expand
 ;;
-;; (defun helm-dabbrev--find-expansions (abbrev limit ignore-case)
-;;   (save-excursion
-;;     (goto-char (point-min))
-;;     (loop for count from 0
-;;           for exp = (dabbrev--find-expansion abbrev -1 ignore-case)
-;;           while (and (< count limit) exp)
-;;           collect exp)))
-
-;; (defun helm-dabbrev-get-candidates (abbrev)
-;;   (let* ((dabbrev-get #'(lambda (str all)
-;;                          (let ((dabbrev-check-other-buffers all))
-;;                            (dabbrev--reset-global-variables)
-;;                            (helm-dabbrev--find-expansions
-;;                             str helm-candidate-number-limit all))))
-;;          (lst (funcall dabbrev-get abbrev nil)))
-;;     (if (<= (length lst) 4)
-;;         (funcall dabbrev-get abbrev t)
-;;         lst)))
-
 (defun helm-collect-dabbrev (str limit ignore-case all)
-  (let ((case-fold-search ignore-case))
+  (let ((case-fold-search ignore-case)
+        (search #'(lambda (buf pattern direction)
+                    (while (case direction
+                             (1  (re-search-forward pattern nil t))
+                             (-1 (re-search-backward pattern nil t))) 
+                      (let ((match (substring-no-properties
+                                    (thing-at-point 'symbol)))) 
+                        (unless (string= str match)
+                          (push match result)))))))
     (loop with result
           for buf in (if all (buffer-list) (list (current-buffer)))
           do (with-current-buffer buf
                (save-excursion
-                 (goto-char (point-max))
-                 (while (re-search-backward str nil t)
-                   (let ((match (substring-no-properties
-                                 (thing-at-point 'symbol)))) 
-                     (unless (string= str match) (push match result))))))
+                 (funcall search buf str -1))
+               (save-excursion
+                 (funcall search buf str 1)))
           when (> (length result) limit) return (nreverse result)
           finally return (nreverse result))))
+
 
 (defun helm-dabbrev-get-candidates (abbrev)
   (with-helm-current-buffer
