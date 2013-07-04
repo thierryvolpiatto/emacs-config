@@ -22,68 +22,6 @@
              "\\([0-9]+?\\)\\.\\([0-9]+?\\)\\.\\([0-9]+?\\)\\.?[0-9]*" nil t)
       (prog1 (match-string-no-properties 0) (kill-buffer))))))
 
-;;; Dabbrev expand
-;;
-(defun helm-collect-dabbrev (str limit ignore-case all)
-  (let ((case-fold-search ignore-case)
-        (search #'(lambda (buf pattern direction)
-                    (while (case direction
-                             (1  (re-search-forward pattern nil t))
-                             (-1 (re-search-backward pattern nil t))) 
-                      (let ((match (substring-no-properties
-                                    (thing-at-point 'symbol)))) 
-                        (unless (string= str match)
-                          (push match result)))))))
-    (loop with result
-          for buf in (if all (buffer-list) (list (current-buffer)))
-          do (with-current-buffer buf
-               (save-excursion
-                 (funcall search buf str -1))
-               (save-excursion
-                 (funcall search buf str 1)))
-          when (> (length result) limit) return (nreverse result)
-          finally return (nreverse result))))
-
-
-(defun helm-dabbrev-get-candidates (abbrev)
-  (with-helm-current-buffer
-    (let* ((dabbrev-get #'(lambda (str all-bufs)
-                             (helm-collect-dabbrev
-                              str helm-candidate-number-limit
-                              nil all-bufs)))
-           (lst (funcall dabbrev-get abbrev nil)))
-      (if (<= (length lst) 5)
-          (funcall dabbrev-get abbrev 'all-bufs)
-          lst))))
-
-(defvar helm-source-dabbrev
-  '((name . "Dabbrev Expand")
-    (init . (lambda ()
-              (helm-init-candidates-in-buffer
-               'global
-               (helm-dabbrev-get-candidates dabbrev))))
-    (candidates-in-buffer)
-    (action . (lambda (candidate)
-                (let ((limits (with-helm-current-buffer
-                                (bounds-of-thing-at-point 'symbol))))
-                  (delete-region (car limits) (cdr limits))
-                  (insert candidate))))))
-
-(defun helm-dabbrev ()
-  (interactive)
-  (declare (special dabbrev))
-  (let ((dabbrev (thing-at-point 'symbol))
-        (limits (bounds-of-thing-at-point 'symbol))
-        (helm-execute-action-at-once-if-one t)
-        (helm-quit-if-no-candidate t))
-    (with-helm-show-completion (car limits) (cdr limits)
-      (helm :sources 'helm-source-dabbrev
-            :buffer "*helm dabbrev*"
-            :input (concat "^" dabbrev " ")
-            :resume 'noresume))))
-
-(global-set-key [remap dabbrev-expand] 'helm-dabbrev)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Helm-command-map
@@ -113,6 +51,7 @@
 (global-set-key (kbd "<f5> s")                  'helm-find)
 (define-key global-map [remap jump-to-register] 'helm-register)
 (define-key global-map [remap list-buffers]     'helm-buffers-list)
+(global-set-key [remap dabbrev-expand] 'helm-dabbrev)
 
 ;;; Lisp complete or indent. (Rebind <tab>)
 ;;
@@ -123,6 +62,10 @@
 ;;
 (define-key lisp-interaction-mode-map [remap completion-at-point] 'helm-lisp-completion-at-point)
 (define-key emacs-lisp-mode-map       [remap completion-at-point] 'helm-lisp-completion-at-point)
+
+;;; helm completion in minibuffer
+;;
+(define-key minibuffer-local-map [remap completion-at-point] 'helm-lisp-completion-at-point)
 
 ;;; Describe key-bindings
 ;;

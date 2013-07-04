@@ -52,7 +52,7 @@ That may not work with Emacs versions <=23.1 for hash tables."
 (defun* restore-objects-from-directory
     (&optional (dir elisp-objects-default-directory))
   (let ((file-list (cddr (directory-files dir t))))
-    (mapc 'load file-list)))
+    (loop for file in file-list do (load file))))
 
 (defun* tv-dump-object-save-register-alist (&optional (file "register-alist.el"))
   "Save `register-alist' but only supported objects."

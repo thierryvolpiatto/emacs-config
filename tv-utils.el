@@ -250,9 +250,11 @@ START and END are buffer positions indicating what to append."
 
 ;;; Stardict
 ;;
-(defun translate-at-point ()
-  (interactive)
-  (let* ((word (or (thing-at-point 'word) (read-string "Translate Word: ")))
+(defun translate-at-point (arg)
+  (interactive "P")
+  (let* ((word (if arg
+                   (read-string "Translate Word: ")
+                   (thing-at-point 'word)))
          (tooltip-hide-delay 30)
          (result
           (condition-case nil
