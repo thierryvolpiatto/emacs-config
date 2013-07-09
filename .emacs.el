@@ -206,6 +206,7 @@
 (tv-require 'ioccur)
 (tv-require 'mb-depth)
 (tv-require 'tv-utils)
+(tv-require 'ledger-config)
 (tv-require 'rectangle-utils)
 (tv-require 'smallurl)
 (tv-require 'zop-to-char)
@@ -228,6 +229,7 @@
 (tv-require 'smtpmail-async)
 ;(tv-require 'wicd-mode)
 (tv-require 'golden-ratio)
+(tv-require 'emamux)
 
 ;; Use helm-occur as default but fallback to ioccur when helm is broken
 (defun tv-helm-or-ioccur ()
@@ -1579,7 +1581,7 @@ With prefix arg always start and let me choose dictionary."
 ;(setq delete-by-moving-to-trash t)
 
 ;; Minibuffers completion
-(setq completion-cycle-threshold t) ; always cycle, no completion buffers.
+;(setq completion-cycle-threshold t) ; always cycle, no completion buffers.
 
 ;;; VC
 ;;
@@ -1919,6 +1921,10 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 (add-hook 'ediff-before-setup-windows-hook #'(lambda () (golden-ratio-mode -1)))
 (add-hook 'ediff-quit-hook #'(lambda () (golden-ratio-mode 1)))
 (golden-ratio-mode 1)
+
+;;; Magit
+;;
+(setq magit-restore-window-configuration t)
 
 ;;; Melpa
 (require 'package)

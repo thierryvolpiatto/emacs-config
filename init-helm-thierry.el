@@ -65,7 +65,8 @@
 
 ;;; helm completion in minibuffer
 ;;
-(define-key minibuffer-local-map [remap completion-at-point] 'helm-lisp-completion-at-point)
+(define-key minibuffer-local-map [remap completion-at-point] 'helm-lisp-completion-at-point)  ; >24.3
+(define-key minibuffer-local-map [remap lisp-complete-symbol] 'helm-lisp-completion-at-point) ; <=24.3
 
 ;;; Describe key-bindings
 ;;
@@ -80,9 +81,9 @@
       helm-raise-command                         "wmctrl -xa %s"
       helm-scroll-amount                         1
       helm-quick-update                          t
-      helm-idle-delay                            0.1
-      helm-input-idle-delay                      0.1
-      helm-m-occur-idle-delay                    0.1
+      helm-idle-delay                            0.01
+      helm-input-idle-delay                      0.01
+      helm-m-occur-idle-delay                    0.01
       ;helm-completion-window-scroll-margin       0
       ;helm-display-source-at-screen-top          nil
       helm-ff-search-library-in-sexp             t

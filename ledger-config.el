@@ -58,36 +58,6 @@
     (let ((inhibit-read-only t))
       (align-regexp (point-min) (point-max) "\\(\\s-*\\)€" 1 1 nil))))
 
-
-(defun ledger-add-expense-from-org ()
-  "Add expense from current line of a org table created with csv2org"
-  (interactive)
-  (let* ((line-list   (split-string (buffer-substring-no-properties
-                                   (point-at-bol) (point-at-eol)) "|" t))
-         (fdate       (replace-regexp-in-string "^ *\\| *$" "" (nth 0 line-list)))
-         (split-date  (split-string fdate "/"))
-         (date        (mapconcat 'identity (reverse split-date) "/"))
-         (payee       (replace-regexp-in-string "^ *\\| *$" "" (nth 2 line-list)))
-         (amount      (replace-regexp-in-string "^ *\\| *$" "" (nth 4 line-list)))
-         (categorie   (helm-comp-read "Categorie: " (ledger-collect-categories)))
-         (type        (helm-comp-read "Type: " '("Visa" "Check" "Tip" "Prelevement")))
-         (ledger-file (getenv "LEDGER_FILE"))
-         numcheck defnumcheck)
-    (with-current-buffer (find-file-noselect ledger-file)
-      (goto-char (point-max))
-      (setq amount (replace-regexp-in-string "-" "" amount))
-      (insert (concat
-               date " "
-               payee
-               "\n    "
-               "Expenses:" categorie (make-string 8 ? ) "€ " amount "\n    "
-               "Liabilities:Socgen:" type "\n\n"))
-      (goto-char (point-min))
-      (ledger-align-device 1)
-      (save-buffer))))
-      ;(find-file-other-window ledger-file))))
-(define-key org-mode-map (kbd "<f5> -") 'ledger-add-expense-from-org)
-
 (defun ledger-reverse-date-to-us ()
   (interactive)
   (with-current-buffer (find-file-noselect (getenv "LEDGER_FILE"))
@@ -101,7 +71,7 @@
 
 (defun ledger-add-expense (date payee categorie type amount)
   (interactive
-   (list (read-string "Date: " (tv-cur-date-string :separator "/"))
+   (list (read-string "Date: " (format-time-string "%Y/%m/%d"))
          (read-string "Payee: ")
          (helm-comp-read "Categorie: " (ledger-collect-categories))
          (helm-comp-read "Type: " '("Visa" "Check" "Tip" "Prelevement"))
@@ -127,37 +97,9 @@
       (save-buffer)
       (pop-to-buffer ledger-file))))
 
-(defun ledger-add-income-from-org ()
-  "Add income from current line of a org table created with csv2org"
-  (interactive)
-  (let* ((line-list   (split-string (buffer-substring-no-properties
-                                     (point-at-bol) (point-at-eol)) "|" t))
-         (fdate       (replace-regexp-in-string "^ *\\| *$" "" (nth 0 line-list)))
-         (split-date  (split-string fdate "/"))
-         (date        (mapconcat 'identity (reverse split-date) "/"))
-         (payee       (replace-regexp-in-string "^ *\\| *$" "" (nth 2 line-list)))
-         (amount      (replace-regexp-in-string "^ *\\| *$" "" (nth 3 line-list)))
-         (categorie   (helm-comp-read "Categorie: " (ledger-collect-categories)))
-         (account     (helm-comp-read "Account: " '("Socgen:Checking" "Socgen:Prelevement")))
-         (ledger-file (getenv "LEDGER_FILE")))
-    (with-current-buffer (find-file-noselect ledger-file)
-      (goto-char (point-max))
-      (insert (concat
-               date " " payee "\n    "
-               (if (string= account "Socgen:Checking") "Assets:" "Liabilities:")
-               account (make-string 8 ? ) "€ "
-               (if (string= account "Socgen:Checking")
-                   amount (int-to-string (- (string-to-number amount))))
-               "\n    Income:" categorie "\n\n"))
-      (goto-char (point-min))
-      (ledger-align-device 1)
-      (save-buffer))))
-      ;(find-file-other-window ledger-file))))
-(define-key org-mode-map (kbd "<f5> +") 'ledger-add-income-from-org)
-
 (defun ledger-add-income (date payee categorie account amount)
   (interactive
-   (list (read-string "Date: " (tv-cur-date-string :separator "/"))
+   (list (read-string "Date: " (format-time-string "%Y/%m/%d"))
          (read-string "Payee: ")
          (helm-comp-read "Categorie: " (ledger-collect-categories))
          (helm-comp-read "Account: " '("Socgen:Checking" "Socgen:Prelevement")) ;; TODO add completion here
@@ -203,6 +145,36 @@ If entries are already pointed, skip."
   (interactive)
   (while (re-search-forward "^[0-9]\\{4\\}/[0-9]\\{2\\}/[0-9]\\{2\\}" nil t)
     (forward-char 1) (unless (looking-at "[*]") (insert "* "))))
+
+(defun tv-csv2ledger (infile ofile)
+  (interactive (list (read-file-name "Input cvs file: ")
+                     (read-file-name "Output file (.dat): ")))
+  (let ((ibuf (find-file-noselect infile))
+        (obuf (find-file-noselect ofile))
+        curpos)
+    (with-current-buffer obuf
+      (setq curpos (point))
+      (goto-char (point-max)) (text-mode))
+    (with-current-buffer ibuf
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward "^[0-9]+/" nil t)
+          (let* ((split (split-string (buffer-substring (point-at-bol) (point-at-eol)) ";" t))
+                 (date (car split))
+                 (payee (nth 2 split))
+                 (amountstr (replace-regexp-in-string "," "." (nth 3 split)))
+                 (amountnum (string-to-number amountstr))
+                 (deb (< amountnum 0))
+                 (cred (> amountnum 0)))
+            (setq amountstr (replace-regexp-in-string "-" "" amountstr))
+            (with-current-buffer obuf
+              (save-excursion 
+                (insert
+                 (concat date " * " payee "\n    "
+                         (if deb
+                             (format "Expenses:unknown    € %s\n    Liabilities:Socgen\n\n" amountstr)
+                             (format "Assets:Socgen:Checking    € %s\n    Income\n\n" amountstr))))))))))
+    (with-current-buffer obuf (ledger-mode))))
 
 (provide 'ledger-config)
 
