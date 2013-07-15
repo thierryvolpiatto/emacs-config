@@ -1947,7 +1947,7 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;; Save/restore emacs-session
 ;;
 ;;
-(tv-set-emacs-session-backup :enable (not (daemonp)))
+(psession--set-emacs-session-backup :enable (not (daemonp)))
 
 ;;; Link scratch buffer to file
 ;;

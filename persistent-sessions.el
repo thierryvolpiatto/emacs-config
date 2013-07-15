@@ -6,7 +6,7 @@
 (eval-when-compile (require 'dired))
 
 ;; Main function to save objects.
-(defun dump-object-to-file (obj file)
+(defun psession--dump-object-to-file (obj file)
   "Save symbol object OBJ to the byte compiled version of FILE.
 OBJ can be any lisp object, list, hash-table, etc...
 Windows configurations and markers are not supported.
@@ -24,51 +24,51 @@ That may not work with Emacs versions <=23.1 for hash tables."
     (byte-compile-file file) (delete-file file)
     (message "`%s' dumped to %sc" obj file)))
 
-(defvar elisp-objects-default-directory "~/.emacs.d/elisp-objects/")
-(defvar object-to-save-alist '((ioccur-history . "ioccur-history.el")
-                               (extended-command-history . "extended-command-history.el")
-                               (helm-external-command-history . "helm-external-command-history.el")
-                               (helm-surfraw-engines-history . "helm-surfraw-engines-history.el")
-                               (tv-save-buffers-alist . "tv-save-buffers-alist.el")
-                               (helm-ff-history . "helm-ff-history.el")
-                               (helm-grep-history . "helm-grep-history.el")
-                               (kill-ring . "kill-ring.el")
-                               (kill-ring-yank-pointer . "kill-ring-yank-pointer.el")
-                               (register-alist . "register-alist.el")
-                               ))
+(defvar psession--elisp-objects-default-directory "~/.emacs.d/elisp-objects/")
+(defvar psession--object-to-save-alist '((ioccur-history . "ioccur-history.el")
+                                         (extended-command-history . "extended-command-history.el")
+                                         (helm-external-command-history . "helm-external-command-history.el")
+                                         (helm-surfraw-engines-history . "helm-surfraw-engines-history.el")
+                                         (psession--save-buffers-alist . "tv-save-buffers-alist.el")
+                                         (helm-ff-history . "helm-ff-history.el")
+                                         (helm-grep-history . "helm-grep-history.el")
+                                         (kill-ring . "kill-ring.el")
+                                         (kill-ring-yank-pointer . "kill-ring-yank-pointer.el")
+                                         (register-alist . "register-alist.el")
+                                         ))
 
-(defun dump-object-to-file-save-alist ()
-  (when object-to-save-alist
-    (loop for (o . f) in object-to-save-alist
-          for abs = (expand-file-name f elisp-objects-default-directory)
+(defun psession--dump-object-to-file-save-alist ()
+  (when psession--object-to-save-alist
+    (loop for (o . f) in psession--object-to-save-alist
+          for abs = (expand-file-name f psession--elisp-objects-default-directory)
           ;; Registers are treated specially.
           if (and (eq o 'register-alist)
                   (eval o))
-          do (tv-dump-object-save-register-alist f)
+          do (psession--dump-object-save-register-alist f)
           else do
           ;; Don't dump object when it is nil
-          (and (eval o) (dump-object-to-file o abs)))))
+          (and (eval o) (psession--dump-object-to-file o abs)))))
 
-(defun* restore-objects-from-directory
-    (&optional (dir elisp-objects-default-directory))
+(defun* psession--restore-objects-from-directory
+    (&optional (dir psession--elisp-objects-default-directory))
   (let ((file-list (cddr (directory-files dir t))))
     (loop for file in file-list do (load file))))
 
-(defun* tv-dump-object-save-register-alist (&optional (file "register-alist.el"))
+(defun* psession--dump-object-save-register-alist (&optional (file "register-alist.el"))
   "Save `register-alist' but only supported objects."
   (let ((register-alist (loop for (char . val) in register-alist
                               unless (or (markerp val)
                                          (vectorp val)
                                          (and (consp val) (window-configuration-p (car val))))
                               collect (cons char val)))
-        (def-file (expand-file-name file elisp-objects-default-directory)))
-    (dump-object-to-file 'register-alist def-file)))
+        (def-file (expand-file-name file psession--elisp-objects-default-directory)))
+    (psession--dump-object-to-file 'register-alist def-file)))
 
 ;;; Persistents-buffer 
 ;;
 ;;
-(defvar tv-save-buffers-unwanted-buffers-regexp ".*[.]org\\|diary\\|[.]newsticker-cache$")
-(defun tv-save-some-buffers ()
+(defvar psession--save-buffers-unwanted-buffers-regexp ".*[.]org\\|diary\\|[.]newsticker-cache$")
+(defun psession--save-some-buffers ()
   (loop with dired-blist = (loop for (f . b) in dired-buffers
                                  when (buffer-name b)
                                  collect b)
@@ -78,19 +78,19 @@ That may not work with Emacs versions <=23.1 for hash tables."
         for place = (with-current-buffer b (point))
         when (and buf-fname
                   (not (string-match tramp-file-name-regexp buf-fname))
-                  (not (string-match  tv-save-buffers-unwanted-buffers-regexp
+                  (not (string-match  psession--save-buffers-unwanted-buffers-regexp
                                       buf-fname))
                   (file-exists-p buf-fname))
         collect (cons buf-fname place)))
 
-(defvar tv-save-buffers-alist nil)
-(defun tv-dump-some-buffers-to-list ()
-  (setq tv-save-buffers-alist (tv-save-some-buffers)))
+(defvar psession--save-buffers-alist nil)
+(defun psession--dump-some-buffers-to-list ()
+  (setq psession--save-buffers-alist (psession--save-some-buffers)))
 
-(defun tv-restore-some-buffers ()
-  (let* ((max (length tv-save-buffers-alist))
+(defun psession--restore-some-buffers ()
+  (let* ((max (length psession--save-buffers-alist))
          (progress-reporter (make-progress-reporter "Restoring buffers..." 0 max)))
-    (loop for (f . p) in tv-save-buffers-alist
+    (loop for (f . p) in psession--save-buffers-alist
           for count from 0
           do
           (with-current-buffer (find-file-noselect f 'nowarn)
@@ -99,24 +99,24 @@ That may not work with Emacs versions <=23.1 for hash tables."
             (progress-reporter-update progress-reporter count)))
     (progress-reporter-done progress-reporter)))
 
-(defun* tv-set-emacs-session-backup (&key enable)
+(defun* psession--set-emacs-session-backup (&key enable)
   (if enable
-      (unless (or (memq 'dump-object-to-file-save-alist kill-emacs-hook)
-                  (memq 'tv-dump-some-buffers-to-list kill-emacs-hook)
-                  (memq 'restore-objects-from-directory emacs-startup-hook)
-                  (memq 'tv-restore-some-buffers emacs-startup-hook))
-        (add-hook 'kill-emacs-hook 'dump-object-to-file-save-alist)
-        (add-hook 'emacs-startup-hook 'restore-objects-from-directory)
-        (add-hook 'kill-emacs-hook 'tv-dump-some-buffers-to-list)
-        (add-hook 'emacs-startup-hook 'tv-restore-some-buffers 'append))
-      (when (or (memq 'dump-object-to-file-save-alist kill-emacs-hook)
-                (memq 'tv-dump-some-buffers-to-list kill-emacs-hook)
-                (memq 'restore-objects-from-directory emacs-startup-hook)
-                (memq 'tv-restore-some-buffers emacs-startup-hook))
-        (remove-hook 'kill-emacs-hook 'dump-object-to-file-save-alist)
-        (remove-hook 'emacs-startup-hook 'restore-objects-from-directory)
-        (remove-hook 'kill-emacs-hook 'tv-dump-some-buffers-to-list)
-        (remove-hook 'emacs-startup-hook 'tv-restore-some-buffers))))
+      (unless (or (memq 'psession--dump-object-to-file-save-alist kill-emacs-hook)
+                  (memq 'psession--dump-some-buffers-to-list kill-emacs-hook)
+                  (memq 'psession--restore-objects-from-directory emacs-startup-hook)
+                  (memq 'psession--restore-some-buffers emacs-startup-hook))
+        (add-hook 'kill-emacs-hook 'psession--dump-object-to-file-save-alist)
+        (add-hook 'emacs-startup-hook 'psession--restore-objects-from-directory)
+        (add-hook 'kill-emacs-hook 'psession--dump-some-buffers-to-list)
+        (add-hook 'emacs-startup-hook 'psession--restore-some-buffers 'append))
+      (when (or (memq 'psession--dump-object-to-file-save-alist kill-emacs-hook)
+                (memq 'psession--dump-some-buffers-to-list kill-emacs-hook)
+                (memq 'psession--restore-objects-from-directory emacs-startup-hook)
+                (memq 'psession--restore-some-buffers emacs-startup-hook))
+        (remove-hook 'kill-emacs-hook 'psession--dump-object-to-file-save-alist)
+        (remove-hook 'emacs-startup-hook 'psession--restore-objects-from-directory)
+        (remove-hook 'kill-emacs-hook 'psession--dump-some-buffers-to-list)
+        (remove-hook 'emacs-startup-hook 'psession--restore-some-buffers))))
 
 
 (provide 'persistent-sessions)
