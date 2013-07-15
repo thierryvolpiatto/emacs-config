@@ -342,9 +342,8 @@
 (unless (< emacs-major-version 24)
   (setq custom-theme-directory tv-theme-directory))
 
-(defvar tv-current-theme 'naquadah)
 ;; Load my favourite theme.
-(add-hook 'emacs-startup-hook #'(lambda () (load-theme tv-current-theme)))
+(add-hook 'emacs-startup-hook #'(lambda () (load-theme 'naquadah)))
 
 
 ;; libidn is not in gentoo.d. load it
@@ -412,6 +411,15 @@ in this case start Gnus plugged, otherwise start it unplugged."
         (if (or arg (not (quickping "imap.gmail.com")))
             (gnus-unplugged)
             (gnus)))))
+
+;; Stop hitting C-g all the time while in gnus.
+;; Kill all nnimap/nntpd processes when exiting summary.
+(defun tv-gnus-kill-all-nnimap-procs ()
+  (loop for proc in (process-list)
+        when (string-match "\\*?nnimap\\|nntpd" (process-name proc))
+        do (delete-process proc)))
+(add-hook 'gnus-exit-group-hook 'tv-gnus-kill-all-nnimap-procs)
+(add-hook 'gnus-group-catchup-group-hook 'tv-gnus-kill-all-nnimap-procs)
 
 ;; Use now org-keywords in gnus.
 (add-hook 'message-mode-hook #'(lambda ()
@@ -1074,7 +1082,7 @@ from IPython.core.completerlib import module_completion"
   (ansi-term "/bin/bash"))
 
 ;; Kill buffer after C-d in ansi-term.
-(defadvice term-sentinel (after kill-buffer () activate)
+(defadvice term-sentinel (after kill-buffer activate)
   (kill-buffer))
 
 (defun comint-delchar-or-maybe-eof (arg)

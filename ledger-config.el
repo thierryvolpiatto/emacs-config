@@ -146,7 +146,7 @@ If entries are already pointed, skip."
   (while (re-search-forward "^[0-9]\\{4\\}/[0-9]\\{2\\}/[0-9]\\{2\\}" nil t)
     (forward-char 1) (unless (looking-at "[*]") (insert "* "))))
 
-(defun tv-csv2ledger (infile ofile)
+(defun csv2ledger (infile ofile)
   (interactive (list (read-file-name "Input cvs file: ")
                      (read-file-name "Output file (.dat): ")))
   (let ((ibuf (find-file-noselect infile))
@@ -175,6 +175,13 @@ If entries are already pointed, skip."
                              (format "Expenses:unknown    € %s\n    Liabilities:Socgen\n\n" amountstr)
                              (format "Assets:Socgen:Checking    € %s\n    Income\n\n" amountstr))))))))))
     (with-current-buffer obuf (ledger-mode))))
+
+(defvar ledger-previous-window-configuration nil)
+(defadvice ledger-reconcile (before save-winconf activate)
+  (setq ledger-previous-window-configuration (current-window-configuration)))
+
+(defadvice ledger-reconcile-quit (after restore-winconf activate)
+  (set-window-configuration ledger-previous-window-configuration))
 
 (provide 'ledger-config)
 

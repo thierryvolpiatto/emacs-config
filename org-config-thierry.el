@@ -191,20 +191,11 @@
 
 ;; Insert-cyclic-entries-in-ledger 
 (defun tv-org-add-ledger-entry-from-todo (payee amount)
-  (interactive)
-  (save-excursion
-    (find-file "~/finance/financehg/ledger.dat")
-    (ledger-add-entry (concat
-                       (replace-regexp-in-string "\\." "/" (tv-cur-date-string))
-                       " "
-                       payee
-                       " "
-                       amount))))
-
-;; Use-helm-in-org 
-;; (defun helm-org-headlines-only ()
-;;   (interactive)
-;;   (helm-other-buffer 'helm-c-source-org-headline "*org headlines*"))
+  (with-current-buffer (find-file-noselect (getenv "LEDGER_FILE"))
+    (save-excursion
+      (ledger-add-entry (concat
+                         (format-time-string "%Y/%m/%d")
+                         " " payee " " amount)))))
 
 (define-key org-mode-map (kbd "<f11> o") 'helm-org-headlines)
 (define-key org-mode-map (kbd "<f11> k") 'helm-org-keywords)
@@ -279,6 +270,9 @@
 ;; (setq org-outline-path-complete-in-steps nil)
 ;; (setq org-refile-use-outline-path t)
 ;; (setq org-refile-targets '((nil :maxlevel . 8)))
+
+;; Always show full path of files 
+(setq org-link-file-path-type 'absolute)
 
 ;; Org babel
 (require 'ob-sh)
