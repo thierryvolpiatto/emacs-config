@@ -346,8 +346,8 @@ This will run in `message-send-hook'."
       gnus-sum-thread-tree-vertical "│")
 
 ;; Gravatar
-(setq gnus-treat-from-gravatar 'head) ; in From header
-(setq gnus-treat-mail-gravatar 'head) ; in To/Cc header
+;(setq gnus-treat-from-gravatar 'head) ; in From header
+;(setq gnus-treat-mail-gravatar 'head) ; in To/Cc header
 
 
 ;;; .gnus.el ends here

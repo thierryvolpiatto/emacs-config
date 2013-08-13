@@ -68,6 +68,10 @@
 (define-key minibuffer-local-map [remap completion-at-point] 'helm-lisp-completion-at-point)  ; >24.3
 (define-key minibuffer-local-map [remap lisp-complete-symbol] 'helm-lisp-completion-at-point) ; <=24.3
 
+;;; helm find files
+;;
+(define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
+
 ;;; Describe key-bindings
 ;;
 ;;
@@ -77,7 +81,7 @@
 ;;
 ;;
 (setq helm-google-suggest-use-curl-p             t
-      helm-kill-ring-threshold                   1
+      ;helm-kill-ring-threshold                   1
       helm-raise-command                         "wmctrl -xa %s"
       helm-scroll-amount                         1
       helm-quick-update                          t
@@ -87,7 +91,7 @@
       ;helm-completion-window-scroll-margin       0
       ;helm-display-source-at-screen-top          nil
       helm-ff-search-library-in-sexp             t
-      helm-kill-ring-max-lines-number            5
+      ;helm-kill-ring-max-lines-number            5
       helm-default-external-file-browser         "thunar"
       helm-pdfgrep-default-read-command          "evince --page-label=%p '%f'"
       ;helm-ff-transformer-show-only-basename     t
@@ -104,6 +108,7 @@
       helm-never-delay-on-input                  nil
       helm-candidate-number-limit                200
       helm-M-x-requires-pattern                  0
+      helm-dabbrev-cycle-thresold                3
       ;helm-moccur-always-search-in-current        t
       ;helm-tramp-verbose                         6
       ;helm-ff-file-name-history-use-recentf      t

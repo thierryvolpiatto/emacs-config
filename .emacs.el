@@ -4,6 +4,120 @@
 
 (require 'cl)
 
+;;; Temporary Bugfixes until fixed in trunk.
+;;
+(when (require 'net-utils)
+  (defun ping (host)
+    "Ping HOST.
+If your system's ping continues until interrupted, you can try setting
+`ping-program-options'."
+    (interactive "sPing host: ")
+    (let ((options
+           (if ping-program-options
+               (append ping-program-options (list host))
+               (list host))))
+      (net-utils-run-simple
+       (concat "Ping" " " host)
+       ping-program
+       options)))
+
+  (defun run-dig (host)
+    "Run dig program."
+    (interactive "sLookup host: ")
+    (net-utils-run-simple
+     (concat "** "
+             (mapconcat 'identity
+                        (list "Dig" host dig-program)
+                        " ** "))
+     dig-program
+     (list host))))
+
+(defvar browse-url-never-use-xdg-open t)
+(defadvice browse-url-can-use-xdg-open (around no-xdg-open activate)
+  (unless browse-url-never-use-xdg-open
+    ad-do-it))
+
+(when (require 'org-crypt)
+  (progn
+    (defun org-encrypt-string (str crypt-key)
+      "Return STR encrypted with CRYPT-KEY."
+      ;; Text and key have to be identical, otherwise we re-crypt.
+      (if (and (string= crypt-key (get-text-property 0 'org-crypt-key str))
+	       (string= (sha1 str) (get-text-property 0 'org-crypt-checksum str)))
+	  (get-text-property 0 'org-crypt-text str)
+        (set (make-local-variable 'epg-context) (epg-make-context nil t t))
+        (epg-encrypt-string epg-context str (epg-list-keys epg-context crypt-key))))
+
+    (defun org-encrypt-entry ()
+      "Encrypt the content of the current headline."
+      (interactive)
+      (require 'epg)
+      (save-excursion
+	(org-back-to-heading t)
+	(set (make-local-variable 'epg-context) (epg-make-context nil t t))
+	(let ((start-heading (point)))
+	  (forward-line)
+	  (when (not (looking-at "-----BEGIN PGP MESSAGE-----"))
+	    (let ((folded (outline-invisible-p))
+		  (crypt-key (org-crypt-key-for-heading))
+		  (beg (point))
+		  end encrypted-text)
+	      (goto-char start-heading)
+	      (org-end-of-subtree t t)
+	      (org-back-over-empty-lines)
+	      (setq end (point)
+		    encrypted-text
+		    (org-encrypt-string (buffer-substring beg end) crypt-key))
+	      (delete-region beg end)
+	      (insert encrypted-text)
+	      (when folded
+		(goto-char start-heading)
+		(hide-subtree))
+	      nil)))))
+
+    (defun org-decrypt-entry ()
+      "Decrypt the content of the current headline."
+      (interactive)
+      (require 'epg)
+      (unless (org-before-first-heading-p)
+	(save-excursion
+	  (org-back-to-heading t)
+	  (let ((heading-point (point))
+		(heading-was-invisible-p
+		 (save-excursion
+		   (outline-end-of-heading)
+		   (outline-invisible-p))))
+	    (forward-line)
+	    (when (looking-at "-----BEGIN PGP MESSAGE-----")
+	      (org-crypt-check-auto-save)
+	      (set (make-local-variable 'epg-context) (epg-make-context nil t t))
+	      (let* ((end (save-excursion
+			    (search-forward "-----END PGP MESSAGE-----")
+			    (forward-line)
+			    (point)))
+		     (encrypted-text (buffer-substring-no-properties (point) end))
+		     (decrypted-text
+		      (decode-coding-string
+		       (epg-decrypt-string
+			epg-context
+			encrypted-text)
+		       'utf-8)))
+		;; Delete region starting just before point, because the
+		;; outline property starts at the \n of the heading.
+		(delete-region (1- (point)) end)
+		;; Store a checksum of the decrypted and the encrypted
+		;; text value.  This allow to reuse the same encrypted text
+		;; if the text does not change, and therefore avoid a
+		;; re-encryption process.
+		(insert "\n" (propertize decrypted-text
+					 'org-crypt-checksum (sha1 decrypted-text)
+					 'org-crypt-key (org-crypt-key-for-heading)
+					 'org-crypt-text encrypted-text))
+		(when heading-was-invisible-p
+		  (goto-char heading-point)
+		  (org-flag-subtree t))
+		nil))))))))
+
 ;;; Annoyances section
 ;;
 (global-set-key (kbd "<f11>") nil)
@@ -195,7 +309,7 @@
 (tv-require 'dired-extension)
 (tv-require 'htmlize)
 (tv-require 'no-word)
-(tv-require 'eldoc-eval)
+;(tv-require 'eldoc-eval)
 (tv-require 'flymake)
 (tv-require 'esh-toggle)
 (tv-require 'tex-site)
@@ -270,7 +384,7 @@
 (global-set-key (kbd "<f11> l r")                  'tv-start-slime)
 (global-set-key (kbd "<f11> l e")                  'slime-scratch)
 (global-set-key (kbd "<f11> l l")                  'slime-list-connections)
-(global-set-key [remap occur]                      'helm-occur) ; M-s o
+(global-set-key [remap occur]                      'ioccur) ; M-s o
 (global-set-key (kbd "C-s")                        'tv-helm-or-ioccur)
 (global-set-key (kbd "M-s s")                      'isearch-forward)
 (global-set-key (kbd "C-c C-o")                    'ioccur-find-buffer-matching)
@@ -412,14 +526,14 @@ in this case start Gnus plugged, otherwise start it unplugged."
             (gnus-unplugged)
             (gnus)))))
 
-;; Stop hitting C-g all the time while in gnus.
+;; Stop hitting C-g all the time while in gnus (while tethering) .
 ;; Kill all nnimap/nntpd processes when exiting summary.
-(defun tv-gnus-kill-all-nnimap-procs ()
+(defun tv-gnus-kill-all-procs ()
   (loop for proc in (process-list)
         when (string-match "\\*?nnimap\\|nntpd" (process-name proc))
         do (delete-process proc)))
-(add-hook 'gnus-exit-group-hook 'tv-gnus-kill-all-nnimap-procs)
-(add-hook 'gnus-group-catchup-group-hook 'tv-gnus-kill-all-nnimap-procs)
+(add-hook 'gnus-exit-group-hook 'tv-gnus-kill-all-procs)
+(add-hook 'gnus-group-catchup-group-hook 'tv-gnus-kill-all-procs)
 
 ;; Use now org-keywords in gnus.
 (add-hook 'message-mode-hook #'(lambda ()
@@ -466,9 +580,11 @@ in this case start Gnus plugged, otherwise start it unplugged."
 ;;
 ;;
 ;; My current-font: [EVAL]: (assoc-default 'font (frame-parameters))
-;; Choose a font:   [EVAL]: (helm 'helm-c-source-xfonts)
-;; Choose a color:  [EVAL]: (helm 'helm-c-source-colors)
+;; Choose a font:   [EVAL]: (progn (when (require 'helm-font) (helm 'helm-source-xfonts)))
+;; Choose a color:  [EVAL]: (progn (when (require 'helm-color) (helm 'helm-source-colors)))
+;; To reload .Xresources [EVAL]: (shell-command xrdb "~/.Xresources")
 
+(defvar tv-default-font (assoc-default 'font (frame-parameters)))
 (setq-default frame-background-mode 'dark)
 (setq initial-frame-alist '((fullscreen . maximized)))
 (setq frame-auto-hide-function 'delete-frame)
@@ -490,23 +606,26 @@ in this case start Gnus plugged, otherwise start it unplugged."
                                 (vertical-scroll-bars . nil)
                                 (tool-bar-lines . 0)
                                 (menu-bar-lines . 0)
-                                (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
+                                (font . ,tv-default-font)
                                 (cursor-color . "red")
                                 (fullscreen . nil)
                                 )))
 
 ;; Speedbar
-(setq speedbar-frame-parameters
-      `((minibuffer . nil)
-        (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
-        (width . 20)
-        (fullscreen . nil) ; Not needed when fullscreen isn't set in .Xressources.
-        (left . ,(- (* (window-width) 8) 160)) ; Speed-bar on right of screen.
-        (border-width . 0)
-        (menu-bar-lines . 0)
-        (tool-bar-lines . 0)
-        (unsplittable . t)
-        (left-fringe . 0)))
+(add-hook 'speedbar-load-hook
+          #'(lambda ()
+              (setq speedbar-frame-parameters
+                    `((minibuffer . nil)
+                      (font . ,tv-default-font)
+                      (width . 20)
+                      (fullscreen . nil) ; Not needed when fullscreen isn't set in .Xressources.
+                      (left . ,(- (* (window-width) 8)
+                                  (frame-width))) ; Speed-bar on right of screen.
+                      (border-width . 0)
+                      (menu-bar-lines . 0)
+                      (tool-bar-lines . 0)
+                      (unsplittable . t)
+                      (left-fringe . 0)))))
 
 ;;; Emacs transparency.
 ;;
@@ -909,6 +1028,8 @@ account add <protocol> moi@mail.com password."
                     :family "unknown-DejaVu Sans Mono-bold-normal-normal"
 		    :underline t)
 
+(autoload 'eldoc-in-minibuffer-mode "eldoc-eval")
+(eldoc-in-minibuffer-mode 1)
 (defadvice edebug-eval-expression (around with-eldoc activate)
   "This advice enable eldoc support."
   (interactive (list (with-eldoc-in-minibuffer
@@ -1425,7 +1546,6 @@ With prefix arg always start and let me choose dictionary."
 
 
 ;; ioccur
-(define-key org-mode-map (kbd "C-c C-o") 'ioccur-find-buffer-matching)
 (add-hook 'ioccur-save-pos-before-jump-hook 'ioccur-save-current-pos-to-mark-ring)
 
 ;; Enable-commands-disabled-by-default
@@ -1596,116 +1716,6 @@ With prefix arg always start and let me choose dictionary."
 ;;
 ;; Possible values: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
 (setq vc-handled-backends '(RCS Hg Git))
-
-
-;;; Temporary Bugfixes until fixed in trunk.
-;;
-(when (require 'net-utils)
-  (defvar net-utils--revert-cmd nil)
-  (defun net-utils-run-simple (buffer program-name args &optional nodisplay)
-    "Run a network utility for diagnostic output only."
-    (with-current-buffer (if (stringp buffer) (get-buffer-create buffer) buffer)
-      (let ((proc (get-buffer-process (current-buffer))))
-        (when proc
-          (set-process-filter proc nil)
-          (delete-process proc)))
-      (let ((inhibit-read-only t))
-        (erase-buffer))
-      (net-utils-mode)
-      (setq-local net-utils--revert-cmd
-                  `(net-utils-run-simple ,(current-buffer)
-                                         ,program-name ,args nodisplay))
-      (set-process-filter
-       (apply 'start-process program-name
-              (current-buffer) program-name args)
-       'net-utils-remove-ctrl-m-filter)
-      (unless nodisplay (display-buffer (current-buffer)))))
-  
-  (defun net-utils-remove-ctrl-m-filter (process output-string)
-    "Remove trailing control Ms."
-    (with-current-buffer (process-buffer process)
-      (save-excursion
-        (let ((inhibit-read-only t)
-              (filtered-string output-string))
-          (while (string-match "\r" filtered-string)
-            (setq filtered-string
-                  (replace-match "" nil nil filtered-string)))
-          ;; Insert the text, moving the process-marker.
-          (goto-char (process-mark process))
-          (insert filtered-string)
-          (set-marker (process-mark process) (point))))))
-
-  (defun net-utils--revert-function (&optional ignore-auto noconfirm)
-    (message "Reverting `%s'..." (buffer-name))
-    (apply (car net-utils--revert-cmd) (cdr net-utils--revert-cmd))
-    (let ((proc (get-buffer-process (current-buffer))))
-      (when proc
-        (set-process-sentinel
-         proc
-         (lambda (process event)
-           (when (string= event "finished\n")
-             (message "Reverting `%s' done" (process-buffer process))))))))
-  
-  (defun ping (host)
-    "Ping HOST.
-If your system's ping continues until interrupted, you can try setting
-`ping-program-options'."
-    (interactive
-     (list (read-from-minibuffer "Ping host: " (or (net-utils-machine-at-point)
-                                                   "localhost"))))
-    (let ((options
-           (if ping-program-options
-               (append ping-program-options (list host))
-               (list host))))
-      (net-utils-run-simple
-       (concat "Ping" " " host)
-       ping-program
-       options)))
-  
-  (defun net-utils-machine-at-point ()
-    (require 'ffap)
-    (ffap-string-at-point 'machine))
-
-  (defun net-utils-url-at-point ()
-    (require 'ffap)
-    (ffap-string-at-point 'url))
-
-  (defun run-dig (host)
-    "Run dig program."
-    (interactive
-     (list
-      (read-from-minibuffer "Lookup host: "
-                            (net-utils-machine-at-point))))
-    (net-utils-run-simple
-     (concat "** "
-             (mapconcat 'identity
-                        (list "Dig" host dig-program)
-                        " ** "))
-     dig-program
-     (list host))))
-
-(eval-after-load "message.el"
-  (progn
-    (defun message-bury (&optional buffer)
-      "Bury this mail BUFFER."
-      (bury-buffer buffer)
-      (when message-return-action
-        (apply (car message-return-action) (cdr message-return-action))))
-  
-    (defun message-send-and-exit (&optional arg)
-      "Send message like `message-send', then, if no errors, exit from mail buffer.
-The usage of ARG is defined by the instance that called Message.
-It should typically alter the sending method in some way or other."
-      (interactive "P")
-      (let ((buf (current-buffer))
-            (actions message-exit-actions))
-        (when (and (message-send arg)
-                   (buffer-name buf))
-          (message-bury)
-          (if message-kill-buffer-on-exit
-              (kill-buffer buf))
-          (message-do-actions actions)
-          t)))))
 
 
 ;;; Redefine push-mark to update mark in global-mark-ring
