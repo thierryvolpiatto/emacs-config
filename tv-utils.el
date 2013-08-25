@@ -673,35 +673,36 @@ If a prefix arg is given choose directory, otherwise use `default-directory'."
 ;; Euro million
 (defun euro-million ()
   (interactive)
-  (flet ((star-num (limit)
-           ;; Get a random number between 1 to 12.
-           (let ((n 0))
-             (while (= n 0) (setq n (random limit)))
-             n))
-         (get-stars ()
-           ;; Return a list of 2 differents numbers from 1 to 12.
-           (let* ((str1 (number-to-string (star-num 12)))
-                  (str2 (let ((n (number-to-string (star-num 12))))
-                          (while (string= n str1)
-                            (setq n (number-to-string (star-num 12))))
-                          n)))
-             (list str1 str2)))           
-         (result ()
-           ;; Collect random numbers without  dups.
-           (loop with L repeat 5
-                 for r = (star-num 51)
-                 if (not (member r L))
-                 collect r into L
-                 else
-                 collect (let ((n (star-num 51)))
-                           (while (memq n L)
-                             (setq n (star-num 51)))
-                           n) into L
-                 finally return L)))
+  (let* ((star-num #'(lambda (limit)
+                       ;; Get a random number between 1 to 12.
+                       (let ((n 0))
+                         (while (= n 0) (setq n (random limit)))
+                         n)))
+         (get-stars #'(lambda ()
+                        ;; Return a list of 2 differents numbers from 1 to 12.
+                        (let* ((str1 (number-to-string (funcall star-num 12)))
+                               (str2 (let ((n (number-to-string (funcall star-num 12))))
+                                       (while (string= n str1)
+                                         (setq n (number-to-string (funcall star-num 12))))
+                                       n)))
+                          (list str1 str2))))      
+         (result #'(lambda ()
+                     ;; Collect random numbers without  dups.
+                     (loop with L repeat 5
+                           for r = (funcall star-num 51)
+                           if (not (member r L))
+                           collect r into L
+                           else
+                           collect (let ((n (funcall star-num 51)))
+                                     (while (memq n L)
+                                       (setq n (funcall star-num 51)))
+                                     n) into L
+                           finally return L)))
+         (inhibit-read-only t))
     (with-current-buffer (get-buffer-create "*Euro million*")
       (erase-buffer)
       (insert "Grille aléatoire pour l'Euro Million\n\n")
-      (loop with ls = (loop repeat 5 collect (result))  
+      (loop with ls = (loop repeat 5 collect (funcall result))  
             for i in ls do
             (progn
               (insert (mapconcat #'(lambda (x)
@@ -709,9 +710,10 @@ If a prefix arg is given choose directory, otherwise use `default-directory'."
                                        (if (= (length elm) 1) (concat elm " ") elm)))
                                  i " "))
               (insert " Stars: ")
-              (insert (mapconcat 'identity (get-stars) " "))
+              (insert (mapconcat 'identity (funcall get-stars) " "))
               (insert "\n"))
-            finally do (pop-to-buffer "*Euro million*")))))
+            finally do (progn (pop-to-buffer "*Euro million*")
+                              (special-mode))))))
 
 ;; Just an example to use `url-retrieve'
 (defun tv-download-file-async (url &optional noheaders to)
@@ -776,7 +778,7 @@ In this case, sexps are searched before point."
     (if pos-err
         (message "Paren error found in sexp starting at %s"
                  (goto-char pos-err))
-        (message "No paren error found")))) 
+        (message "No paren error found"))))
 
 (when (require 'async)
   (defun async-byte-compile-file (file)

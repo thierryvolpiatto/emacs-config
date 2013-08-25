@@ -22,6 +22,11 @@
              "\\([0-9]+?\\)\\.\\([0-9]+?\\)\\.\\([0-9]+?\\)\\.?[0-9]*" nil t)
       (prog1 (match-string-no-properties 0) (kill-buffer))))))
 
+(defun helm-git-version ()
+  (replace-regexp-in-string
+   "\n" ""
+   (shell-command-to-string "git-log -n1 | head -n1 | awk '{print $2}'")))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Helm-command-map
@@ -51,7 +56,7 @@
 (global-set-key (kbd "<f5> s")                  'helm-find)
 (define-key global-map [remap jump-to-register] 'helm-register)
 (define-key global-map [remap list-buffers]     'helm-buffers-list)
-(global-set-key [remap dabbrev-expand] 'helm-dabbrev)
+(global-set-key [remap dabbrev-expand]          'helm-dabbrev)
 
 ;;; Lisp complete or indent. (Rebind <tab>)
 ;;

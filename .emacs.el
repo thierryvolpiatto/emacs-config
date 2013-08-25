@@ -32,11 +32,6 @@ If your system's ping continues until interrupted, you can try setting
      dig-program
      (list host))))
 
-(defvar browse-url-never-use-xdg-open t)
-(defadvice browse-url-can-use-xdg-open (around no-xdg-open activate)
-  (unless browse-url-never-use-xdg-open
-    ad-do-it))
-
 (when (require 'org-crypt)
   (progn
     (defun org-encrypt-string (str crypt-key)
@@ -184,7 +179,10 @@ If your system's ping continues until interrupted, you can try setting
 ;; (tv-maybe-add-org-load-path t)
 
 (defun tv-maybe-add-tramp-load-path (&optional force)
-  (when (or (version< emacs-version "24.3.50") force) 
+  (when (or (version< emacs-version "24.3.50") force)
+    (setq load-path (loop for i in load-path
+                          unless (string-match "tramp" i)
+                          collect i))
     (add-to-list 'load-path "~/elisp/tramp/lisp")))
 ;; (tv-maybe-add-tramp-load-path)
 
@@ -233,6 +231,7 @@ If your system's ping continues until interrupted, you can try setting
              "~/.emacs.d/themes/"
 	     "~/.emacs.d/emacs-config-laptop/"
              "~/elisp/emacs-async"
+             "~/elisp/jenkins/emacs-async" ; Compatibility with other machines.
 	     ))
   (add-to-list 'load-path i t)) ; Add all at end of `load-path' to avoid conflicts.
 
@@ -313,7 +312,6 @@ If your system's ping continues until interrupted, you can try setting
 (tv-require 'flymake)
 (tv-require 'esh-toggle)
 (tv-require 'tex-site)
-;(tv-require 'ledger-config)
 (tv-require 'slime-autoloads)
 (tv-require 'slime)
 (tv-require 'cl-info)
@@ -834,7 +832,7 @@ If you want the mouse banished to a different corner set
 ;;; Browse url
 ;;
 ;;
-;(setq browse-url-browser-function 'browse-url-firefox)
+(setq browse-url-browser-function 'browse-url-firefox)
 
 ;;; Erc config
 ;;
@@ -1183,7 +1181,7 @@ from IPython.core.completerlib import module_completion"
 ;; Eshell-visual
 (setq eshell-term-name "eterm-color")
 (when (tv-require 'em-term)
-  (dolist (i '("kop" "tmux" "ledger" "htop" "ipython" "alsamixer"))
+  (dolist (i '("kop" "tmux" "htop" "ipython" "alsamixer"))
     (add-to-list 'eshell-visual-commands i)))
 
 ;;; pcomplete Completion functions on specific commands (Find, hg etc...)
@@ -1453,6 +1451,9 @@ With prefix arg always start and let me choose dictionary."
 ;; Use e.g /sudo:host:/path
 (add-to-list 'tramp-default-proxies-alist
              '("\\`thievol\\'" "\\`root\\'" "/ssh:%h:"))
+
+(add-to-list 'tramp-default-proxies-alist
+             '("\\`thievolrem\\'" "\\`root\\'" "/ssh:%h:"))
 
 (add-to-list 'tramp-default-proxies-alist
              '((regexp-quote (system-name)) nil nil))
