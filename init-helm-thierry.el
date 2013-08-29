@@ -188,7 +188,6 @@
 ;;; enable Modes
 ;;
 (helm-mode 1)
-(helm-match-plugin-mode 1)
 (helm-adaptative-mode 1)
 
 (provide 'init-helm-thierry)

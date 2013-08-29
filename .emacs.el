@@ -4,6 +4,8 @@
 
 (require 'cl)
 
+;(setenv "LANG" "C")
+
 ;;; Temporary Bugfixes until fixed in trunk.
 ;;
 (when (require 'net-utils)
@@ -204,6 +206,7 @@ If your system's ping continues until interrupted, you can try setting
              "/usr/local/share/emacs/site-lisp/auctex"
 	     "~/elisp/"
 	     "~/elisp/magit"
+             "~/elisp/git-modes"
              "~/elisp/Emacs-wgrep"
              "~/elisp/auctex"
              "~/elisp/auctex/preview"
@@ -301,7 +304,7 @@ If your system's ping continues until interrupted, you can try setting
 (tv-require 'muse-colors)
 (tv-require 'htmlize-hack)
 (tv-require 'magit)
-(tv-require 'magit-stgit)
+;(tv-require 'magit-stgit)
 (tv-require 'magit-blame)
 ;(tv-require 'monky)
 (tv-require 'emms-mpd-config)
