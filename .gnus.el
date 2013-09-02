@@ -228,10 +228,6 @@ This will run in `message-send-hook'."
 (setq shr-width nil) ; Use all window width.
 (setq mm-text-html-renderer 'shr)
 
-;; w3m
-;;
-;(setq mm-text-html-renderer 'w3m)
-
 ;; Try to inline images
 (setq mm-inline-text-html-with-images t)
 

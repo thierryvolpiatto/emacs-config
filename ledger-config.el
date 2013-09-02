@@ -20,27 +20,28 @@
 ;; «Align-euro-device» (to ".Align-euro-device")
 (defun ledger-align-device (&optional column)
   (interactive "p")
-  (if (= column 1)
-      (setq column 48))
-  (while (search-forward ledger-default-device nil t)
-    (backward-char)
-    (let ((col (current-column))
-          (beg (point))
-          target-col len)
-      (skip-chars-forward (concat "-" ledger-default-device "0-9,."))
-      (setq len (- (point) beg))
-      (setq target-col (- column len))
-      (if (< col target-col)
-          (progn
-            (goto-char beg)
-            (insert (make-string (- target-col col) ? )))
-        (move-to-column target-col)
-        (if (looking-back "  ")
-            (delete-char (- col target-col))
-          (skip-chars-forward "^ \t")
-          (delete-horizontal-space)
-          (insert "  ")))
-      (forward-line))))
+  (when (= column 1) (setq column 48))
+  (save-excursion
+    (goto-char (point-min))
+    (while (search-forward ledger-default-device nil t)
+      (backward-char)
+      (let ((col (current-column))
+            (beg (point))
+            target-col len)
+        (skip-chars-forward (concat "-" ledger-default-device "0-9,."))
+        (setq len (- (point) beg))
+        (setq target-col (- column len))
+        (if (< col target-col)
+            (progn
+              (goto-char beg)
+              (insert (make-string (- target-col col) ? )))
+            (move-to-column target-col)
+            (if (looking-back "  ")
+                (delete-char (- col target-col))
+                (skip-chars-forward "^ \t")
+                (delete-horizontal-space)
+                (insert "  ")))
+        (forward-line)))))
 
 ;; «ledger-position-at-point» (to ".ledger-position-at-point")
 (defun ledger-position-at-point ()
@@ -123,22 +124,23 @@
 
 (defun ledger-collect-categories ()
   (let ((categories '("Alimentation" "Impots"
-                      "Auto:Gasoil" "Auto:Garage"
+                      "Auto:gasoil" "Auto:garage"
                       "Voyages" "Escalade"
                       "Livres" "Informatique"
                       "Loisirs" "Divers"
-                      "Loyers:Immovar" "Loyers:Big"))
-         result)
+                      "Loyers:immovar" "Loyers:big"))
+        result)
     (with-current-buffer (find-file-noselect (getenv "LEDGER_FILE"))
       (goto-char (point-min))
-      (while
-          (re-search-forward
-           "\\(^ *Expenses\\|Income\\):\\([^ €0-9\n]*\\)" (point-max) t)
-        (setq result (match-string 2))
-        (unless (or (member result categories)
-                    (string= result ""))
-          (push result categories))))
-    categories))
+      (save-excursion
+        (while
+            (re-search-forward
+             "\\(^ *Expenses\\|Income\\):\\([^ €0-9\n]*\\)" (point-max) t)
+          (setq result (match-string 2))
+          (unless (or (member result categories)
+                      (string= result ""))
+            (push result categories))))
+      categories)))
 
 (defun ledger-point-entries-in-buffer ()
   "Point entries from point to end of buffer.

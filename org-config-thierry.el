@@ -246,10 +246,6 @@
 
 (define-key org-agenda-mode-map (kbd "C-c M") 'org-agenda-month-view)
 
-;; org-w3m 
-;; Use C-c C-x C/M-w in w3m
-(require 'org-w3m)
-
 ;; fontify source code
 (setq org-src-fontify-natively t)
 

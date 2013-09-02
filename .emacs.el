@@ -214,7 +214,6 @@ If your system's ping continues until interrupted, you can try setting
 	     "~/elisp/cmake"
 	     "~/elisp/desktop-file-utils"
 	     "~/elisp/emacs-wget"
-	     "~/elisp/jenkins/w3m"
              "~/elisp/jenkins/undo-tree"
              "~/elisp/jenkins/emacs-git-gutter"
              "~/elisp/jenkins/iedit"
@@ -274,7 +273,6 @@ If your system's ping continues until interrupted, you can try setting
 ;;
 (autoload 'wget "wget" "wget interface for Emacs." t)
 (autoload 'wget-web-page "wget" "wget interface to download whole web page." t)
-(tv-require 'w3m-wget)
 
 ;;; Emacs customize have it's own file
 ;;
@@ -336,7 +334,6 @@ If your system's ping continues until interrupted, you can try setting
 (tv-require 'iterator)
 (tv-require 'markdown-mode)
 (tv-require 'boxquote)
-(tv-require 'config-w3m)
 (tv-require 'persistent-sessions)
 (tv-require 'wgrep-helm)
 (when (tv-require 'dired-aux)
