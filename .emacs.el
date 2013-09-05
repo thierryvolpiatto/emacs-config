@@ -690,6 +690,21 @@ With a prefix arg decrease transparency."
                                       (background-color . "LightSteelBlue")
                                       (foreground-color . "DarkGoldenrod")
                                       (alpha . nil)
+                                      (fullscreen . nil))
+                                     ("*Calendar*"
+                                      (minibuffer . nil)
+                                      (width . 80)
+                                      (height . 12)
+                                      (left-fringe . 0)
+                                      (border-width . 0)
+                                      (menu-bar-lines . 0)
+                                      (tool-bar-lines . 0)
+                                      (unsplittable . t)
+                                      (top . 24)
+                                      (left . ,(/ (* 8 (frame-width)) 2))
+                                      (background-color . "Firebrick4")
+                                      (foreground-color . "white")
+                                      (alpha . nil)
                                       (fullscreen . nil))))
 
 ;; Don't split this windows horizontally
@@ -1945,11 +1960,13 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;
 (setq magit-restore-window-configuration t)
 
-;;; Melpa
-(require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(package-initialize)
+;;; Melpa marmalade
+;; (require 'package)
+;; (setq package-archives
+;;              (append package-archives
+;;                      '(("melpa" . "http://melpa.milkbox.net/packages/")
+;;                        ("marmalade" . "http://marmalade-repo.org/packages/"))))
+;; (package-initialize)
 
 ;;; Report bug
 ;;

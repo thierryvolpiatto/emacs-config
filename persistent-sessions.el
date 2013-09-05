@@ -16,13 +16,17 @@ That may not work with Emacs versions <=23.1 for hash tables."
   (require 'cl) ; Be sure we use the CL version of `eval-when-compile'.
   (assert (not (file-exists-p file)) nil
           (format "dump-object-to-file: File `%s' already exists, please remove it." file))
-  (let ((print-length nil)
-        (print-level nil)
-        (print-circle t))
-    (with-temp-file file
-      (prin1 `(setq ,obj (eval-when-compile ,obj)) (current-buffer)))
-    (byte-compile-file file) (delete-file file)
-    (message "`%s' dumped to %sc" obj file)))
+  (unwind-protect
+       (let ((print-length           nil)
+             (print-level            nil)
+             (print-circle           t)
+             (print-escape-nonascii  t)
+             (print-escape-multibyte t))
+         (with-temp-file file
+           (prin1 `(setq ,obj (eval-when-compile ,obj)) (current-buffer)))
+         (byte-compile-file file)
+         (message "`%s' dumped to %sc" obj file))
+    (delete-file file)))
 
 (defvar psession--elisp-objects-default-directory "~/.emacs.d/elisp-objects/")
 (defvar psession--object-to-save-alist '((ioccur-history . "ioccur-history.el")
