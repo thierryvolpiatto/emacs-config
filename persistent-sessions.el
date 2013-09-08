@@ -39,7 +39,7 @@ That may not work with Emacs versions <=23.1 for hash tables."
                                          (kill-ring . "kill-ring.el")
                                          (kill-ring-yank-pointer . "kill-ring-yank-pointer.el")
                                          (register-alist . "register-alist.el")
-                                         ))
+                                         (psession--winconf-alist . "psession-winconf-alist.el")))
 
 (defun psession--dump-object-to-file-save-alist ()
   (when psession--object-to-save-alist
@@ -67,6 +67,25 @@ That may not work with Emacs versions <=23.1 for hash tables."
                               collect (cons char val)))
         (def-file (expand-file-name file psession--elisp-objects-default-directory)))
     (psession--dump-object-to-file 'register-alist def-file)))
+
+;;; Persistents window configs
+;;
+;;
+(defvar psession--winconf-alist nil)
+(defun psession-save-winconf (place)
+  (interactive "sPlace: ")
+  (let ((assoc (assoc place psession--winconf-alist))
+        (new-conf (list (cons place (window-state-get nil 'writable)))))
+    (if assoc
+        (setq psession--winconf-alist (append new-conf
+                                             (delete assoc psession--winconf-alist)))
+        (setq psession--winconf-alist (append new-conf psession--winconf-alist)))))
+
+(defun psession-restore-winconf (conf)
+  (interactive (list (completing-read
+                      "WinConfig: "
+                      (sort (mapcar 'car psession--winconf-alist) #'string-lessp))))
+    (window-state-put (cdr (assoc conf psession--winconf-alist))))
 
 ;;; Persistents-buffer 
 ;;
