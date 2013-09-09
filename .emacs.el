@@ -1971,6 +1971,22 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;; Report bug
 ;;
 (setq report-emacs-bug-no-explanations t)
+(defun report-emacs-bug-nocomments (topic)
+  (interactive "sBug Subject: ")
+  (require 'emacsbug)
+  (when (string-match "^\\(\\([.0-9]+\\)*\\)\\.[0-9]+$" emacs-version)
+    (setq topic (concat (match-string 1 emacs-version) "; " topic)))
+  (compose-mail report-emacs-bug-address topic))
+
+(defun tv-find-or-kill-gnu-bug-number (bug-number &optional arg)
+  (interactive (list (read-number "Bug number: " (thing-at-point 'number))
+                     "\nP"))
+  (let ((url (format "http://debbugs.gnu.org/cgi/bugreport.cgi?bug=%s" bug-number)))
+    (if arg
+        (progn
+          (kill-new url)
+          (message "Bug `#%s' url's copied to kill-ring" bug-number))
+        (browse-url url))))
 
 ;;; Save/restore emacs-session
 ;;
