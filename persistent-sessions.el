@@ -87,6 +87,12 @@ That may not work with Emacs versions <=23.1 for hash tables."
                       (sort (mapcar 'car psession--winconf-alist) #'string-lessp))))
     (window-state-put (cdr (assoc conf psession--winconf-alist))))
 
+(defun psession-save-last-winconf ()
+  (psession-save-winconf "last_session5247"))
+
+(defun psession-restore-last-winconf ()
+  (psession-restore-winconf "last_session5247"))
+
 ;;; Persistents-buffer 
 ;;
 ;;
@@ -131,7 +137,9 @@ That may not work with Emacs versions <=23.1 for hash tables."
         (add-hook 'kill-emacs-hook 'psession--dump-object-to-file-save-alist)
         (add-hook 'emacs-startup-hook 'psession--restore-objects-from-directory)
         (add-hook 'kill-emacs-hook 'psession--dump-some-buffers-to-list)
-        (add-hook 'emacs-startup-hook 'psession--restore-some-buffers 'append))
+        (add-hook 'emacs-startup-hook 'psession--restore-some-buffers 'append)
+        (add-hook 'kill-emacs-hook 'psession-save-last-winconf)
+        (add-hook 'emacs-startup-hook 'psession-restore-last-winconf 'append))
       (when (or (memq 'psession--dump-object-to-file-save-alist kill-emacs-hook)
                 (memq 'psession--dump-some-buffers-to-list kill-emacs-hook)
                 (memq 'psession--restore-objects-from-directory emacs-startup-hook)

@@ -206,7 +206,6 @@ If your system's ping continues until interrupted, you can try setting
              "/usr/local/share/emacs/site-lisp/auctex"
 	     "~/elisp/"
 	     "~/elisp/magit"
-             "~/elisp/git-modes"
              "~/elisp/Emacs-wgrep"
              "~/elisp/auctex"
              "~/elisp/auctex/preview"

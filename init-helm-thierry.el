@@ -113,7 +113,7 @@
       helm-never-delay-on-input                  nil
       helm-candidate-number-limit                200
       helm-M-x-requires-pattern                  0
-      helm-dabbrev-cycle-thresold                3
+      helm-dabbrev-cycle-thresold                5
       ;helm-moccur-always-search-in-current        t
       ;helm-tramp-verbose                         6
       ;helm-ff-file-name-history-use-recentf      t
