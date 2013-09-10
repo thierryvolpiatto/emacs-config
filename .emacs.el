@@ -416,7 +416,6 @@ If your system's ping continues until interrupted, you can try setting
 (global-set-key [C-right]                          'screen-bottom)
 (global-set-key (kbd "C-<")                        'other-window-backward)
 (global-set-key (kbd "C->")                        'other-window-forward)
-(global-set-key (kbd "<f11> s c")                  'go-to-scratch)
 (global-set-key (kbd "C-x r a")                    'tv-append-to-register)
 (global-set-key (kbd "C-c t r")                    'translate-at-point)
 (global-set-key (kbd "<f5> c")                     'tv-toggle-calendar)
@@ -690,21 +689,7 @@ With a prefix arg decrease transparency."
                                       (foreground-color . "DarkGoldenrod")
                                       (alpha . nil)
                                       (fullscreen . nil))
-                                     ("*Calendar*"
-                                      (minibuffer . nil)
-                                      (width . 80)
-                                      (height . 12)
-                                      (left-fringe . 0)
-                                      (border-width . 0)
-                                      (menu-bar-lines . 0)
-                                      (tool-bar-lines . 0)
-                                      (unsplittable . t)
-                                      (top . 24)
-                                      (left . ,(/ (* 8 (frame-width)) 2))
-                                      (background-color . "Firebrick4")
-                                      (foreground-color . "white")
-                                      (alpha . nil)
-                                      (fullscreen . nil))))
+                                     ))
 
 ;; Don't split this windows horizontally
 (setq split-width-threshold nil)
@@ -1995,7 +1980,7 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;; Link scratch buffer to file
 ;;
 ;; Need to be loaded at very end of config, use append.
-(add-hook 'emacs-startup-hook 'go-to-scratch 'append)
+(add-hook 'emacs-startup-hook 'tv-restore-scratch-buffer)
 
 ;;; .emacs.el ends here
 
