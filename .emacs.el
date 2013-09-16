@@ -6,6 +6,7 @@
 
 ;(setenv "LANG" "C")
 
+
 ;;; Temporary Bugfixes until fixed in trunk.
 ;;
 (when (require 'net-utils)
@@ -115,6 +116,13 @@ If your system's ping continues until interrupted, you can try setting
 		  (org-flag-subtree t))
 		nil))))))))
 
+(defadvice term-command-hook (before decode-string)
+  (setq string (decode-coding-string string locale-coding-system)))
+
+(when (version< emacs-version "24.3.50.1") (ad-activate 'term-command-hook))
+    
+
+
 ;;; Annoyances section
 ;;
 (global-set-key (kbd "<f11>") nil)
@@ -427,7 +435,11 @@ If your system's ping continues until interrupted, you can try setting
 (global-set-key (kbd "C-x C-(")                    'tv-resize-window)
 (global-set-key (kbd "C-§")                        'iedit-narrow-to-end)
 (global-set-key (kbd "C-²")                        'iedit-narrow-to-defun)
+(global-set-key (kbd "<f11> s c")                  'goto-scratch)
 
+(defun goto-scratch ()
+  (interactive)
+  (switch-to-buffer "*scratch*"))
 
 ;;; iedit
 ;;
@@ -964,7 +976,7 @@ account add <protocol> moi@mail.com password."
 
 ;;; emacs-backup-config
 ;;
-(setq backup-directory-alist '(("" . "/home/thierry/.emacs.d/emacs_backup"))
+(setq backup-directory-alist '(("" . "~/.emacs.d/emacs_backup"))
       backup-by-copying t
       version-control t
       kept-old-versions 2
@@ -1955,12 +1967,6 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;; Report bug
 ;;
 (setq report-emacs-bug-no-explanations t)
-(defun report-emacs-bug-nocomments (topic)
-  (interactive "sBug Subject: ")
-  (require 'emacsbug)
-  (when (string-match "^\\(\\([.0-9]+\\)*\\)\\.[0-9]+$" emacs-version)
-    (setq topic (concat (match-string 1 emacs-version) "; " topic)))
-  (compose-mail report-emacs-bug-address topic))
 
 (defun tv-find-or-kill-gnu-bug-number (bug-number &optional arg)
   (interactive (list (read-number "Bug number: " (thing-at-point 'number))
@@ -1975,11 +1981,11 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;; Save/restore emacs-session
 ;;
 ;;
-(psession--set-emacs-session-backup :enable (not (daemonp)))
+(psession-mode 1)
 
 ;;; Link scratch buffer to file
 ;;
-;; Need to be loaded at very end of config, use append.
+;;
 (add-hook 'emacs-startup-hook 'tv-restore-scratch-buffer)
 
 ;;; .emacs.el ends here

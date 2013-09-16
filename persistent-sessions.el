@@ -128,26 +128,25 @@ That may not work with Emacs versions <=23.1 for hash tables."
             (progress-reporter-update progress-reporter count)))
     (progress-reporter-done progress-reporter)))
 
-(defun* psession--set-emacs-session-backup (&key enable)
-  (if enable
-      (unless (or (memq 'psession--dump-object-to-file-save-alist kill-emacs-hook)
-                  (memq 'psession--dump-some-buffers-to-list kill-emacs-hook)
-                  (memq 'psession--restore-objects-from-directory emacs-startup-hook)
-                  (memq 'psession--restore-some-buffers emacs-startup-hook))
+(define-minor-mode psession-mode
+    "Persistent emacs sessions."
+  :global t
+  (if psession-mode
+      (progn
+        (unless (file-directory-p psession--elisp-objects-default-directory)
+          (make-directory psession--elisp-objects-default-directory t))
         (add-hook 'kill-emacs-hook 'psession--dump-object-to-file-save-alist)
         (add-hook 'emacs-startup-hook 'psession--restore-objects-from-directory)
         (add-hook 'kill-emacs-hook 'psession--dump-some-buffers-to-list)
         (add-hook 'emacs-startup-hook 'psession--restore-some-buffers 'append)
         (add-hook 'kill-emacs-hook 'psession-save-last-winconf)
         (add-hook 'emacs-startup-hook 'psession-restore-last-winconf 'append))
-      (when (or (memq 'psession--dump-object-to-file-save-alist kill-emacs-hook)
-                (memq 'psession--dump-some-buffers-to-list kill-emacs-hook)
-                (memq 'psession--restore-objects-from-directory emacs-startup-hook)
-                (memq 'psession--restore-some-buffers emacs-startup-hook))
-        (remove-hook 'kill-emacs-hook 'psession--dump-object-to-file-save-alist)
-        (remove-hook 'emacs-startup-hook 'psession--restore-objects-from-directory)
-        (remove-hook 'kill-emacs-hook 'psession--dump-some-buffers-to-list)
-        (remove-hook 'emacs-startup-hook 'psession--restore-some-buffers))))
+      (remove-hook 'kill-emacs-hook 'psession--dump-object-to-file-save-alist)
+      (remove-hook 'emacs-startup-hook 'psession--restore-objects-from-directory)
+      (remove-hook 'kill-emacs-hook 'psession--dump-some-buffers-to-list)
+      (remove-hook 'emacs-startup-hook 'psession--restore-some-buffers)
+      (remove-hook 'kill-emacs-hook 'psession-save-last-winconf)
+      (remove-hook 'emacs-startup-hook 'psession-restore-last-winconf 'append)))
 
 
 (provide 'persistent-sessions)

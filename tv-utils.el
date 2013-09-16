@@ -89,15 +89,15 @@
   (find-file (concat "/su::" (expand-file-name file))))
 
 ;; get-ip 
-;; get my external ip (need my python script)
+;; get my external ip
 ;;;###autoload
-(defun tv-get-ip ()
-  "get my ip."
+(defun get-external-ip ()
   (interactive)
-  (let ((my-ip (with-temp-buffer
-                 (call-process "get_IP.py" nil t nil)
-                 (buffer-string))))
-    (message "%s" (replace-regexp-in-string "\n" "" my-ip))))
+  (with-current-buffer (url-retrieve-synchronously "http://checkip.dyndns.org/")
+    (let ((data (xml-parse-region (point-min) (point-max))))
+      (car (last
+            (split-string
+             (car (last (assoc 'body (assoc 'html data))))))))))
 
 ;; network-info 
 (defun tv-network-info (network)
