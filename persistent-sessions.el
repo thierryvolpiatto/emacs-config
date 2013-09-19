@@ -1,11 +1,60 @@
-;;; Persistent-objects
-;;
+;;; persistent-sessions.el --- Persistent save of elisp objects.
+
+;; Copyright (C) 2012 ~ 2013 Thierry Volpiatto <thierry.volpiatto@gmail.com>
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
 ;;; Code:
 
 (eval-when-compile (require 'dired))
 
-;; Main function to save objects.
+
+(defgroup psession nil
+  "Persistent sessions."
+  :group 'frames)
+
+(defcustom psession-elisp-objects-default-directory "~/.emacs.d/elisp-objects/"
+  "The directory where lisp objects will be stored."
+  :group 'psession
+  :type 'string)
+
+(defcustom psession-object-to-save-alist
+  '((ioccur-history . "ioccur-history.el")
+    (extended-command-history . "extended-command-history.el")
+    (helm-external-command-history . "helm-external-command-history.el")
+    (helm-surfraw-engines-history . "helm-surfraw-engines-history.el")
+    (psession--save-buffers-alist . "tv-save-buffers-alist.el")
+    (helm-ff-history . "helm-ff-history.el")
+    (helm-grep-history . "helm-grep-history.el")
+    (kill-ring . "kill-ring.el")
+    (kill-ring-yank-pointer . "kill-ring-yank-pointer.el")
+    (register-alist . "register-alist.el")
+    (psession--winconf-alist . "psession-winconf-alist.el"))
+  "Alist of vars to save persistently.
+It is composed of (var_name . \"var_name.el\")"
+  :group 'psession
+  :type '(alist :key-type symbol :value-type string))
+
+(defcustom psession-save-buffers-unwanted-buffers-regexp ".*[.]org\\|diary\\|[.]newsticker-cache$"
+  "Regexp matching buffers you don't want to save."
+  :group 'psession
+  :type 'string)
+
+;;; The main function to save objects to byte compiled file.
+;;
+;; Each object have its own compiled file.
 (defun psession--dump-object-to-file (obj file)
   "Save symbol object OBJ to the byte compiled version of FILE.
 OBJ can be any lisp object, list, hash-table, etc...
@@ -27,24 +76,14 @@ That may not work with Emacs versions <=23.1 for hash tables."
          (byte-compile-file file)
          (message "`%s' dumped to %sc" obj file))
     (delete-file file)))
-
-(defvar psession--elisp-objects-default-directory "~/.emacs.d/elisp-objects/")
-(defvar psession--object-to-save-alist '((ioccur-history . "ioccur-history.el")
-                                         (extended-command-history . "extended-command-history.el")
-                                         (helm-external-command-history . "helm-external-command-history.el")
-                                         (helm-surfraw-engines-history . "helm-surfraw-engines-history.el")
-                                         (psession--save-buffers-alist . "tv-save-buffers-alist.el")
-                                         (helm-ff-history . "helm-ff-history.el")
-                                         (helm-grep-history . "helm-grep-history.el")
-                                         (kill-ring . "kill-ring.el")
-                                         (kill-ring-yank-pointer . "kill-ring-yank-pointer.el")
-                                         (register-alist . "register-alist.el")
-                                         (psession--winconf-alist . "psession-winconf-alist.el")))
-
+
+;;; Objects (variables to save)
+;;
+;;
 (defun psession--dump-object-to-file-save-alist ()
-  (when psession--object-to-save-alist
-    (loop for (o . f) in psession--object-to-save-alist
-          for abs = (expand-file-name f psession--elisp-objects-default-directory)
+  (when psession-object-to-save-alist
+    (loop for (o . f) in psession-object-to-save-alist
+          for abs = (expand-file-name f psession-elisp-objects-default-directory)
           ;; Registers are treated specially.
           if (and (eq o 'register-alist)
                   (eval o))
@@ -54,7 +93,7 @@ That may not work with Emacs versions <=23.1 for hash tables."
           (and (eval o) (psession--dump-object-to-file o abs)))))
 
 (defun* psession--restore-objects-from-directory
-    (&optional (dir psession--elisp-objects-default-directory))
+    (&optional (dir psession-elisp-objects-default-directory))
   (let ((file-list (cddr (directory-files dir t))))
     (loop for file in file-list do (load file))))
 
@@ -65,9 +104,9 @@ That may not work with Emacs versions <=23.1 for hash tables."
                                          (vectorp val)
                                          (and (consp val) (window-configuration-p (car val))))
                               collect (cons char val)))
-        (def-file (expand-file-name file psession--elisp-objects-default-directory)))
+        (def-file (expand-file-name file psession-elisp-objects-default-directory)))
     (psession--dump-object-to-file 'register-alist def-file)))
-
+
 ;;; Persistents window configs
 ;;
 ;;
@@ -92,11 +131,10 @@ That may not work with Emacs versions <=23.1 for hash tables."
 
 (defun psession-restore-last-winconf ()
   (psession-restore-winconf "last_session5247"))
-
+
 ;;; Persistents-buffer 
 ;;
 ;;
-(defvar psession--save-buffers-unwanted-buffers-regexp ".*[.]org\\|diary\\|[.]newsticker-cache$")
 (defun psession--save-some-buffers ()
   (loop with dired-blist = (loop for (f . b) in dired-buffers
                                  when (buffer-name b)
@@ -107,7 +145,7 @@ That may not work with Emacs versions <=23.1 for hash tables."
         for place = (with-current-buffer b (point))
         when (and buf-fname
                   (not (string-match tramp-file-name-regexp buf-fname))
-                  (not (string-match  psession--save-buffers-unwanted-buffers-regexp
+                  (not (string-match  psession-save-buffers-unwanted-buffers-regexp
                                       buf-fname))
                   (file-exists-p buf-fname))
         collect (cons buf-fname place)))
@@ -127,14 +165,14 @@ That may not work with Emacs versions <=23.1 for hash tables."
             (push-mark p 'nomsg)
             (progress-reporter-update progress-reporter count)))
     (progress-reporter-done progress-reporter)))
-
+
 (define-minor-mode psession-mode
     "Persistent emacs sessions."
   :global t
   (if psession-mode
       (progn
-        (unless (file-directory-p psession--elisp-objects-default-directory)
-          (make-directory psession--elisp-objects-default-directory t))
+        (unless (file-directory-p psession-elisp-objects-default-directory)
+          (make-directory psession-elisp-objects-default-directory t))
         (add-hook 'kill-emacs-hook 'psession--dump-object-to-file-save-alist)
         (add-hook 'emacs-startup-hook 'psession--restore-objects-from-directory)
         (add-hook 'kill-emacs-hook 'psession--dump-some-buffers-to-list)

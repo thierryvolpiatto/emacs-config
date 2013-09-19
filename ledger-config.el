@@ -5,7 +5,7 @@
 (require 'ledger)
 
 (define-key ledger-mode-map (kbd "C-c a l") 'ledger-align-device)
-(setq ledger-default-device "€")
+(defvar ledger-default-device "€")
 
 (setenv "LEDGER_PAGER" "cat")
 

@@ -1192,7 +1192,7 @@ from IPython.core.completerlib import module_completion"
 ;; Eshell-visual
 (setq eshell-term-name "eterm-color")
 (when (tv-require 'em-term)
-  (dolist (i '("kop" "tmux" "htop" "ipython" "alsamixer"))
+  (dolist (i '("tmux" "htop" "ipython" "alsamixer" "git-log"))
     (add-to-list 'eshell-visual-commands i)))
 
 ;;; pcomplete Completion functions on specific commands (Find, hg etc...)
