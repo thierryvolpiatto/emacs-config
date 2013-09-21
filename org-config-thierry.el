@@ -35,7 +35,7 @@
 
 ;;; Code:
 
-(require 'org)
+;(require 'org)
 ;; auto-fill-mode 
 ;; (set to 78 in files)
 (add-hook 'org-mode-hook 'auto-fill-mode)
@@ -47,20 +47,6 @@
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
 (setq org-agenda-files '("~/org")) 
-
-;; Use-my-func-with-ido-and-not-org-iswitchb 
-(defvar my-org-files '("agenda.org" "notes.org" "journal.org" "pwdthierry.org"))
-(defun tv-find-org-files (fname)
-  (interactive (list (helm-comp-read "OrgFiles: "
-                                         (if (bufferp (get-buffer "*Org Agenda*"))
-                                             (cons "*Org Agenda*" my-org-files)
-                                             my-org-files))))
-  (when fname
-    (if (equal fname "*Org Agenda*")
-        (display-buffer fname)
-        (find-file (expand-file-name fname org-directory)))))
-
-(global-set-key (kbd "C-c b") 'tv-find-org-files)
 
 ;; Todo-rules 
 ;; (find-node "(org)Fast access to TODO states")
@@ -125,7 +111,7 @@
 
 ;; Org-capture 
 ;; imported from remember templates
-(when (require 'org-capture nil t)
+(eval-after-load ;when (require 'org-capture nil t)
   (global-set-key (kbd "C-c r") 'org-capture)
   (setq org-capture-templates
         '(("W" "BROWSER" entry (file+headline "~/org/notes.org" "Firefox") "* BROWSER %?
@@ -166,7 +152,7 @@
 (setq org-agenda-include-diary t) ; show also content of regular diary file.
 
 ;; Insinuate-appt 
-(require 'appt)
+;(require 'appt)
 (org-agenda-to-appt)
 ;; When use 'r' (rebuild agenda) reload appt
 (add-hook 'org-agenda-mode-hook #'(lambda ()
@@ -237,7 +223,7 @@
 (set-face-attribute 'org-agenda-date-weekend nil :foreground "red")
 
 ;; org-crypt 
-(require 'org-crypt)
+;(require 'org-crypt)
 (org-crypt-use-before-save-magic)
 (setq org-crypt-key "59F29997")
 (setq org-crypt-disable-auto-save 'encrypt)

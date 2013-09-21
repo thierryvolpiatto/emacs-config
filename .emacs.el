@@ -299,56 +299,40 @@ If your system's ping continues until interrupted, you can try setting
 (tv-require 'firefox-protocol)
 (tv-require 'addressbook-bookmark)
 (tv-require 'org-config-thierry)
-(tv-require 'muse-autoloads)
-(tv-require 'muse-mode)
-(tv-require 'muse-wiki)
-(tv-require 'muse-html)
-(tv-require 'muse-latex)
-(tv-require 'muse-texinfo)
-(tv-require 'muse-docbook)
-(tv-require 'muse-colors)
-(tv-require 'htmlize-hack)
-(tv-require 'magit)
-;(tv-require 'magit-stgit)
-(tv-require 'magit-blame)
-;(tv-require 'monky)
+(autoload 'magit-status "magit.el" nil t)
+(autoload 'magit-blame-mode "magit-blame.el" nil t)
 (tv-require 'emms-mpd-config)
 (tv-require 'dired-extension)
 (tv-require 'htmlize)
 (tv-require 'no-word)
-;(tv-require 'eldoc-eval)
 (tv-require 'flymake)
 (tv-require 'esh-toggle)
 (tv-require 'tex-site)
 (tv-require 'slime-autoloads)
-(tv-require 'slime)
 (tv-require 'cl-info)
-(tv-require 'ioccur)
+(autoload 'ioccur "ioccur.el" nil t)
 (tv-require 'mb-depth)
 (tv-require 'tv-utils)
 (tv-require 'ledger-config)
 (tv-require 'rectangle-utils)
 (tv-require 'smallurl)
-(tv-require 'zop-to-char)
+(autoload 'zop-to-char "zop-to-char.el" nil t)
 (tv-require 'iedit)
 (tv-require 'iedit-rect)
-;(tv-require 'csv2org)
-;(tv-require 'el-expectations)
-;(tv-require 'el-mock)
 (tv-require 'simple-call-tree)
-(tv-require 'google-maps)
-;(tv-require 'googlecl)
+(autoload 'google-maps "google-maps.el" nil t)
 (tv-require 'iterator)
-(tv-require 'markdown-mode)
-(tv-require 'boxquote)
-(tv-require 'persistent-sessions)
+(autoload 'markdown-mode "markdown-mode.el")
+(autoload 'gfm-mode "markdown-mode.el")
+(autoload 'boxquote-region "boxquote.el" nil t)
+(autoload 'psession-mode "persistent-sessions.el")
 (tv-require 'wgrep-helm)
 (when (tv-require 'dired-aux)
   (tv-require 'helm-async))
 (tv-require 'smtpmail-async)
-;(tv-require 'wicd-mode)
-(tv-require 'golden-ratio)
-(tv-require 'emamux)
+(autoload 'golden-ratio-mode "golden-ratio.el" nil t)
+(autoload 'emamux:send-command "emamux.el" nil t)
+(autoload 'emamux:copy-kill-ring "emamux.el" nil t)
 
 ;; Use helm-occur as default but fallback to ioccur when helm is broken
 (defun tv-helm-or-ioccur ()
@@ -356,7 +340,23 @@ If your system's ping continues until interrupted, you can try setting
   (condition-case nil
       (helm-occur)
     (error (ioccur))))
+
+;;; iedit
+;;
+;;
+(defun iedit-narrow-to-end (arg)
+  (interactive "P")
+  (require 'iedit)
+  (save-restriction
+    (narrow-to-region (point-at-bol) (point-max))
+    (iedit-mode arg)))
 
+(defun iedit-narrow-to-defun (arg)
+  (interactive "P")
+  (require 'iedit)
+  (save-restriction
+    (narrow-to-defun)
+    (iedit-mode arg)))
 
 ;;; Global keys
 ;;
@@ -440,21 +440,6 @@ If your system's ping continues until interrupted, you can try setting
 (defun goto-scratch ()
   (interactive)
   (switch-to-buffer "*scratch*"))
-
-;;; iedit
-;;
-;;
-(defun iedit-narrow-to-end (arg)
-  (interactive "P")
-  (save-restriction
-    (narrow-to-region (point-at-bol) (point-max))
-    (iedit-mode arg)))
-
-(defun iedit-narrow-to-defun (arg)
-  (interactive "P")
-  (save-restriction
-    (narrow-to-defun)
-    (iedit-mode arg)))
 
 
 ;;; Themes
@@ -837,8 +822,8 @@ If you want the mouse banished to a different corner set
 ;;; Muse
 ;;
 ;;
-(add-hook 'find-file-hooks 'muse-mode-maybe)
-(setq muse-wiki-allow-nonexistent-wikiword t)
+;(add-hook 'find-file-hooks 'muse-mode-maybe)
+;(setq muse-wiki-allow-nonexistent-wikiword t)
 
 ;;; Browse url
 ;;
@@ -1140,14 +1125,16 @@ from IPython.core.completerlib import module_completion"
         (pcomplete)
       (text-read-only (completion-at-point))))) ; Workaround for bug#12838.
 
-
 (add-hook 'eshell-mode-hook #'(lambda ()
+                                ;; Eshell smart
                                 (require 'em-smart)
                                 (setq eshell-where-to-jump 'begin)
                                 (setq eshell-review-quick-commands nil)
                                 (setq eshell-smart-space-goes-to-end t)
                                 (eshell-smart-initialize)
                                 ;; helm completion with pcomplete
+                                (setq eshell-cmpl-ignore-case t)
+                                (eshell-cmpl-initialize)
                                 (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
                                 ;; helm lisp completion
                                 (define-key eshell-mode-map [remap lisp-complete-symbol] 'helm-lisp-completion-at-point)
@@ -1543,6 +1530,7 @@ With prefix arg always start and let me choose dictionary."
 
 (defun tv-start-slime ()
   (interactive)
+  (require 'slime)
   (if (slime-connected-p)
       (if (< (length slime-net-processes) 2)
           (slime)
@@ -1957,11 +1945,13 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 (setq magit-restore-window-configuration t)
 
 ;;; Melpa marmalade
-;; (require 'package)
+;; 
+;;
 ;; (setq package-archives
-;;              (append package-archives
-;;                      '(("melpa" . "http://melpa.milkbox.net/packages/")
-;;                        ("marmalade" . "http://marmalade-repo.org/packages/"))))
+;;       (append package-archives
+;;               '(("melpa" . "http://melpa.milkbox.net/packages/")
+;;                 ("marmalade" . "http://marmalade-repo.org/packages/")
+;;                 )))
 ;; (package-initialize)
 
 ;;; Report bug

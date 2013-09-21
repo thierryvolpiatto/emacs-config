@@ -110,9 +110,16 @@ That may not work with Emacs versions <=23.1 for hash tables."
 ;;; Persistents window configs
 ;;
 ;;
+(defconst psession--last-winconf "last_session5247")
 (defvar psession--winconf-alist nil)
+(defun psession-window-name ()
+  (let (result)
+    (walk-windows (lambda (w) (pushnew (buffer-name (window-buffer w)) result)))
+    (mapconcat 'identity result " | ")))
+
 (defun psession-save-winconf (place)
-  (interactive "sPlace: ")
+  (interactive (list (let ((name (psession-window-name)))
+                       (read-string (format "Place (%s) : " name) nil nil name))))
   (let ((assoc (assoc place psession--winconf-alist))
         (new-conf (list (cons place (window-state-get nil 'writable)))))
     (if assoc
@@ -127,10 +134,10 @@ That may not work with Emacs versions <=23.1 for hash tables."
     (window-state-put (cdr (assoc conf psession--winconf-alist))))
 
 (defun psession-save-last-winconf ()
-  (psession-save-winconf "last_session5247"))
+  (psession-save-winconf psession--last-winconf))
 
 (defun psession-restore-last-winconf ()
-  (psession-restore-winconf "last_session5247"))
+  (psession-restore-winconf psession--last-winconf))
 
 ;;; Persistents-buffer 
 ;;
@@ -166,6 +173,7 @@ That may not work with Emacs versions <=23.1 for hash tables."
             (progress-reporter-update progress-reporter count)))
     (progress-reporter-done progress-reporter)))
 
+;;;###autoload
 (define-minor-mode psession-mode
     "Persistent emacs sessions."
   :global t

@@ -175,8 +175,7 @@
  "Magit status"
  #'(lambda (_candidate)
      (with-helm-buffer (magit-status helm-default-directory)))
- helm-source-ls-git
- 1)
+ helm-source-ls-git 1)
 
 ;;; Save current position to mark ring
 ;;

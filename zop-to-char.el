@@ -33,6 +33,7 @@
 
 ;;; Code:
 
+;;;###autoload
 (defun zop-to-char (arg)
   "An enhanced version of `zap-to-char'."
   (interactive "p")
