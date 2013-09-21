@@ -185,6 +185,19 @@
 ;;
 ;(add-hook 'helm-after-update-hook #'(lambda () (fit-window-to-buffer (helm-window))))
 
+;;; Psession source
+;;
+(defvar helm-psession-windows
+  '((name . "Psession windows")
+    (candidates . (lambda ()
+                    (sort (mapcar 'car psession--winconf-alist) #'string-lessp)))
+    (action . (("Restore" . psession-restore-winconf)
+               ("Delete" . psession-delete-winconf)))))
+
+(defun helm-psession ()
+  (interactive)
+  (helm :sources 'helm-psession-windows :buffer "*helm psession*"))
+
 ;;; enable Modes
 ;;
 (helm-mode 1)

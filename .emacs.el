@@ -1931,11 +1931,12 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;
 ;(setq monky-process-type 'cmdserver)
 
-;;; Golden ratio and helm
+;;; Golden ratio
 ;;
 (defun helm-running-p () helm-alive-p)
 (setq golden-ratio-inhibit-functions '(helm-running-p))
 (setq golden-ratio-exclude-modes '("ediff-mode"))
+(setq golden-ratio-recenter t)
 (add-hook 'ediff-before-setup-windows-hook #'(lambda () (golden-ratio-mode -1)))
 (add-hook 'ediff-quit-hook #'(lambda () (golden-ratio-mode 1)))
 (golden-ratio-mode 1)

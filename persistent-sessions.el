@@ -133,6 +133,13 @@ That may not work with Emacs versions <=23.1 for hash tables."
                       (sort (mapcar 'car psession--winconf-alist) #'string-lessp))))
     (window-state-put (cdr (assoc conf psession--winconf-alist))))
 
+(defun psession-delete-winconf (conf)
+  (interactive (list (completing-read
+                      "WinConfig: "
+                      (sort (mapcar 'car psession--winconf-alist) #'string-lessp))))
+  (let ((assoc (assoc conf psession--winconf-alist)))
+    (setq psession--winconf-alist (delete assoc psession--winconf-alist))))
+
 (defun psession-save-last-winconf ()
   (psession-save-winconf psession--last-winconf))
 
