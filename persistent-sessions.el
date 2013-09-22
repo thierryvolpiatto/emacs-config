@@ -86,11 +86,12 @@ That may not work with Emacs versions <=23.1 for hash tables."
           for abs = (expand-file-name f psession-elisp-objects-default-directory)
           ;; Registers are treated specially.
           if (and (eq o 'register-alist)
-                  (eval o))
+                  (symbol-value o))
           do (psession--dump-object-save-register-alist f)
           else do
-          ;; Don't dump object when it is nil
-          (and (eval o) (psession--dump-object-to-file o abs)))))
+          ;; Don't dump object when it is nil or not bound.
+          (when (and (boundp o) (symbol-value o))
+            (psession--dump-object-to-file o abs)))))
 
 (defun* psession--restore-objects-from-directory
     (&optional (dir psession-elisp-objects-default-directory))
@@ -112,13 +113,14 @@ That may not work with Emacs versions <=23.1 for hash tables."
 ;;
 (defconst psession--last-winconf "last_session5247")
 (defvar psession--winconf-alist nil)
-(defun psession-window-name ()
+(defun psession--window-name ()
   (let (result)
     (walk-windows (lambda (w) (pushnew (buffer-name (window-buffer w)) result)))
     (mapconcat 'identity result " | ")))
 
+;;;###autoload
 (defun psession-save-winconf (place)
-  (interactive (list (let ((name (psession-window-name)))
+  (interactive (list (let ((name (psession--window-name)))
                        (read-string (format "Place (%s) : " name) nil nil name))))
   (let ((assoc (assoc place psession--winconf-alist))
         (new-conf (list (cons place (window-state-get nil 'writable)))))
@@ -127,6 +129,7 @@ That may not work with Emacs versions <=23.1 for hash tables."
                                              (delete assoc psession--winconf-alist)))
         (setq psession--winconf-alist (append new-conf psession--winconf-alist)))))
 
+;;;###autoload
 (defun psession-restore-winconf (conf)
   (interactive (list (completing-read
                       "WinConfig: "
@@ -134,6 +137,7 @@ That may not work with Emacs versions <=23.1 for hash tables."
   (delete-other-windows)
   (window-state-put (cdr (assoc conf psession--winconf-alist))))
 
+;;;###autoload
 (defun psession-delete-winconf (conf)
   (interactive (list (completing-read
                       "WinConfig: "
