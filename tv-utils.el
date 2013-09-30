@@ -896,6 +896,13 @@ With a prefix arg remove new lines."
         (unless (looking-at "\n")
           (insert "\n") (move-to-column 50))))))
 
+;; Stollen somewhere.
+(defun describe-key-name (key)
+  (interactive "kGenerate and kill `kbd' form for key: ")
+  (kill-new
+   (message "(kbd \"%s\")"
+            (help-key-description key nil))))
+
 (provide 'tv-utils)
 
 ;; Local Variables:

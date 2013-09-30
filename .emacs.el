@@ -1127,11 +1127,11 @@ from IPython.core.completerlib import module_completion"
 
 (add-hook 'eshell-mode-hook #'(lambda ()
                                 ;; Eshell smart
-                                (require 'em-smart)
-                                (setq eshell-where-to-jump 'begin)
-                                (setq eshell-review-quick-commands nil)
-                                (setq eshell-smart-space-goes-to-end t)
-                                (eshell-smart-initialize)
+                                ;(require 'em-smart)
+                                ;(setq eshell-where-to-jump 'begin)
+                                ;(setq eshell-review-quick-commands nil)
+                                ;(setq eshell-smart-space-goes-to-end t)
+                                ;(eshell-smart-initialize)
                                 ;; helm completion with pcomplete
                                 (setq eshell-cmpl-ignore-case t)
                                 (eshell-cmpl-initialize)
@@ -1695,6 +1695,7 @@ With prefix arg always start and let me choose dictionary."
 ;;
 (add-to-list 'display-time-world-list '("Australia/Sydney" "Sydney"))
 (add-to-list 'display-time-world-list '("Australia/Melbourne" "Melbourne"))
+(add-to-list 'display-time-world-list '("Australia/Canberra" "Canberra"))
 (add-to-list 'display-time-world-list '("America/Chicago" "Chicago"))
 (add-to-list 'display-time-world-list '("America/Denver" "Denver"))
 (add-to-list 'display-time-world-list '("America/Los_Angeles" "Los_Angeles/Seattle"))
