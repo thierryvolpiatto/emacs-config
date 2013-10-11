@@ -33,6 +33,7 @@
 ;;
 ;;
 (define-key helm-command-map (kbd "g")   'helm-apt)
+(define-key helm-command-map (kbd "w")   'psession-restore-winconf)
 
 ;;; Global-map
 ;;
@@ -56,7 +57,7 @@
 (global-set-key (kbd "<f5> s")                  'helm-find)
 (define-key global-map [remap jump-to-register] 'helm-register)
 (define-key global-map [remap list-buffers]     'helm-buffers-list)
-(global-set-key [remap dabbrev-expand]          'helm-dabbrev)
+(define-key global-map [remap dabbrev-expand]   'helm-dabbrev)
 
 ;;; Lisp complete or indent. (Rebind <tab>)
 ;;
@@ -67,6 +68,9 @@
 ;;
 (define-key lisp-interaction-mode-map [remap completion-at-point] 'helm-lisp-completion-at-point)
 (define-key emacs-lisp-mode-map       [remap completion-at-point] 'helm-lisp-completion-at-point)
+(add-hook 'ielm-mode-hook
+	  #'(lambda ()
+	      (define-key ielm-map    [remap completion-at-point] 'helm-lisp-completion-at-point)))
 
 ;;; helm completion in minibuffer
 ;;
@@ -88,7 +92,7 @@
 (setq helm-google-suggest-use-curl-p             t
       ;helm-kill-ring-threshold                   1
       helm-raise-command                         "wmctrl -xa %s"
-      helm-scroll-amount                         1
+      helm-scroll-amount                         4
       helm-quick-update                          t
       helm-idle-delay                            0.01
       helm-input-idle-delay                      0.01

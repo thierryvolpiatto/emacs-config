@@ -333,6 +333,7 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'golden-ratio-mode "golden-ratio.el" nil t)
 (autoload 'emamux:send-command "emamux.el" nil t)
 (autoload 'emamux:copy-kill-ring "emamux.el" nil t)
+(tv-require 'mu4e-config)
 
 ;; Use helm-occur as default but fallback to ioccur when helm is broken
 (defun tv-helm-or-ioccur ()
@@ -436,6 +437,7 @@ If your system's ping continues until interrupted, you can try setting
 (global-set-key (kbd "C-§")                        'iedit-narrow-to-end)
 (global-set-key (kbd "C-²")                        'iedit-narrow-to-defun)
 (global-set-key (kbd "<f11> s c")                  'goto-scratch)
+(global-set-key (kbd "<f11> m")                    'mu4e)
 
 (defun goto-scratch ()
   (interactive)
@@ -519,11 +521,12 @@ in this case start Gnus plugged, otherwise start it unplugged."
             (gnus-unplugged)
             (gnus)))))
 
-;; Stop hitting C-g all the time while in gnus (while tethering) .
+;; Borred C-g'ing all the time and hanging emacs
+;; while in gnus (while tethering or not).
 ;; Kill all nnimap/nntpd processes when exiting summary.
 (defun tv-gnus-kill-all-procs ()
   (loop for proc in (process-list)
-        when (string-match "\\*?nnimap\\|nntpd" (process-name proc))
+        when (string-match "\\*?\\(nnimap\\|nntpd\\)" (process-name proc))
         do (delete-process proc)))
 (add-hook 'gnus-exit-group-hook 'tv-gnus-kill-all-procs)
 (add-hook 'gnus-group-catchup-group-hook 'tv-gnus-kill-all-procs)
@@ -623,11 +626,12 @@ in this case start Gnus plugged, otherwise start it unplugged."
 ;;; Emacs transparency.
 ;;
 ;;
-(when (window-system)
-  (defun tv-transparency-modify (arg)
-    "Increase Emacs frame transparency.
+
+(defun tv-transparency-modify (arg)
+  "Increase Emacs frame transparency.
 With a prefix arg decrease transparency."
-    (interactive "P")
+  (interactive "P")
+  (when (window-system)
     (let* ((ini-alpha (frame-parameter nil 'alpha))
            (def-alpha (or ini-alpha 80))
            (mod-alpha (if arg
@@ -635,8 +639,8 @@ With a prefix arg decrease transparency."
                           (max (- def-alpha 10)
                                frame-alpha-lower-limit)))) ; 20
       (modify-frame-parameters nil (list (cons 'alpha mod-alpha)))
-      (message "Alpha[%s]" mod-alpha)))
-  (global-set-key (kbd "C-8") 'tv-transparency-modify))
+      (message "Alpha[%s]" mod-alpha))))
+(global-set-key (kbd "C-8") 'tv-transparency-modify)
 
 ;;; Special buffer display.
 ;;
@@ -1904,10 +1908,10 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;; Tramp/ange behave badly in 99.9% of the time for ftp, disable.
 (setq ffap-url-unwrap-remote (remove "ftp" ffap-url-unwrap-remote))
 
-;;; Ido virtual buffers
+;;; Ido
 ;;
 ;;
-(setq ido-use-virtual-buffers t)
+(setq ido-use-virtual-buffers t) ; Needed in helm-buffers-list
 
 ;;; Deactivate mouse scrolling
 ;;

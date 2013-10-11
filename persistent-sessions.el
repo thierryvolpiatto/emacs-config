@@ -204,7 +204,7 @@ That may not work with Emacs versions <=23.1 for hash tables."
       (remove-hook 'kill-emacs-hook 'psession--dump-some-buffers-to-list)
       (remove-hook 'emacs-startup-hook 'psession--restore-some-buffers)
       (remove-hook 'kill-emacs-hook 'psession-save-last-winconf)
-      (remove-hook 'emacs-startup-hook 'psession-restore-last-winconf 'append)))
+      (remove-hook 'emacs-startup-hook 'psession-restore-last-winconf)))
 
 
 (provide 'persistent-sessions)
