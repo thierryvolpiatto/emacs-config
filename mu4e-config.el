@@ -29,43 +29,97 @@
       '(("/INBOX"               . ?i)
         ("/github-emacs-helm"   . ?h)
         ("/emacs-helm"          . ?e)
+        ("/Friends"             . ?f)
         ("/[Gmail].Sent Mail"   . ?s)
         ("/[Gmail].Trash"       . ?t)
         ("/[Gmail].All Mail"    . ?a)))
 
 ;; allow for updating mail using 'U' in the main view:
-(setq mu4e-get-mail-command "offlineimap -u Basic")
+(setq mu4e-get-mail-command "offlineimap -q -u Basic")
+(setq mu4e-update-interval 600)
 (define-key mu4e-headers-mode-map (kbd "C-c C-c") 'mu4e~interrupt-update-mail)
 (define-key mu4e-view-mode-map (kbd "C-c C-c") 'mu4e~interrupt-update-mail)
 
 ;; something about ourselves
-(setq
- user-mail-address "thierry.volpiatto@gmail.com"
- user-full-name  "thierry"
- message-signature (with-temp-buffer
-                     (insert-file-contents "~/.signature")
-                     (buffer-string)))
+(setq user-mail-address "thierry.volpiatto@gmail.com"
+      user-full-name  "thierry"
+      message-signature (with-temp-buffer
+                          (insert-file-contents "~/.signature")
+                          (buffer-string)))
 
 ;; sending mail -- replace USERNAME with your gmail username
 ;; also, make sure the gnutls command line utils are installed
 ;; package 'gnutls-bin' in Debian/Ubuntu
 
 (require 'smtpmail)
-;; (setq message-send-mail-function 'smtpmail-send-it
-;;       starttls-use-gnutls t
-;;       smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-;;       smtpmail-auth-credentials
-;;       '(("smtp.gmail.com" 587 "thierry.volpiatto@gmail.com" nil))
-;;       smtpmail-default-smtp-server "smtp.gmail.com"
-;;       smtpmail-smtp-server "smtp.gmail.com"
-;;       smtpmail-smtp-service 587)
 
-;; alternatively, for emacs-24 you can use:
-(setq message-send-mail-function 'smtpmail-send-it
-    smtpmail-stream-type 'starttls
-    smtpmail-default-smtp-server "smtp.gmail.com"
-    smtpmail-smtp-server "smtp.gmail.com"
-    smtpmail-smtp-service 587)
+(setq message-send-mail-function 'async-smtpmail-send-it ;'smtpmail-send-it
+      smtpmail-stream-type 'starttls
+      smtpmail-default-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-service 587
+      mail-specify-envelope-from t ; Use from field to specify sender name.
+      mail-envelope-from 'header)  ; otherwise `user-mail-address' is used. 
+
+(defvar tv-smtp-accounts
+  '(("thierry.volpiatto@gmail.com"
+     (:server "smtp.gmail.com"
+      :port 587
+      :name "Thierry Volpiatto"))
+    ("tvolpiatto@yahoo.fr"
+     (:server "smtp.mail.yahoo.com"
+      :port 587
+      :name "Thierry Volpiatto"))))
+
+(defun tv-change-smtp-server ()
+  "Use account found in `tv-smtp-accounts' according to from header.
+`from' is set in `gnus-posting-styles' according to `to' header.
+or manually with `tv-toggle-from-header'.
+This will run in `message-send-hook'."
+  (save-excursion
+    (save-restriction
+      (message-narrow-to-headers)
+      (let* ((from         (message-fetch-field "from"))
+             (user-account (loop for account in tv-smtp-accounts thereis
+                                 (and (string-match (car account) from)
+                                      account)))
+             (server (getf (cadr user-account) :server))
+             (port (getf (cadr user-account) :port))
+             (user (car user-account)))
+        (setq smtpmail-smtp-user            user
+              smtpmail-default-smtp-server  server
+              smtpmail-smtp-server          server
+              smtpmail-smtp-service         port)))))
+
+(add-hook 'message-send-hook 'tv-change-smtp-server)
+
+(defun tv-send-mail-with-account ()
+  "Change mail account to send this mail."
+  (interactive)
+  (save-excursion
+    (let* ((from (save-restriction
+                   (message-narrow-to-headers)
+                   (message-fetch-field "from")))
+           (mail (completing-read
+                  "Use account: "
+                  (mapcar 'car tv-smtp-accounts)))
+           (name (getf (cadr (assoc mail tv-smtp-accounts)) :name))
+           (new-from (message-make-from name mail)))
+        (message-goto-from)
+        (forward-line 0)
+        (re-search-forward ": " (point-at-eol))
+        (delete-region (point) (point-at-eol))
+        (insert new-from))))
+(define-key mu4e-compose-mode-map (kbd "C-c p") 'tv-send-mail-with-account)
+
+;; Don't send to these address in wide reply.
+(setq message-dont-reply-to-names '("notifications@github.com"
+                                    "helm@noreply.github.com"
+                                    "thierry.volpiatto@gmail.com"))
+
+(setq user-mail-address "thierry.volpiatto@gmail.com")
+(setq user-full-name "Thierry Volpiatto")
+
 
 ;; don't keep message buffers around
 (setq message-kill-buffer-on-exit t)
@@ -76,10 +130,54 @@
 ;; save attachment to my desktop (this can also be a function)
 (setq mu4e-attachment-dir "~/download")
 
+;; Make a full update all the 5 mail retrieval
+(defvar tv/mu4e~update-mail-number-of-update-flag 0)
+(defvar tv/mu4e-get-mail-command-full "offlineimap -u Basic")
+(defvar tv/mu4e-get-mail-command-quick "offlineimap -q -u Basic")
+(defun tv/mu4e-update-mail-quick-or-full ()
+  (if (>= tv/mu4e~update-mail-number-of-update-flag 5)
+      (progn
+        (setq mu4e-get-mail-command tv/mu4e-get-mail-command-full)
+        (setq tv/mu4e~update-mail-number-of-update-flag 0))
+      (setq mu4e-get-mail-command tv/mu4e-get-mail-command-quick)
+      (incf tv/mu4e~update-mail-number-of-update-flag)))
+(add-hook 'mu4e-update-pre-hook #'tv/mu4e-update-mail-quick-or-full)
+
 ;; attempt to show images when viewing messages
-(setq
- mu4e-view-show-images t
- mu4e-view-image-max-width 800)
+(setq mu4e-view-show-images t
+      mu4e-view-image-max-width 800)
+
+;; bookmark handler
+(add-hook 'mu4e-view-mode-hook
+          #'(lambda ()
+              (set (make-local-variable 'bookmark-make-record-function)
+                   'mu4e-view-bookmark-make-record)))
+
+(defun mu4e-view-bookmark-make-record ()
+  (let* ((msg (mu4e-message-at-point))
+         (query (mu4e-last-query))
+         (docid (plist-get msg :docid))
+         (subject (or (plist-get msg :subject) "No subject")))
+    `(,subject
+      ,@(bookmark-make-record-default 'no-file 'no-context)
+        (location . (,query . ,docid))
+        (handler . mu4e-bookmark-jump))))
+
+(defun mu4e-bookmark-jump (bookmark)
+  (let* ((path  (bookmark-prop-get bookmark 'location))
+         (docid (cdr path))
+         (query (car path)))
+    (call-interactively 'mu4e)
+    (mu4e-headers-search query)
+    (sit-for 1)
+    (mu4e~headers-goto-docid docid)
+    (mu4e~headers-highlight docid)
+    (call-interactively 'mu4e-headers-view-message)
+    (run-with-timer 0.5 nil
+                    (lambda (bmk)
+                      (bookmark-default-handler
+                       `("" (buffer . ,(current-buffer)) . ,(bookmark-get-bookmark-record bmk))))
+                    bookmark)))
 
 (provide 'mu4e-config)
 

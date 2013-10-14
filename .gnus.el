@@ -135,7 +135,7 @@ This will run in `message-send-hook'."
     (let* ((from (save-restriction
                    (message-narrow-to-headers)
                    (message-fetch-field "from")))
-           (mail (helm-comp-read
+           (mail (completing-read
                   "Use account: "
                   (mapcar 'car tv-smtp-accounts)))
            (name (getf (cadr (assoc mail tv-smtp-accounts)) :name))
