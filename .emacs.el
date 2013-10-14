@@ -166,18 +166,6 @@ If your system's ping continues until interrupted, you can try setting
     (error
      (signal 'error (list feature (car err) (cadr err))))))
 
-(defun tv-maybe-load-ngnus (&optional force)
-  (when (or force (< emacs-major-version 24))
-    (setq load-path (loop for i in load-path
-                          unless (string-match "gnus" i)
-                          collect i))
-    (add-to-list 'load-path "~/elisp/ngnus/lisp")
-    (tv-require 'gnus-load "~/elisp/ngnus/lisp/gnus-load.el")
-    (tv-require 'info)
-    (add-to-list 'Info-directory-list "~/elisp/ngnus/texi/")
-    (add-to-list 'Info-default-directory-list "~/elisp/ngnus/texi/")))
-;; (tv-maybe-load-ngnus t)
-
 (defun tv-maybe-add-org-load-path (&optional force)
   (when (or (< emacs-major-version 24) force)
     (setq load-path (loop for i in load-path
@@ -207,11 +195,9 @@ If your system's ping continues until interrupted, you can try setting
 (add-to-list 'Info-directory-list "~/elisp/info")
 (add-to-list 'Info-directory-list "~/elisp/info/eshell-doc")
 
-(when (< emacs-major-version 24)
-  (add-to-list 'load-path "/home/thierry/elisp/ngnus/lisp/gnus-fallback-lib/eieio"))
-
 (dolist (i '("/usr/local/share/emacs/site-lisp"
              "/usr/local/share/emacs/site-lisp/auctex"
+             "/usr/local/share/emacs/site-lisp/mu4e/"
 	     "~/elisp/"
 	     "~/elisp/magit"
              "~/elisp/Emacs-wgrep"
@@ -366,7 +352,7 @@ If your system's ping continues until interrupted, you can try setting
 (global-set-key (kbd "C-c R")                      #'(lambda () (interactive) (revert-buffer t t)))
 (global-set-key (kbd "C-c W")                      'whitespace-mode)
 (global-set-key (kbd "C-M-j")                      #'(lambda () (interactive) (kill-sexp -1)))
-(global-set-key (kbd "<f7> m")                     'tv-gnus)
+(global-set-key (kbd "<f7> m")                     'gnus)
 (global-set-key (kbd "<f7> j")                     'webjump)
 (global-set-key (kbd "<f7> s g")                   'search-word)
 (global-set-key (kbd "<f7> s u")                   'tv-search-gmane)
@@ -472,68 +458,15 @@ If your system's ping continues until interrupted, you can try setting
 ;; (add-to-list 'desktop-globals-to-save 'helm-external-command-history)
 
 
-;;; Gnus-config
+;;; Gnus
 ;;
 ;;
-(setq gnus-asynchronous t)
-(setq mail-user-agent 'gnus-user-agent)
-(setq read-mail-command 'gnus)
-(setq send-mail-command 'gnus-msg-mail)
 (setq gnus-init-file "~/.emacs.d/.gnus.el")
-
-(defvar tv-gnus-loaded-p nil)
-(defun tv-load-gnus-init-may-be ()
-  (unless tv-gnus-loaded-p
-    (load gnus-init-file)
-    (setq tv-gnus-loaded-p t)))
-
-(add-hook 'message-mode-hook 'tv-load-gnus-init-may-be)
-(add-hook 'gnus-before-startup-hook 'tv-load-gnus-init-may-be)
-
-(defun quickping (host)
-  "Return non--nil when host is reachable."
-  (= 0 (call-process "ping" nil nil nil "-c1" "-W10" "-q" host)))
-
-(defun tv-gnus (arg)
-  "Start Gnus.
-If Gnus have been started and a *Group* buffer exists,
-switch to it, otherwise check if a connection is available and
-in this case start Gnus plugged, otherwise start it unplugged."
-  (interactive "P")
-  (let ((buf (get-buffer "*Group*")))
-    (if (buffer-live-p buf)
-        (switch-to-buffer buf)
-        (if (or arg (not (quickping "imap.gmail.com")))
-            (gnus-unplugged)
-            (gnus)))))
-
-;; Borred C-g'ing all the time and hanging emacs
-;; while in gnus (while tethering or not).
-;; Kill all nnimap/nntpd processes when exiting summary.
-(defun tv-gnus-kill-all-procs ()
-  (loop for proc in (process-list)
-        when (string-match "\\*?\\(nnimap\\|nntpd\\)" (process-name proc))
-        do (delete-process proc)))
-(add-hook 'gnus-exit-group-hook 'tv-gnus-kill-all-procs)
-(add-hook 'gnus-group-catchup-group-hook 'tv-gnus-kill-all-procs)
-
-;; Use now org-keywords in gnus.
-(add-hook 'message-mode-hook #'(lambda ()
-				 (define-key message-mode-map (kbd "<f11> k") 'helm-org-keywords)))
-
-(autoload 'gnus-dired-attach "gnus-dired.el")
-(declare-function 'gnus-dired-attach "gnus-dired.el" (files-to-attach))
-(define-key dired-mode-map (kbd "C-c C-a") 'gnus-dired-attach)
-
-(setq gnus-read-active-file 'some)
-(setq gnus-check-new-newsgroups 'ask-server)
 
 ;;; Authinfo
 ;;
 ;;
-(if (file-exists-p "~/.authinfo.gpg")
-    (setq auth-sources '((:source "~/.authinfo.gpg" :host t :protocol t)))
-    (setq auth-sources '((:source "~/.authinfo" :host t :protocol t))))
+(setq auth-sources '((:source "~/.authinfo.gpg" :host t :protocol t)))
 
 
 ;;; Font lock

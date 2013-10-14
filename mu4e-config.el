@@ -1,7 +1,7 @@
 ;;; mu4e-config.el --- Config for mu4e.
 
 ;;; Code:
-(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e/")
+
 (require 'mu4e)
 
 ;; default
@@ -14,6 +14,8 @@
 
 (setq mu4e-view-prefer-html t)
 (setq mu4e-html2text-command "w3m -T text/html")
+(setq mail-user-agent 'mu4e-user-agent)
+(setq read-mail-command 'mu4e)
 
 ;; don't save message to Sent Messages, Gmail/IMAP takes care of this
 (setq mu4e-sent-messages-behavior 'delete)
@@ -32,7 +34,14 @@
         ("/Friends"             . ?f)
         ("/[Gmail].Sent Mail"   . ?s)
         ("/[Gmail].Trash"       . ?t)
+        ("/[Gmail].Spam"        . ?!)
         ("/[Gmail].All Mail"    . ?a)))
+
+(setq mu4e-bookmarks
+      '(("flag:unread AND NOT flag:trashed AND NOT maildir:/[Gmail].Spam" "Unread messages"          ?u)
+        ("date:today..now AND NOT flag:trashed AND NOT maildir:/[Gmail].Spam" "Today's messages"     ?t)
+        ("date:7d..now AND NOT flag:trashed AND NOT maildir:/[Gmail].Spam" "Last 7 days"             ?w)
+        ("mime:image/* AND NOT flag:trashed AND NOT maildir:/[Gmail].Spam" "Messages with images"    ?p)))
 
 ;; allow for updating mail using 'U' in the main view:
 (setq mu4e-get-mail-command "offlineimap -q -u Basic")
@@ -61,7 +70,7 @@
       mail-specify-envelope-from t ; Use from field to specify sender name.
       mail-envelope-from 'header)  ; otherwise `user-mail-address' is used. 
 
-(defvar tv-smtp-accounts
+(defvar tv/smtp-accounts
   '(("thierry.volpiatto@gmail.com"
      (:server "smtp.gmail.com"
       :port 587
@@ -71,8 +80,8 @@
       :port 587
       :name "Thierry Volpiatto"))))
 
-(defun tv-change-smtp-server ()
-  "Use account found in `tv-smtp-accounts' according to from header.
+(defun tv/change-smtp-server ()
+  "Use account found in `tv/smtp-accounts' according to from header.
 `from' is set in `gnus-posting-styles' according to `to' header.
 or manually with `tv-toggle-from-header'.
 This will run in `message-send-hook'."
@@ -80,7 +89,7 @@ This will run in `message-send-hook'."
     (save-restriction
       (message-narrow-to-headers)
       (let* ((from         (message-fetch-field "from"))
-             (user-account (loop for account in tv-smtp-accounts thereis
+             (user-account (loop for account in tv/smtp-accounts thereis
                                  (and (string-match (car account) from)
                                       account)))
              (server (getf (cadr user-account) :server))
@@ -91,9 +100,9 @@ This will run in `message-send-hook'."
               smtpmail-smtp-server          server
               smtpmail-smtp-service         port)))))
 
-(add-hook 'message-send-hook 'tv-change-smtp-server)
+(add-hook 'message-send-hook 'tv/change-smtp-server)
 
-(defun tv-send-mail-with-account ()
+(defun tv/send-mail-with-account ()
   "Change mail account to send this mail."
   (interactive)
   (save-excursion
@@ -102,15 +111,15 @@ This will run in `message-send-hook'."
                    (message-fetch-field "from")))
            (mail (completing-read
                   "Use account: "
-                  (mapcar 'car tv-smtp-accounts)))
-           (name (getf (cadr (assoc mail tv-smtp-accounts)) :name))
+                  (mapcar 'car tv/smtp-accounts)))
+           (name (getf (cadr (assoc mail tv/smtp-accounts)) :name))
            (new-from (message-make-from name mail)))
         (message-goto-from)
         (forward-line 0)
         (re-search-forward ": " (point-at-eol))
         (delete-region (point) (point-at-eol))
         (insert new-from))))
-(define-key mu4e-compose-mode-map (kbd "C-c p") 'tv-send-mail-with-account)
+(define-key mu4e-compose-mode-map (kbd "C-c p") 'tv/send-mail-with-account)
 
 ;; Don't send to these address in wide reply.
 (setq message-dont-reply-to-names '("notifications@github.com"
@@ -119,6 +128,12 @@ This will run in `message-send-hook'."
 
 (setq user-mail-address "thierry.volpiatto@gmail.com")
 (setq user-full-name "Thierry Volpiatto")
+
+(defun tv/message-mode-setup ()
+  (setq fill-column 72)
+  (turn-on-auto-fill)
+  (epa-mail-mode 1))
+(add-hook 'mu4e-compose-mode-hook 'tv/message-mode-setup)
 
 
 ;; don't keep message buffers around
