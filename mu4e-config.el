@@ -63,6 +63,7 @@
 (require 'smtpmail)
 
 (setq message-send-mail-function 'async-smtpmail-send-it ;'smtpmail-send-it
+      message-send-mail-partially-limit nil
       smtpmail-stream-type 'starttls
       smtpmail-default-smtp-server "smtp.gmail.com"
       smtpmail-smtp-server "smtp.gmail.com"
@@ -89,9 +90,9 @@ This will run in `message-send-hook'."
     (save-restriction
       (message-narrow-to-headers)
       (let* ((from         (message-fetch-field "from"))
-             (user-account (loop for account in tv/smtp-accounts thereis
-                                 (and (string-match (car account) from)
-                                      account)))
+             (user-account (loop for account in tv/smtp-accounts
+                                 when (string-match (car account) from)
+                                 return account))
              (server (getf (cadr user-account) :server))
              (port (getf (cadr user-account) :port))
              (user (car user-account)))
@@ -135,6 +136,20 @@ This will run in `message-send-hook'."
   (epa-mail-mode 1))
 (add-hook 'mu4e-compose-mode-hook 'tv/message-mode-setup)
 
+;;; Mail encryption.
+;;
+;;
+(setq mml2015-use 'epg)
+(setq mml2015-encrypt-to-self t)
+
+;; Verify/Decrypt automatically
+;; only if mml knows about the protocol used.
+(setq mm-verify-option 'known)
+(setq mm-decrypt-option 'known)
+
+;; Use now org-keywords in gnus.
+(add-hook 'message-mode-hook #'(lambda ()
+				 (define-key message-mode-map (kbd "<f11> k") 'helm-org-keywords)))
 
 ;; don't keep message buffers around
 (setq message-kill-buffer-on-exit t)
@@ -147,17 +162,22 @@ This will run in `message-send-hook'."
 
 ;; Make a full update all the 5 mail retrieval
 (defvar tv/mu4e~update-mail-number-of-update-flag 0)
+(defvar tv/mu4e~update-mail-number-of-update-toggle 5)
 (defvar tv/mu4e-get-mail-command-full "offlineimap -u Basic")
 (defvar tv/mu4e-get-mail-command-quick "offlineimap -q -u Basic")
 (defun tv/mu4e-update-mail-quick-or-full ()
-  (if (>= tv/mu4e~update-mail-number-of-update-flag 5)
+  (if (>= tv/mu4e~update-mail-number-of-update-flag
+          tv/mu4e~update-mail-number-of-update-toggle)
       (progn
         (setq mu4e-get-mail-command tv/mu4e-get-mail-command-full)
         (setq tv/mu4e~update-mail-number-of-update-flag 0))
       (setq mu4e-get-mail-command tv/mu4e-get-mail-command-quick)
       (incf tv/mu4e~update-mail-number-of-update-flag)))
 (add-hook 'mu4e-update-pre-hook #'tv/mu4e-update-mail-quick-or-full)
-
+;; Always perform a full update on startup.
+(add-hook 'mu4e-main-mode-hook #'(lambda ()
+                                   (setq tv/mu4e~update-mail-number-of-update-flag
+                                         tv/mu4e~update-mail-number-of-update-toggle)))
 ;; attempt to show images when viewing messages
 (setq mu4e-view-show-images t
       mu4e-view-image-max-width 800)
