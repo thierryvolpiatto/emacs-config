@@ -3,6 +3,7 @@
 ;;; Code:
 
 (require 'mu4e)
+(require 'helm-mu)
 
 ;; default
 (setq mu4e-maildir "~/Maildir")
@@ -38,10 +39,11 @@
         ("/[Gmail].All Mail"    . ?a)))
 
 (setq mu4e-bookmarks
-      '(("flag:unread AND NOT flag:trashed AND NOT maildir:/[Gmail].Spam" "Unread messages"          ?u)
-        ("date:today..now AND NOT flag:trashed AND NOT maildir:/[Gmail].Spam" "Today's messages"     ?t)
-        ("date:7d..now AND NOT flag:trashed AND NOT maildir:/[Gmail].Spam" "Last 7 days"             ?w)
-        ("mime:image/* AND NOT flag:trashed AND NOT maildir:/[Gmail].Spam" "Messages with images"    ?p)))
+      '(("flag:unread AND NOT flag:trashed AND NOT maildir:/[Gmail].Spam" "Unread messages"               ?u)
+        ("date:today..now AND NOT flag:trashed AND NOT maildir:/[Gmail].Spam" "Today's messages"          ?t)
+        ("date:1d..now AND NOT flag:trashed AND NOT maildir:/[Gmail].Spam" "Yesterday and today messages" ?y)
+        ("date:7d..now AND NOT flag:trashed AND NOT maildir:/[Gmail].Spam" "Last 7 days"                  ?w)
+        ("mime:image/* AND NOT flag:trashed AND NOT maildir:/[Gmail].Spam" "Messages with images"         ?p)))
 
 ;; allow for updating mail using 'U' in the main view:
 (setq mu4e-get-mail-command "offlineimap -q -u Basic")

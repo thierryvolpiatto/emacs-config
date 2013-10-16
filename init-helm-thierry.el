@@ -10,7 +10,6 @@
 (tv-require 'helm-ls-hg)
 (tv-require 'helm-descbinds)
 (tv-require 'helm-ls-git)
-(tv-require 'helm-mu)
 
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!

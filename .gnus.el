@@ -11,6 +11,9 @@
 (setq gnus-save-newsrc-file nil
       gnus-read-newsrc-file nil)
 
+(setq gnus-read-active-file 'some)
+(setq gnus-check-new-newsgroups 'ask-server)
+
 ;;; Gnus methods
 ;;
 ;;
@@ -26,18 +29,18 @@
 ;;  4) Add an entries in authinfo for imap and smtp refering to labels. (See below)
 
 ;; Secondary methods are mails and possibly other nntp servers.
-;; (setq gnus-secondary-select-methods '((nnml "")
-;;                                       ;; Add as many gmail account as needed with a label.
-;;                                       ;; Add then an entry in .authinfo:
-;;                                       ;; machine label port xxx login xxx password xxx
-;;                                       (nnimap "gmail" ; Label for reference in .authinfo for machine name.
-;;                                        (nnimap-address "imap.gmail.com")
-;;                                        (nnimap-fetch-partial-articles "text/")) ; [1]
-;;                                       (nnimap "yahoo"
-;;                                        (nnimap-address "imap.mail.yahoo.com")
-;;                                        (nnimap-fetch-partial-articles "text/")) ; [1]
-;;                                       ;(nntp "news.gwene.org")
-;;                                       ))
+(setq gnus-secondary-select-methods '((nnml "")
+                                      ;; Add as many gmail account as needed with a label.
+                                      ;; Add then an entry in .authinfo:
+                                      ;; machine label port xxx login xxx password xxx
+                                      (nnimap "gmail" ; Label for reference in .authinfo for machine name.
+                                       (nnimap-address "imap.gmail.com")
+                                       (nnimap-fetch-partial-articles "text/")) ; [1]
+                                      (nnimap "yahoo"
+                                       (nnimap-address "imap.mail.yahoo.com")
+                                       (nnimap-fetch-partial-articles "text/")) ; [1]
+                                      ;(nntp "news.gwene.org")
+                                      ))
 
 ;; [1] Don't load mime parts when receiving mail, only text part.
 ;; Use `A-C' to see entire mail.
@@ -72,6 +75,80 @@
          (from "Thierry Volpiatto <tvolpiatto@yahoo.fr>")
          (signature-file "~/.signature"))))
 
+;; Don't send to these address in wide reply.
+(setq message-dont-reply-to-names '("notifications@github.com"
+                                    "helm@noreply.github.com"
+                                    "thierry.volpiatto@gmail.com"))
+
+(setq user-mail-address "thierry.volpiatto@gmail.com")
+(setq user-full-name "Thierry Volpiatto")
+
+;; [smtpmail-async] Experimental, use `smtpmail-send-it' otherwise. 
+(setq message-send-mail-function 'async-smtpmail-send-it
+      ;smtpmail-debug-info t        ; Uncomment to debug
+      ;smtpmail-debug-verb t        ; Uncomment to debug on server
+      mail-specify-envelope-from t ; Use from field to specify sender name.
+      mail-envelope-from 'header)  ; otherwise `user-mail-address' is used. 
+
+;; Default settings.
+;; This are default setting, they could be modified
+;; by `tv-change-smtp-server' according to `tv-smtp-accounts'
+;; and `gnus-posting-styles'.
+(setq smtpmail-default-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-user user-mail-address
+      smtpmail-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-service 587)
+
+(defvar tv-smtp-accounts
+  '(("thierry.volpiatto@gmail.com"
+     (:server "smtp.gmail.com"
+      :port 587
+      :name "Thierry Volpiatto"))
+    ("tvolpiatto@yahoo.fr"
+     (:server "smtp.mail.yahoo.com"
+      :port 587
+      :name "Thierry Volpiatto"))))
+
+(defun tv-change-smtp-server ()
+  "Use account found in `tv-smtp-accounts' according to from header.
+`from' is set in `gnus-posting-styles' according to `to' header.
+or manually with `tv-toggle-from-header'.
+This will run in `message-send-hook'."
+  (save-excursion
+    (save-restriction
+      (message-narrow-to-headers)
+      (let* ((from         (message-fetch-field "from"))
+             (user-account (loop for account in tv-smtp-accounts thereis
+                                 (and (string-match (car account) from)
+                                      account)))
+             (server (getf (cadr user-account) :server))
+             (port (getf (cadr user-account) :port))
+             (user (car user-account)))
+        (setq smtpmail-smtp-user            user
+              smtpmail-default-smtp-server  server
+              smtpmail-smtp-server          server
+              smtpmail-smtp-service         port)))))
+
+(add-hook 'message-send-hook 'tv-change-smtp-server)
+
+(defun tv-send-mail-with-account ()
+  "Change mail account to send this mail."
+  (interactive)
+  (save-excursion
+    (let* ((from (save-restriction
+                   (message-narrow-to-headers)
+                   (message-fetch-field "from")))
+           (mail (completing-read
+                  "Use account: "
+                  (mapcar 'car tv-smtp-accounts)))
+           (name (getf (cadr (assoc mail tv-smtp-accounts)) :name))
+           (new-from (message-make-from name mail)))
+        (message-goto-from)
+        (forward-line 0)
+        (re-search-forward ": " (point-at-eol))
+        (delete-region (point) (point-at-eol))
+        (insert new-from))))
+(define-key message-mode-map (kbd "C-c p") 'tv-send-mail-with-account)
 
 ;;; Junk mail
 ;;
@@ -143,16 +220,19 @@
                                 "^X-Newsreader:"))
 
 ;; Ne pas demander si on splitte les pa 
-;; (setq message-send-mail-partially-limit nil)
+(setq message-send-mail-partially-limit nil)
 
 ;;; Html renderer
 ;;
 ;;
 ;; shr
 ;;
-(setq shr-color-visible-luminance-min 75)
-(setq shr-width nil) ; Use all window width.
-(setq mm-text-html-renderer 'shr)
+;;(setq shr-color-visible-luminance-min 75)
+;;(setq shr-width nil) ; Use all window width.
+;;(setq mm-text-html-renderer 'shr)
+
+;; W3m (Don't need emacs-w3m)
+(setq mm-text-html-renderer 'w3m-standalone)
 
 ;; Try to inline images
 (setq mm-inline-text-html-with-images t)
@@ -172,8 +252,8 @@
 
 ;; Verify/Decrypt automatically
 ;; only if mml knows about the protocol used.
-;; (setq mm-verify-option 'known)
-;; (setq mm-decrypt-option 'known)
+(setq mm-verify-option 'known)
+(setq mm-decrypt-option 'known)
 
 (setq gnus-inhibit-mime-unbuttonizing nil)
 (setq gnus-buttonized-mime-types '("multipart/signed"
@@ -214,6 +294,14 @@
         (gnus-del-mark (from -2) (subject -5))
         (gnus-read-mark (from 2) (subject 1))
         (gnus-killed-mark (from 0) (subject -3))))
+
+;; Original value
+;; '((gnus-kill-file-mark)
+;;   (gnus-unread-mark)
+;;   (gnus-read-mark (from 3) (subject 28))
+;;   (gnus-catchup-mark (subject -8))
+;;   (gnus-killed-mark (from -2) (subject -18))
+;;   (gnus-del-mark (from -2) (subject -13)))
 
 (setq gnus-score-decay-constant 1)      ;default = 3
 (setq gnus-score-decay-scale 0.03)      ;default = 0.05
