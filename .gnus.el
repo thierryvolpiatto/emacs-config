@@ -225,14 +225,17 @@ This will run in `message-send-hook'."
 ;;; Html renderer
 ;;
 ;;
-;; shr
-;;
-;;(setq shr-color-visible-luminance-min 75)
-;;(setq shr-width nil) ; Use all window width.
-;;(setq mm-text-html-renderer 'shr)
 
-;; W3m (Don't need emacs-w3m)
-(setq mm-text-html-renderer 'w3m-standalone)
+(cond ((fboundp 'w3m)
+       ;; Emacs-w3m
+       (setq mm-text-html-renderer 'w3m))
+      ((executable-find "w3m")
+       ;; W3m (Don't need emacs-w3m)
+       (setq mm-text-html-renderer 'w3m-standalone))
+      (t ; Fall back to shr.
+       (setq shr-color-visible-luminance-min 75)
+       (setq shr-width nil) ; Use all window width.
+       (setq mm-text-html-renderer 'shr)))
 
 ;; Try to inline images
 (setq mm-inline-text-html-with-images t)
