@@ -4,6 +4,8 @@
 
 (require 'mu4e)
 (require 'helm-mu)
+(setq gnus-init-file "~/.emacs.d/.gnus.el")
+(load-file gnus-init-file)
 
 ;; default
 (setq mu4e-maildir "~/Maildir")
@@ -54,11 +56,7 @@
 (define-key mu4e-headers-mode-map (kbd "C-c C-c") 'mu4e~interrupt-update-mail)
 (define-key mu4e-view-mode-map (kbd "C-c C-c") 'mu4e~interrupt-update-mail)
 
-(defun tv/message-mode-setup ()
-  (setq fill-column 72)
-  (turn-on-auto-fill)
-  (epa-mail-mode 1))
-(add-hook 'mu4e-compose-mode-hook 'tv/message-mode-setup)
+(add-hook 'mu4e-compose-mode-hook 'tv/message-mode-setup) ; loaded from .gnus.el
 
 ;; use 'fancy' non-ascii characters in various places in mu4e
 (setq mu4e-use-fancy-chars t)

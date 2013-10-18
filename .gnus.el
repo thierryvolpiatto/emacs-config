@@ -242,10 +242,11 @@ This will run in `message-send-hook'."
 
 ;; Passage à la ligne automatique
 ;;
-(defun my-message-mode-setup ()
+(defun tv/message-mode-setup ()
   (setq fill-column 72)
-  (turn-on-auto-fill))
-(add-hook 'message-mode-hook 'my-message-mode-setup)
+  (turn-on-auto-fill)
+  (epa-mail-mode 1))
+(add-hook 'message-mode-hook 'tv/message-mode-setup)
 
 ;;; Mail encryption.
 ;;
@@ -265,9 +266,6 @@ This will run in `message-send-hook'."
 ;; Automatically sign/encrypt replies to signed/encrypted mails. 
 (setq gnus-message-replysign t)
 (setq gnus-message-replyencrypt t)
-
-;; Enable epa.
-(add-hook 'message-mode-hook 'epa-mail-mode)
 
 ;; Suppression de la signature quand on quote. 
 (setq message-cite-function 'message-cite-original-without-signature)

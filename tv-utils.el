@@ -491,10 +491,11 @@ Can be used from any place in the line."
 ;; Similar to what eev does
 (defun tv-eval-last-sexp-at-eol ()
   (interactive)
-  (beginning-of-line)
-  (search-forward "(" (point-at-eol))
-  (skip-chars-forward "^;" (point-at-eol))
-  (call-interactively 'eval-last-sexp))
+  (save-excursion
+    (beginning-of-line)
+    (search-forward "(" (point-at-eol))
+    (skip-chars-forward "^;" (point-at-eol))
+    (call-interactively 'eval-last-sexp)))
 ;; (message "hello") ;; test
 
 ;; Delete-char-or-region 
