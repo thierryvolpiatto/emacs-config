@@ -225,7 +225,6 @@ This will run in `message-send-hook'."
 ;;; Html renderer
 ;;
 ;;
-
 (cond ((fboundp 'w3m)
        ;; Emacs-w3m
        (setq mm-text-html-renderer 'w3m))

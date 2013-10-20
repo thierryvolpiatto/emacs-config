@@ -109,40 +109,7 @@
         ("Gentoo" ?g "* %^{Title}\n  %i\n  %a" "~/org/notes.org" "Notes Gentoo")
         ("Web" ?w "* %u %c \n\n%i" "~/org/notes.org" "Web links")))
 
-;; Org-capture 
-;; imported from remember templates
-(eval-after-load ;when (require 'org-capture nil t)
-  (global-set-key (kbd "C-c r") 'org-capture)
-  (setq org-capture-templates
-        '(("W" "BROWSER" entry (file+headline "~/org/notes.org" "Firefox") "* BROWSER %?
- %:description
-  (created: %U)
-
-  %c
-
-  %i" :prepend t) ("t" "Todo" entry (file+headline "~/org/agenda.org" "Tasks") "** TODO %?
-  %i
-  %a" :prepend t) ("R" "Report" entry (file+headline "~/org/agenda.org" "Development") "** REPORT %?
-  %i
-  %a" :prepend t) ("n" "Notes" entry (file+headline "~/org/notes.org" "General") "* %T %?
-  %i
-  %a" :prepend t) ("i" "Idea" entry (file+headline "~/org/notes.org" "New Ideas") "* %^{Title}
-  %i
-  %a" :prepend t) ("l" "Lisp" entry (file+headline "~/org/notes.org" "Notes elisp") "* %^{Title}
-  %i
-  %a" :prepend t) ("p" "Python" entry (file+headline "~/org/notes.org" "Notes python") "* %^{Title}
-  %i
-  %a" :prepend t) ("e" "Emacs" entry (file+headline "~/org/notes.org" "Memo Emacs") "* %^{Title}
-  %i
-  %a" :prepend t) ("b" "Bash" entry (file+headline "~/org/notes.org" "Memo Bash") "* %^{Title}
-  %i
-  %a" :prepend t) ("s" "Stump" entry (file+headline "~/org/notes.org" "Memo Stumpwm") "* %^{Title}
-  %i
-  %a" :prepend t) ("L" "Linux" entry (file+headline "~/org/notes.org" "Memo Linux") "* %^{Title}
-  %i
-  %a" :prepend t) ("g" "Gentoo" entry (file+headline "~/org/notes.org" "Notes Gentoo") "* %^{Title}
-  %i
-  %a" :prepend t) ("w" "Web" entry (file+headline "~/org/notes.org" "Web links") "* %u %c %i" :prepend t))))
+(global-set-key (kbd "C-c r") 'org-remember)
 
 ;; org-annotation-helper 
 (require 'org-annotation-helper)

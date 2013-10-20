@@ -18,7 +18,8 @@
 
 ;;; Code:
 
-(eval-when-compile (require 'dired))
+(eval-when-compile (require 'dired)
+                   (require 'cl-lib))
 
 
 (defgroup psession nil
@@ -62,7 +63,7 @@ Windows configurations and markers are not supported.
 FILE must be an elisp file with ext \"*.el\" (NOT \"*.elc\").
 Loading the *.elc file will restitute object.
 That may not work with Emacs versions <=23.1 for hash tables."
-  (require 'cl) ; Be sure we use the CL version of `eval-when-compile'.
+  (require 'cl-lib) ; Be sure we use the CL version of `eval-when-compile'.
   (assert (not (file-exists-p file)) nil
           (format "dump-object-to-file: File `%s' already exists, please remove it." file))
   (unwind-protect
@@ -82,29 +83,29 @@ That may not work with Emacs versions <=23.1 for hash tables."
 ;;
 (defun psession--dump-object-to-file-save-alist ()
   (when psession-object-to-save-alist
-    (loop for (o . f) in psession-object-to-save-alist
-          for abs = (expand-file-name f psession-elisp-objects-default-directory)
-          ;; Registers are treated specially.
-          if (and (eq o 'register-alist)
-                  (symbol-value o))
-          do (psession--dump-object-save-register-alist f)
-          else do
-          ;; Don't dump object when it is nil or not bound.
-          (when (and (boundp o) (symbol-value o))
-            (psession--dump-object-to-file o abs)))))
+    (cl-loop for (o . f) in psession-object-to-save-alist
+             for abs = (expand-file-name f psession-elisp-objects-default-directory)
+             ;; Registers are treated specially.
+             if (and (eq o 'register-alist)
+                     (symbol-value o))
+             do (psession--dump-object-save-register-alist f)
+             else do
+             ;; Don't dump object when it is nil or not bound.
+             (when (and (boundp o) (symbol-value o))
+               (psession--dump-object-to-file o abs)))))
 
-(defun* psession--restore-objects-from-directory
+(cl-defun psession--restore-objects-from-directory
     (&optional (dir psession-elisp-objects-default-directory))
   (let ((file-list (cddr (directory-files dir t))))
-    (loop for file in file-list do (load file))))
+    (cl-loop for file in file-list do (load file))))
 
-(defun* psession--dump-object-save-register-alist (&optional (file "register-alist.el"))
+(cl-defun psession--dump-object-save-register-alist (&optional (file "register-alist.el"))
   "Save `register-alist' but only supported objects."
-  (let ((register-alist (loop for (char . val) in register-alist
-                              unless (or (markerp val)
-                                         (vectorp val)
-                                         (and (consp val) (window-configuration-p (car val))))
-                              collect (cons char val)))
+  (let ((register-alist (cl-loop for (char . val) in register-alist
+                                 unless (or (markerp val)
+                                            (vectorp val)
+                                            (and (consp val) (window-configuration-p (car val))))
+                                 collect (cons char val)))
         (def-file (expand-file-name file psession-elisp-objects-default-directory)))
     (psession--dump-object-to-file 'register-alist def-file)))
 
@@ -155,19 +156,19 @@ That may not work with Emacs versions <=23.1 for hash tables."
 ;;
 ;;
 (defun psession--save-some-buffers ()
-  (loop with dired-blist = (loop for (f . b) in dired-buffers
-                                 when (buffer-name b)
-                                 collect b)
-        with blist = (append (buffer-list) dired-blist)
-        for b in blist
-        for buf-fname = (or (buffer-file-name b) (car (rassoc b dired-buffers)))
-        for place = (with-current-buffer b (point))
-        when (and buf-fname
-                  (not (string-match tramp-file-name-regexp buf-fname))
-                  (not (string-match  psession-save-buffers-unwanted-buffers-regexp
-                                      buf-fname))
-                  (file-exists-p buf-fname))
-        collect (cons buf-fname place)))
+  (cl-loop with dired-blist = (cl-loop for (f . b) in dired-buffers
+                                       when (buffer-name b)
+                                       collect b)
+           with blist = (append (buffer-list) dired-blist)
+           for b in blist
+           for buf-fname = (or (buffer-file-name b) (car (rassoc b dired-buffers)))
+           for place = (with-current-buffer b (point))
+           when (and buf-fname
+                     (not (string-match tramp-file-name-regexp buf-fname))
+                     (not (string-match  psession-save-buffers-unwanted-buffers-regexp
+                                         buf-fname))
+                     (file-exists-p buf-fname))
+           collect (cons buf-fname place)))
 
 (defvar psession--save-buffers-alist nil)
 (defun psession--dump-some-buffers-to-list ()
@@ -176,13 +177,13 @@ That may not work with Emacs versions <=23.1 for hash tables."
 (defun psession--restore-some-buffers ()
   (let* ((max (length psession--save-buffers-alist))
          (progress-reporter (make-progress-reporter "Restoring buffers..." 0 max)))
-    (loop for (f . p) in psession--save-buffers-alist
-          for count from 0
-          do
-          (with-current-buffer (find-file-noselect f 'nowarn)
-            (goto-char p)
-            (push-mark p 'nomsg)
-            (progress-reporter-update progress-reporter count)))
+    (cl-loop for (f . p) in psession--save-buffers-alist
+             for count from 0
+             do
+             (with-current-buffer (find-file-noselect f 'nowarn)
+               (goto-char p)
+               (push-mark p 'nomsg)
+               (progress-reporter-update progress-reporter count)))
     (progress-reporter-done progress-reporter)))
 
 ;;;###autoload
