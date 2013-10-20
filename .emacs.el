@@ -197,6 +197,7 @@ If your system's ping continues until interrupted, you can try setting
 
 (dolist (i '("/usr/local/share/emacs/site-lisp"
              "/usr/local/share/emacs/site-lisp/auctex"
+             "/usr/local/share/emacs/site-lisp/mu4e"
 	     "~/elisp/"
 	     "~/elisp/magit"
              "~/elisp/Emacs-wgrep"
@@ -319,6 +320,12 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'golden-ratio-mode "golden-ratio.el" nil t)
 (autoload 'emamux:send-command "emamux.el" nil t)
 (autoload 'emamux:copy-kill-ring "emamux.el" nil t)
+
+;;; Use mu4e mail reader
+;;
+;;
+(tv-require 'mu4e-config)
+
 
 
 ;;; Gnus-config
