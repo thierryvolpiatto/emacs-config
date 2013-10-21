@@ -128,12 +128,12 @@
          (query (car path)))
     (call-interactively 'mu4e)
     (mu4e-headers-search query)
-    (sit-for 1)
+    (sit-for 0.5)
     (mu4e~headers-goto-docid docid)
     (mu4e~headers-highlight docid)
     (unless (string= mode "mu4e-headers-mode")
       (call-interactively 'mu4e-headers-view-message)
-      (run-with-timer 0.5 nil
+      (run-with-timer 0.1 nil
                       (lambda (bmk)
                         (bookmark-default-handler
                          `("" (buffer . ,(current-buffer)) . ,(bookmark-get-bookmark-record bmk))))
