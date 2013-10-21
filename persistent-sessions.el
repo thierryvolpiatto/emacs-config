@@ -48,7 +48,7 @@ It is composed of (var_name . \"var_name.el\")"
   :group 'psession
   :type '(alist :key-type symbol :value-type string))
 
-(defcustom psession-save-buffers-unwanted-buffers-regexp ".*[.]org\\|diary\\|[.]newsticker-cache$"
+(defcustom psession-save-buffers-unwanted-buffers-regexp ".*[.]org$\\|diary$\\|[.]newsticker-cache$"
   "Regexp matching buffers you don't want to save."
   :group 'psession
   :type 'string)

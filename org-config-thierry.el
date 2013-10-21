@@ -67,7 +67,7 @@
 (setq org-reverse-note-order t)
 
 ;; Tags-setting 
-;; (find-node "(org)Setting tags")
+;; (info "(org)Setting tags")
 (setq org-tag-alist '(("@home" . ?h)
                       ("running" . ?r)
                       ("velo" . ?v)
@@ -79,6 +79,7 @@
                       ("dev" . ?d)
                       ("crypt" . ?C)
                       ("mail" . ?M)
+                      ("urgent" . ?u)
                       ("phone" . ?P)
                       ("bank" . ?B)
                       ("bug" . ?E)

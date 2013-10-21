@@ -11,14 +11,24 @@
 (setq mu4e-maildir "~/Maildir")
 (setq mu4e-compose-complete-addresses nil)
 (setq mu4e-completing-read-function 'completing-read)
-;; (setq mu4e-drafts-folder "/[Gmail].Drafts")
-;; (setq mu4e-sent-folder   "/[Gmail].Sent Mail")
-;; (setq mu4e-trash-folder  "/[Gmail].Trash")
 
+;;; Html rendering
 (setq mu4e-view-prefer-html t)
-(setq mu4e-html2text-command "w3m -T text/html")
+(setq mu4e-html2text-command (cond ((fboundp 'w3m)
+                                    (lambda ()          ; Use emacs-w3m
+                                      (w3m-region (point-min) (point-max))))
+                                   ((executable-find "w3m")
+                                    "w3m -T text/html") ; Use w3m shell-command
+                                   (t (lambda ()        ; Use shr (slow)
+                                        (let ((shr-color-visible-luminance-min 75)
+                                              shr-width)
+                                          (shr-render-region (point-min) (point-max)))))))
+
 ;(setq mail-user-agent 'mu4e-user-agent)
 ;(setq read-mail-command 'mu4e)
+
+(define-key mu4e-main-mode-map "q" 'quit-window)
+(define-key mu4e-main-mode-map "Q" 'mu4e-quit)
 
 ;; don't save message to Sent Messages, Gmail/IMAP takes care of this
 (setq mu4e-sent-messages-behavior 'delete)
@@ -41,11 +51,11 @@
         ("/Gmail/[Gmail].All Mail"    . ?a)))
 
 (setq mu4e-bookmarks
-      '(("flag:unread AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam" "Unread messages"               ?u)
-        ("date:today..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam" "Today's messages"          ?t)
-        ("date:1d..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam" "Yesterday and today messages" ?y)
-        ("date:7d..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam" "Last 7 days"                  ?w)
-        ("mime:image/* AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam" "Messages with images"         ?p)))
+      '(("flag:unread AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam AND NOT maildir:/Gmail/[Gmail].All Mail" "Unread messages"               ?u)
+        ("date:today..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam AND NOT maildir:/Gmail/[Gmail].All Mail" "Today's messages"          ?t)
+        ("date:1d..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam AND NOT maildir:/Gmail/[Gmail].All Mail" "Yesterday and today messages" ?y)
+        ("date:7d..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam AND NOT maildir:/Gmail/[Gmail].All Mail" "Last 7 days"                  ?w)
+        ("mime:image/* AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam AND NOT maildir:/Gmail/[Gmail].All Mail" "Messages with images"         ?p)))
 
 ;; allow for updating mail using 'U' in the main view:
 (setq mu4e-get-mail-command "offlineimap -q -u Basic")
