@@ -57,12 +57,6 @@
         ("date:7d..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam AND NOT maildir:/Gmail/[Gmail].All Mail" "Last 7 days"                  ?w)
         ("mime:image/* AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam AND NOT maildir:/Gmail/[Gmail].All Mail" "Messages with images"         ?p)))
 
-;; allow for updating mail using 'U' in the main view:
-(setq mu4e-get-mail-command "offlineimap -q -u Basic")
-
-;; Automatic updates.
-;(setq mu4e-update-interval 600)
-
 (define-key mu4e-headers-mode-map (kbd "C-c C-c") 'mu4e~interrupt-update-mail)
 (define-key mu4e-view-mode-map (kbd "C-c C-c") 'mu4e~interrupt-update-mail)
 
@@ -74,9 +68,19 @@
 ;; save attachment (this can also be a function)
 (setq mu4e-attachment-dir "~/download")
 
-;; Make a full update all the 5 mail retrieval
+;;; Updating
+;;
+;;
+;; allow for updating mail using 'U' in the main view:
+(setq mu4e-get-mail-command "offlineimap -q -u Basic")
+
+;; Automatic updates.
+;(setq mu4e-update-interval 600)
+
+;; Make a full update all the
+;; `tv/mu4e~update-mail-number-of-update-toggle' mail retrievals.
 (defvar tv/mu4e~update-mail-number-of-update-flag 0)
-(defvar tv/mu4e~update-mail-number-of-update-toggle 5)
+(defvar tv/mu4e~update-mail-number-of-update-toggle 10)
 (defvar tv/mu4e-get-mail-command-full "offlineimap -u Basic")
 (defvar tv/mu4e-get-mail-command-quick "offlineimap -q -u Basic")
 (defun tv/mu4e-update-mail-quick-or-full ()
@@ -93,24 +97,33 @@
 (setq mu4e-view-show-images t
       mu4e-view-image-max-width 800)
 
-;; bookmark handler
+;;; bookmark handler
+;;
+;;
 (add-hook 'mu4e-view-mode-hook
+          #'(lambda ()
+              (set (make-local-variable 'bookmark-make-record-function)
+                   'mu4e-view-bookmark-make-record)))
+(add-hook 'mu4e-headers-mode-hook
           #'(lambda ()
               (set (make-local-variable 'bookmark-make-record-function)
                    'mu4e-view-bookmark-make-record)))
 
 (defun mu4e-view-bookmark-make-record ()
-  (let* ((msg (mu4e-message-at-point))
-         (query (mu4e-last-query))
-         (docid (plist-get msg :docid))
+  (let* ((msg     (mu4e-message-at-point))
+         (query   (mu4e-last-query))
+         (docid   (plist-get msg :docid))
+         (mode    (symbol-name major-mode))
          (subject (or (plist-get msg :subject) "No subject")))
     `(,subject
       ,@(bookmark-make-record-default 'no-file 'no-context)
         (location . (,query . ,docid))
+        (mode . ,mode)
         (handler . mu4e-bookmark-jump))))
 
 (defun mu4e-bookmark-jump (bookmark)
   (let* ((path  (bookmark-prop-get bookmark 'location))
+         (mode  (bookmark-prop-get bookmark 'mode))
          (docid (cdr path))
          (query (car path)))
     (call-interactively 'mu4e)
@@ -118,12 +131,13 @@
     (sit-for 1)
     (mu4e~headers-goto-docid docid)
     (mu4e~headers-highlight docid)
-    (call-interactively 'mu4e-headers-view-message)
-    (run-with-timer 0.5 nil
-                    (lambda (bmk)
-                      (bookmark-default-handler
-                       `("" (buffer . ,(current-buffer)) . ,(bookmark-get-bookmark-record bmk))))
-                    bookmark)))
+    (unless (string= mode "mu4e-headers-mode")
+      (call-interactively 'mu4e-headers-view-message)
+      (run-with-timer 0.5 nil
+                      (lambda (bmk)
+                        (bookmark-default-handler
+                         `("" (buffer . ,(current-buffer)) . ,(bookmark-get-bookmark-record bmk))))
+                      bookmark))))
 
 (provide 'mu4e-config)
 
