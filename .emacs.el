@@ -211,7 +211,6 @@ If your system's ping continues until interrupted, you can try setting
              "~/elisp/jenkins/emacs-git-gutter"
              "~/elisp/jenkins/iedit"
              "~/elisp/jenkins/emacs-wgrep"
-             "~/elisp/jenkins/w3m"
 	     "~/elisp/tex-utils"
 	     "~/elisp/muse/lisp"
 	     "~/elisp/muse/contrib"
@@ -289,7 +288,6 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'magit-blame-mode "magit-blame.el" nil t)
 (tv-require 'emms-mpd-config)
 (tv-require 'dired-extension)
-(tv-require 'config-w3m)
 (tv-require 'htmlize)
 (tv-require 'no-word)
 (tv-require 'flymake)
@@ -320,12 +318,6 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'golden-ratio-mode "golden-ratio.el" nil t)
 (autoload 'emamux:send-command "emamux.el" nil t)
 (autoload 'emamux:copy-kill-ring "emamux.el" nil t)
-
-;;; Use mu4e mail reader
-;;
-;;
-(tv-require 'mu4e-config)
-
 
 
 ;;; Gnus-config
@@ -484,7 +476,6 @@ in this case start Gnus plugged, otherwise start it unplugged."
 (global-set-key (kbd "C-§")                        'iedit-narrow-to-end)
 (global-set-key (kbd "C-²")                        'iedit-narrow-to-defun)
 (global-set-key (kbd "<f11> s c")                  'goto-scratch)
-(global-set-key (kbd "<f11> m")                    'mu4e)
 
 (defun goto-scratch ()
   (interactive)
@@ -1275,7 +1266,7 @@ With prefix arg always start and let me choose dictionary."
        "\\usepackage{textcomp}% Allow to use euro sign\n"
        "\\begin{document}\n"
        "%\\name{}% Nom de l'expéditeur\n"
-       "\\address{Thierry Volpiatto \\\\ 141 Carraire des Lecques \\\\ 83270 St Cyr sur mer}% Adresse de l'expéditeur\n"
+       "\\address{Thierry Volpiatto \\\\ 430 Chemin des Amandiers \\\\ 83330 Le Beausset}% Adresse de l'expéditeur\n"
        "\\signature{Thierry Volpiatto}% Signature de l'expéditeur\n"
        "\\date{\\today}\n"
        "\n"
