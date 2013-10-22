@@ -190,7 +190,6 @@ If your system's ping continues until interrupted, you can try setting
 ;; [EVAL] (getenv "INFOPATH")
 (tv-require 'info)
 (add-to-list 'Info-directory-list "/usr/local/share/info")
-(add-to-list 'Info-directory-list "/usr/local/share/info-auctex")
 (add-to-list 'Info-directory-list "/usr/share/info")
 (add-to-list 'Info-directory-list "~/elisp/info")
 (add-to-list 'Info-directory-list "~/elisp/info/eshell-doc")
@@ -1176,22 +1175,14 @@ With prefix arg always start and let me choose dictionary."
 
 ;; auto-compression-mode
 (auto-compression-mode 1)
+
 
 ;;; Auctex/Latex config
 ;;
 ;;
+(load "auctex.el" nil t t)
 (load "preview-latex.el" nil t t)
-
-;; detect needed steps after rebuild
-(setq TeX-parse-self t)
-
 (tv-require 'xdvi-search)
-
-;; (setq TeX-view-program-selection '(((output-dvi style-pstricks)
-;;                                     "dvips and gv")
-;;                                    (output-dvi "xdvi")
-;;                                    (output-pdf "Evince")
-;;                                    (output-html "xdg-open")))
 
 ;; To turn on RefTeX Minor Mode for all LaTeX files,
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
@@ -1209,7 +1200,6 @@ With prefix arg always start and let me choose dictionary."
 (add-hook 'TeX-language-fr-hook
           #'(lambda () (ispell-change-dictionary "french")))
 (add-hook 'LaTeX-mode-hook 'visual-line-mode)
-;(add-hook 'LaTeX-mode-hook 'flyspell-mode)
 (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
 (setq TeX-PDF-mode t)
 

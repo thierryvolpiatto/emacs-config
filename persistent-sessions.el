@@ -97,7 +97,7 @@ That may not work with Emacs versions <=23.1 for hash tables."
 (cl-defun psession--restore-objects-from-directory
     (&optional (dir psession-elisp-objects-default-directory))
   (let ((file-list (cddr (directory-files dir t))))
-    (cl-loop for file in file-list do (load file))))
+    (cl-loop for file in file-list do (and file (load file)))))
 
 (cl-defun psession--dump-object-save-register-alist (&optional (file "register-alist.el"))
   "Save `register-alist' but only supported objects."
