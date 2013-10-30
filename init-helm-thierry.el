@@ -27,6 +27,29 @@
    "\n" ""
    (shell-command-to-string "git-log -n1 | head -n1 | awk '{print $2}'")))
 
+(defvar helm-find-library-cache nil)
+(defun helm-find-library (arg)
+  (interactive "P")
+  (let (helm-ff-transformer-show-only-basename)
+    (when (or arg (null helm-find-library-cache))
+      (setq helm-find-library-cache
+            (loop for dir in load-path
+                  when (file-directory-p dir)
+                  append (helm-walk-directory
+                          dir
+                          :match "\\.el\\'"
+                          :directories nil
+                          :skip-subdirs (cons "emacs_backup" helm-walk-ignore-directories)
+                          :path 'full))))
+    (helm :sources `((name . "Helm Find library")
+                     (init . (lambda ()
+                               (helm-init-candidates-in-buffer
+                                'global helm-find-library-cache)))
+                     (candidates-in-buffer)
+                     (keymap . ,helm-generic-files-map)
+                     (type . file))
+          :buffer "*helm find library*")))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Helm-command-map
@@ -45,7 +68,6 @@
 (global-set-key (kbd "C-c <SPC>")               'helm-all-mark-rings)
 (global-set-key (kbd "C-x r b")                 'helm-bookmark-ext)
 (global-set-key (kbd "C-h r")                   'helm-info-emacs)
-(global-set-key (kbd "C-c C-b")                 'helm-browse-code)
 (global-set-key (kbd "C-:")                     'helm-eval-expression-with-eldoc)
 (global-set-key (kbd "C-,")                     'helm-calcul-expression)
 (global-set-key (kbd "C-h d")                   'helm-info-at-point)
@@ -120,6 +142,7 @@
       helm-dabbrev-cycle-thresold                5
       helm-surfraw-duckduckgo-url                "https://duckduckgo.com/?q=%s&ke=-1&kf=fw&kl=fr-fr&kr=b&k1=-1&k4=-1"
       helm-boring-file-regexp-list               '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$" "\\._darcs$" "\\.la$" "\\.o$" "\\.i$")
+      helm-mode-handle-completion-in-region      t
       ;helm-moccur-always-search-in-current        t
       ;helm-tramp-verbose                         6
       ;helm-ff-file-name-history-use-recentf      t

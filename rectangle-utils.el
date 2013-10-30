@@ -98,11 +98,7 @@ C-g==>exit and restore."
                               (string  (read-string (format "String insert rectangle (Default %s): " def-val)
                                                     nil 'string-rectangle-history def-val)))
                          (string-insert-rectangle beg end string) nil))
-                      (?a
-                       (let* ((def-val (car string-rectangle-history))
-                              (string  (read-string (format "String insert rectangle (Default %s): " def-val)
-                                                    nil 'string-rectangle-history def-val)))
-                         (rectangle-insert-at-right beg end string) nil))
+                      (?a (rectangle-insert-at-right beg end nil) nil)
                       (?k (kill-rectangle beg end) nil)
                       (?\M-w (copy-rectangle beg end) nil)
                       (?d (delete-rectangle beg end) nil)
@@ -125,56 +121,38 @@ C-g==>exit and restore."
         (message nil))
       (message "No region, activate region please!")))
 
-;; (defun rectangle-insert-at-right (beg end arg &optional string)
-;;   "Create a new rectangle based on longest line of region\
-;; and insert string at right of it.
-;; With prefix arg, insert string at end of each lines (no rectangle)."
-;;   (interactive "r\nP")
-;;   (let ((def-val (car string-rectangle-history)))
-;;     (unless string
-;;       (setq string
-;;             (read-string
-;;              (format "Replace region by String (Default %s): " def-val)
-;;              nil 'string-rectangle-history def-val))))
-;;   (unless arg
-;;     (extend-rectangle-to-end beg end)
-;;     (setq end (region-end)))
-;;   (goto-char beg) (end-of-line)
-;;   (unless arg (setq beg (point)))
-;;   (while (< (point) end)
-;;     (insert string)
-;;     (forward-line) (end-of-line)
-;;     (setq end (+ end (length string))))
-;;   (insert string))
-
-
 (defun rectangle-insert-at-right (beg end arg)
   "Create a new rectangle based on longest line of region\
 and insert string at right of it.
 With prefix arg, insert string at end of each lines (no rectangle)."
   (interactive "r\nP")
-  (flet ((incstr (str)
-           (if (and str (string-match "[0-9]+" str))
-               (let ((rep (match-string 0 str)))
-                 (replace-match
-                  (int-to-string (1+ (string-to-int rep)))
-                  nil t str))
-               str)))
-    (let (str)
-      (unless arg
-        (extend-rectangle-to-end beg end)
-        (setq end (region-end)))
-      (goto-char beg) (end-of-line)
-      (unless arg (setq beg (point)))
-      (while (< (point) end)
-        (let ((init (incstr str)))
-          (setq str (read-string "Insert String: " init))
-          (insert str)
-          (forward-line 1)
-          (end-of-line)
-          (setq end (+ end (length str)))))
-      (setq str (read-string "Insert String: " (incstr str)))
-      (insert str))))
+  (let ((incstr (lambda (str)
+                  (if (and str (string-match "[0-9]+" str))
+                      (let ((rep (match-string 0 str)))
+                        (replace-match
+                         (int-to-string (1+ (string-to-number rep)))
+                         nil t str))
+                      str)))
+        (def-val (car string-rectangle-history))
+        str)
+    (unless arg
+      (extend-rectangle-to-end beg end)
+      (setq end (region-end)))
+    (goto-char beg) (end-of-line)
+    (unless arg (setq beg (point)))
+    (while (< (point) end)
+      (let ((init (funcall incstr str)))
+        (setq str (read-string
+                   (format "Insert string at end of rectangle (Default %s): " def-val)
+                   nil 'string-rectangle-history def-val))
+        (insert str)
+        (forward-line 1)
+        (end-of-line)
+        (setq end (+ end (length str)))))
+    (setq str (read-string
+               (format "Insert string at end of rectangle (Default %s): " def-val)
+               nil 'string-rectangle-history def-val))
+    (insert str)))
 
 (defun copy-rectangle (beg end)
   "Well, copy rectangle, not kill."

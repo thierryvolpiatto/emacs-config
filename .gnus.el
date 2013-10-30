@@ -67,13 +67,19 @@
          (address "thierry.volpiatto@gmail.com")
          (organization "Emacs Helm")
          (signature-file "~/.signature"))
+        ;; Reply to message sent to gmail with my gmail account.
         ((header "to" "thierry.volpiatto@gmail.com")
          (from "Thierry Volpiatto <thierry.volpiatto@gmail.com>")
          (organization "Emacs Helm")
          (signature-file "~/.signature"))
+        ;; Reply to message sent to yahoo with my yahoo account.
         ((header "to" "tvolpiatto@yahoo.fr")
          (from "Thierry Volpiatto <tvolpiatto@yahoo.fr>")
-         (signature-file "~/.signature"))))
+         (signature-file "~/.signature"))
+        ;; Don't use a borring signature for Friends.
+        (".*Friends"
+         (from "Thierry Volpiatto <thierry.volpiatto@gmail.com>")
+         (signature-file "~/.signature-friends"))))
 
 ;; Don't send to these address in wide reply.
 (setq message-dont-reply-to-names '("notifications@github.com"

@@ -950,7 +950,8 @@ account add <protocol> moi@mail.com password."
 
 ;;; Python config
 ;;
-;;
+;; python.el
+
 (tv-require 'python)
 (tv-require 'helm-ipython)
 (define-key python-mode-map (kbd "C-c C-b") 'helm-browse-code)
@@ -974,6 +975,12 @@ from IPython.core.completerlib import module_completion"
 (add-hook 'python-mode-hook
   #'(lambda ()
       (define-key python-mode-map (kbd "C-m") 'newline-and-indent)))
+
+;; python-mode.el
+
+;; (autoload 'python-mode "python-mode" "Python Mode." t)
+;; (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
+;; (add-to-list 'interpreter-mode-alist '("python" . python-mode))
 
 ;; Entete-py
 (defun tv-insert-python-header ()
@@ -1014,12 +1021,9 @@ from IPython.core.completerlib import module_completion"
 
 ;; Compatibility 24.2/24.3
 (unless (fboundp 'eshell-pcomplete)
-  (defun eshell-pcomplete ()
-    "Eshell wrapper for `pcomplete'."
-    (interactive)
-    (condition-case nil
-        (pcomplete)
-      (text-read-only (completion-at-point))))) ; Workaround for bug#12838.
+  (defalias 'eshell-pcomplete 'pcomplete))
+(unless (fboundp 'eshell-complete-lisp-symbol)
+  (defalias 'eshell-complete-lisp-symbol 'lisp-complete-symbol))
 
 (add-hook 'eshell-mode-hook #'(lambda ()
                                 ;; Eshell smart
@@ -1033,7 +1037,7 @@ from IPython.core.completerlib import module_completion"
                                 (eshell-cmpl-initialize)
                                 (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
                                 ;; helm lisp completion
-                                (define-key eshell-mode-map [remap lisp-complete-symbol] 'helm-lisp-completion-at-point)
+                                (define-key eshell-mode-map [remap eshell-complete-lisp-symbol] 'helm-lisp-completion-at-point)
                                 ;; helm completion on eshell history.
                                 (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)
                                 ;; Eshell prompt
@@ -1836,12 +1840,12 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;; Melpa marmalade
 ;; 
 ;;
+;; (package-initialize)
 ;; (setq package-archives
 ;;       (append package-archives
 ;;               '(("melpa" . "http://melpa.milkbox.net/packages/")
 ;;                 ("marmalade" . "http://marmalade-repo.org/packages/")
 ;;                 )))
-;; (package-initialize)
 
 ;;; Report bug
 ;;
