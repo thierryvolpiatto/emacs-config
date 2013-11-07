@@ -976,12 +976,6 @@ from IPython.core.completerlib import module_completion"
   #'(lambda ()
       (define-key python-mode-map (kbd "C-m") 'newline-and-indent)))
 
-;; python-mode.el
-
-;; (autoload 'python-mode "python-mode" "Python Mode." t)
-;; (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-;; (add-to-list 'interpreter-mode-alist '("python" . python-mode))
-
 ;; Entete-py
 (defun tv-insert-python-header ()
   "insert python header at point"
@@ -1398,11 +1392,15 @@ With prefix arg always start and let me choose dictionary."
                (get (cdr el) 'common-lisp-indent-function)
                (car (cdr el)))))))
 
+;; Reenable font-locking for cl. (Removed in 24.3.50.1)
 (dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
   (font-lock-add-keywords
    mode
-   '(("(\\<\\(cl-flet[*]?\\|cl-labels\\|cl-macrolet\\)\\>" 1 font-lock-keyword-face)
-     ("(\\<\\(cl-loop\\|cl-dolist\\)\\>" 1 font-lock-keyword-face))))
+   '(("(\\<\\(flet[*]?\\|labels\\|macrolet\\|loop\\)\\_>" 1 font-lock-keyword-face)
+     ("(\\<\\(return-from\\|return\\|block\\)\\_>" 1 font-lock-keyword-face)
+     ("(\\<\\(defun[*]?\\|defmacro[*]?\\|defsubst[*]?\\|defstruct\\)\\_>" 1 font-lock-keyword-face)
+     ("(\\<\\(defun[*]?\\|defmacro[*]?\\|defsubst[*]?\\)\\_>\\s-+\\<\\([^ ]*\\)\\>" 2 font-lock-function-name-face)
+     ("(\\<\\(defstruct\\)\\_>\\s-+\\<\\([^ ]*\\)\\>" 2 font-lock-type-face))))
 
 (add-hook 'slime-load-hook #'(lambda () (tv-require 'slime-tramp)))
 

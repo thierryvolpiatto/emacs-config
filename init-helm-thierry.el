@@ -37,7 +37,7 @@
                   when (file-directory-p dir)
                   append (helm-walk-directory
                           dir
-                          :match "\\.el\\'"
+                          :match (regexp-opt (get-load-suffixes))
                           :directories nil
                           :skip-subdirs (cons "emacs_backup" helm-walk-ignore-directories)
                           :path 'full))))
