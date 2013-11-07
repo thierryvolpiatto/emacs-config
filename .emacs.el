@@ -1396,11 +1396,30 @@ With prefix arg always start and let me choose dictionary."
 (dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
   (font-lock-add-keywords
    mode
-   '(("(\\<\\(flet[*]?\\|labels\\|macrolet\\|loop\\)\\_>" 1 font-lock-keyword-face)
+   '(("(\\<\\(flet[*]?\\|labels\\|macrolet\\|loop\\|e?case\\|etypecase\\|typecase\\)\\_>" 1 font-lock-keyword-face)
      ("(\\<\\(return-from\\|return\\|block\\)\\_>" 1 font-lock-keyword-face)
      ("(\\<\\(defun[*]?\\|defmacro[*]?\\|defsubst[*]?\\|defstruct\\)\\_>" 1 font-lock-keyword-face)
      ("(\\<\\(defun[*]?\\|defmacro[*]?\\|defsubst[*]?\\)\\_>\\s-+\\<\\([^ ]*\\)\\>" 2 font-lock-function-name-face)
      ("(\\<\\(defstruct\\)\\_>\\s-+\\<\\([^ ]*\\)\\>" 2 font-lock-type-face))))
+
+;; test font-lock
+;;
+;; (defmacro* test () nil)
+;; (defun* test () nil)
+;; (defsubst* test () nil)
+;; (defstruct test toto titi)
+;; (loop for i in A collect i)
+;; (block exit
+;;   (return-from exit)
+;;   (return))
+;; (case foo
+;;   (1 2))
+;; (ecase foo
+;;   (1 2))
+;; (typecase (foo)
+;;   (numberp 1))
+;; (etypecase (foo)
+;;   (1 2))
 
 (add-hook 'slime-load-hook #'(lambda () (tv-require 'slime-tramp)))
 
