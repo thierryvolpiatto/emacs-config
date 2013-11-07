@@ -473,11 +473,8 @@ in this case start Gnus plugged, otherwise start it unplugged."
 (global-set-key (kbd "C-x C-(")                    'tv-resize-window)
 (global-set-key (kbd "C-§")                        'iedit-narrow-to-end)
 (global-set-key (kbd "C-²")                        'iedit-narrow-to-defun)
+(defun goto-scratch () (interactive) (switch-to-buffer "*scratch*"))
 (global-set-key (kbd "<f11> s c")                  'goto-scratch)
-
-(defun goto-scratch ()
-  (interactive)
-  (switch-to-buffer "*scratch*"))
 
 
 ;;; Themes
@@ -1392,13 +1389,21 @@ With prefix arg always start and let me choose dictionary."
                (get (cdr el) 'common-lisp-indent-function)
                (car (cdr el)))))))
 
+;; (dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
+;;   (font-lock-add-keywords
+;;    mode
+;;    '(("(\\<\\(cl-flet[*]?\\|cl-labels\\|cl-macrolet\\)\\>" 1 font-lock-keyword-face)
+;;      ("(\\<\\(cl-loop\\|cl-dolist\\)\\>" 1 font-lock-keyword-face))))
+
 ;; Reenable font-locking for cl. (Removed in 24.3.50.1)
 (dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
   (font-lock-add-keywords
    mode
-   '(("(\\<\\(flet[*]?\\|labels\\|macrolet\\|loop\\|e?case\\|etypecase\\|typecase\\)\\_>" 1 font-lock-keyword-face)
+   '(("(\\<\\(flet[*]?\\|labels\\|symbol-macrolet\\|macrolet\\|loop\\|e?case\\|etypecase\\|typecase\\)\\_>" 1 font-lock-keyword-face)
      ("(\\<\\(return-from\\|return\\|block\\)\\_>" 1 font-lock-keyword-face)
-     ("(\\<\\(lexical-let[*]?\\)\\_>" 1 font-lock-keyword-face)
+     ("(\\<\\(lexical-let[*]?\\|destructuring-bind\\)\\_>" 1 font-lock-keyword-face)
+     ("(\\<\\(eval-when\\|declaim\\|proclaim\\)\\_>" 1 font-lock-keyword-face)
+     ("(\\<\\(assert\\)\\_>" 1 font-lock-warning-face)
      ("(\\<\\(defun[*]?\\|defmacro[*]?\\|defsubst[*]?\\|defstruct\\)\\_>" 1 font-lock-keyword-face)
      ("(\\<\\(defun[*]?\\|defmacro[*]?\\|defsubst[*]?\\)\\_>\\s-+\\<\\([^ ]*\\)\\>" 2 font-lock-function-name-face)
      ("(\\<\\(defstruct\\)\\_>\\s-+\\<\\([^ ]*\\)\\>" 2 font-lock-type-face))))
