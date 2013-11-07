@@ -1398,12 +1398,14 @@ With prefix arg always start and let me choose dictionary."
    mode
    '(("(\\<\\(flet[*]?\\|labels\\|macrolet\\|loop\\|e?case\\|etypecase\\|typecase\\)\\_>" 1 font-lock-keyword-face)
      ("(\\<\\(return-from\\|return\\|block\\)\\_>" 1 font-lock-keyword-face)
+     ("(\\<\\(lexical-let[*]?\\)\\_>" 1 font-lock-keyword-face)
      ("(\\<\\(defun[*]?\\|defmacro[*]?\\|defsubst[*]?\\|defstruct\\)\\_>" 1 font-lock-keyword-face)
      ("(\\<\\(defun[*]?\\|defmacro[*]?\\|defsubst[*]?\\)\\_>\\s-+\\<\\([^ ]*\\)\\>" 2 font-lock-function-name-face)
      ("(\\<\\(defstruct\\)\\_>\\s-+\\<\\([^ ]*\\)\\>" 2 font-lock-type-face))))
 
 ;; test font-lock
 ;;
+;; (lexical-let* ((a 1)) (1+ a))
 ;; (defmacro* test () nil)
 ;; (defun* test () nil)
 ;; (defsubst* test () nil)
