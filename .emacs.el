@@ -1389,44 +1389,26 @@ With prefix arg always start and let me choose dictionary."
                (get (cdr el) 'common-lisp-indent-function)
                (car (cdr el)))))))
 
-;; (dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
-;;   (font-lock-add-keywords
-;;    mode
-;;    '(("(\\<\\(cl-flet[*]?\\|cl-labels\\|cl-macrolet\\)\\>" 1 font-lock-keyword-face)
-;;      ("(\\<\\(cl-loop\\|cl-dolist\\)\\>" 1 font-lock-keyword-face))))
+(if (version< emacs-version "24.3.50.1")
+    ;; cl- prefixed symbols are not font-locked in emacs-24.3
+    (dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
+      (font-lock-add-keywords
+       mode
+       '(("(\\<\\(cl-flet[*]?\\|cl-labels\\|cl-macrolet\\)\\>" 1 font-lock-keyword-face)
+         ("(\\<\\(cl-loop\\|cl-dolist\\)\\>" 1 font-lock-keyword-face))))
 
-;; Reenable font-locking for cl. (Removed in 24.3.50.1)
-(dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
-  (font-lock-add-keywords
-   mode
-   '(("(\\<\\(flet[*]?\\|labels\\|symbol-macrolet\\|macrolet\\|loop\\|e?case\\|etypecase\\|typecase\\)\\_>" 1 font-lock-keyword-face)
-     ("(\\<\\(return-from\\|return\\|block\\)\\_>" 1 font-lock-keyword-face)
-     ("(\\<\\(lexical-let[*]?\\|destructuring-bind\\)\\_>" 1 font-lock-keyword-face)
-     ("(\\<\\(eval-when\\|declaim\\|proclaim\\)\\_>" 1 font-lock-keyword-face)
-     ("(\\<\\(assert\\)\\_>" 1 font-lock-warning-face)
-     ("(\\<\\(defun[*]?\\|defmacro[*]?\\|defsubst[*]?\\|defstruct\\)\\_>" 1 font-lock-keyword-face)
-     ("(\\<\\(defun[*]?\\|defmacro[*]?\\|defsubst[*]?\\)\\_>\\s-+\\<\\([^ ]*\\)\\>" 2 font-lock-function-name-face)
-     ("(\\<\\(defstruct\\)\\_>\\s-+\\<\\([^ ]*\\)\\>" 2 font-lock-type-face))))
-
-;; test font-lock
-;;
-;; (lexical-let* ((a 1)) (1+ a))
-;; (defmacro* test () nil)
-;; (defun* test () nil)
-;; (defsubst* test () nil)
-;; (defstruct test toto titi)
-;; (loop for i in A collect i)
-;; (block exit
-;;   (return-from exit)
-;;   (return))
-;; (case foo
-;;   (1 2))
-;; (ecase foo
-;;   (1 2))
-;; (typecase (foo)
-;;   (numberp 1))
-;; (etypecase (foo)
-;;   (1 2))
+    ;; Reenable font-locking for cl. (Removed in 24.3.50.1)
+    (dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
+      (font-lock-add-keywords
+       mode
+       '(("(\\<\\(flet[*]?\\|labels\\|symbol-macrolet\\|macrolet\\|loop\\|e?case\\|etypecase\\|typecase\\)\\_>" 1 font-lock-keyword-face)
+         ("(\\<\\(return-from\\|return\\|block\\)\\_>" 1 font-lock-keyword-face)
+         ("(\\<\\(lexical-let[*]?\\|destructuring-bind\\)\\_>" 1 font-lock-keyword-face)
+         ("(\\<\\(eval-when\\|declaim\\|proclaim\\)\\_>" 1 font-lock-keyword-face)
+         ("(\\<\\(assert\\)\\_>" 1 font-lock-warning-face)
+         ("(\\<\\(defun[*]?\\|defmacro[*]?\\|defsubst[*]?\\|defstruct\\)\\_>" 1 font-lock-keyword-face)
+         ("(\\<\\(defun[*]?\\|defmacro[*]?\\|defsubst[*]?\\)\\_>\\s-+\\<\\([^ ]*\\)\\>" 2 font-lock-function-name-face)
+         ("(\\<\\(defstruct\\)\\_>\\s-+\\<\\([^ ]*\\)\\>" 2 font-lock-type-face)))))
 
 (add-hook 'slime-load-hook #'(lambda () (tv-require 'slime-tramp)))
 
