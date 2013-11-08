@@ -1401,7 +1401,7 @@ With prefix arg always start and let me choose dictionary."
     (dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
       (font-lock-add-keywords
        mode
-       '(("(\\<\\(flet[*]?\\|labels\\|symbol-macrolet\\|macrolet\\|loop\\|e?case\\|etypecase\\|typecase\\)\\_>" 1 font-lock-keyword-face)
+       '(("(\\<\\(flet[*]?\\|labels\\|symbol-macrolet\\|macrolet\\|loop\\|e?case\\|e?typecase\\)\\_>" 1 font-lock-keyword-face)
          ("(\\<\\(return-from\\|return\\|block\\)\\_>" 1 font-lock-keyword-face)
          ("(\\<\\(lexical-let[*]?\\|destructuring-bind\\)\\_>" 1 font-lock-keyword-face)
          ("(\\<\\(eval-when\\|declaim\\|proclaim\\)\\_>" 1 font-lock-keyword-face)
