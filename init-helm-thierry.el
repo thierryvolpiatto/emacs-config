@@ -27,29 +27,6 @@
    "\n" ""
    (shell-command-to-string "git-log -n1 | head -n1 | awk '{print $2}'")))
 
-(defvar helm-find-library-cache nil)
-(defun helm-find-library (arg)
-  (interactive "P")
-  (let (helm-ff-transformer-show-only-basename)
-    (when (or arg (null helm-find-library-cache))
-      (setq helm-find-library-cache
-            (loop for dir in load-path
-                  when (file-directory-p dir)
-                  append (helm-walk-directory
-                          dir
-                          :match (regexp-opt (get-load-suffixes))
-                          :directories nil
-                          :skip-subdirs (cons "emacs_backup" helm-walk-ignore-directories)
-                          :path 'full))))
-    (helm :sources `((name . "Helm Find library")
-                     (init . (lambda ()
-                               (helm-init-candidates-in-buffer
-                                'global helm-find-library-cache)))
-                     (candidates-in-buffer)
-                     (keymap . ,helm-generic-files-map)
-                     (type . file))
-          :buffer "*helm find library*")))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Helm-command-map
@@ -80,6 +57,7 @@
 (define-key global-map [remap jump-to-register] 'helm-register)
 (define-key global-map [remap list-buffers]     'helm-buffers-list)
 (define-key global-map [remap dabbrev-expand]   'helm-dabbrev)
+(define-key global-map [remap find-tag]         'helm-etags-select)
 
 ;;; Lisp complete or indent. (Rebind <tab>)
 ;;

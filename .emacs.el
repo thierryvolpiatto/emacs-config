@@ -196,7 +196,6 @@ If your system's ping continues until interrupted, you can try setting
 
 (dolist (i '("/usr/local/share/emacs/site-lisp"
              "/usr/local/share/emacs/site-lisp/auctex"
-             "/usr/local/share/emacs/site-lisp/mu4e"
 	     "~/elisp/"
 	     "~/elisp/magit"
              "~/elisp/Emacs-wgrep"
@@ -207,7 +206,7 @@ If your system's ping continues until interrupted, you can try setting
 	     "~/elisp/desktop-file-utils"
 	     "~/elisp/emacs-wget"
              "~/elisp/jenkins/undo-tree"
-             "~/elisp/jenkins/emacs-git-gutter"
+             "~/elisp/emacs-git-gutter"
              "~/elisp/jenkins/iedit"
              "~/elisp/jenkins/emacs-wgrep"
 	     "~/elisp/tex-utils"
@@ -526,6 +525,7 @@ in this case start Gnus plugged, otherwise start it unplugged."
 (setq recentf-save-file "~/.emacs.d/recentf")
 ;; `recentf-mode' will be started by helm when needed,
 ;; so no need to start it here
+(recentf-mode 1)
 
 
 ;;; Frame and window config.
@@ -1389,26 +1389,25 @@ With prefix arg always start and let me choose dictionary."
                (get (cdr el) 'common-lisp-indent-function)
                (car (cdr el)))))))
 
-(if (version< emacs-version "24.3.50.1")
-    ;; cl- prefixed symbols are not font-locked in emacs-24.3
-    (dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
-      (font-lock-add-keywords
-       mode
-       '(("(\\<\\(cl-flet[*]?\\|cl-labels\\|cl-macrolet\\)\\>" 1 font-lock-keyword-face)
-         ("(\\<\\(cl-loop\\|cl-dolist\\)\\>" 1 font-lock-keyword-face))))
+;; cl- prefixed symbols are not font-locked in emacs-24.3 and also many in 24.4.
+(dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
+  (font-lock-add-keywords
+   mode
+   '(("(\\<\\(cl-flet[*]?\\|cl-labels\\|cl-macrolet\\)\\>" 1 font-lock-keyword-face)
+     ("(\\<\\(cl-loop\\|cl-dolist\\)\\>" 1 font-lock-keyword-face))))
 
-    ;; Reenable font-locking for cl. (Removed in 24.3.50.1)
-    (dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
-      (font-lock-add-keywords
-       mode
-       '(("(\\<\\(flet[*]?\\|labels\\|symbol-macrolet\\|macrolet\\|loop\\|e?case\\|e?typecase\\)\\_>" 1 font-lock-keyword-face)
-         ("(\\<\\(return-from\\|return\\|block\\)\\_>" 1 font-lock-keyword-face)
-         ("(\\<\\(lexical-let[*]?\\|destructuring-bind\\)\\_>" 1 font-lock-keyword-face)
-         ("(\\<\\(eval-when\\|declaim\\|proclaim\\)\\_>" 1 font-lock-keyword-face)
-         ("(\\<\\(assert\\)\\_>" 1 font-lock-warning-face)
-         ("(\\<\\(defun[*]?\\|defmacro[*]?\\|defsubst[*]?\\|defstruct\\)\\_>" 1 font-lock-keyword-face)
-         ("(\\<\\(defun[*]?\\|defmacro[*]?\\|defsubst[*]?\\)\\_>\\s-+\\<\\([^ ]*\\)\\>" 2 font-lock-function-name-face)
-         ("(\\<\\(defstruct\\)\\_>\\s-+\\<\\([^ ]*\\)\\>" 2 font-lock-type-face)))))
+;; Reenable font-locking for cl. (Removed in 24.3.50.1)
+(dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
+  (font-lock-add-keywords
+   mode
+   '(("(\\<\\(flet[*]?\\|labels\\|symbol-macrolet\\|macrolet\\|loop\\|e?case\\|e?typecase\\)\\_>" 1 font-lock-keyword-face)
+     ("(\\<\\(return-from\\|return\\|block\\)\\_>" 1 font-lock-keyword-face)
+     ("(\\<\\(lexical-let[*]?\\|destructuring-bind\\)\\_>" 1 font-lock-keyword-face)
+     ("(\\<\\(eval-when\\|declaim\\|proclaim\\)\\_>" 1 font-lock-keyword-face)
+     ("(\\<\\(assert\\)\\_>" 1 font-lock-warning-face)
+     ("(\\<\\(defun[*]?\\|defmacro[*]?\\|defsubst[*]?\\|defstruct\\)\\_>" 1 font-lock-keyword-face)
+     ("(\\<\\(defun[*]?\\|defmacro[*]?\\|defsubst[*]?\\)\\_>\\s-+\\<\\([^ ]*\\)\\>" 2 font-lock-function-name-face)
+     ("(\\<\\(defstruct\\)\\_>\\s-+\\<\\([^ ]*\\)\\>" 2 font-lock-type-face))))
 
 (add-hook 'slime-load-hook #'(lambda () (tv-require 'slime-tramp)))
 
