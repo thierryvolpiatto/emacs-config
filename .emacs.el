@@ -120,7 +120,6 @@ If your system's ping continues until interrupted, you can try setting
   (setq string (decode-coding-string string locale-coding-system)))
 
 (when (version< emacs-version "24.3.50.1") (ad-activate 'term-command-hook))
-    
 
 
 ;;; Annoyances section
@@ -134,6 +133,10 @@ If your system's ping continues until interrupted, you can try setting
 ;; Annoyance number 1 is bidi
 ;; Turn OFF bidi everywhere.
 (setq-default bidi-display-reordering nil)
+;(setq-default cache-long-scans nil) ; Fix bug#15973
+
+;; Disable uniquify enabled by default in 24.4.
+(setq uniquify-buffer-name-style nil)
 
 ;;; Environment
 ;; For eshell env settings.
@@ -184,6 +187,14 @@ If your system's ping continues until interrupted, you can try setting
     (add-to-list 'load-path "~/elisp/tramp/lisp")))
 ;; (tv-maybe-add-tramp-load-path)
 
+(defun tv-maybe-add-ngnus-load-path (&optional force)
+  (when (or (version< emacs-version "24.3.50") force)
+    (setq load-path (loop for i in load-path
+                          unless (string-match "gnus" i)
+                          collect i))
+    (add-to-list 'load-path "~/elisp/ngnus/lisp" t)))
+(tv-maybe-add-ngnus-load-path)
+
 
 ;;; load-paths
 ;; For Info paths see:
@@ -205,10 +216,10 @@ If your system's ping continues until interrupted, you can try setting
 	     "~/elisp/cmake"
 	     "~/elisp/desktop-file-utils"
 	     "~/elisp/emacs-wget"
-             "~/elisp/jenkins/undo-tree"
+             "~/elisp/undo-tree"
              "~/elisp/emacs-git-gutter"
-             "~/elisp/jenkins/iedit"
-             "~/elisp/jenkins/emacs-wgrep"
+             "~/elisp/iedit"
+             "~/elisp/emacs-wgrep"
 	     "~/elisp/tex-utils"
 	     "~/elisp/muse/lisp"
 	     "~/elisp/muse/contrib"
@@ -220,7 +231,6 @@ If your system's ping continues until interrupted, you can try setting
              "~/elisp/org-active/contrib/lisp" ; Contain htmlize.el
              "~/elisp/slime"
              "~/elisp/slime/contrib"
-             "~/.emacs.d/"
              "~/.emacs.d/themes/"
 	     "~/.emacs.d/emacs-config-laptop/"
              "~/elisp/emacs-async"
@@ -372,11 +382,13 @@ in this case start Gnus plugged, otherwise start it unplugged."
 
 
 ;; Use helm-occur as default but fallback to ioccur when helm is broken
-(defun tv-helm-or-ioccur ()
-  (interactive)
-  (condition-case nil
-      (helm-occur)
-    (error (ioccur))))
+(defun tv-helm-or-ioccur (force)
+  (interactive "P")
+  (if force
+      (ioccur)
+      (condition-case nil
+          (helm-occur)
+        (error (ioccur)))))
 
 ;;; iedit
 ;;
@@ -685,7 +697,7 @@ With a prefix arg decrease transparency."
 ;;; Banish mouse on bottom right
 ;;
 ;;
-(mouse-avoidance-mode 'exile)
+(mouse-avoidance-mode 'banned)
 
 
 ;;; Bookmarks
@@ -1033,7 +1045,7 @@ from IPython.core.completerlib import module_completion"
                                 (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)
                                 ;; Eshell prompt
                                 (set-face-attribute 'eshell-prompt nil :foreground "DeepSkyBlue")))
-                                
+
 ;; Eshell history size
 (setq eshell-history-size 1000) ; Same as env var HISTSIZE.
 
@@ -1276,6 +1288,7 @@ With prefix arg always start and let me choose dictionary."
 (setq newsticker-frontend 'newsticker-plainview)
 (setq newsticker-retrieval-method 'extern)
 (setq newsticker-show-descriptions-of-new-items nil)
+(tv-require 'shr) ; bug fix in emacs-24.3.50.1
 
 (defun newsticker-quit-and-stop ()
   (interactive)
@@ -1303,7 +1316,8 @@ With prefix arg always start and let me choose dictionary."
   (define-key newsticker-mode-map (kbd "Q") 'newsticker-quit-and-stop)
   (define-key newsticker-mode-map (kbd "b") 'newsticker-previous-feed))
 
-(add-hook 'newsticker-mode-hook #'(lambda () (setq bidi-display-reordering nil)))
+;;(add-hook 'newsticker-mode-hook #'(lambda () (setq bidi-display-reordering nil)))
+
 
 ;;; Tramp-config
 ;;
@@ -1382,7 +1396,8 @@ With prefix arg always start and let me choose dictionary."
              (labels . flet)
              (cl-flet . flet)
              (cl-labels . flet)
-             (cl-macrolet . flet))))
+             (cl-macrolet . flet)
+             )))
     (dolist (el l)
       (put (car el) 'common-lisp-indent-function
            (if (symbolp (cdr el))
@@ -1843,28 +1858,32 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 (setq magit-restore-window-configuration t)
 
 ;;; Melpa marmalade
-;; 
 ;;
-;; (package-initialize)
-;; (setq package-archives
-;;       (append package-archives
-;;               '(("melpa" . "http://melpa.milkbox.net/packages/")
-;;                 ("marmalade" . "http://marmalade-repo.org/packages/")
-;;                 )))
+;;
+(package-initialize)
+(setq package-archives
+      (append package-archives
+              '(("melpa" . "http://melpa.milkbox.net/packages/")
+                ;("marmalade" . "http://marmalade-repo.org/packages/")
+                )))
 
 ;;; Report bug
 ;;
 (setq report-emacs-bug-no-explanations t)
 
-(defun tv-find-or-kill-gnu-bug-number (bug-number &optional arg)
+(defun tv-find-or-kill-gnu-bug-number (bug-number arg)
   (interactive (list (read-number "Bug number: " (thing-at-point 'number))
-                     "\nP"))
+                     current-prefix-arg))
   (let ((url (format "http://debbugs.gnu.org/cgi/bugreport.cgi?bug=%s" bug-number)))
     (if arg
         (progn
           (kill-new url)
           (message "Bug `#%s' url's copied to kill-ring" bug-number))
         (browse-url url))))
+
+;;; Semantic
+;;
+(semantic-mode 1)
 
 ;;; Save/restore emacs-session
 ;;
@@ -1877,4 +1896,3 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 (add-hook 'emacs-startup-hook 'tv-restore-scratch-buffer)
 
 ;;; .emacs.el ends here
-

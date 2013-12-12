@@ -389,56 +389,65 @@ START and END are buffer positions indicating what to append."
   (interactive "P")
   (insert-pair arg ?\[ ?\]))
 
-(defun tv-move-pair-forward ()
-  (interactive)
-  (let (action)
-    (catch 'break
-      (while t
-        (setq action (read-key "`(': Insert, (any key to exit)."))
-        (case action
-          ('?\(
-           (skip-chars-forward " ")
-           (insert "(")
-           (forward-sexp 1)
-           (insert ")"))
-          (t
-           (throw 'break nil)))))))
+(defun tv-move-pair-forward (beg end)
+  (interactive "r")
+  (if (region-active-p)
+      (progn (goto-char beg) (insert "(")
+             (goto-char (1+ end)) (insert ")"))
+      (let (action)
+        (catch 'break
+          (while t
+            (setq action (read-key "`(': Insert, (any key to exit)."))
+            (case action
+              ('?\(
+               (skip-chars-forward " ")
+               (insert "(")
+               (forward-sexp 1)
+               (insert ")"))
+              (t
+               (throw 'break nil))))))))
 
-(defun tv-insert-double-quote-and-close-forward ()
-  (interactive)
-  (let (action
-        (prompt (and (not (minibufferp))
-                     "\": Insert, (any key to exit).")))
-    (unless prompt (message "\": Insert, (any key to exit)."))
-    (catch 'break
-      (while t
-        (setq action (read-key prompt))
-        (case action
-          ('?\"
-           (skip-chars-forward " \n")
-           (insert "\"")
-           (forward-sexp 1)
-           (insert "\""))
-          (t
-           (throw 'break (when (characterp action) (insert (string action))))))))))
+(defun tv-insert-pair-and-close-forward (beg end)
+  (interactive "r")
+  (if (region-active-p)
+      (progn (goto-char beg) (insert "(")
+             (goto-char (1+ end)) (insert ")"))
+      (let (action)
+        (insert "(")
+        (catch 'break
+          (while t
+            (setq action (read-key "`)': Insert, (any key to exit)."))
+            (case action
+              ('?\)
+               (unless (looking-back "(")
+                 (delete-char -1))
+               (skip-chars-forward " ")
+               (forward-symbol 1)
+               (insert ")"))
+              (t
+               (forward-char -1)
+               (throw 'break nil))))))))
 
-(defun tv-insert-pair-and-close-forward ()
-  (interactive)
-  (let (action)
-    (insert "(")
-    (catch 'break
-      (while t
-        (setq action (read-key "`)': Insert, (any key to exit)."))
-        (case action
-          ('?\)
-           (unless (looking-back "(")
-             (delete-char -1))
-           (skip-chars-forward " ")
-           (forward-symbol 1)
-           (insert ")"))
-          (t
-           (forward-char -1)
-           (throw 'break nil)))))))
+(defun tv-insert-double-quote-and-close-forward (beg end)
+  (interactive "r")
+  (if (region-active-p)
+      (progn (goto-char beg) (insert "\"")
+             (goto-char (1+ end)) (insert "\""))
+      (let (action
+            (prompt (and (not (minibufferp))
+                         "\": Insert, (any key to exit).")))
+        (unless prompt (message "\": Insert, (any key to exit)."))
+        (catch 'break
+          (while t
+            (setq action (read-key prompt))
+            (case action
+              ('?\"
+               (skip-chars-forward " \n")
+               (insert "\"")
+               (forward-sexp 1)
+               (insert "\""))
+              (t
+               (throw 'break (when (characterp action) (insert (string action)))))))))))
 
 ;;; Insert-an-image-at-point 
 (defun tv-insert-image-at-point (image)
@@ -906,6 +915,22 @@ With a prefix arg remove new lines."
   (kill-new
    (message "(kbd \"%s\")"
             (help-key-description key nil))))
+
+;; some tar fn to use in eshell aliases.
+(defun tar-gunzip (file)
+  (shell-command
+   (format "tar czvf $(basename %s).tar.gz $(basename %s)"
+           file file)))
+
+(defun tar-bunzip (file)
+  (shell-command
+   (format "tar cjvf $(basename %s).tar.bz $(basename %s)"
+           file file)))
+
+(defun tar-xz (file)
+  (shell-command
+   (format "tar cJvf $(basename %s).tar.xz $(basename %s)"
+           file file)))
 
 (provide 'tv-utils)
 

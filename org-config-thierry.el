@@ -191,7 +191,7 @@
 (set-face-attribute 'org-agenda-date-weekend nil :foreground "red")
 
 ;; org-crypt 
-;(require 'org-crypt)
+(require 'org-crypt)
 (org-crypt-use-before-save-magic)
 (setq org-crypt-key "59F29997")
 (setq org-crypt-disable-auto-save 'encrypt)

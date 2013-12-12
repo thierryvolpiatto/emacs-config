@@ -10,6 +10,7 @@
 (tv-require 'helm-ls-hg)
 (tv-require 'helm-descbinds)
 (tv-require 'helm-ls-git)
+(tv-require 'helm-dictionary)
 
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
@@ -104,6 +105,7 @@
       helm-default-external-file-browser         "thunar"
       helm-pdfgrep-default-read-command          "evince --page-label=%p '%f'"
       ;helm-ff-transformer-show-only-basename     t
+      helm-ff-auto-update-initial-value          t
       helm-grep-default-command                  "ack-grep -Hn --smart-case --no-group --no-color %e %p %f"
       helm-grep-default-recurse-command          "ack-grep -H --smart-case --no-group --no-color %e %p %f"
       helm-reuse-last-window-split-state         t
@@ -203,6 +205,14 @@
 (defun helm-psession ()
   (interactive)
   (helm :sources 'helm-psession-windows :buffer "*helm psession*"))
+
+;;; helm dictionary
+;;
+(setq helm-dictionary-database "~/helm-dictionary/dic-en-fr.iso")
+(setq helm-dictionary-online-dicts '(("translate.reference.com en->fr" .
+                                      "http://translate.reference.com/translate?query=%s&src=en&dst=fr")
+                                     ("translate.reference.com fr->en" .
+                                      "http://translate.reference.com/translate?query=%s&src=fr&dst=en")))
 
 ;;; enable Modes
 ;;
