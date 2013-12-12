@@ -234,7 +234,6 @@ If your system's ping continues until interrupted, you can try setting
              "~/.emacs.d/themes/"
 	     "~/.emacs.d/emacs-config-laptop/"
              "~/elisp/emacs-async"
-             "~/elisp/jenkins/emacs-async" ; Compatibility with other machines.
 	     ))
   (add-to-list 'load-path i t)) ; Add all at end of `load-path' to avoid conflicts.
 
