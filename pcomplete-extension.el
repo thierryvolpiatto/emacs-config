@@ -1,8 +1,9 @@
-;;; Time-stamp: <2012-02-21 08:43:51 thierry>
+;;; Time-stamp: <2013-12-21 11:22:42 thierry>
 ;;; Hg completion
 ;;
 ;;
-(defun* pcomplete-get-hg-commands (&key com opts spec)
+(require 'cl-lib)
+(cl-defun pcomplete-get-hg-commands (&key com opts spec)
   (with-temp-buffer
     (let (h1 h2 h3)
       (if spec
@@ -22,15 +23,15 @@
       (goto-char (point-min))
       (let (args coms sargs)
         (if spec
-            (setq sargs (loop while (re-search-forward "\\(-[a-zA-Z]\\|--[a-zA-Z]+\\) *" nil t)
-                              collect (match-string 1)))
+            (setq sargs (cl-loop while (re-search-forward "\\(-[a-zA-Z]\\|--[a-zA-Z]+\\) *" nil t)
+                                 collect (match-string 1)))
             (save-excursion
               (setq coms
-                    (loop while (re-search-forward "^ \\([a-z]+\\) *" nil t)
-                          collect (match-string 1))))
+                    (cl-loop while (re-search-forward "^ \\([a-z]+\\) *" nil t)
+                             collect (match-string 1))))
             (setq args
-                  (loop while (re-search-forward "\\(-[a-zA-Z]\\|--[a-zA-Z]+\\) *" nil t)
-                        collect (match-string 1))))
+                  (cl-loop while (re-search-forward "\\(-[a-zA-Z]\\|--[a-zA-Z]+\\) *" nil t)
+                           collect (match-string 1))))
         (cond (spec sargs)
               (com coms)
               (opts args)
@@ -59,8 +60,8 @@
            (let ((queues (with-temp-buffer
                            (apply #'call-process "hg" nil t nil
                                   (list "qqueue" "-l"))
-                           (loop for i in (split-string (buffer-string) "\n" t)
-                                 append (list (car (split-string i " (")))))))
+                           (cl-loop for i in (split-string (buffer-string) "\n" t)
+                                    append (list (car (split-string i " (")))))))
              (while (pcomplete-here queues))))
           ((and (string= cur "hg")
                 (not (string= cur avder)))
