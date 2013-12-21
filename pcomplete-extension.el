@@ -103,12 +103,39 @@
                                    (pcomplete-arg 'last) t))))
     (while (pcomplete-here (pcomplete-entries) nil 'identity))))
 
+;;; Sudo
+;;
+;; Allow completing other commands entered after sudo
 (defun pcomplete/sudo ()
   (let ((prec (pcomplete-arg 'last -1)))
     (cond ((string= "sudo" prec)
            (while (pcomplete-here*
                    (funcall pcomplete-command-completion-function)
                    (pcomplete-arg 'last) t))))))
+
+;;; Ls
+;;
+(defun pcomplete/ls ()
+  (let ((prec (pcomplete-arg 'last -1)))
+    (cond ((and (pcomplete-match "^-\\{2\\}" 'last)
+                (string= "ls" prec))
+           (while (pcomplete-here
+                   '("--all" "--almost-all" "--author"
+                     "--escape" "--block-size=" "--ignore-backups" "--color="
+                     "--directory" "--dired" "--classify" "--file-type"
+                     "--format=" "--full-time" "--group-directories-first"
+                     "--no-group" "--human-readable" "--si"
+                     "--dereference-command-line-symlink-to-dir"
+                     "--hide=" "--indicator-style=" "--inode" "--ignore="
+                     "--dereference" "--numeric-uid-gid" "--literal" "--indicator-style="
+                     "--hide-control-chars" "--show-control-chars"
+                     "--quote-name" "--quoting-style=" "--reverse" "--recursive"
+                     "--size" "--sort=" "--time=" "--time-style=--tabsize="
+                     "--width=" "--context" "--version" "--help"))))
+          ((and (pcomplete-match "^-\\{1\\}" 'last)
+                (string= "ls" prec))
+           (pcomplete-opt "aAbBcCdDfFgGhHiIklLmnNopqQrRsStTuUvwxXZ1")))
+  (while (pcomplete-here (pcomplete-entries) nil 'identity))))
 
 (provide 'pcomplete-extension)
 

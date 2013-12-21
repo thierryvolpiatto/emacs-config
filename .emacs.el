@@ -121,6 +121,19 @@ If your system's ping continues until interrupted, you can try setting
 
 (when (version< emacs-version "24.3.50.1") (ad-activate 'term-command-hook))
 
+(when (require 'shell)
+  (defun shell-command-completion ()
+    "Return the completion data for the command at point, if any."
+    (let ((filename (comint-match-partial-filename))
+          start)
+      (if (and filename
+               (save-match-data (not (string-match "[~/]" filename)))
+               (eq (setq start (match-beginning 0))
+                   (save-excursion (shell-backward-command 1)
+                                   (if (looking-at "sudo")
+                                       start (point)))))
+          (shell--command-completion-data)))))
+
 
 ;;; Annoyances section
 ;;
@@ -1287,7 +1300,7 @@ With prefix arg always start and let me choose dictionary."
 (setq newsticker-frontend 'newsticker-plainview)
 (setq newsticker-retrieval-method 'extern)
 (setq newsticker-show-descriptions-of-new-items nil)
-(tv-require 'shr) ; bug fix in emacs-24.3.50.1
+(tv-require 'shr nil t) ; bug fix in emacs-24.3.50.1
 
 (defun newsticker-quit-and-stop ()
   (interactive)
@@ -1404,24 +1417,24 @@ With prefix arg always start and let me choose dictionary."
                (car (cdr el)))))))
 
 ;; cl- prefixed symbols are not font-locked in emacs-24.3 and also many in 24.4.
-(dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
-  (font-lock-add-keywords
-   mode
-   '(("(\\<\\(cl-flet[*]?\\|cl-labels\\|cl-macrolet\\)\\>" 1 font-lock-keyword-face)
-     ("(\\<\\(cl-loop\\|cl-dolist\\)\\>" 1 font-lock-keyword-face))))
+;; (dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
+;;   (font-lock-add-keywords
+;;    mode
+;;    '(("(\\<\\(cl-flet[*]?\\|cl-labels\\|cl-macrolet\\)\\>" 1 font-lock-keyword-face)
+;;      ("(\\<\\(cl-loop\\|cl-dolist\\)\\>" 1 font-lock-keyword-face))))
 
 ;; Reenable font-locking for cl. (Removed in 24.3.50.1)
-(dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
-  (font-lock-add-keywords
-   mode
-   '(("(\\<\\(flet[*]?\\|labels\\|symbol-macrolet\\|macrolet\\|loop\\|e?case\\|e?typecase\\)\\_>" 1 font-lock-keyword-face)
-     ("(\\<\\(return-from\\|return\\|block\\)\\_>" 1 font-lock-keyword-face)
-     ("(\\<\\(lexical-let[*]?\\|destructuring-bind\\)\\_>" 1 font-lock-keyword-face)
-     ("(\\<\\(eval-when\\|declaim\\|proclaim\\)\\_>" 1 font-lock-keyword-face)
-     ("(\\<\\(assert\\)\\_>" 1 font-lock-warning-face)
-     ("(\\<\\(defun[*]?\\|defmacro[*]?\\|defsubst[*]?\\|defstruct\\)\\_>" 1 font-lock-keyword-face)
-     ("(\\<\\(defun[*]?\\|defmacro[*]?\\|defsubst[*]?\\)\\_>\\s-+\\<\\([^ ]*\\)\\>" 2 font-lock-function-name-face)
-     ("(\\<\\(defstruct\\)\\_>\\s-+\\<\\([^ ]*\\)\\>" 2 font-lock-type-face))))
+;; (dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
+;;   (font-lock-add-keywords
+;;    mode
+;;    '(("(\\<\\(flet[*]?\\|labels\\|symbol-macrolet\\|macrolet\\|loop\\|e?case\\|e?typecase\\)\\_>" 1 font-lock-keyword-face)
+;;      ("(\\<\\(return-from\\|return\\|block\\)\\_>" 1 font-lock-keyword-face)
+;;      ("(\\<\\(lexical-let[*]?\\|destructuring-bind\\)\\_>" 1 font-lock-keyword-face)
+;;      ("(\\<\\(eval-when\\|declaim\\|proclaim\\)\\_>" 1 font-lock-keyword-face)
+;;      ("(\\<\\(assert\\)\\_>" 1 font-lock-warning-face)
+;;      ("(\\<\\(defun[*]?\\|defmacro[*]?\\|defsubst[*]?\\|defstruct\\)\\_>" 1 font-lock-keyword-face)
+;;      ("(\\<\\(defun[*]?\\|defmacro[*]?\\|defsubst[*]?\\)\\_>\\s-+\\<\\([^ ]*\\)\\>" 2 font-lock-function-name-face)
+;;      ("(\\<\\(defstruct\\)\\_>\\s-+\\<\\([^ ]*\\)\\>" 2 font-lock-type-face))))
 
 (add-hook 'slime-load-hook #'(lambda () (tv-require 'slime-tramp)))
 

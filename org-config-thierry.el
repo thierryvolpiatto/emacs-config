@@ -85,32 +85,22 @@
                       ("bug" . ?E)
                       ("travel" . ?t)))
 
-;; Insinuate-remember 
-;(org-remember-insinuate)
-(setq org-directory "~/org/")
-(setq org-default-notes-file (concat org-directory "/notes.org"))
-(define-key global-map "\C-cr" 'org-remember)
-(setq org-remember-store-without-prompt t)
-(add-hook 'remember-mode-hook 'org-remember-apply-template)
+;; org-capture
+(setq org-capture-templates
+      '(("W" "BROWSER" entry      (file+headline "~/org/notes.org" "Firefox")      "* BROWSER %?\n %:description\n  (created: %U)\n\n  %c\n\n  %i" :prepend t)
+        ("t" "Todo" entry         (file+headline "~/org/agenda.org" "Tasks")       "** TODO %?\n  %i\n  %a"                                        :prepend t)
+        ("R" "Report" entry       (file+headline "~/org/agenda.org" "Development") "** REPORT %?\n  %i\n  %a"                                      :prepend t)
+        ("n" "Notes" entry        (file+headline "~/org/notes.org" "General")      "* %U %?\n\n  %i\n  %a"                                         :prepend t)
+        ("i" "Idea" entry         (file+headline "~/org/notes.org" "New Ideas")    "* %^{Title}\n  %i\n  %a"                                       :prepend t)
+        ("l" "Lisp" entry         (file+headline "~/org/notes.org" "Notes elisp")  "* %^{Title}\n  %i\n  %a"                                       :prepend t)
+        ("p" "Python" entry       (file+headline "~/org/notes.org" "Notes python") "* %^{Title}\n  %i\n  %a"                                       :prepend t)
+        ("e" "Emacs" entry        (file+headline "~/org/notes.org" "Memo Emacs")   "* %^{Title}\n  %i\n  %a"                                       :prepend t)
+        ("s" "Stump" entry        (file+headline "~/org/notes.org" "Memo Stumpwm") "* %^{Title}\n  %i\n  %a"                                       :prepend t)
+        ("L" "Linux" entry        (file+headline "~/org/notes.org" "Memo Linux")   "* %^{Title}\n  %i\n  %a"                                       :prepend t)
+        ("g" "Gentoo" entry       (file+headline "~/org/notes.org" "Notes Gentoo") "* %^{Title}\n  %i\n  %a"                                       :prepend t)
+        ("w" "Web" entry          (file+headline "~/org/notes.org" "Web links")    "* %u %c \n\n%i"                                                :prepend t)))
 
-;; Org-remember-templates 
-;; (find-node "(org)Remember templates")
-(setq org-remember-templates
-      '(("BROWSER" ?W "* BROWSER %?\n %:description\n  (created: %U)\n\n  %c\n\n  %i" "~/org/notes.org" "Firefox")
-        ("Todo" ?t "** TODO %?\n  %i\n  %a" "~/org/agenda.org" "Tasks")
-        ("Report" ?R "** REPORT %?\n  %i\n  %a" "~/org/agenda.org" "Development")
-        ("Notes" ?n "* %U %?\n\n  %i\n  %a" "~/org/notes.org" "General")
-        ("Idea" ?i "* %^{Title}\n  %i\n  %a" "~/org/notes.org" "New Ideas")
-        ("Lisp" ?l "* %^{Title}\n  %i\n  %a" "~/org/notes.org" "Notes elisp")
-        ("Python" ?p "* %^{Title}\n  %i\n  %a" "~/org/notes.org" "Notes python")
-        ("Emacs" ?e "* %^{Title}\n  %i\n  %a" "~/org/notes.org" "Memo Emacs")
-        ;("BmkAnnotations" ?b "* %^{Title}\n  %i\n  %a" "~/org/bmkannotations.org" "Bookmark Annotations")
-        ("Stump" ?s "* %^{Title}\n  %i\n  %a" "~/org/notes.org" "Memo Stumpwm")
-        ("Linux" ?L "* %^{Title}\n  %i\n  %a" "~/org/notes.org" "Memo Linux")
-        ("Gentoo" ?g "* %^{Title}\n  %i\n  %a" "~/org/notes.org" "Notes Gentoo")
-        ("Web" ?w "* %u %c \n\n%i" "~/org/notes.org" "Web links")))
-
-(global-set-key (kbd "C-c r") 'org-remember)
+(global-set-key (kbd "C-c r") 'org-capture)
 
 ;; org-annotation-helper 
 (require 'org-annotation-helper)
