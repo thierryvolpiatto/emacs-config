@@ -1,4 +1,4 @@
-;;; pcomplete-extension.el --- additional completion for pcomplete
+;;; pcomplete-extension.el --- additional completion for pcomplete -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2010 ~ 2013 Thierry Volpiatto <thierry.volpiatto@gmail.com>
 
