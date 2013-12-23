@@ -133,7 +133,27 @@
     (cond ((string= "sudo" prec)
            (while (pcomplete-here*
                    (funcall pcomplete-command-completion-function)
-                   (pcomplete-arg 'last) t))))))
+                   (pcomplete-arg 'last) t)))
+          (t
+           (funcall (or (pcomplete-find-completion-function
+                         (pcomplete-command-name))
+                        pcomplete-default-completion-function))))))
+
+(defun pcomplete-command-name ()
+  "Return the command name of the first argument."
+  (let ((com (pcomplete-arg 'first))
+        (com1 (pcomplete-arg 'first 1))
+        (com2 (pcomplete-arg 'last -1))
+        (com3 (pcomplete-arg 'last)))
+    (cond ((and (stringp com) (stringp com1)
+                (not (string= com1 ""))
+                (string= com "sudo"))
+           (file-name-nondirectory com1))
+          ((and (stringp com2) (string= com2 "sudo")
+                (not (string= com3 "")))
+           (file-name-nondirectory com3))
+          (t
+           (file-name-nondirectory com)))))
 
 ;;; Ls
 ;;
@@ -158,6 +178,49 @@
                 (string= "ls" prec))
            (pcomplete-opt "aAbBcCdDfFgGhHiIklLmnNopqQrRsStTuUvwxXZ1")))
   (while (pcomplete-here (pcomplete-entries) nil 'identity))))
+
+;;; apt-get
+;;
+(defvar pcomplete-apt-get-data nil)
+(defun pcomplete/apt-get ()
+  (let ((prec (pcomplete-arg 'last -1))
+        (cmd-list '("autoclean" "changelog" "dist-upgrade" "install" "source" "autoremove"
+                    "check" "download" "purge" "update" "build-dep" "clean" "dselect-upgrade"
+                    "remove" "upgrade")))
+    (cond (;; long options
+           (and (pcomplete-match "\\`-\\{2\\}" 'last)
+                (string= prec "apt-get"))
+           (while (pcomplete-here
+                   '("--no-install-recommends" "--install-suggests" "--download-only"
+                     "--fix-broken" "--ignore-missing" "--fix-missing" "--no-download"
+                     "--quiet" "--simulate" "--just-print" "--dry-run" "--recon" "--no-act"
+                     "--yes" "--assume-yes" "--assume-no" "--show-upgraded" "--verbose-versions"
+                     "--host-architecture" "--compile" "--build" "--ignore-hold"
+                     "--no-upgrade" "--only-upgrade" "--force-yes" "--print-uris"
+                     "--purge" "--reinstall" "--list-cleanup" "--target-release" "--default-release"
+                     "--trivial-only" "--no-remove" "--auto-remove" "--only-source"
+                     "--diff-only" "--dsc-only" "--tar-only" "--arch-only"
+                     "--allow-unauthenticated" "--help" "--version" "--config-file" "--option"))))
+          ;; short options
+          ((and (pcomplete-match "\\`-\\{1\\}" 'last)
+                (string= prec "apt-get"))
+           (pcomplete-opt "dfmqsyuVabthvco"))
+          ;; commands
+          ((or (string= prec "apt-get")
+               (string-match "\\`--?" prec))
+           (while (pcomplete-here* cmd-list (pcomplete-arg 'last))))
+          ;; packages
+          ((member prec cmd-list)
+           (while (pcomplete-here
+                   (if pcomplete-apt-get-data
+                       pcomplete-apt-get-data
+                       (setq pcomplete-apt-get-data
+                             (with-temp-buffer
+                               (call-process-shell-command
+                                (format "apt-cache search '%s'" "")
+                                nil (current-buffer))
+                               (mapcar (lambda (line) (car (split-string line " - ")))
+                                       (split-string (buffer-string) "\n")))))))))))
 
 (provide 'pcomplete-extension)
 

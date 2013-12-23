@@ -123,16 +123,16 @@ If your system's ping continues until interrupted, you can try setting
 
 (when (require 'shell)
   (defun shell-command-completion ()
-    "Return the completion data for the command at point, if any."
-    (let ((filename (comint-match-partial-filename))
-          start)
-      (if (and filename
-               (save-match-data (not (string-match "[~/]" filename)))
-               (eq (setq start (match-beginning 0))
-                   (save-excursion (shell-backward-command 1)
-                                   (if (looking-at "sudo")
-                                       start (point)))))
-          (shell--command-completion-data)))))
+  "Return the completion data for the command at point, if any."
+  (let ((filename (comint-match-partial-filename))
+        (args (split-string
+               (buffer-substring-no-properties
+                (point) (save-excursion (shell-backward-command 1) (point))))))
+    (if (and filename
+             (save-match-data (not (string-match "[~/]" filename)))
+             (and (string= (car args) "sudo")
+                  (string= filename (cadr args))))
+        (shell--command-completion-data)))))
 
 
 ;;; Annoyances section
