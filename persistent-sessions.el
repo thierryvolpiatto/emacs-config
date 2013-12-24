@@ -1,4 +1,4 @@
-;;; persistent-sessions.el --- Persistent save of elisp objects.
+;;; persistent-sessions.el --- Persistent save of elisp objects. -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2012 ~ 2013 Thierry Volpiatto <thierry.volpiatto@gmail.com>
 
@@ -156,7 +156,7 @@ That may not work with Emacs versions <=23.1 for hash tables."
 ;;
 ;;
 (defun psession--save-some-buffers ()
-  (cl-loop with dired-blist = (cl-loop for (f . b) in dired-buffers
+  (cl-loop with dired-blist = (cl-loop for (_f . b) in dired-buffers
                                        when (buffer-name b)
                                        collect b)
            with blist = (append (buffer-list) dired-blist)
