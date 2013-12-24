@@ -73,10 +73,10 @@
                        (setq pcomplete-hg-glob-opts-cache
                              (car all))))
          (special  (pcomplete-get-hg-commands :spec avder)))
-    (cond ((and (string-match-p "-" last)
+    (cond ((and (string-match-p "^-" last)
                 (member avder commands))
            (while (pcomplete-here special)))
-          ((string-match-p "-" last)
+          ((string-match-p "^-" last)
            (pcomplete-here options))
           ((string-match-p "qqueue" avder)
            (let ((queues (with-temp-buffer
@@ -97,6 +97,10 @@
   (let ((prec (pcomplete-arg 'last -1)))
     (cond ((and (pcomplete-match "^-" 'last)
                 (string= "find" prec))
+           ;; probably in sudo, work-around: increase index
+           ;; otherwise pcomplete-opt returns nil
+           (when (< pcomplete-index pcomplete-last)
+             (pcomplete-next-arg))
            (pcomplete-opt "HLPDO"))
           ((pcomplete-match "^-" 'last)
            (while (pcomplete-here
@@ -195,6 +199,10 @@
                      "--width=" "--context" "--version" "--help"))))
           ((and (pcomplete-match "^-\\{1\\}" 'last)
                 (string= "ls" prec))
+           ;; probably in sudo, work-around: increase index
+           ;; otherwise pcomplete-opt returns nil
+           (when (< pcomplete-index pcomplete-last)
+               (pcomplete-next-arg))
            (pcomplete-opt "aAbBcCdDfFgGhHiIklLmnNopqQrRsStTuUvwxXZ1")))
   (while (pcomplete-here (pcomplete-entries) nil 'identity))))
 
@@ -206,26 +214,30 @@
         (cmd-list '("autoclean" "changelog" "dist-upgrade" "install" "source" "autoremove"
                     "check" "download" "purge" "update" "build-dep" "clean" "dselect-upgrade"
                     "remove" "upgrade")))
-    (cond (;; long options
-           (and (pcomplete-match "\\`-\\{2\\}" 'last)
-                (string= prec "apt-get"))
-           (while (pcomplete-here
-                   '("--no-install-recommends" "--install-suggests" "--download-only"
-                     "--fix-broken" "--ignore-missing" "--fix-missing" "--no-download"
-                     "--quiet" "--simulate" "--just-print" "--dry-run" "--recon" "--no-act"
-                     "--yes" "--assume-yes" "--assume-no" "--show-upgraded" "--verbose-versions"
-                     "--host-architecture" "--compile" "--build" "--ignore-hold"
-                     "--no-upgrade" "--only-upgrade" "--force-yes" "--print-uris"
-                     "--purge" "--reinstall" "--list-cleanup" "--target-release" "--default-release"
-                     "--trivial-only" "--no-remove" "--auto-remove" "--only-source"
-                     "--diff-only" "--dsc-only" "--tar-only" "--arch-only"
-                     "--allow-unauthenticated" "--help" "--version" "--config-file" "--option"))))
-          ;; short options
-          ((and (pcomplete-match "\\`-\\{1\\}" 'last)
-                (string= prec "apt-get"))
-           (pcomplete-opt "dfmqsyuVabthvco"))
-          ;; commands
-          ((or (string= prec "apt-get")
+    (while (pcomplete-match "^-" 'last)
+      (cond ( ;; long options
+             (pcomplete-match "\\`-\\{2\\}" 'last)
+             (while (pcomplete-here
+                     '("--no-install-recommends" "--install-suggests" "--download-only"
+                       "--fix-broken" "--ignore-missing" "--fix-missing" "--no-download"
+                       "--quiet" "--simulate" "--just-print" "--dry-run" "--recon" "--no-act"
+                       "--yes" "--assume-yes" "--assume-no" "--show-upgraded" "--verbose-versions"
+                       "--host-architecture" "--compile" "--build" "--ignore-hold"
+                       "--no-upgrade" "--only-upgrade" "--force-yes" "--print-uris"
+                       "--purge" "--reinstall" "--list-cleanup" "--target-release" "--default-release"
+                       "--trivial-only" "--no-remove" "--auto-remove" "--only-source"
+                       "--diff-only" "--dsc-only" "--tar-only" "--arch-only"
+                       "--allow-unauthenticated" "--help" "--version" "--config-file" "--option"))))
+            
+            (;; short options
+             (pcomplete-match "\\`-\\{1\\}" 'last)
+             ;; probably in sudo, work-around: increase index
+             ;; otherwise pcomplete-opt returns nil
+             (when (< pcomplete-index pcomplete-last)
+               (pcomplete-next-arg))
+             (pcomplete-opt "dfmqsyuVabthvco"))))
+    (cond (;; commands
+           (or (string= prec "apt-get")
                (string-match "\\`--?" prec))
            (while (pcomplete-here* cmd-list (pcomplete-arg 'last))))
           ;; packages
