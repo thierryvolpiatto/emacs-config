@@ -1,4 +1,4 @@
-;;; iterator.el --- A library to create and use elisp iterators objects.
+;;; iterator.el --- A library to create and use elisp iterators objects. -*- lexical-binding: t -*-
 
 ;; Author: Thierry Volpiatto <thierry dot volpiatto at gmail dot com>
 
@@ -28,17 +28,17 @@
 
 ;;; Code:
 
-(require 'cl)
+(require 'cl-lib)
 
-(defsubst* iter-position (item seq &key (test 'eq))
+(cl-defsubst iter-position (item seq &key (test 'eq))
   "Get position of ITEM in SEQ.
 A simple replacement of CL `position'."
-  (loop for i in seq for index from 0
-     when (funcall test i item) return index))
+  (cl-loop for i in seq for index from 0
+           when (funcall test i item) return index))
 
 (defun iter-list (seq)
   "Return an iterator from SEQ."
-  (lexical-let ((lis seq))
+  (let ((lis seq))
      (lambda ()
        (let ((elm (car lis)))
          (setq lis (cdr lis))
@@ -48,59 +48,59 @@ A simple replacement of CL `position'."
   "Return next elm of ITERATOR."
   (funcall iterator))
 
-(defun* iter-sub-next (seq elm &key (test 'eq))
+(cl-defun iter-sub-next (seq elm &key (test 'eq))
   "Create iterator from position of ELM to end of SEQ."
-  (lexical-let* ((pos      (iter-position elm seq :test test))
-                 (sub      (nthcdr (1+ pos) seq))
-                 (iterator (iter-list sub)))
-     (lambda ()
-       (iter-next iterator))))
+  (let* ((pos      (iter-position elm seq :test test))
+         (sub      (nthcdr (1+ pos) seq))
+         (iterator (iter-list sub)))
+    (lambda ()
+      (iter-next iterator))))
 
-(defun* iter-sub-prec (seq elm &key (test 'eq))
+(cl-defun iter-sub-prec (seq elm &key (test 'eq))
   "Create iterator from position of ELM to beginning of SEQ."
-  (lexical-let* ((rev-seq  (reverse seq))
-                 (pos      (iter-position elm rev-seq :test test))
-                 (sub      (nthcdr (1+ pos) rev-seq))
-                 (iterator (iter-list sub)))
-     (lambda ()
-       (iter-next iterator))))
+  (let* ((rev-seq  (reverse seq))
+         (pos      (iter-position elm rev-seq :test test))
+         (sub      (nthcdr (1+ pos) rev-seq))
+         (iterator (iter-list sub)))
+    (lambda ()
+      (iter-next iterator))))
 
 (defun iter-circular (seq)
   "Infinite iteration on SEQ."
-  (lexical-let ((it (iter-list seq))
-                (lis seq))
+  (let ((it (iter-list seq))
+        (lis seq))
     (lambda ()
       (let ((elm (iter-next it)))
         (or elm
             (progn (setq it (iter-list lis)) (iter-next it)))))))
 
-(defun* iter-sub-prec-circular (seq elm &key (test 'eq))
+(cl-defun iter-sub-prec-circular (seq elm &key (test 'eq))
   "Infinite reverse iteration of SEQ starting at ELM."
-  (lexical-let* ((rev-seq  (reverse seq))
-                 (pos      (iter-position elm rev-seq :test test))
-                 (sub      (append (nthcdr (1+ pos) rev-seq) (subseq rev-seq 0 pos)))
-                 (iterator (iter-list sub)))
-     (lambda ()
-       (let ((elm (iter-next iterator)))
-         (or elm
-             (progn (setq iterator (iter-list sub)) (iter-next iterator)))))))
+  (let* ((rev-seq  (reverse seq))
+         (pos      (iter-position elm rev-seq :test test))
+         (sub      (append (nthcdr (1+ pos) rev-seq) (cl-subseq rev-seq 0 pos)))
+         (iterator (iter-list sub)))
+    (lambda ()
+      (let ((elm (iter-next iterator)))
+        (or elm
+            (progn (setq iterator (iter-list sub)) (iter-next iterator)))))))
 
-(defun* iter-sub-next-circular (seq elm &key (test 'eq))
+(cl-defun iter-sub-next-circular (seq elm &key (test 'eq))
   "Infinite iteration of SEQ starting at ELM."
-  (lexical-let* ((pos      (iter-position elm seq :test test))
-                 (sub      (append (nthcdr (1+ pos) seq) (subseq seq 0 pos)))
-                 (iterator (iter-list sub)))
-     (lambda ()
-       (let ((elm (iter-next iterator)))
-         (or elm (progn
-                   (setq iterator (iter-list sub))
-                   (iter-next iterator)))))))
+  (let* ((pos      (iter-position elm seq :test test))
+         (sub      (append (nthcdr (1+ pos) seq) (cl-subseq seq 0 pos)))
+         (iterator (iter-list sub)))
+    (lambda ()
+      (let ((elm (iter-next iterator)))
+        (or elm (progn
+                  (setq iterator (iter-list sub))
+                  (iter-next iterator)))))))
 
 
 (defun iter-apply-fun-on-list (fun seq)
   "Create an iterator that apply function FUN on each elm of SEQ."
-  (lexical-let ((lis seq)
-                (fn fun))
+  (let ((lis seq)
+        (fn fun))
     (lambda ()
       (let ((elm (if (car lis)
                      (funcall fn (car lis)))))
@@ -109,27 +109,27 @@ A simple replacement of CL `position'."
 
 
 (defun iter-scroll-list (seq size)
-  "Create an iterator of the subseq of the cdr of SEQ ending to SIZE."
-  (lexical-let* ((lis seq)
-                 (end size))
+  "Create an iterator of the cl-subseq of the cdr of SEQ ending to SIZE."
+  (let* ((lis seq)
+         (end size))
     (lambda ()
-      (let ((sub (subseq lis 0 end)))
+      (let ((sub (cl-subseq lis 0 end)))
         (setq lis (cdr lis))
         (if (< (length lis) end)
             (setq end (- end 1)))
         (remove nil sub)))))
 
 (defun iter-scroll-up (seq elm size)
-  (lexical-let* ((pos (position (car (last elm)) seq))
-                 (sub (reverse (subseq seq 0 pos)))
-                 (iterator (iter-scroll-list sub size)))
+  (let* ((pos (position (car (last elm)) seq))
+         (sub (reverse (cl-subseq seq 0 pos)))
+         (iterator (iter-scroll-list sub size)))
     (lambda ()
       (reverse (iter-next iterator)))))
 
 (defun iter-scroll-down (seq elm size)
-  (lexical-let* ((pos (position (car (last elm)) seq))
-                 (sub (subseq seq pos))
-                 (iterator (iter-scroll-list sub size)))
+  (let* ((pos (position (car (last elm)) seq))
+         (sub (cl-subseq seq pos))
+         (iterator (iter-scroll-list sub size)))
     (lambda ()
       (iter-next iterator))))
                   

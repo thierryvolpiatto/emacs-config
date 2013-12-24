@@ -26,7 +26,7 @@
 
 ;;; Code:
 
-(require 'cl)
+(require 'cl-lib)
 
 ;;; Sshfs
 ;;
@@ -101,9 +101,9 @@
 
 ;; network-info 
 (defun tv-network-info (network)
-  (let ((info (loop for (i . n) in (network-interface-list)
-                    when (string= network i)
-                    return (network-interface-info i))))
+  (let ((info (cl-loop for (i . n) in (network-interface-list)
+                       when (string= network i)
+                       return (network-interface-info i))))
     (when info
       (destructuring-bind (address broadcast netmask mac state)
           info
@@ -148,13 +148,13 @@ input is finish and function executed"
           (if list-of-dir
               list-of-dir
               (multi-read-name 'read-directory-name))))
-    (loop for i in final-list
-          do
-          (copy-file file i t))))
+    (cl-loop for i in final-list
+             do
+             (copy-file file i t))))
 
 ;; Multi-read-name 
 ;;;###autoload
-(defun* multi-read-name (&optional (fn 'read-string))
+(cl-defun multi-read-name (&optional (fn 'read-string))
   "Prompt as many time you add + to end of prompt.
 Return a list of all inputs in `var'.
 You can specify input function to use."
@@ -296,7 +296,7 @@ START and END are buffer positions indicating what to append."
                         "\n- "))))
 
 ;;; Time-functions 
-(defun* tv-time-date-in-n-days (days &key (separator "-") french)
+(cl-defun tv-time-date-in-n-days (days &key (separator "-") french)
   "Return the date in string form in n +/-DAYS."
   (let* ((days-in-sec       (* 3600 (* (+ days) 24)))
          (interval-days-sec (if (< days 0)
@@ -577,14 +577,14 @@ Can be used from any place in the line."
   (save-restriction
     (narrow-to-region beg end)
     (goto-char (point-min))
-    (loop while (re-search-forward "^.*$" nil t)
-          for count from 1 do
-          (replace-match
-           (concat (format "%d " count) (match-string 0))))))
+    (cl-loop while (re-search-forward "^.*$" nil t)
+             for count from 1 do
+             (replace-match
+              (concat (format "%d " count) (match-string 0))))))
 
 ;; Permutations (Too slow)
 
-(defun* permutations (bag &key result-as-string print)
+(cl-defun permutations (bag &key result-as-string print)
   "Return a list of all the permutations of the input."
   ;; If the input is nil, there is only one permutation:
   ;; nil itself
@@ -596,16 +596,16 @@ Can be used from any place in the line."
              ;; Generate all permutations of the remaining elements,
              ;; And add e to the front of each of these.
              ;; Do this for all possible e to generate all permutations.
-             (loop for e in bag append
-                   (loop for p in (permutations (remove e bag))
-                         collect (cons e p))))))
+             (cl-loop for e in bag append
+                      (cl-loop for p in (permutations (remove e bag))
+                               collect (cons e p))))))
     (when (or result-as-string print)
-      (setq result (loop for i in result collect (mapconcat 'identity i ""))))
+      (setq result (cl-loop for i in result collect (mapconcat 'identity i ""))))
     (if print
         (with-current-buffer (get-buffer-create "*permutations*")
           (erase-buffer)
-          (loop for i in result
-                do (insert (concat i "\n")))
+          (cl-loop for i in result
+                   do (insert (concat i "\n")))
           (pop-to-buffer (current-buffer)))
         result)))
 
@@ -620,9 +620,9 @@ Can be used from any place in the line."
       (let* ((bl (point-at-bol))
              (el (point-at-eol))
              (cur-line (buffer-substring bl el))
-             (split (loop for i across cur-line collect i)))
+             (split (cl-loop for i across cur-line collect i)))
         (delete-region bl el)
-        (loop for i in (reverse split) do (insert i)))
+        (cl-loop for i in (reverse split) do (insert i)))
       (forward-line 1))))
 
 ;; Interface to df command-line.
@@ -694,32 +694,32 @@ If a prefix arg is given choose directory, otherwise use `default-directory'."
                           (list str1 str2))))      
          (result #'(lambda ()
                      ;; Collect random numbers without  dups.
-                     (loop with L repeat 5
-                           for r = (funcall star-num 51)
-                           if (not (member r L))
-                           collect r into L
-                           else
-                           collect (let ((n (funcall star-num 51)))
-                                     (while (memq n L)
-                                       (setq n (funcall star-num 51)))
-                                     n) into L
-                           finally return L)))
+                     (cl-loop with L repeat 5
+                              for r = (funcall star-num 51)
+                              if (not (member r L))
+                              collect r into L
+                              else
+                              collect (let ((n (funcall star-num 51)))
+                                        (while (memq n L)
+                                          (setq n (funcall star-num 51)))
+                                        n) into L
+                                        finally return L)))
          (inhibit-read-only t))
     (with-current-buffer (get-buffer-create "*Euro million*")
       (erase-buffer)
       (insert "Grille aléatoire pour l'Euro Million\n\n")
-      (loop with ls = (loop repeat 5 collect (funcall result))  
-            for i in ls do
-            (progn
-              (insert (mapconcat #'(lambda (x)
-                                     (let ((elm (number-to-string x)))
-                                       (if (= (length elm) 1) (concat elm " ") elm)))
-                                 i " "))
-              (insert " Stars: ")
-              (insert (mapconcat 'identity (funcall get-stars) " "))
-              (insert "\n"))
-            finally do (progn (pop-to-buffer "*Euro million*")
-                              (special-mode))))))
+      (cl-loop with ls = (cl-loop repeat 5 collect (funcall result))  
+               for i in ls do
+               (progn
+                 (insert (mapconcat #'(lambda (x)
+                                        (let ((elm (number-to-string x)))
+                                          (if (= (length elm) 1) (concat elm " ") elm)))
+                                    i " "))
+                 (insert " Stars: ")
+                 (insert (mapconcat 'identity (funcall get-stars) " "))
+                 (insert "\n"))
+               finally do (progn (pop-to-buffer "*Euro million*")
+                                 (special-mode))))))
 
 ;; Just an example to use `url-retrieve'
 (defun tv-download-file-async (url &optional noheaders to)
@@ -751,23 +751,23 @@ In this case, sexps are searched before point."
   (let ((pos (point))
         (fun (if arg 're-search-backward 're-search-forward))
         (sep (and (y-or-n-p "Separate sexp with newline? ") "\n")))
-    (loop while (funcall fun regexp nil t)
-          do (progn
-               (beginning-of-defun)
-               (let ((beg (point))
-                     (end (save-excursion (end-of-defun) (point))))
-                 (save-excursion
-                   (forward-line -1)
-                   (when (search-forward "###autoload" (point-at-eol) t)
-                     (setq beg (point-at-bol))))
-                 (kill-region beg end)
-                 (delete-blank-lines))
-               (save-excursion
-                 (goto-char pos)
-                 (yank)
-                 (insert (concat "\n" sep))
-                 (setq pos (point))))
-          finally do (goto-char pos))))
+    (cl-loop while (funcall fun regexp nil t)
+             do (progn
+                  (beginning-of-defun)
+                  (let ((beg (point))
+                        (end (save-excursion (end-of-defun) (point))))
+                    (save-excursion
+                      (forward-line -1)
+                      (when (search-forward "###autoload" (point-at-eol) t)
+                        (setq beg (point-at-bol))))
+                    (kill-region beg end)
+                    (delete-blank-lines))
+                  (save-excursion
+                    (goto-char pos)
+                    (yank)
+                    (insert (concat "\n" sep))
+                    (setq pos (point))))
+             finally do (goto-char pos))))
 
 ;; Check paren errors
 (defun tv-check-paren-error ()
@@ -811,30 +811,30 @@ In this case, sexps are searched before point."
 
 ;;; Generate strong passwords.
 ;;
-(defun* genpasswd (&optional (limit 12))
+(cl-defun genpasswd (&optional (limit 12))
   "Generate strong password of length LIMIT.
 LIMIT should be a number divisible by 2, otherwise
 the password will be of length (floor LIMIT)."
-  (loop with alph = ["a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k"
-                     "l" "m" "n" "o" "p" "q" "r" "s" "t" "u" "v"
-                     "w" "x" "y" "z" "A" "B" "C" "D" "E" "F" "G"
-                     "H" "I" "J" "K" "L" "M" "N" "O" "P" "Q" "R"
-                     "S" "T" "U" "V" "W" "X" "Y" "Z" "#" "!" "$"
-                     "&" "~" ";"]
-        ;; Divide by 2 because collecting 2 list.
-        for i from 1 to (floor (/ limit 2))
-        for rand1 = (int-to-string (random 9))
-        for alphaindex = (random (length alph))
-        for rand2 = (aref alph alphaindex)
-        ;; Collect a random number between O-9
-        collect rand1 into ls
-        ;; collect a random alpha between a-zA-Z.
-        collect rand2 into ls
-        finally return
-        ;; Now shuffle ls.
-        (loop for n in ls
-              for elm = (nth (random (length ls)) ls)
-              concat elm)))
+  (cl-loop with alph = ["a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k"
+                            "l" "m" "n" "o" "p" "q" "r" "s" "t" "u" "v"
+                            "w" "x" "y" "z" "A" "B" "C" "D" "E" "F" "G"
+                            "H" "I" "J" "K" "L" "M" "N" "O" "P" "Q" "R"
+                            "S" "T" "U" "V" "W" "X" "Y" "Z" "#" "!" "$"
+                            "&" "~" ";"]
+           ;; Divide by 2 because collecting 2 list.
+           for i from 1 to (floor (/ limit 2))
+           for rand1 = (int-to-string (random 9))
+           for alphaindex = (random (length alph))
+           for rand2 = (aref alph alphaindex)
+           ;; Collect a random number between O-9
+           collect rand1 into ls
+           ;; collect a random alpha between a-zA-Z.
+           collect rand2 into ls
+           finally return
+           ;; Now shuffle ls.
+           (cl-loop for n in ls
+                    for elm = (nth (random (length ls)) ls)
+                    concat elm)))
 
 ;;; Rotate windows
 ;;
@@ -846,21 +846,21 @@ the password will be of length (floor LIMIT)."
   (assert (> (length (window-list)) 1)
           nil "Error: Can't rotate with a single window")
   (unless helm-alive-p
-    (loop with wlist1 = (iter-circular (window-list))
-          with wlist2 = (iter-circular (cdr (window-list))) 
-          with len = (length (window-list))
-          for count from 1
-          for w1 = (iter-next wlist1)
-          for b1 = (window-buffer w1)
-          for s1 = (window-start w1)
-          for w2 = (iter-next wlist2)
-          for b2 = (window-buffer w2)
-          for s2 = (window-start w2)
-          while (< count len)
-          do (progn (set-window-buffer w1 b2)
-                    (set-window-start w1 s2)
-                    (set-window-buffer w2 b1)
-                    (set-window-start w2 s1)))))
+    (cl-loop with wlist1 = (iter-circular (window-list))
+             with wlist2 = (iter-circular (cdr (window-list))) 
+             with len = (length (window-list))
+             for count from 1
+             for w1 = (iter-next wlist1)
+             for b1 = (window-buffer w1)
+             for s1 = (window-start w1)
+             for w2 = (iter-next wlist2)
+             for b2 = (window-buffer w2)
+             for s2 = (window-start w2)
+             while (< count len)
+             do (progn (set-window-buffer w1 b2)
+                       (set-window-start w1 s2)
+                       (set-window-buffer w2 b1)
+                       (set-window-start w2 s1)))))
 (global-set-key (kbd "C-c -") 'rotate-windows)
 
 (defun tv-delete-duplicate-lines (beg end &optional arg)
@@ -874,7 +874,7 @@ With a prefix arg remove new lines."
                     (split-string (buffer-string) "\n" arg)
                     :test 'equal)))
         (delete-region (point-min) (point-max))
-        (loop for l in lines do (insert (concat l "\n")))))))
+        (cl-loop for l in lines do (insert (concat l "\n")))))))
 
 (defun tv-search-gmane (query &optional group author)
   (interactive (list

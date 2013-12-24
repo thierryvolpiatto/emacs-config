@@ -2,7 +2,7 @@
 
 ;;; Code:
 
-(require 'cl)
+(require 'cl-lib)
 
 ;(setenv "LANG" "C")
 
@@ -171,7 +171,7 @@ If your system's ping continues until interrupted, you can try setting
 
 (defun tv-maybe-add-org-load-path (&optional force)
   (when (or (< emacs-major-version 24) force)
-    (setq load-path (loop for i in load-path
+    (setq load-path (cl-loop for i in load-path
                           unless (string-match "org" i)
                           collect i))
     (dolist (lib '("~/elisp/org-active"
@@ -181,7 +181,7 @@ If your system's ping continues until interrupted, you can try setting
 
 (defun tv-maybe-add-tramp-load-path (&optional force)
   (when (or (version< emacs-version "24.3.50") force)
-    (setq load-path (loop for i in load-path
+    (setq load-path (cl-loop for i in load-path
                           unless (string-match "tramp" i)
                           collect i))
     (add-to-list 'load-path "~/elisp/tramp/lisp")))
@@ -189,7 +189,7 @@ If your system's ping continues until interrupted, you can try setting
 
 (defun tv-maybe-add-ngnus-load-path (&optional force)
   (when (or (version< emacs-version "24.3.50") force)
-    (setq load-path (loop for i in load-path
+    (setq load-path (cl-loop for i in load-path
                           unless (string-match "gnus" i)
                           collect i))
     (add-to-list 'load-path "~/elisp/ngnus/lisp" t)))
@@ -366,7 +366,7 @@ in this case start Gnus plugged, otherwise start it unplugged."
 ;; while in gnus (while tethering or not).
 ;; Kill all nnimap/nntpd processes when exiting summary.
 (defun tv-gnus-kill-all-procs ()
-  (loop for proc in (process-list)
+  (cl-loop for proc in (process-list)
         when (string-match "\\*?\\(nnimap\\|nntpd\\)" (process-name proc))
         do (delete-process proc)))
 (add-hook 'gnus-exit-group-hook 'tv-gnus-kill-all-procs)
@@ -1689,7 +1689,7 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
     (let* ((buffers nil)
            (alive
             ;; Possibly update `winner-point-alist'
-            (loop for buf in (mapcar 'cdr (cdr conf))
+            (cl-loop for buf in (mapcar 'cdr (cdr conf))
                for pos = (winner-get-point buf nil)
                if (and pos (not (memq buf buffers)))
                do (push buf buffers)
@@ -1710,7 +1710,7 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 
         ;; Restore marks
         (letf (((current-buffer)))
-          (loop for buf in buffers
+          (cl-loop for buf in buffers
                 for entry = (cadr (assq buf winner-point-alist))
                 for win-ac-reg = (winner-active-region)
                 do (progn (set-buffer buf)
