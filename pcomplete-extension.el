@@ -182,28 +182,27 @@
 ;;
 (defun pcomplete/ls ()
   (let ((prec (pcomplete-arg 'last -1)))
-    (cond ((and (pcomplete-match "^-\\{2\\}" 'last)
-                (string= "ls" prec))
-           (while (pcomplete-here
-                   '("--all" "--almost-all" "--author"
-                     "--escape" "--block-size=" "--ignore-backups" "--color="
-                     "--directory" "--dired" "--classify" "--file-type"
-                     "--format=" "--full-time" "--group-directories-first"
-                     "--no-group" "--human-readable" "--si"
-                     "--dereference-command-line-symlink-to-dir"
-                     "--hide=" "--indicator-style=" "--inode" "--ignore="
-                     "--dereference" "--numeric-uid-gid" "--literal" "--indicator-style="
-                     "--hide-control-chars" "--show-control-chars"
-                     "--quote-name" "--quoting-style=" "--reverse" "--recursive"
-                     "--size" "--sort=" "--time=" "--time-style=--tabsize="
-                     "--width=" "--context" "--version" "--help"))))
-          ((and (pcomplete-match "^-\\{1\\}" 'last)
-                (string= "ls" prec))
-           ;; probably in sudo, work-around: increase index
-           ;; otherwise pcomplete-opt returns nil
-           (when (< pcomplete-index pcomplete-last)
+    (while (pcomplete-match "^-" 'last)
+      (cond ((pcomplete-match "^-\\{2\\}" 'last)
+             (while (pcomplete-here
+                     '("--all" "--almost-all" "--author"
+                       "--escape" "--block-size=" "--ignore-backups" "--color="
+                       "--directory" "--dired" "--classify" "--file-type"
+                       "--format=" "--full-time" "--group-directories-first"
+                       "--no-group" "--human-readable" "--si"
+                       "--dereference-command-line-symlink-to-dir"
+                       "--hide=" "--indicator-style=" "--inode" "--ignore="
+                       "--dereference" "--numeric-uid-gid" "--literal" "--indicator-style="
+                       "--hide-control-chars" "--show-control-chars"
+                       "--quote-name" "--quoting-style=" "--reverse" "--recursive"
+                       "--size" "--sort=" "--time=" "--time-style=--tabsize="
+                       "--width=" "--context" "--version" "--help"))))
+            ((pcomplete-match "^-\\{1\\}" 'last)
+             ;; probably in sudo, work-around: increase index
+             ;; otherwise pcomplete-opt returns nil
+             (when (< pcomplete-index pcomplete-last)
                (pcomplete-next-arg))
-           (pcomplete-opt "aAbBcCdDfFgGhHiIklLmnNopqQrRsStTuUvwxXZ1")))
+             (pcomplete-opt "aAbBcCdDfFgGhHiIklLmnNopqQrRsStTuUvwxXZ1"))))
   (while (pcomplete-here (pcomplete-entries) nil 'identity))))
 
 ;;; apt-get
