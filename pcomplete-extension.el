@@ -147,20 +147,34 @@
 
 ;;; Redefine emacs functions to have completion after sudo
 ;;
-(defun shell-command-completion ()
-  "Return the completion data for the command at point, if any."
-  (let ((filename (comint-match-partial-filename))
-        (args (split-string
-               (buffer-substring-no-properties
-                (point) (save-excursion (shell-backward-command 1) (point))))))
-    (when (and filename
-               (save-match-data (not (string-match "[~/]" filename)))
-               (or (and (string= (car args) "sudo")
-                        (string= filename (cadr args)))
-                   (and (not (string= (car args) "sudo"))
-                        (eq (match-beginning 0)
-                            (save-excursion (shell-backward-command 1) (point))))))
-      (shell--command-completion-data))))
+;; (defun shell-command-completion ()
+;;   "Return the completion data for the command at point, if any."
+;;   (let ((filename (comint-match-partial-filename))
+;;         (args (split-string
+;;                (buffer-substring-no-properties
+;;                 (point) (save-excursion (shell-backward-command 1) (point))))))
+;;     (when (and filename
+;;                (save-match-data (not (string-match "[~/]" filename)))
+;;                (or (and (string= (car args) "sudo")
+;;                         (string= filename (cadr args)))
+;;                    (and (not (string= (car args) "sudo"))
+;;                         (eq (match-beginning 0)
+;;                             (save-excursion (shell-backward-command 1) (point))))))
+;;       (shell--command-completion-data))))
+
+(defun shell-backward-command (&optional arg)
+  "Move backward across ARG shell command(s).  Does not cross lines.
+See `shell-command-regexp'."
+  (interactive "p")
+  (let ((limit (save-excursion (comint-bol nil) (point))))
+    (when (> limit (point))
+      (setq limit (line-beginning-position)))
+    (skip-syntax-backward " " limit)
+    (if (re-search-backward
+	 (format "\\(sudo\\|[;&|]+\\)[\t ]*\\(%s\\)"
+                 shell-command-regexp) limit 'move arg)
+	(progn (goto-char (match-beginning 2))
+	       (skip-chars-forward ";&|")))))
 
 (defun pcomplete-command-name ()
   "Return the command name of the first argument."
