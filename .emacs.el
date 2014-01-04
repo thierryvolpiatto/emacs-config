@@ -133,7 +133,7 @@ If your system's ping continues until interrupted, you can try setting
 ;; Annoyance number 1 is bidi
 ;; Turn OFF bidi everywhere.
 (setq-default bidi-display-reordering nil)
-;(setq-default cache-long-scans nil) ; Fix bug#15973
+;;(setq-default cache-long-scans nil) ; Fix bug#15973
 
 ;; Disable uniquify enabled by default in 24.4.
 (setq uniquify-buffer-name-style nil)
@@ -1879,6 +1879,12 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
           (kill-new url)
           (message "Bug `#%s' url's copied to kill-ring" bug-number))
         (browse-url url))))
+
+;;; Be sure to reenable touchpad when quitting emacs
+;;  (emacs 24.4 don't exit properly)
+(add-hook 'kill-emacs-hook #'(lambda ()
+                               (and (executable-find "reenable_touchpad.sh")
+                                    (shell-command "reenable_touchpad.sh"))))
 
 ;;; Semantic
 ;;

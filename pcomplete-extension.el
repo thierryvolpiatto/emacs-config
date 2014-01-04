@@ -156,7 +156,7 @@ See `shell-command-regexp'."
       (setq limit (line-beginning-position)))
     (skip-syntax-backward " " limit)
     (if (re-search-backward
-	 (format "\\(sudo\\|[;&|]+\\)[\t ]*\\(%s\\)"
+	 (format "\\(sudo\\|xargs\\|[;&|]+\\)[\t ]*\\(%s\\)"
                  shell-command-regexp) limit 'move arg)
 	(progn (goto-char (match-beginning 2))
 	       (skip-chars-forward ";&|")))))
@@ -169,9 +169,10 @@ See `shell-command-regexp'."
         (com3 (pcomplete-arg 'last)))
     (cond ((and (stringp com) (stringp com1)
                 (not (string= com1 ""))
-                (string= com "sudo"))
+                (member com '("sudo" "xargs")))
            (file-name-nondirectory com1))
-          ((and (stringp com2) (string= com2 "sudo")
+          ((and (stringp com2)
+                (member com2 '("sudo" "xargs"))
                 (not (string= com3 "")))
            (file-name-nondirectory com3))
           (t
@@ -252,4 +253,4 @@ See `shell-command-regexp'."
 
 (provide 'pcomplete-extension)
 
-;;; pcomplete-hg.el ends here
+;;; pcomplete-extension.el ends here
