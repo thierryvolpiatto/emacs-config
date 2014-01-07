@@ -197,8 +197,21 @@ Shell buffers.  It implements `shell-completion-execonly' for
            (t ;; e.g (install apt-get)
             (cadr coms))))))
 
+;;; Redefine `pcomplete/xargs'
+;;
+(defun pcomplete/xargs ()
+  "Completion for `xargs'."
+  (let ((pcomplete-cmd-name (pcomplete-command-name)))
+    (cond ((string= "xargs" pcomplete-cmd-name)
+           (while (pcomplete-here*
+                   (funcall pcomplete-command-completion-function)
+                   (pcomplete-arg 'last) t)))
+          (t (funcall (or (pcomplete-find-completion-function (pcomplete-arg 1))
+                          pcomplete-default-completion-function))))))
+
 ;; Tests
 ;; find . -name '*.el' | xargs et      =>ok
+;; find . -name '*.el' | xargs -t et   =>ok
 ;; sudo apt-g                          =>ok
 ;; sudo apt-get in                     =>ok
 ;; sudo apt-get --                     =>ok
