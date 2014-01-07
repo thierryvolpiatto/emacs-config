@@ -69,9 +69,10 @@
 ;;
 (define-key lisp-interaction-mode-map [remap completion-at-point] 'helm-lisp-completion-at-point)
 (define-key emacs-lisp-mode-map       [remap completion-at-point] 'helm-lisp-completion-at-point)
-(add-hook 'ielm-mode-hook
-	  #'(lambda ()
-	      (define-key ielm-map    [remap completion-at-point] 'helm-lisp-completion-at-point)))
+(unless (boundp 'completion-in-region-function)
+  (add-hook 'ielm-mode-hook
+            #'(lambda ()
+                (define-key ielm-map    [remap completion-at-point] 'helm-lisp-completion-at-point))))
 
 ;;; helm completion in minibuffer
 ;;
