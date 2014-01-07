@@ -135,17 +135,17 @@
 ;; Allow completing other commands entered after sudo
 ;; FIXME short options are not working after sudo.
 (defun pcomplete/sudo ()
-  (let ((prec (pcomplete-arg 'last -1)))
-    (cond ((string= "sudo" prec)
+  (let ((pcomplete-cmd-name (pcomplete-command-name)))
+    (cond ((string= "sudo" pcomplete-cmd-name)
            (while (pcomplete-here*
                    (funcall pcomplete-command-completion-function)
                    (pcomplete-arg 'last) t)))
           (t
            (funcall (or (pcomplete-find-completion-function
-                         (pcomplete-command-name))
+                         pcomplete-cmd-name)
                         pcomplete-default-completion-function))))))
 
-;;; Redefine emacs functions to have completion after sudo
+;;; Redefine emacs core functions to have completion after sudo
 ;;
 (defun shell-command-completion-function ()
   "Completion function for shell command names.
@@ -163,9 +163,22 @@ Shell buffers.  It implements `shell-completion-execonly' for
                                       (member "&" lst)
                                       (member ";" lst)
                                       lst)
-                       for exec = (executable-find str)
+                       for exec = (or (executable-find str)
+                                      ;; `executable-find' or which
+                                      ;; doesn't return these paths.
+                                      (car (member str '("cd" "pushd" "popd"))))
                        when exec collect exec)))
     (file-name-nondirectory
+     ;; we may have commands embeded in executables that looks
+     ;; like executables (e.g apt-get install).
+     ;; Assume that all executables are using only one command
+     ;; like this.
+     ;; e.g - if we have (install apt-get sudo)
+     ;;       what we want is apt-get.
+     ;;     - if we have (apt-get sudo)
+     ;;       what we want is sudo,
+     ;;       then pcomplete/sudo will check if
+     ;;       a pcomplete handler exists for apt-get.
      (if (> (length coms) 2)
          (cadr coms)
          (car coms)))))
