@@ -147,36 +147,24 @@
 
 ;;; Redefine emacs functions to have completion after sudo
 ;;
-(defun shell-backward-command (&optional arg)
-  "Move backward across ARG shell command(s).  Does not cross lines.
-See `shell-command-regexp'."
-  (interactive "p")
-  (let ((limit (save-excursion (comint-bol nil) (point))))
-    (when (> limit (point))
-      (setq limit (line-beginning-position)))
-    (skip-syntax-backward " " limit)
-    (if (re-search-backward
-	 (format "\\(sudo\\|xargs\\|[;&|]+\\)[\t ]*\\(%s\\)"
-                 shell-command-regexp) limit 'move arg)
-	(progn (goto-char (match-beginning 2))
-	       (skip-chars-forward ";&|")))))
+(defun shell-command-completion-function ()
+  "Completion function for shell command names.
+This is the value of `pcomplete-command-completion-function' for
+Shell buffers.  It implements `shell-completion-execonly' for
+`pcomplete' completion."
+  (let ((data (shell--command-completion-data)))
+    (and data (pcomplete-here (all-completions "" (nth 2 data))))))
 
 (defun pcomplete-command-name ()
   "Return the command name of the first argument."
-  (let ((com (pcomplete-arg 'first))
-        (com1 (pcomplete-arg 'first 1))
-        (com2 (pcomplete-arg 'last -1))
-        (com3 (pcomplete-arg 'last)))
-    (cond ((and (stringp com) (stringp com1)
-                (not (string= com1 ""))
-                (member com '("sudo" "xargs")))
-           (file-name-nondirectory com1))
-          ((and (stringp com2)
-                (member com2 '("sudo" "xargs"))
-                (not (string= com3 "")))
-           (file-name-nondirectory com3))
-          (t
-           (file-name-nondirectory com)))))
+  (let ((com (cl-loop with lst = (reverse (pcomplete-parse-arguments))
+                      for str in (or (member "|" lst)
+                                     (member "&" lst)
+                                     (member ";" lst)
+                                     lst)
+                      thereis (executable-find str))))
+    (and (stringp com)
+         (file-name-nondirectory com))))
 
 ;;; Ls
 ;;
