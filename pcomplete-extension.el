@@ -160,6 +160,7 @@ Shell buffers.  It implements `shell-completion-execonly' for
   (let ((data (shell--command-completion-data)))
     (and data (pcomplete-here (all-completions "" (nth 2 data))))))
 
+(defvar pcomplete-special-commands '("sudo" "xargs"))
 (defun pcomplete-command-name ()
   "Return the command name of the first argument."
   (let ((coms (cl-loop with lst = (reverse (pcomplete-parse-arguments))
@@ -169,7 +170,7 @@ Shell buffers.  It implements `shell-completion-execonly' for
                                       (member ";" lst)
                                       lst)
                        for exec = (or (executable-find str)
-                                      ;; `executable-find' or which
+                                      ;; `executable-find' or 'which'
                                       ;; doesn't return these paths.
                                       (car (member str '("cd" "pushd" "popd"))))
                        when exec collect exec)))
@@ -184,24 +185,34 @@ Shell buffers.  It implements `shell-completion-execonly' for
      ;;       what we want is sudo,
      ;;       then pcomplete/sudo will check if
      ;;       a pcomplete handler exists for apt-get.
-     (if (> (length coms) 2)
-         (cadr coms)
-         (car coms)))))
+     (cond (;; e.g (install apt-get sudo)
+            (> (length coms) 2) (cadr coms))
+           (;; e.g (apt-get sudo)
+            (and (= (length coms) 2)
+                 (member (file-name-nondirectory (cadr coms))
+                         pcomplete-special-commands))
+            (car coms))
+           (;; e.g (sudo)
+            (= (length coms) 1) (car coms))
+           (t ;; e.g (install apt-get)
+            (cadr coms))))))
 
 ;; Tests
-;; find . -name '*.el' | xargs et      => ok
-;; sudo apt-g                          => ok
-;; sudo apt-get in                     => ok
-;; sudo apt-get --                     => ok
-;; sudo apt-get -                      => ok
-;; sudo apt-get -V -                   => ok
-;; sudo apt-get -V --                  => ok
-;; sudo apt-get --reinstall ins        => ok
-;; sudo apt-get --reinstall install em => ok
-;; sudo -                              => ok
-;; sudo -p "pass" -                    => ok
-;; sudo -p "pass" apt-g                => ok
-;; sudo -p "pass" apt-get ins          => ok
+;; find . -name '*.el' | xargs et      =>ok
+;; sudo apt-g                          =>ok
+;; sudo apt-get in                     =>ok
+;; sudo apt-get --                     =>ok
+;; sudo apt-get -                      =>ok
+;; sudo apt-get -V -                   =>ok
+;; sudo apt-get -V --                  =>ok
+;; sudo apt-get --reinstall ins        =>ok
+;; sudo apt-get --reinstall install em =>ok
+;; sudo -                              =>ok
+;; sudo -p "pass" -                    =>ok
+;; sudo -p "pass" apt-g                =>ok
+;; sudo -p "pass" apt-get ins          =>ok
+;; apt-get in                          =>ok
+;; apt-get install em                  =>ok
 
 ;;; Ls
 ;;
