@@ -206,7 +206,7 @@ Shell buffers.  It implements `shell-completion-execonly' for
            (while (pcomplete-here*
                    (funcall pcomplete-command-completion-function)
                    (pcomplete-arg 'last) t)))
-          (t (funcall (or (pcomplete-find-completion-function (pcomplete-arg 1))
+          (t (funcall (or (pcomplete-find-completion-function pcomplete-cmd-name)
                           pcomplete-default-completion-function))))))
 
 ;; Tests
