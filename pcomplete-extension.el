@@ -136,6 +136,11 @@
 ;; FIXME short options are not working after sudo.
 (defun pcomplete/sudo ()
   (let ((pcomplete-cmd-name (pcomplete-command-name)))
+    (while (and (string= "sudo" pcomplete-cmd-name)
+                (pcomplete-match "^-" 'last))
+      (when (< pcomplete-index pcomplete-last)
+        (pcomplete-next-arg))
+      (pcomplete-opt "AbCDEegHhiKknPpSsUuVv-"))
     (cond ((string= "sudo" pcomplete-cmd-name)
            (while (pcomplete-here*
                    (funcall pcomplete-command-completion-function)
@@ -182,6 +187,21 @@ Shell buffers.  It implements `shell-completion-execonly' for
      (if (> (length coms) 2)
          (cadr coms)
          (car coms)))))
+
+;; Tests
+;; find . -name '*.el' | xargs et      => ok
+;; sudo apt-g                          => ok
+;; sudo apt-get in                     => ok
+;; sudo apt-get --                     => ok
+;; sudo apt-get -                      => ok
+;; sudo apt-get -V -                   => ok
+;; sudo apt-get -V --                  => ok
+;; sudo apt-get --reinstall ins        => ok
+;; sudo apt-get --reinstall install em => ok
+;; sudo -                              => ok
+;; sudo -p "pass" -                    => ok
+;; sudo -p "pass" apt-g                => ok
+;; sudo -p "pass" apt-get ins          => ok
 
 ;;; Ls
 ;;
