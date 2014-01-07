@@ -157,14 +157,18 @@ Shell buffers.  It implements `shell-completion-execonly' for
 
 (defun pcomplete-command-name ()
   "Return the command name of the first argument."
-  (let ((com (cl-loop with lst = (reverse (pcomplete-parse-arguments))
-                      for str in (or (member "|" lst)
-                                     (member "&" lst)
-                                     (member ";" lst)
-                                     lst)
-                      thereis (executable-find str))))
-    (and (stringp com)
-         (file-name-nondirectory com))))
+  (let ((coms (cl-loop with lst = (reverse (pcomplete-parse-arguments))
+                       for str in (or (member "|" lst)
+                                      (member "||" lst)
+                                      (member "&" lst)
+                                      (member ";" lst)
+                                      lst)
+                       for exec = (executable-find str)
+                       when exec collect exec)))
+    (file-name-nondirectory
+     (if (> (length coms) 2)
+         (cadr coms)
+         (car coms)))))
 
 ;;; Ls
 ;;
