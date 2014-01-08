@@ -35,87 +35,6 @@ If your system's ping continues until interrupted, you can try setting
      dig-program
      (list host))))
 
-(when (require 'org-crypt)
-  (progn
-    (defun org-encrypt-string (str crypt-key)
-      "Return STR encrypted with CRYPT-KEY."
-      ;; Text and key have to be identical, otherwise we re-crypt.
-      (if (and (string= crypt-key (get-text-property 0 'org-crypt-key str))
-	       (string= (sha1 str) (get-text-property 0 'org-crypt-checksum str)))
-	  (get-text-property 0 'org-crypt-text str)
-        (set (make-local-variable 'epg-context) (epg-make-context nil t t))
-        (epg-encrypt-string epg-context str (epg-list-keys epg-context crypt-key))))
-
-    (defun org-encrypt-entry ()
-      "Encrypt the content of the current headline."
-      (interactive)
-      (require 'epg)
-      (save-excursion
-	(org-back-to-heading t)
-	(set (make-local-variable 'epg-context) (epg-make-context nil t t))
-	(let ((start-heading (point)))
-	  (forward-line)
-	  (when (not (looking-at "-----BEGIN PGP MESSAGE-----"))
-	    (let ((folded (outline-invisible-p))
-		  (crypt-key (org-crypt-key-for-heading))
-		  (beg (point))
-		  end encrypted-text)
-	      (goto-char start-heading)
-	      (org-end-of-subtree t t)
-	      (org-back-over-empty-lines)
-	      (setq end (point)
-		    encrypted-text
-		    (org-encrypt-string (buffer-substring beg end) crypt-key))
-	      (delete-region beg end)
-	      (insert encrypted-text)
-	      (when folded
-		(goto-char start-heading)
-		(hide-subtree))
-	      nil)))))
-
-    (defun org-decrypt-entry ()
-      "Decrypt the content of the current headline."
-      (interactive)
-      (require 'epg)
-      (unless (org-before-first-heading-p)
-	(save-excursion
-	  (org-back-to-heading t)
-	  (let ((heading-point (point))
-		(heading-was-invisible-p
-		 (save-excursion
-		   (outline-end-of-heading)
-		   (outline-invisible-p))))
-	    (forward-line)
-	    (when (looking-at "-----BEGIN PGP MESSAGE-----")
-	      (org-crypt-check-auto-save)
-	      (set (make-local-variable 'epg-context) (epg-make-context nil t t))
-	      (let* ((end (save-excursion
-			    (search-forward "-----END PGP MESSAGE-----")
-			    (forward-line)
-			    (point)))
-		     (encrypted-text (buffer-substring-no-properties (point) end))
-		     (decrypted-text
-		      (decode-coding-string
-		       (epg-decrypt-string
-			epg-context
-			encrypted-text)
-		       'utf-8)))
-		;; Delete region starting just before point, because the
-		;; outline property starts at the \n of the heading.
-		(delete-region (1- (point)) end)
-		;; Store a checksum of the decrypted and the encrypted
-		;; text value.  This allow to reuse the same encrypted text
-		;; if the text does not change, and therefore avoid a
-		;; re-encryption process.
-		(insert "\n" (propertize decrypted-text
-					 'org-crypt-checksum (sha1 decrypted-text)
-					 'org-crypt-key (org-crypt-key-for-heading)
-					 'org-crypt-text encrypted-text))
-		(when heading-was-invisible-p
-		  (goto-char heading-point)
-		  (org-flag-subtree t))
-		nil))))))))
-
 (defadvice term-command-hook (before decode-string)
   (setq string (decode-coding-string string locale-coding-system)))
 
@@ -133,7 +52,7 @@ If your system's ping continues until interrupted, you can try setting
 ;; Annoyance number 1 is bidi
 ;; Turn OFF bidi everywhere.
 (setq-default bidi-display-reordering nil)
-;;(setq-default cache-long-scans nil) ; Fix bug#15973
+;(setq-default cache-long-scans nil) ; Fix bug#15973
 
 ;; Disable uniquify enabled by default in 24.4.
 (setq uniquify-buffer-name-style nil)
