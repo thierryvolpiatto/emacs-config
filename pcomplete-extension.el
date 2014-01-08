@@ -128,7 +128,7 @@
                (string= prec "-execdir"))
            (while (pcomplete-here* (funcall pcomplete-command-completion-function)
                                    (pcomplete-arg 'last) t))))
-    (while (pcomplete-here (pcomplete-entries) nil 'identity))))
+    (while (pcomplete-here (pcomplete-dirs) nil 'identity))))
 
 ;;; Sudo
 ;;
