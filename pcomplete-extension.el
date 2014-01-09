@@ -22,6 +22,7 @@
 (require 'pcomplete)
 (require 'shell)
 
+
 ;;; Hg completion
 ;;
 ;;
@@ -90,6 +91,7 @@
            (pcomplete-here commands)))
     (while (pcomplete-here (pcomplete-entries) nil 'identity))))
 
+
 ;;; Find completion
 ;;
 ;;
@@ -130,6 +132,7 @@
                                    (pcomplete-arg 'last) t))))
     (while (pcomplete-here (pcomplete-dirs) nil 'identity))))
 
+
 ;;; Sudo
 ;;
 ;; Allow completing other commands entered after sudo
@@ -150,6 +153,7 @@
                          pcomplete-cmd-name)
                         pcomplete-default-completion-function))))))
 
+
 ;;; Redefine emacs core functions to have completion after sudo
 ;;
 (defun shell-command-completion-function ()
@@ -228,6 +232,7 @@ Shell buffers.  It implements `shell-completion-execonly' for
 ;; apt-get in                          =>ok
 ;; apt-get install em                  =>ok
 
+
 ;;; Ls
 ;;
 (defun pcomplete/ls ()
@@ -254,6 +259,7 @@ Shell buffers.  It implements `shell-completion-execonly' for
            (pcomplete-opt "aAbBcCdDfFgGhHiIklLmnNopqQrRsStTuUvwxXZ1"))))
   (while (pcomplete-here (pcomplete-entries) nil 'identity)))
 
+
 ;;; apt-get
 ;;
 (defvar pcomplete-apt-get-data nil)
@@ -301,6 +307,7 @@ Shell buffers.  It implements `shell-completion-execonly' for
                                 nil (current-buffer))
                                (mapcar (lambda (line) (car (split-string line " - ")))
                                        (split-string (buffer-string) "\n")))))))))))
+
 
 (provide 'pcomplete-extension)
 
