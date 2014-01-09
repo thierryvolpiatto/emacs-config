@@ -127,7 +127,7 @@ If your system's ping continues until interrupted, you can try setting
 (dolist (i '("/usr/local/share/emacs/site-lisp"
              "/usr/local/share/emacs/site-lisp/auctex"
 	     "~/elisp/"
-	     "~/elisp/magit"
+	     ;"~/elisp/magit"
              "~/elisp/Emacs-wgrep"
              "~/elisp/auctex"
              "~/elisp/auctex/preview"
