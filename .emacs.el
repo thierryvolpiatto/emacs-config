@@ -1806,7 +1806,7 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 
 (defun tv-font-lock-doc-rules ()
   (font-lock-add-keywords
-   nil '(("[`]\\([^`']*[`']?\\)[']" 1 font-lock-type-face)
+   nil '(("[^\\s\][`]\\([^`']*[`']?\\)[^\\s\][']" 1 font-lock-type-face)
          ("^ --.*$" . tv-info-title-face)
          ("\"\\([^\"]*\\)[\"]" . font-lock-string-face)
          ("\\*Warning:\\*" . font-lock-warning-face)
