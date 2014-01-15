@@ -127,7 +127,7 @@ If your system's ping continues until interrupted, you can try setting
 (dolist (i '("/usr/local/share/emacs/site-lisp"
              "/usr/local/share/emacs/site-lisp/auctex"
 	     "~/elisp/"
-	     ;"~/elisp/magit"
+	     "~/elisp/magit"
              "~/elisp/Emacs-wgrep"
              "~/elisp/auctex"
              "~/elisp/auctex/preview"
@@ -1008,11 +1008,6 @@ from IPython.core.completerlib import module_completion"
 ;;
 (tv-require 'pcomplete-extension)
 
-;; Finally load eshell on startup.
-(add-hook 'emacs-startup-hook #'(lambda ()
-                                  (let ((default-directory (getenv "HOME")))
-                                    (command-execute 'eshell)
-                                    (bury-buffer))))
 
 ;; Term-et-ansi-term
 (defun tv-term ()
@@ -1766,6 +1761,7 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 (defun helm-running-p () helm-alive-p)
 (setq golden-ratio-inhibit-functions '(helm-running-p))
 (setq golden-ratio-exclude-modes '("ediff-mode"))
+(setq golden-ratio-exclude-buffer-names '("*helm marked*"))
 (setq golden-ratio-recenter t)
 (add-hook 'ediff-before-setup-windows-hook #'(lambda () (golden-ratio-mode -1)))
 (add-hook 'ediff-quit-hook #'(lambda () (golden-ratio-mode 1)))
@@ -1798,6 +1794,25 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
           (kill-new url)
           (message "Bug `#%s' url's copied to kill-ring" bug-number))
         (browse-url url))))
+
+;;; Info
+;;
+(defface tv-info-ref-item
+    '((((background dark)) :background "DimGray" :foreground "Gold")
+      (((background light)) :background "firebrick" :foreground "LightGray"))
+  "Face for item stating with -- in info." :group 'Info :group 'faces)
+
+(defvar tv-info-title-face 'tv-info-ref-item)
+
+(defun tv-font-lock-doc-rules ()
+  (font-lock-add-keywords
+   nil '(("[`]\\([^`']*[`']?\\)[']" 1 font-lock-type-face)
+         ("^ --.*$" . tv-info-title-face)
+         ("\"\\([^\"]*\\)[\"]" . font-lock-string-face)
+         ("\\*Warning:\\*" . font-lock-warning-face)
+         ("^ +\\(\\*\\) " 1 font-lock-variable-name-face))))
+
+(add-hook 'Info-mode-hook 'tv-font-lock-doc-rules)
 
 ;;; Be sure to reenable touchpad when quitting emacs
 ;;  (emacs 24.4 don't exit properly)

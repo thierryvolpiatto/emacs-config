@@ -201,7 +201,7 @@ Shell buffers.  It implements `shell-completion-execonly' for
            (t ;; e.g (install apt-get)
             (cadr coms))))))
 
-;;; Redefine `pcomplete/xargs'
+;;; Redefine pcomplete/* functions not working in emacs.
 ;;
 (defun pcomplete/xargs ()
   "Completion for `xargs'."
@@ -213,6 +213,12 @@ Shell buffers.  It implements `shell-completion-execonly' for
           (t (funcall (or (pcomplete-find-completion-function
                            pcomplete-cmd-name)
                           pcomplete-default-completion-function))))))
+
+;; Avoid infloop in cd. e.g "sudo cd /" <TAB>
+;; Even if it is not allowed to do this.
+(defun pcomplete/cd ()
+  "Completion for `cd'."
+  (while (pcomplete-here (pcomplete-dirs) nil 'identity)))
 
 ;; Tests
 ;; find . -name '*.el' | xargs et      =>ok

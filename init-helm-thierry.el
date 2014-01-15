@@ -24,9 +24,8 @@
       (prog1 (match-string-no-properties 0) (kill-buffer))))))
 
 (defun helm-git-version ()
-  (replace-regexp-in-string
-   "\n" ""
-   (shell-command-to-string "git-log -n1 | head -n1 | awk '{print $2}'")))
+  (shell-command-to-string
+   "git log --pretty='format:%H' -1"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -113,11 +112,11 @@
       ;helm-split-window-default-side             'same
       ;helm-split-window-in-side-p                t
       helm-always-two-windows                    t
-      helm-persistent-action-use-special-display t
+      ;helm-persistent-action-use-special-display t
       helm-buffers-favorite-modes                (append helm-buffers-favorite-modes
                                                          '(picture-mode artist-mode))
       helm-ls-git-status-command                 'magit-status
-      helm-never-delay-on-input                  nil
+      ;helm-never-delay-on-input                  nil
       helm-candidate-number-limit                200
       helm-M-x-requires-pattern                  0
       helm-dabbrev-cycle-thresold                5
@@ -128,6 +127,7 @@
       ;helm-tramp-verbose                         6
       ;helm-ff-file-name-history-use-recentf      t
       ;helm-follow-mode-persistent                t
+      helm-move-to-line-cycle-in-source           t
       )
 
 ;;; Toggle grep program
