@@ -1008,6 +1008,12 @@ from IPython.core.completerlib import module_completion"
 ;;
 (tv-require 'pcomplete-extension)
 
+;; Finally load eshell on startup.
+(add-hook 'emacs-startup-hook #'(lambda ()
+                                  (let ((default-directory (getenv "HOME")))
+                                    (command-execute 'eshell)
+                                    (bury-buffer))))
+
 
 ;; Term-et-ansi-term
 (defun tv-term ()
@@ -1810,7 +1816,8 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
          ("^ --.*$" . tv-info-title-face)
          ("\"\\([^\"]*\\)[\"]" . font-lock-string-face)
          ("\\*Warning:\\*" . font-lock-warning-face)
-         ("^ +\\(\\*\\) " 1 font-lock-variable-name-face))))
+         ("^ +\\(\\*\\) " 1 font-lock-variable-name-face)
+         ("^[A-Z][a-z- ]*:" . font-lock-variable-name-face))))
 
 (add-hook 'Info-mode-hook 'tv-font-lock-doc-rules)
 
