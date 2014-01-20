@@ -238,7 +238,7 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'psession-mode "persistent-sessions.el")
 (tv-require 'wgrep-helm)
 (when (tv-require 'dired-aux)
-  (tv-require 'helm-async))
+  (tv-require 'dired-async))
 (tv-require 'smtpmail-async)
 (autoload 'golden-ratio-mode "golden-ratio.el" nil t)
 (autoload 'emamux:send-command "emamux.el" nil t)

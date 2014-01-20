@@ -1,4 +1,4 @@
-;;; tv-utils.el --- Some useful functions for Emacs. 
+;;; tv-utils.el --- Some useful functions for Emacs. -*- lexical-binding: t -*- 
 ;; 
 ;; Author: ThierryVolpiatto
 ;; Maintainer: ThierryVolpiatto
@@ -143,11 +143,10 @@ to be prompt for next directory.
 When you do not add a + to directory name
 input is finish and function executed"
   (interactive "fFile: ")
-  (let* ((dest-list nil)
-         (final-list
-          (if list-of-dir
-              list-of-dir
-              (multi-read-name 'read-directory-name))))
+  (let ((final-list
+         (if list-of-dir
+             list-of-dir
+             (multi-read-name 'read-directory-name))))
     (cl-loop for i in final-list
              do
              (copy-file file i t))))
@@ -284,7 +283,7 @@ START and END are buffer positions indicating what to append."
     (with-temp-buffer
       (save-excursion
         (insert str))
-      (condition-case err
+      (condition-case _err
           (while (setq expr (read (current-buffer)))
             (push (eval expr) store))
         (end-of-file nil)))
@@ -694,7 +693,7 @@ If a prefix arg is given choose directory, otherwise use `default-directory'."
                           (list str1 str2))))      
          (result #'(lambda ()
                      ;; Collect random numbers without  dups.
-                     (cl-loop with L repeat 5
+                     (cl-loop repeat 5
                               for r = (funcall star-num 51)
                               if (not (member r L))
                               collect r into L
@@ -723,7 +722,7 @@ If a prefix arg is given choose directory, otherwise use `default-directory'."
 
 ;; Just an example to use `url-retrieve'
 (defun tv-download-file-async (url &optional noheaders to)
-  (lexical-let ((noheaders noheaders) (to to))
+  (let ((noheaders noheaders) (to to))
     (url-retrieve url #'(lambda (status)
                           (if (plist-get status :error)
                               (signal (car status) (cadr status))
@@ -832,7 +831,7 @@ the password will be of length (floor LIMIT)."
            collect rand2 into ls
            finally return
            ;; Now shuffle ls.
-           (cl-loop for n in ls
+           (cl-loop repeat (length ls)
                     for elm = (nth (random (length ls)) ls)
                     concat elm)))
 
