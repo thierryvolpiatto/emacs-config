@@ -127,6 +127,7 @@ If your system's ping continues until interrupted, you can try setting
 (dolist (i '("/usr/local/share/emacs/site-lisp"
              "/usr/local/share/emacs/site-lisp/auctex"
 	     "~/elisp/"
+             "~/elisp/emacs-w3m"
 	     "~/elisp/magit"
              "~/elisp/Emacs-wgrep"
              "~/elisp/auctex"
@@ -1820,6 +1821,10 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
          ("^[A-Z][a-z- ]*:" . font-lock-variable-name-face))))
 
 (add-hook 'Info-mode-hook 'tv-font-lock-doc-rules)
+
+;;; W3m
+;;
+(require 'config-w3m)
 
 ;;; Be sure to reenable touchpad when quitting emacs
 ;;  (emacs 24.4 don't exit properly)

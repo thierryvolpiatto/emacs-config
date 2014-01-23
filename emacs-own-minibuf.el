@@ -4,7 +4,6 @@
 
 ;;; Code:
 
-(require 'cl)
 (blink-cursor-mode -1)
 (show-paren-mode 1)
 (setq inhibit-startup-message t)

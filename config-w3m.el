@@ -18,7 +18,7 @@
 (autoload 'w3m-toggle-inline-image "w3m"
   "Toggle the visibility of an image under point." t)
 
-(setq w3m-home-page "http://www.google.fr")
+(setq w3m-home-page "http://www.duckduckgo.com")
 
 ;; enable-cookies-in-w3m 
 (setq w3m-use-cookies t)
