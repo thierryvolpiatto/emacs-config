@@ -325,6 +325,12 @@ in this case start Gnus plugged, otherwise start it unplugged."
   (save-restriction
     (narrow-to-defun)
     (iedit-mode arg)))
+
+;;; Run or hide shell
+(defun tv-shell ()
+  (interactive)
+  (if (eq major-mode 'shell-mode)
+      (bury-buffer) (shell)))
 
 ;;; Global keys
 ;;
@@ -343,7 +349,7 @@ in this case start Gnus plugged, otherwise start it unplugged."
 (global-set-key (kbd "<f7> n")                     'newsticker-show-news)
 (global-set-key (kbd "<f11> e c")                  'eshell-toggle-cd)
 (global-set-key (kbd "<f11> e t")                  'eshell-toggle)
-(global-set-key (kbd "<f11> s h")                  'shell)
+(global-set-key (kbd "<f11> s h")                  'tv-shell)
 (global-set-key (kbd "<f11> t")                    'tv-term)
 (global-set-key (kbd "<f11> i")                    'ielm)
 (global-set-key (kbd "<f11> p")                    'python-shell-switch-to-shell)

@@ -27,28 +27,6 @@
   (shell-command-to-string
    "git log --pretty='format:%H' -1"))
 
-(defvar helm-source-comint-input-ring
-  '((name . "Shell history")
-    (candidates . (lambda ()
-                    (with-helm-current-buffer
-                      (cl-loop for i across (cddr comint-input-ring)
-                               collect i))))
-    (action . helm-comint-input-ring-action)))
-
-(defun helm-comint-input-ring-action (candidate)
-  (with-helm-current-buffer
-    (delete-region (comint-line-beginning-position) (point-max))
-    (insert candidate)))
-
-(defun helm-comint-input-ring ()
-  (interactive)
-  (helm :sources 'helm-source-comint-input-ring
-        :input (buffer-substring-no-properties (comint-line-beginning-position)
-                                               (point-at-eol))
-        :buffer "*helm shell history*"))
-
-(define-key shell-mode-map (kbd "M-p") 'helm-comint-input-ring)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Helm-command-map
@@ -80,6 +58,7 @@
 (define-key global-map [remap list-buffers]     'helm-buffers-list)
 (define-key global-map [remap dabbrev-expand]   'helm-dabbrev)
 (define-key global-map [remap find-tag]         'helm-etags-select)
+(define-key shell-mode-map (kbd "M-p")          'helm-comint-input-ring) ; shell history.
 
 ;;; Lisp complete or indent. (Rebind <tab>)
 ;;
