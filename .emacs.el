@@ -52,7 +52,7 @@ If your system's ping continues until interrupted, you can try setting
 ;; Annoyance number 1 is bidi
 ;; Turn OFF bidi everywhere.
 (setq-default bidi-display-reordering nil)
-(setq-default cache-long-scans nil) ; Fix bug#15973
+;(setq-default cache-long-scans nil) ; Fix bug#15973
 
 ;; Disable uniquify enabled by default in 24.4.
 (setq uniquify-buffer-name-style nil)
@@ -1617,10 +1617,10 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
            (alive
             ;; Possibly update `winner-point-alist'
             (cl-loop for buf in (mapcar 'cdr (cdr conf))
-               for pos = (winner-get-point buf nil)
-               if (and pos (not (memq buf buffers)))
-               do (push buf buffers)
-               collect pos)))
+                     for pos = (winner-get-point buf nil)
+                     if (and pos (not (memq buf buffers)))
+                     do (push buf buffers)
+                     collect pos)))
       (winner-set-conf (car conf))
       (let (xwins)                      ; to be deleted
 
@@ -1637,12 +1637,12 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 
         ;; Restore marks
         (letf (((current-buffer)))
-          (cl-loop for buf in buffers
-                for entry = (cadr (assq buf winner-point-alist))
-                for win-ac-reg = (winner-active-region)
-                do (progn (set-buffer buf)
-                       (set-mark (car entry))
-                       (setf win-ac-reg (cdr entry)))))
+              (cl-loop for buf in buffers
+                       for entry = (cadr (assq buf winner-point-alist))
+                       for win-ac-reg = (winner-active-region)
+                       do (progn (set-buffer buf)
+                                 (set-mark (car entry))
+                                 (setf win-ac-reg (cdr entry)))))
         ;; Delete windows, whose buffers are dead or boring.
         ;; Return t if this is still a possible configuration.
         (or (null xwins)
@@ -1654,11 +1654,6 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 
   (defalias 'winner-set 'winner-set1))
 (winner-mode 1)
-
-;;; google weather
-;;
-;;
-(setq org-google-weather-format "%L: %i %c, [%l,%h] %s")
 
 ;;; Battery
 ;;
