@@ -386,7 +386,7 @@ in this case start Gnus plugged, otherwise start it unplugged."
 (global-set-key (kbd "<f5> g m")                   'google-maps)
 (global-set-key (kbd "M-\"")                       'tv-insert-double-quote)
 (global-set-key (kbd "C-M-\`")                     'tv-insert-double-backquote)
-(global-set-key (kbd "M-\[")                       'tv-insert-vector)
+;(global-set-key (kbd "M-\[")                       'tv-insert-vector)
 (global-set-key (kbd "C-M-(")                      'tv-move-pair-forward)
 (global-set-key (kbd "C-M-\"")                     'tv-insert-double-quote-and-close-forward)
 (global-set-key (kbd "C-M-)")                      'tv-insert-pair-and-close-forward)
@@ -1214,7 +1214,6 @@ With prefix arg always start and let me choose dictionary."
 (setq newsticker-frontend 'newsticker-plainview)
 (setq newsticker-retrieval-method 'extern)
 (setq newsticker-show-descriptions-of-new-items nil)
-(tv-require 'shr nil t) ; bug fix in emacs-24.3.50.1
 
 (defun newsticker-quit-and-stop ()
   (interactive)

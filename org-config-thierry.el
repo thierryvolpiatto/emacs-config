@@ -68,12 +68,13 @@
 
 ;; Tags-setting 
 ;; (info "(org)Setting tags")
-(setq org-tag-alist '(("entrainement" . ?E)
-                      ("climbing" . ?c)
+(setq org-tag-alist '(("@entrainement" . ?E)
+                      ("@climbing" . ?c)
                       ("Equipement" . ?e)
-                      ("github" . ?d)
+                      ("@github" . ?d)
+                      ("Helm" . ?h)
                       ("crypt" . ?C)
-                      ("travel" . ?t)))
+                      ("@travel" . ?t)))
 
 ;; org-capture
 (setq org-capture-templates
@@ -164,8 +165,9 @@
   (save-excursion
     (let ((inhibit-read-only t))
       (goto-char (point-min))
-      (when (re-search-forward "^ +note" nil t)
-        (add-text-properties (match-beginning 0) (point-at-eol) '(face '((:foreground "magenta"))))))))
+      (while (re-search-forward "^ +note" nil t)
+        (add-text-properties (match-beginning 0) (point-at-eol)
+                             '(face '((:foreground "magenta"))))))))
 (add-hook 'org-finalize-agenda-hook 'tv-org-propertize-note-entry)
 
 
