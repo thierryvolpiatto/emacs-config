@@ -137,48 +137,32 @@
 ;; mcp 
 ;;;###autoload
 (defun mcp (file &optional list-of-dir)
-  "Copy `file' in multi directory.
-At each prompt of directory add + to input
-to be prompt for next directory.
-When you do not add a + to directory name
-input is finish and function executed"
+  "Copy `file' in different directories.
+Empty prompt to exit."
   (interactive "fFile: ")
   (let ((final-list
          (if list-of-dir
              list-of-dir
-             (multi-read-name 'read-directory-name))))
+             (tv/multi-read-name "Directory: "
+                                 'read-directory-name))))
     (cl-loop for i in final-list
              do
              (copy-file file i t))))
 
-;; Multi-read-name 
-;;;###autoload
-(cl-defun multi-read-name (&optional (fn 'read-string))
+;; Multi-read-name
+(cl-defun tv/multi-read-name (prompt &optional (fn 'read-string))
   "Prompt as many time you add + to end of prompt.
 Return a list of all inputs in `var'.
 You can specify input function to use."
-  (let (var)
-    (labels ((multiread ()
-               (let ((stock)
-                     (str (funcall fn (cond ((eq fn 'read-string)
-                                             "String(add + to repeat): ")
-                                            ((eq fn 'read-directory-name)
-                                             "Directory(add + to repeat): ")
-                                            (t
-                                             "File(add + to repeat): ")))))
-                 (push (replace-regexp-in-string " ?[+]" "" str) stock)
-                 (cond ((string-match "\+" str)
-                        (push (car stock) var)
-                        (multiread))
-                       (t
-                        (push (car stock) var)
-                        (nreverse (delete "" var)))))))
-      
-      (multiread))))
-
+    (let (result val)
+      (while (let ((str (funcall fn prompt)))
+               (unless (string= str "")
+                 (setq val str)))
+        (push val result))
+      (nreverse result)))
 
 ;;; move-to-window-line 
-
+;;
 ;;;###autoload
 (defun screen-top (&optional n)
   "Move the point to the top of the screen."
@@ -192,7 +176,7 @@ You can specify input function to use."
   (move-to-window-line (- (prefix-numeric-value n))))
 
 ;;; switch-other-window 
-
+;;
 ;;;###autoload
 (defun other-window-backward (&optional n)
   "Move backward to other window or frame."
