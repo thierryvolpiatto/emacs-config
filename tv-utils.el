@@ -397,8 +397,8 @@ START and END are buffer positions indicating what to append."
         (catch 'break
           (while t
             (setq action (read-key "`(': Insert, (any key to exit)."))
-            (case action
-              ('?\(
+            (cl-case action
+              (?\(
                (skip-chars-forward " ")
                (insert "(")
                (forward-sexp 1)
@@ -416,8 +416,8 @@ START and END are buffer positions indicating what to append."
         (catch 'break
           (while t
             (setq action (read-key "`)': Insert, (any key to exit)."))
-            (case action
-              ('?\)
+            (cl-case action
+              (?\)
                (unless (looking-back "(")
                  (delete-char -1))
                (skip-chars-forward " ")
@@ -439,8 +439,8 @@ START and END are buffer positions indicating what to append."
         (catch 'break
           (while t
             (setq action (read-key prompt))
-            (case action
-              ('?\"
+            (cl-case action
+              (?\"
                (skip-chars-forward " \n")
                (insert "\"")
                (forward-sexp 1)
@@ -633,6 +633,7 @@ If a prefix arg is given choose directory, otherwise use `default-directory'."
                          (helm-read-file-name
                           "Directory: " :test 'file-directory-p)
                          default-directory)))
+  (require 'dired-extension) ; for tv-get-disk-info
   (let ((df-info (tv-get-disk-info directory t)))
     (pop-to-buffer (get-buffer-create "*df info*"))
     (erase-buffer)

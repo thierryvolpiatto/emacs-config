@@ -12,7 +12,11 @@
       w3m-input-coding-system 'utf-8
       w3m-terminal-coding-system 'utf-8
       w3m-default-display-inline-images t)
- 
+
+(when (require 'w3m-search)
+  (add-to-list 'w3m-search-engine-alist '("DuckDuckGo" "https://duckduckgo.com/lite/?q=%s&kp=1"))
+  (setq w3m-search-default-engine "DuckDuckGo"))
+
 (autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t)
 (autoload 'w3m-region "w3m"
   "Render region in current buffer and replace with result." t)

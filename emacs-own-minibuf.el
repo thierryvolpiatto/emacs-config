@@ -48,6 +48,7 @@
         (menu-bar-lines . 0)
         (tool-bar-lines . 0)
         (minibuffer . only)
+        (name . "Emacs minibuffer")
         (background-color . "DarkGoldenrod")
         (foreground-color . "Black")
         ))

@@ -154,6 +154,7 @@ If your system's ping continues until interrupted, you can try setting
              "~/.emacs.d/themes/"
 	     "~/.emacs.d/emacs-config-laptop/"
              "~/elisp/emacs-async"
+             "~/elisp/elscreen"
 	     ))
   (add-to-list 'load-path i t)) ; Add all at end of `load-path' to avoid conflicts.
 
@@ -331,6 +332,7 @@ in this case start Gnus plugged, otherwise start it unplugged."
   (interactive)
   (if (eq major-mode 'shell-mode)
       (bury-buffer) (shell)))
+
 
 ;;; Global keys
 ;;
@@ -411,6 +413,14 @@ in this case start Gnus plugged, otherwise start it unplugged."
 (global-set-key (kbd "C-²")                        'iedit-narrow-to-defun)
 (defun goto-scratch () (interactive) (switch-to-buffer "*scratch*"))
 (global-set-key (kbd "<f11> s c")                  'goto-scratch)
+
+
+;;; Elscreen
+;;
+(when (locate-library "elscreen")
+  (autoload 'elscreen-start "elscreen.el")
+  (elscreen-start)
+  (global-set-key (kbd "C-z l") 'helm-elscreen))
 
 
 ;;; Themes
@@ -1782,11 +1792,11 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;
 ;;
 (package-initialize)
-(setq package-archives
-      (append package-archives
-              '(("melpa" . "http://melpa.milkbox.net/packages/")
-                ;("marmalade" . "http://marmalade-repo.org/packages/")
-                )))
+(setq package-archives '(
+                         ;("gnu" . "http://elpa.gnu.org/packages/")
+                         ("melpa" . "http://melpa.milkbox.net/packages/")
+                         ;("marmalade" . "http://marmalade-repo.org/packages/")
+                         ))
 
 ;;; Report bug
 ;;
