@@ -1809,7 +1809,7 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
     (if arg
         (progn
           (kill-new url)
-          (message "Bug `#%s' url's copied to kill-ring" bug-number))
+          (message "Bug `#%d' url's copied to kill-ring" bug-number))
         (browse-url url))))
 
 ;;; Info

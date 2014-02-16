@@ -791,7 +791,30 @@ In this case, sexps are searched before point."
                   (async-get proc)
                 (error
                  (ignore (message "Error: %s" (car err)))))
-        (ignore (message "Recompiling %s...FAILED" file))))))
+        (ignore (message "Recompiling %s...FAILED" file)))))
+
+  (defun async-byte-recompile-directory (directory &optional arg force)
+    (cl-loop with dir = (directory-files directory t "\\.elc\\'")
+             unless dir return nil
+             for f in dir
+             when (file-exists-p f) do (delete-file f))
+    (let ((proc
+           (async-start
+            `(lambda ()
+               (require 'bytecomp)
+               ,(async-inject-variables "\\`load-path\\'")
+               (let ((default-directory (file-name-as-directory ,directory)))
+                 (add-to-list 'load-path default-directory)
+                 (byte-recompile-directory ,directory ,arg ,force))))))
+      (unless (condition-case err
+                  (async-get proc)
+                (error
+                 (ignore (message "Error: %s" (car err)))))
+        (ignore (message "Recompiling %s...FAILED" directory))))))
+
+(defadvice package--compile (around byte-compile-async activate)
+  (package-activate-1 pkg-desc)
+  (async-byte-recompile-directory (package-desc-dir pkg-desc) 0 t))
 
 ;;; Generate strong passwords.
 ;;
