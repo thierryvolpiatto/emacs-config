@@ -152,7 +152,7 @@ If your system's ping continues until interrupted, you can try setting
              "~/elisp/slime"
              "~/elisp/slime/contrib"
              "~/.emacs.d/themes/"
-	     "~/.emacs.d/emacs-config-laptop/"
+	     "~/.emacs.d/emacs-config/"
              "~/elisp/emacs-async"
              "~/elisp/elscreen"
 	     ))
@@ -199,6 +199,15 @@ If your system's ping continues until interrupted, you can try setting
 ;;
 (setq custom-file "~/.emacs.d/.emacs-custom.el")
 (load custom-file)
+
+;;; Melpa marmalade
+;;
+(package-initialize)
+(setq package-archives '(
+                         ;("gnu" . "http://elpa.gnu.org/packages/")
+                         ("melpa" . "http://melpa.milkbox.net/packages/")
+                         ;("marmalade" . "http://marmalade-repo.org/packages/")
+                         ))
 
 
 ;;; Require's
@@ -345,7 +354,6 @@ in this case start Gnus plugged, otherwise start it unplugged."
 (global-set-key (kbd "<f7> m")                     'tv-gnus)
 (global-set-key (kbd "<f7> j")                     'webjump)
 (global-set-key (kbd "<f7> s g")                   'search-word)
-(global-set-key (kbd "<f7> s u")                   'tv-search-gmane)
 (global-set-key (kbd "<f7> i")                     'erc-freenode-connect)
 (global-set-key (kbd "<f7> g")                     'bitlbee)
 (global-set-key (kbd "<f7> n")                     'newsticker-show-news)
@@ -898,7 +906,6 @@ account add <protocol> moi@mail.com password."
 
 (tv-require 'python)
 (tv-require 'helm-ipython)
-(define-key python-mode-map (kbd "C-c C-b") 'helm-browse-code)
 (define-key python-mode-map (kbd "<M-tab>") 'helm-ipython-complete)
 (define-key python-mode-map (kbd "C-c C-i") 'helm-ipython-import-modules-from-buffer)
 
@@ -919,6 +926,10 @@ from IPython.core.completerlib import module_completion"
 (add-hook 'python-mode-hook
   #'(lambda ()
       (define-key python-mode-map (kbd "C-m") 'newline-and-indent)))
+
+;; (elpy-enable)
+;; (elpy-use-ipython)
+;; (elpy-clean-modeline)
 
 ;; Entete-py
 (defun tv-insert-python-header ()
@@ -1764,10 +1775,16 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;       eval-expression-print-level nil)
 
 ;;; git-gutter-mode
+;;
 (autoload 'git-gutter-mode "git-gutter")
 (add-hook 'emacs-lisp-mode-hook 'git-gutter-mode)
-(global-set-key (kbd "<f3>") 'git-gutter:previous-hunk)
-(global-set-key (kbd "<f4>") 'git-gutter:next-hunk)
+(global-set-key (kbd "C-x v p") 'git-gutter:previous-hunk)
+(global-set-key (kbd "C-x v n") 'git-gutter:next-hunk)
+(global-set-key [remap vc-dir] 'git-gutter:popup-hunk)
+;; Stage current hunk
+(global-set-key [remap vc-create-tag] 'git-gutter:stage-hunk)
+;; Revert current hunk
+(global-set-key (kbd "C-x v r") 'git-gutter:revert-hunk)
 
 ;;; Monky - hg frontend
 ;;
@@ -1787,16 +1804,6 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;; Magit
 ;;
 (setq magit-restore-window-configuration t)
-
-;;; Melpa marmalade
-;;
-;;
-(package-initialize)
-(setq package-archives '(
-                         ;("gnu" . "http://elpa.gnu.org/packages/")
-                         ("melpa" . "http://melpa.milkbox.net/packages/")
-                         ;("marmalade" . "http://marmalade-repo.org/packages/")
-                         ))
 
 ;;; Report bug
 ;;

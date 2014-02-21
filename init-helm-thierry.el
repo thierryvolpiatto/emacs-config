@@ -11,6 +11,7 @@
 (tv-require 'helm-descbinds)
 (tv-require 'helm-ls-git)
 (tv-require 'helm-dictionary)
+(tv-require 'helm-pydoc)
 
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
@@ -134,7 +135,7 @@
 ;;; Toggle grep program
 ;;
 ;;
-(defun eselect-toggle-grep ()
+(defun eselect-grep ()
   (interactive)
   (when (y-or-n-p (format "Current grep program is %s, switching? "
                           (helm-grep-command)))

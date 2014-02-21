@@ -12,7 +12,17 @@
 (add-to-list 'load-path "~/elisp/helm")
 (add-to-list 'load-path "~/elisp/emacs-async")
 (add-to-list 'load-path "~/elisp/helm-extensions")
-(add-to-list 'load-path "~/.emacs.d/emacs-config-laptop")
+(add-to-list 'load-path "~/.emacs.d/emacs-config")
+
+;; Require with messages to debug more easily.
+(defun tv-require (feature &optional filename noerror)
+  (message "Loading %s..." (symbol-name feature))
+  (condition-case err
+      (if (require feature filename noerror)
+          (message "Loading %s done" (symbol-name feature))
+          (message "Loading %s Failed" (symbol-name feature)))
+    (error
+     (signal 'error (list feature (car err) (cadr err))))))
 
 ;;; Frames setting for own minibuffer frame.
 ;;
@@ -42,9 +52,11 @@
                             ))
 
 (setq minibuffer-frame-alist
-      '((top . -40) (left . 1)
+      '((top . -40)
+        (left . 1)
         (vertical-scroll-bars . nil)
-        (width . 157) (height . 1)
+        (width . 157)
+        (height . 1)
         (menu-bar-lines . 0)
         (tool-bar-lines . 0)
         (minibuffer . only)
@@ -103,34 +115,25 @@
 (setq split-width-threshold nil)
 
 ;; Enable recursive buffers
-(require 'mb-depth)
+(tv-require 'mb-depth)
 (setq enable-recursive-minibuffers t)
 (minibuffer-depth-indicate-mode 1)
 
 (setq completion-cycle-threshold t)
 
 ;;; Helm minimal config
-(require 'helm-config)
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
-(global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "C-x C-b") 'helm-buffers-list)
+(tv-require 'helm-config)
+(tv-require 'init-helm-thierry)
 
-(require 'helm-descbinds)
+(helm-mode 1)
+(tv-require 'helm-descbinds)
 (helm-descbinds-install)            ; C-h b, C-x C-h
 (fset 'yes-or-no-p 'y-or-n-p)
-(require 'tv-utils)
-
-
-;; Ioccur
-(require 'ioccur)
-(global-set-key (kbd "C-c o") 'ioccur)
-(global-set-key [remap occur] 'ioccur)
-(global-set-key [remap isearch-forward] 'ioccur)
-(global-set-key (kbd "C-c C-o") 'ioccur-find-buffer-matching)
-;(load "~/.emacs.d/elisp-objects/ioccur-history.elc")
+(tv-require 'tv-utils)
 
 ;; Eldoc
 (require 'eldoc-eval)
+(eldoc-in-minibuffer-mode 1)
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
 (with-current-buffer "*scratch*" (lisp-interaction-mode)) 
