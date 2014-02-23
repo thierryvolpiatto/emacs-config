@@ -52,7 +52,7 @@ If your system's ping continues until interrupted, you can try setting
 ;; Annoyance number 1 is bidi
 ;; Turn OFF bidi everywhere.
 (setq-default bidi-display-reordering nil)
-;(setq-default cache-long-scans nil) ; Fix bug#15973
+(setq-default cache-long-scans nil) ; Fix bug#15973
 
 ;; Disable uniquify enabled by default in 24.4.
 (setq uniquify-buffer-name-style nil)
@@ -126,6 +126,7 @@ If your system's ping continues until interrupted, you can try setting
 
 (dolist (i '("/usr/local/share/emacs/site-lisp"
              "/usr/local/share/emacs/site-lisp/auctex"
+             "/usr/local/share/emacs/site-lisp/mu4e"
 	     "~/elisp/"
              "~/elisp/emacs-w3m"
 	     "~/elisp/magit"
@@ -254,6 +255,7 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'golden-ratio-mode "golden-ratio.el" nil t)
 (autoload 'emamux:send-command "emamux.el" nil t)
 (autoload 'emamux:copy-kill-ring "emamux.el" nil t)
+(tv-require 'mu4e-config)
 
 
 ;;; Gnus-config
@@ -903,8 +905,6 @@ account add <protocol> moi@mail.com password."
 ;;; Python config
 ;;
 ;; python.el
-
-(tv-require 'python)
 (tv-require 'helm-ipython)
 (define-key python-mode-map (kbd "<M-tab>") 'helm-ipython-complete)
 (define-key python-mode-map (kbd "C-c C-i") 'helm-ipython-import-modules-from-buffer)
