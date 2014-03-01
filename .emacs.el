@@ -354,8 +354,8 @@ in this case start Gnus plugged, otherwise start it unplugged."
 (global-set-key (kbd "C-c W")                      'whitespace-mode)
 (global-set-key (kbd "C-M-j")                      #'(lambda () (interactive) (kill-sexp -1)))
 (global-set-key (kbd "<f7> m")                     'tv-gnus)
+(global-set-key (kbd "<f8>")                       'mu4e)
 (global-set-key (kbd "<f7> j")                     'webjump)
-(global-set-key (kbd "<f7> s g")                   'search-word)
 (global-set-key (kbd "<f7> i")                     'erc-freenode-connect)
 (global-set-key (kbd "<f7> g")                     'bitlbee)
 (global-set-key (kbd "<f7> n")                     'newsticker-show-news)
@@ -655,7 +655,6 @@ With a prefix arg decrease transparency."
 (eval-after-load "bookmark.el"
   (and (boundp 'bookmark-bmenu-use-header-line)
        (setq bookmark-bmenu-use-header-line nil)))
-(add-to-list 'org-agenda-files bmkext-org-annotation-directory)
 (setq bmkext-external-browse-url-function 'browse-url-firefox) ; 'browse-url-uzbl
 (setq bmkext-jump-w3m-defaut-method 'external) ; Set to 'external to use external browser, w3m for w3m.
 (eval-after-load "addressbook-bookmark.el"
@@ -975,12 +974,9 @@ from IPython.core.completerlib import module_completion"
   (defalias 'eshell-complete-lisp-symbol 'lisp-complete-symbol))
 
 (add-hook 'eshell-mode-hook #'(lambda ()
-                                ;; Eshell smart
-                                ;(require 'em-smart)
-                                ;(setq eshell-where-to-jump 'begin)
-                                ;(setq eshell-review-quick-commands nil)
-                                ;(setq eshell-smart-space-goes-to-end t)
-                                ;(eshell-smart-initialize)
+                                (setq eshell-pwd-convert-function (lambda (f)
+                                                                    (if (file-equal-p (file-truename f) "/")
+                                                                        "/" f)))
                                 ;; helm completion with pcomplete
                                 (setq eshell-cmpl-ignore-case t)
                                 (eshell-cmpl-initialize)

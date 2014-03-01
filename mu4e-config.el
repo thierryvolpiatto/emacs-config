@@ -10,6 +10,7 @@
 (setq mu4e-maildir "~/Maildir")
 (setq mu4e-compose-complete-addresses nil)
 (setq mu4e-completing-read-function 'completing-read)
+(setq mu4e-view-show-addresses t) ; Seems that fix issue with `async-smtpmail-send-it'.
 
 ;;; Html rendering
 (setq mu4e-view-prefer-html t)
@@ -36,6 +37,9 @@
 
 ;; signature
 (setq mu4e-compose-signature t)
+
+;; encryption
+(define-key mu4e-view-mode-map [remap mu4e-view-verify-msg-popup] 'epa-mail-verify)
 
 ;; setup some handy shortcuts
 ;; you can quickly switch to your Inbox -- press ``ji''
@@ -77,19 +81,19 @@
 ;(setq mu4e-update-interval 600)
 
 ;; Make a full update all the
-;; `tv/mu4e~update-mail-number-of-update-toggle' mail retrievals.
-(defvar tv/mu4e~update-mail-number-of-update-flag 0)
-(defvar tv/mu4e~update-mail-number-of-update-toggle 10)
+;; `tv/mu4e-max-number-update-before-toggling' mail retrievals.
+(defvar tv/mu4e-counter 10) ; Ensure a full update on startup.
+(defvar tv/mu4e-max-number-update-before-toggling 10)
 (defvar tv/mu4e-get-mail-command-full "offlineimap -u Basic")
 (defvar tv/mu4e-get-mail-command-quick "offlineimap -q -u Basic")
 (defun tv/mu4e-update-mail-quick-or-full ()
-  (if (>= tv/mu4e~update-mail-number-of-update-flag
-          tv/mu4e~update-mail-number-of-update-toggle)
+  (if (>= tv/mu4e-counter
+          tv/mu4e-max-number-update-before-toggling)
       (progn
         (setq mu4e-get-mail-command tv/mu4e-get-mail-command-full)
-        (setq tv/mu4e~update-mail-number-of-update-flag 0))
+        (setq tv/mu4e-counter 0))
       (setq mu4e-get-mail-command tv/mu4e-get-mail-command-quick)
-      (incf tv/mu4e~update-mail-number-of-update-flag)))
+      (incf tv/mu4e-counter)))
 (add-hook 'mu4e-update-pre-hook #'tv/mu4e-update-mail-quick-or-full)
 
 ;; attempt to show images when viewing messages
@@ -137,6 +141,14 @@
                         (bookmark-default-handler
                          `("" (buffer . ,(current-buffer)) . ,(bookmark-get-bookmark-record bmk))))
                       bookmark))))
+
+;; Allow queuing mails
+(setq smtpmail-queue-mail  nil  ;; start in non-queuing mode
+      smtpmail-queue-dir   "~/Maildir/queue/cur")
+
+;; View html message in firefox (type aV)
+(add-to-list 'mu4e-view-actions
+            '("ViewInBrowser" . mu4e-action-view-in-browser) t)
 
 (provide 'mu4e-config)
 

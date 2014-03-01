@@ -1,9 +1,7 @@
-;;; init-helm-thierry.el --- My startup file for helm. 
+;;; init-helm-thierry.el --- My startup file for helm. -*- lexical-binding: t -*- 
 ;;; Code:
 
-
 (tv-require 'helm-config)
-
 
 ;;;; Extensions
 ;;
@@ -43,7 +41,7 @@
 (global-set-key (kbd "C-c f")                   'helm-recentf)
 (global-set-key (kbd "C-x C-f")                 'helm-find-files)
 (global-set-key (kbd "C-c <SPC>")               'helm-all-mark-rings)
-(global-set-key (kbd "C-x r b")                 'helm-bookmark-ext)
+(global-set-key (kbd "C-x r b")                 'helm-filtered-bookmarks)
 (global-set-key (kbd "C-h r")                   'helm-info-emacs)
 (global-set-key (kbd "C-:")                     'helm-eval-expression-with-eldoc)
 (global-set-key (kbd "C-,")                     'helm-calcul-expression)
@@ -159,13 +157,13 @@
            (if helm-debug "Enabled" "Disabled")))
 
 (defun helm-ff-candidates-lisp-p (candidate)
-  (loop for cand in (helm-marked-candidates)
-        always (string-match "\.el$" cand)))
+  (cl-loop for cand in (helm-marked-candidates)
+           always (string-match "\.el$" cand)))
 
 ;;; Modify source attributes
 ;;
 ;; Add actions to `helm-source-find-files' IF:
-(eval-after-load "helm-files.el"
+(with-eval-after-load "helm-files.el"
   (progn
     ;; List Hg files in project.
     (helm-add-action-to-source-if
