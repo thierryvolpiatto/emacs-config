@@ -6,6 +6,7 @@
 ;;; Search engine for imap and gmane (hit `G G' in group buffer)
 ;;
 (require 'nnir)
+(require 'cl-lib)
 
 ;; Don't read/write to the .newrc file, go straight to the *.eld.
 (setq gnus-save-newsrc-file nil
@@ -33,12 +34,14 @@
                                       ;; Add as many gmail account as needed with a label.
                                       ;; Add then an entry in .authinfo:
                                       ;; machine label port xxx login xxx password xxx
-                                      (nnimap "gmail" ; Label for reference in .authinfo for machine name.
-                                       (nnimap-address "imap.gmail.com")
-                                       (nnimap-fetch-partial-articles "text/")) ; [1]
-                                      (nnimap "yahoo"
-                                       (nnimap-address "imap.mail.yahoo.com")
-                                       (nnimap-fetch-partial-articles "text/")) ; [1]
+                                      ;; (nnimap "gmail" ; Label for reference in .authinfo for machine name.
+                                      ;;  (nnimap-address "imap.gmail.com")
+                                      ;;  (nnimap-fetch-partial-articles "text/"))
+                                        ; [1]
+                                      ;; (nnimap "yahoo"
+                                      ;;  (nnimap-address "imap.mail.yahoo.com")
+                                      ;;  (nnimap-fetch-partial-articles "text/"))
+                                        ; [1]
                                       ;(nntp "news.gwene.org")
                                       ))
 
@@ -124,9 +127,9 @@ This will run in `message-send-hook'."
     (save-restriction
       (message-narrow-to-headers)
       (let* ((from         (message-fetch-field "from"))
-             (user-account (loop for account in tv-smtp-accounts thereis
-                                 (and (string-match (car account) from)
-                                      account)))
+             (user-account (cl-loop for account in tv-smtp-accounts thereis
+                                    (and (string-match (car account) from)
+                                         account)))
              (server (getf (cadr user-account) :server))
              (port (getf (cadr user-account) :port))
              (user (car user-account)))

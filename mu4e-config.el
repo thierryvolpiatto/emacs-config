@@ -10,7 +10,7 @@
 (setq mu4e-maildir "~/Maildir")
 (setq mu4e-compose-complete-addresses nil)
 (setq mu4e-completing-read-function 'completing-read)
-(setq mu4e-view-show-addresses t) ; Seems that fix issue with `async-smtpmail-send-it'.
+(setq mu4e-view-show-addresses t)
 
 ;;; Html rendering
 (setq mu4e-view-prefer-html t)

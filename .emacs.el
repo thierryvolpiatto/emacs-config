@@ -252,6 +252,7 @@ If your system's ping continues until interrupted, you can try setting
 (when (tv-require 'dired-aux)
   (tv-require 'dired-async))
 (tv-require 'smtpmail-async)
+(setq aync-debug t)
 (autoload 'golden-ratio-mode "golden-ratio.el" nil t)
 (autoload 'emamux:send-command "emamux.el" nil t)
 (autoload 'emamux:copy-kill-ring "emamux.el" nil t)
@@ -943,7 +944,7 @@ from IPython.core.completerlib import module_completion"
 
 
 ;;; Shell config
-;;
+;;;
 
 ;; Prompt shell read only
 (setq comint-prompt-read-only t)

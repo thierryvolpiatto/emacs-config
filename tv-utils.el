@@ -917,6 +917,20 @@ With a prefix arg remove new lines."
    (format "tar cJvf $(basename %s).tar.xz $(basename %s)"
            file file)))
 
+(defun rachel-check (weight size)
+  (interactive "sWeight: \nsSize: ")
+  (let ((res (string-to-number
+              (calc-eval (format "%s/%s^2" weight size)))))
+    (cond ((> res 25)
+           (message "Votre poids %s kg est trop élevé pour votre taille %s avec une masse corporelle de %d"
+                    weight size res))
+          ((< res 18)
+           (message "Votre poids %s kg est trop bas pour votre taille %s avec une masse corporelle de %d"
+                     weight size res))
+          ((and (< res 25) (> res 18))
+           (message "Votre poids %s kg est idéal pour votre taille %s avec une masse corporelle de %d"
+                    weight size res)))))
+
 (provide 'tv-utils)
 
 ;; Local Variables:
