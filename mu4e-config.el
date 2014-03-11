@@ -5,6 +5,7 @@
 (require 'mu4e)
 (setq gnus-init-file "~/.emacs.d/.gnus.el")
 (load-file gnus-init-file)
+(require 'helm-mu)
 
 ;; default
 (setq mu4e-maildir "~/Maildir")
@@ -24,8 +25,8 @@
                                               shr-width)
                                           (shr-render-region (point-min) (point-max)))))))
 
-;(setq mail-user-agent 'mu4e-user-agent)
-;(setq read-mail-command 'mu4e)
+(setq mail-user-agent 'mu4e-user-agent)
+(setq read-mail-command 'mu4e)
 
 (define-key mu4e-main-mode-map "q" 'quit-window)
 (define-key mu4e-main-mode-map "Q" 'mu4e-quit)
@@ -144,7 +145,7 @@
 
 ;; Allow queuing mails
 (setq smtpmail-queue-mail  nil  ;; start in non-queuing mode
-      smtpmail-queue-dir   "~/Maildir/queue/cur")
+      smtpmail-queue-dir   "~/Maildir/queue/")
 
 ;; View html message in firefox (type aV)
 (add-to-list 'mu4e-view-actions
