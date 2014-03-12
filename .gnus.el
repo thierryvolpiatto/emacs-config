@@ -121,7 +121,7 @@
 (defun tv-change-smtp-server ()
   "Use account found in `tv-smtp-accounts' according to from header.
 `from' is set in `gnus-posting-styles' according to `to' header.
-or manually with `tv-toggle-from-header'.
+or manually with `tv-send-mail-with-account'.
 This will run in `message-send-hook'."
   (save-excursion
     (save-restriction
