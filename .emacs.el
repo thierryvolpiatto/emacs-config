@@ -1713,50 +1713,19 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;; Semantic
 ;;
 ;;
-;; (tv-require 'semantic)
-;; (global-semantic-idle-completions-mode t)
-;; (global-semantic-decoration-mode t)
-;; (global-semantic-highlight-func-mode t)
-;; (global-semantic-show-unmatched-syntax-mode t)
-;; (semantic-mode 1)
-
-;;; opendns
-;;
-;;
-(defun opendns-status ()
-  "Check if I am using opendns or not."
-  (interactive)
-  (with-current-buffer (url-retrieve-synchronously "http://www.opendns.com/welcome")
-    (goto-char (point-min))
-    (when (or (search-forward "You aren't using OpenDNS yet" nil t)
-              (search-forward "Your Internet is safer, faster, and smarter<br />because you're using OpenDNS" nil t))
-      (message "%s" (replace-regexp-in-string "<br />" " " (match-string 0))))))
-
-;;; Webjump sites
-;;
-;;
-(setq webjump-sites
-      '(("pythonlib" .  "http://docs.python.org/lib/genindex.html")
-        ("pythondoc" . "http://docs.python.org/index.html")
-        ("tkinter-tuto" . "http://infohost.nmt.edu/tcc/help/pubs/tkinter/")
-        ("pygtk-tuto" . "http://www.pygtk.org/pygtk2tutorial/index.html")
-        ("emacsmanfr" . "http://www.linux-france.org/article/appli/emacs/manuel/html/index.html")
-        ("emacswiki" . "http://www.emacswiki.org/cgi-bin/wiki/SiteMap")
-        ("wikipedia" . "http://fr.wikipedia.org/wiki/Accueil")
-        ("elispcode" . "http://www.emacswiki.org/cgi-bin/wiki/Cat%c3%a9gorieCode")
-        ("elisp-reference-manual" . "http://www.gnu.org/software/emacs/elisp/html_node/index.html")
-        ))
+(tv-require 'semantic)
+;(global-semantic-idle-completions-mode t)
+;(global-semantic-decoration-mode t)
+;(global-semantic-highlight-func-mode t)
+;(global-semantic-show-unmatched-syntax-mode t)
+(semantic-mode 1)
+(semantic-default-elisp-setup) ; With my fixes in lisp/cedet/semantic/bovine/el.el.
 
 ;;; Ffap
 ;;
 ;;
 ;; Tramp/ange behave badly in 99.9% of the time for ftp, disable.
 (setq ffap-url-unwrap-remote (remove "ftp" ffap-url-unwrap-remote))
-
-;;; Ido
-;;
-;;
-(setq ido-use-virtual-buffers t) ; Needed in helm-buffers-list
 
 ;;; Deactivate mouse scrolling
 ;;
@@ -1846,9 +1815,6 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
                                (and (executable-find "reenable_touchpad.sh")
                                     (shell-command "reenable_touchpad.sh"))))
 
-;;; Semantic
-;;
-(semantic-mode 1)
 
 ;;; Save/restore emacs-session
 ;;

@@ -58,7 +58,7 @@
         ("/Gmail/[Gmail].All Mail"    . ?a)))
 
 (setq mu4e-bookmarks
-      '(("date:2w..now helm AND NOT flag:trashed" "Last 2 weeks helm messages"                                                                          ?h)
+      '(("date:1w..now helm AND NOT flag:trashed" "Last 7 days helm messages"                                                                           ?h)
         ("flag:unread AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam AND NOT maildir:/Gmail/[Gmail].All Mail" "Unread messages"               ?u)
         ("date:today..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam AND NOT maildir:/Gmail/[Gmail].All Mail" "Today's messages"          ?t)
         ("date:1d..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam AND NOT maildir:/Gmail/[Gmail].All Mail" "Yesterday and today messages" ?y)
@@ -151,6 +151,14 @@
 ;; View html message in firefox (type aV)
 (add-to-list 'mu4e-view-actions
             '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+
+;; Decorate mu main view
+(defun mu4e-main-mode-font-lock-rules ()
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward "\\[\\([a-zA-Z]\\{1,2\\}\\)\\]" nil t)
+      (add-text-properties (match-beginning 1) (match-end 1) '(face font-lock-variable-name-face)))))
+(add-hook 'mu4e-main-mode-hook 'mu4e-main-mode-font-lock-rules)
 
 (provide 'mu4e-config)
 

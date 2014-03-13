@@ -127,6 +127,7 @@
       ;helm-ff-file-name-history-use-recentf      t
       ;helm-follow-mode-persistent                t
       helm-move-to-line-cycle-in-source           t
+      ido-use-virtual-buffers                     t             ; Needed in helm-buffers-list
       )
 
 ;;; Toggle grep program
