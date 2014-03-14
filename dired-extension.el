@@ -453,7 +453,7 @@ normally equivalent short `-D' option is just passed on to
 	      (format "%.0f" (/ (nth 2 fsinfo) 1024))))
         ;; And this is for Unix/GNULinux.
         (when (executable-find directory-free-space-program)
-          (getf (tv-get-disk-info dir human) :available)))))
+          (cl-getf (tv-get-disk-info dir human) :available)))))
 
 (defun tv-get-disk-info (directory &optional human)
   (let* ((dir     (expand-file-name directory))

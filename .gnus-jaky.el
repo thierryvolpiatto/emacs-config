@@ -130,9 +130,9 @@ This will run in `message-send-hook'."
                                  (and (string-match (car account) from)
                                       account))))
         (setq smtpmail-smtp-user            (car user-account)
-              smtpmail-default-smtp-server  (getf (cadr user-account) :server)
-              smtpmail-smtp-server          (getf (cadr user-account) :server)
-              smtpmail-smtp-service         (getf (cadr user-account) :port))))))
+              smtpmail-default-smtp-server  (cl-getf (cadr user-account) :server)
+              smtpmail-smtp-server          (cl-getf (cadr user-account) :server)
+              smtpmail-smtp-service         (cl-getf (cadr user-account) :port))))))
 
 (add-hook 'message-send-hook 'tv-change-smtp-server)
 
@@ -146,7 +146,7 @@ This will run in `message-send-hook'."
            (mail (helm-comp-read
                   "Use account: "
                   (mapcar 'car tv-smtp-accounts)))
-           (name (getf (cadr (assoc mail tv-smtp-accounts)) :name))
+           (name (cl-getf (cadr (assoc mail tv-smtp-accounts)) :name))
            (new-from (message-make-from name mail)))
         (message-goto-from)
         (forward-line 0)

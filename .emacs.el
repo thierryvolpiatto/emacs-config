@@ -1713,12 +1713,11 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;; Semantic
 ;;
 ;;
-(tv-require 'semantic)
+(semantic-mode 1)
 ;(global-semantic-idle-completions-mode t)
 ;(global-semantic-decoration-mode t)
 ;(global-semantic-highlight-func-mode t)
 ;(global-semantic-show-unmatched-syntax-mode t)
-(semantic-mode 1)
 (semantic-default-elisp-setup) ; With my fixes in lisp/cedet/semantic/bovine/el.el.
 
 ;;; Ffap

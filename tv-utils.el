@@ -113,7 +113,7 @@
 (defun tv-network-state (network &optional arg)
   (interactive (list (read-string "Network: " "wlan0")
                      "\np"))
-  (let* ((info (car (last (getf (tv-network-info network) :state))))
+  (let* ((info (car (last (cl-getf (tv-network-info network) :state))))
          (state (if info (symbol-name info) "down")))
     (if arg (message "%s is %s" network state) state)))
 
@@ -624,12 +624,12 @@ If a prefix arg is given choose directory, otherwise use `default-directory'."
     (insert (format "*Volume Info for `%s'*\n\nDevice: %s\nMaxSize: \
 %s\nUsed: %s\nAvailable: %s\nCapacity in use: %s\nMount point: %s"
                     directory
-                    (getf df-info :device)
-                    (getf df-info :blocks)
-                    (getf df-info :used)
-                    (getf df-info :available)
-                    (getf df-info :capacity)
-                    (getf df-info :mount-point)))
+                    (cl-getf df-info :device)
+                    (cl-getf df-info :blocks)
+                    (cl-getf df-info :used)
+                    (cl-getf df-info :available)
+                    (cl-getf df-info :capacity)
+                    (cl-getf df-info :mount-point)))
     (view-mode 1)))
 
 ;; Interface to du (directory size)

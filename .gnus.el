@@ -130,8 +130,8 @@ This will run in `message-send-hook'."
              (user-account (cl-loop for account in tv-smtp-accounts thereis
                                     (and (string-match (car account) from)
                                          account)))
-             (server (getf (cadr user-account) :server))
-             (port (getf (cadr user-account) :port))
+             (server (cl-getf (cadr user-account) :server))
+             (port (cl-getf (cadr user-account) :port))
              (user (car user-account)))
         (setq smtpmail-smtp-user            user
               smtpmail-default-smtp-server  server
@@ -150,7 +150,7 @@ This will run in `message-send-hook'."
            (mail (completing-read
                   "Use account: "
                   (mapcar 'car tv-smtp-accounts)))
-           (name (getf (cadr (assoc mail tv-smtp-accounts)) :name))
+           (name (cl-getf (cadr (assoc mail tv-smtp-accounts)) :name))
            (new-from (message-make-from name mail)))
         (message-goto-from)
         (forward-line 0)
