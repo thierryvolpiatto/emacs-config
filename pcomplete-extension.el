@@ -161,8 +161,13 @@
 This is the value of `pcomplete-command-completion-function' for
 Shell buffers.  It implements `shell-completion-execonly' for
 `pcomplete' completion."
-  (let ((data (shell--command-completion-data)))
-    (and data (pcomplete-here (all-completions "" (nth 2 data))))))
+  (let* ((data (shell--command-completion-data))
+         (input (and data (buffer-substring (nth 0 data) (nth 1 data)))))
+    (if (and data (not (string-match-p "\\`[.]\\{1\\}/" input)))
+        (pcomplete-here (all-completions "" (nth 2 data)))
+        (pcomplete-here (pcomplete-entries nil
+                                           (if shell-completion-execonly
+                                               'file-executable-p))))))
 
 (defvar pcomplete-special-commands '("sudo" "xargs"))
 (defun pcomplete-command-name ()
