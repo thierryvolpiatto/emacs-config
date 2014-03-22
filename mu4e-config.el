@@ -2,9 +2,10 @@
 
 ;;; Code:
 
-(require 'mu4e)
 (setq gnus-init-file "~/.emacs.d/.gnus.el")
 (load-file gnus-init-file)
+(require 'mu4e)
+(require 'mu4e-contrib)
 (require 'helm-mu)
 
 ;; default
@@ -102,48 +103,6 @@
 (setq mu4e-view-show-images t
       mu4e-view-image-max-width 800)
 
-;;; bookmark handler
-;;
-;;
-(add-hook 'mu4e-view-mode-hook
-          #'(lambda ()
-              (set (make-local-variable 'bookmark-make-record-function)
-                   'mu4e-view-bookmark-make-record)))
-(add-hook 'mu4e-headers-mode-hook
-          #'(lambda ()
-              (set (make-local-variable 'bookmark-make-record-function)
-                   'mu4e-view-bookmark-make-record)))
-
-(defun mu4e-view-bookmark-make-record ()
-  (let* ((msg     (mu4e-message-at-point))
-         (query   (mu4e-last-query))
-         (docid   (plist-get msg :docid))
-         (mode    (symbol-name major-mode))
-         (subject (or (plist-get msg :subject) "No subject")))
-    `(,subject
-      ,@(bookmark-make-record-default 'no-file 'no-context)
-        (location . (,query . ,docid))
-        (mode . ,mode)
-        (handler . mu4e-bookmark-jump))))
-
-(defun mu4e-bookmark-jump (bookmark)
-  (let* ((path  (bookmark-prop-get bookmark 'location))
-         (mode  (bookmark-prop-get bookmark 'mode))
-         (docid (cdr path))
-         (query (car path)))
-    (call-interactively 'mu4e)
-    (mu4e-headers-search query)
-    (sit-for 0.5)
-    (mu4e~headers-goto-docid docid)
-    (mu4e~headers-highlight docid)
-    (unless (string= mode "mu4e-headers-mode")
-      (call-interactively 'mu4e-headers-view-message)
-      (run-with-timer 0.1 nil
-                      (lambda (bmk)
-                        (bookmark-default-handler
-                         `("" (buffer . ,(current-buffer)) . ,(bookmark-get-bookmark-record bmk))))
-                      bookmark))))
-
 ;; Allow queuing mails
 (setq smtpmail-queue-mail  nil  ;; start in non-queuing mode
       smtpmail-queue-dir   "~/Maildir/queue/")
@@ -159,6 +118,37 @@
     (while (re-search-forward "\\[\\([a-zA-Z]\\{1,2\\}\\)\\]" nil t)
       (add-text-properties (match-beginning 1) (match-end 1) '(face font-lock-variable-name-face)))))
 (add-hook 'mu4e-main-mode-hook 'mu4e-main-mode-font-lock-rules)
+
+;; Handle quoted text added with `message-mark-inserted-region' (`C-c M-m')
+(defface tv/mu4e-region-code
+    '((t (:background "DarkSlateGray")))
+  "Face for highlighting marked region in mu4e-view buffer."
+  :group 'mu4e)
+
+(defun tv/mu4e-mark-region-code ()
+  (require 'message)
+  (let ((ov-sym (gensym "ov-sym"))
+        beg end ov-beg ov-end ov-inv)
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward (concat "^" message-mark-insert-begin) nil t)
+        (setq ov-beg (match-beginning 0)
+              ov-end (match-end 0)
+              ov-inv (make-overlay ov-beg ov-end)
+              beg    ov-end)
+        (overlay-put ov-inv 'invisible ov-sym)
+        (when (re-search-forward (concat "^" message-mark-insert-end) nil t)
+          (setq ov-beg (match-beginning 0)
+                ov-end (match-end 0)
+                ov-inv (make-overlay ov-beg ov-end)
+                end    ov-beg)
+          (overlay-put ov-inv 'invisible ov-sym))
+        (when (and beg end)
+          (let ((ov (make-overlay beg end)))
+            (overlay-put ov 'face 'tv/mu4e-region-code))
+          (setq beg nil end nil))))))
+(add-hook 'mu4e-view-mode-hook 'tv/mu4e-mark-region-code)
+
 
 (provide 'mu4e-config)
 

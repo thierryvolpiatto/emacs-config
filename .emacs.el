@@ -1267,8 +1267,7 @@ With prefix arg always start and let me choose dictionary."
 ;;
 (tv-require 'tramp)
 (setq tramp-default-method "ssh") ; methode par defaut
-(setq tramp-verbose 6)
-(setq helm-tramp-verbose 6)
+(setq tramp-verbose 6) ; See `helm-tramp-verbose' in init-helm.
 
 ;; Android settings (Only available on trunk)
 ;;
@@ -1713,13 +1712,14 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;; Semantic
 ;;
 ;;
-(semantic-mode 1)
+;(semantic-mode 1)
 ;(global-semantic-idle-completions-mode t)
 ;(global-semantic-decoration-mode t)
 ;(global-semantic-highlight-func-mode t)
 ;(global-semantic-show-unmatched-syntax-mode t)
-(when (fboundp 'semantic-default-elisp-setup)
-  (semantic-default-elisp-setup)) ; With my fixes in lisp/cedet/semantic/bovine/el.el.
+;; (when (fboundp 'semantic-default-elisp-setup)
+;;   (semantic-default-elisp-setup))
+                                        ; With my fixes in lisp/cedet/semantic/bovine/el.el.
 
 ;;; Ffap
 ;;

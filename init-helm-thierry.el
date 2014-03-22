@@ -96,7 +96,6 @@
       helm-quick-update                          t
       helm-idle-delay                            0.01
       helm-input-idle-delay                      0.01
-      helm-m-occur-idle-delay                    0.01
       ;helm-completion-window-scroll-margin       0
       ;helm-display-source-at-screen-top          nil
       helm-ff-search-library-in-sexp             t
@@ -128,6 +127,7 @@
       ;helm-follow-mode-persistent                t
       helm-move-to-line-cycle-in-source           t
       ido-use-virtual-buffers                     t             ; Needed in helm-buffers-list
+      helm-tramp-verbose                          6
       )
 
 ;;; Toggle grep program
