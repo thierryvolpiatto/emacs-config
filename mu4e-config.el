@@ -7,6 +7,7 @@
 (require 'mu4e)
 (require 'mu4e-contrib)
 (require 'helm-mu)
+(require 'org-mu4e)
 
 ;; default
 (setq mu4e-maildir "~/Maildir")
@@ -120,34 +121,7 @@
 (add-hook 'mu4e-main-mode-hook 'mu4e-main-mode-font-lock-rules)
 
 ;; Handle quoted text added with `message-mark-inserted-region' (`C-c M-m')
-(defface tv/mu4e-region-code
-    '((t (:background "DarkSlateGray")))
-  "Face for highlighting marked region in mu4e-view buffer."
-  :group 'mu4e)
-
-(defun tv/mu4e-mark-region-code ()
-  (require 'message)
-  (let ((ov-sym (gensym "ov-sym"))
-        beg end ov-beg ov-end ov-inv)
-    (save-excursion
-      (goto-char (point-min))
-      (while (re-search-forward (concat "^" message-mark-insert-begin) nil t)
-        (setq ov-beg (match-beginning 0)
-              ov-end (match-end 0)
-              ov-inv (make-overlay ov-beg ov-end)
-              beg    ov-end)
-        (overlay-put ov-inv 'invisible ov-sym)
-        (when (re-search-forward (concat "^" message-mark-insert-end) nil t)
-          (setq ov-beg (match-beginning 0)
-                ov-end (match-end 0)
-                ov-inv (make-overlay ov-beg ov-end)
-                end    ov-beg)
-          (overlay-put ov-inv 'invisible ov-sym))
-        (when (and beg end)
-          (let ((ov (make-overlay beg end)))
-            (overlay-put ov 'face 'tv/mu4e-region-code))
-          (setq beg nil end nil))))))
-(add-hook 'mu4e-view-mode-hook 'tv/mu4e-mark-region-code)
+(add-hook 'mu4e-view-mode-hook 'mu4e-mark-region-code)
 
 
 (provide 'mu4e-config)
