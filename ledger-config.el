@@ -150,15 +150,25 @@ If entries are already pointed, skip."
   (while (re-search-forward "^[0-9]\\{4\\}/[0-9]\\{2\\}/[0-9]\\{2\\}" nil t)
     (forward-char 1) (unless (looking-at "[*]") (insert "* "))))
 
+(defvar csv2ledger-default-input-dir "~/Téléchargements/")
+(defvar csv2ledger-default-output-dir "~/finance")
 (defun csv2ledger (infile ofile)
-  (interactive (list (read-file-name "Input cvs file: ")
-                     (read-file-name "Output file (.dat): ")))
+  (interactive (list (read-file-name "Input cvs file: "
+                                     csv2ledger-default-input-dir
+                                     nil nil nil (lambda (f)
+                                                   (string= (file-name-extension f) "csv")))
+                     (read-file-name "Output file (.dat): "
+                                     csv2ledger-default-output-dir
+                                     nil nil nil (lambda (f)
+                                                   (string= (file-name-extension f) "dat")))))
   (let ((ibuf (find-file-noselect infile))
         (obuf (find-file-noselect ofile))
-        curpos)
+        curpos beg ov)
     (with-current-buffer obuf
       (setq curpos (point))
-      (goto-char (point-max)) (text-mode))
+      (goto-char (point-max))
+      (setq beg (point))
+      (text-mode))
     (with-current-buffer ibuf
       (save-excursion
         (goto-char (point-min))
@@ -178,7 +188,11 @@ If entries are already pointed, skip."
                          (if deb
                              (format "Expenses:unknown    € %s\n    Liabilities:Socgen\n\n" amountstr)
                              (format "Assets:Socgen:Checking    € %s\n    Income\n\n" amountstr))))))))))
-    (with-current-buffer obuf (ledger-mode))))
+    (with-current-buffer obuf
+      (ledger-mode)
+      (remove-overlays)
+      (setq ov (make-overlay beg (point-max)))
+      (overlay-put ov 'face '((:background "DarkSlateGray"))))))
 
 (defvar ledger-previous-window-configuration nil)
 (defadvice ledger-reconcile (before save-winconf activate)
