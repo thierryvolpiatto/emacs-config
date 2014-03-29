@@ -44,16 +44,19 @@
         (forward-line)))))
 
 ;; «ledger-position-at-point» (to ".ledger-position-at-point")
-(defun ledger-position-at-point ()
-  (interactive)
+(defun ledger-position (arg)
+  "Show ledger balance, with prefix-arg insert it at point."
+  (interactive "P")
   (let* ((bal (with-temp-buffer
                (apply #'call-process "ledger" nil t nil
                       (list "-C" "bal" "socgen"))
                (split-string (buffer-string) "\n" t)))
          (result (car (last bal))))
-    (string-match "€ [0-9.]*" result)
-    (setq result (match-string 0 result))
-    (insert (concat "[" result "]"))))
+    (when (string-match "€ [0-9.]*" result)
+      (setq result (match-string 0 result))
+      (if arg
+          (insert (format "[%s]" result))
+          (message "ledger balance: %s" result)))))
 
 (defadvice ledger-reconcile-refresh (after align-euros () activate)
   "Align euros in reconcile buffer when refreshing with `C-l'."
