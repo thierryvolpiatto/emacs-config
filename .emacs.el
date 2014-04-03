@@ -52,10 +52,13 @@ If your system's ping continues until interrupted, you can try setting
 ;; Annoyance number 1 is bidi
 ;; Turn OFF bidi everywhere.
 (setq-default bidi-display-reordering nil)
-;(setq-default cache-long-scans nil) ; Fix bug#15973
+(setq-default cache-long-scans nil) ; Fix bug#15973
 
 ;; Disable uniquify enabled by default in 24.4.
 (setq uniquify-buffer-name-style nil)
+
+;; electric-indent-mode
+(electric-indent-mode -1)
 
 ;;; Environment
 ;; For eshell env settings.
@@ -1712,14 +1715,14 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;; Semantic
 ;;
 ;;
-;(semantic-mode 1)
+(semantic-mode 1)
 ;(global-semantic-idle-completions-mode t)
 ;(global-semantic-decoration-mode t)
 ;(global-semantic-highlight-func-mode t)
 ;(global-semantic-show-unmatched-syntax-mode t)
-;; (when (fboundp 'semantic-default-elisp-setup)
-;;   (semantic-default-elisp-setup))
-                                        ; With my fixes in lisp/cedet/semantic/bovine/el.el.
+(when (fboundp 'semantic-default-elisp-setup)
+  (semantic-default-elisp-setup))
+;; With my fixes in lisp/cedet/semantic/bovine/el.el.
 
 ;;; Ffap
 ;;
@@ -1744,8 +1747,8 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;
 (autoload 'git-gutter-mode "git-gutter")
 (add-hook 'emacs-lisp-mode-hook 'git-gutter-mode)
-(global-set-key (kbd "C-x v p") 'git-gutter:previous-hunk)
-(global-set-key (kbd "C-x v n") 'git-gutter:next-hunk)
+(global-set-key (kbd "<f3>") 'git-gutter:previous-hunk)
+(global-set-key (kbd "<f4>") 'git-gutter:next-hunk)
 (global-set-key [remap vc-dir] 'git-gutter:popup-hunk)
 ;; Stage current hunk
 (global-set-key [remap vc-create-tag] 'git-gutter:stage-hunk)

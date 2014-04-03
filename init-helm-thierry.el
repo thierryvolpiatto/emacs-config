@@ -80,6 +80,7 @@
 ;;; helm find files
 ;;
 (define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
+(define-key helm-buffer-map (kbd "C-d")     'helm-buffer-run-kill-persistent)
 
 ;;; Describe key-bindings
 ;;
