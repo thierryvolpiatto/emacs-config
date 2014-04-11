@@ -41,6 +41,18 @@ If your system's ping continues until interrupted, you can try setting
 (when (version< emacs-version "24.3.50.1") (ad-activate 'term-command-hook))
 
 
+;;; Compatibility
+;;
+;;
+(unless (fboundp 'with-eval-after-load)
+  (defmacro with-eval-after-load (file &rest body)
+    "Execute BODY after FILE is loaded.
+FILE is normally a feature name, but it can also be a file name,
+in case that file does not provide any feature."
+    (declare (indent 1) (debug t))
+    `(eval-after-load ,file (lambda () ,@body))))
+
+
 ;;; Annoyances section
 ;;
 (global-set-key (kbd "<f11>") nil)
@@ -656,12 +668,12 @@ With a prefix arg decrease transparency."
 (add-hook 'bookmark-bmenu-mode-hook 'hl-line-mode)
 (setq bookmark-default-file "~/.emacs.d/.emacs.bmk")
 (setq bookmark-automatically-show-annotations nil)
-(eval-after-load "bookmark.el"
+(with-eval-after-load "bookmark.el"
   (and (boundp 'bookmark-bmenu-use-header-line)
        (setq bookmark-bmenu-use-header-line nil)))
 (setq bmkext-external-browse-url-function 'browse-url-firefox) ; 'browse-url-uzbl
 (setq bmkext-jump-w3m-defaut-method 'external) ; Set to 'external to use external browser, w3m for w3m.
-(eval-after-load "addressbook-bookmark.el"
+(with-eval-after-load "addressbook-bookmark.el"
   (addressbook-turn-on-mail-completion))
 
 (defun tv-pp-bookmark-alist ()
@@ -1335,7 +1347,7 @@ With prefix arg always start and let me choose dictionary."
 (setq lisp-loop-forms-indentation 6)
 
 ;; Fix indentation in cl-flet and cl-labels
-(eval-after-load "cl-indent.el"
+(with-eval-after-load "cl-indent.el"
   (let ((l '((flet ((&whole 4 &rest (&whole 1 &lambda &body)) &body))
              (cl-flet* . flet)
              (labels . flet)
@@ -1747,8 +1759,8 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;
 (autoload 'git-gutter-mode "git-gutter")
 (add-hook 'emacs-lisp-mode-hook 'git-gutter-mode)
-(global-set-key (kbd "<f3>") 'git-gutter:previous-hunk)
-(global-set-key (kbd "<f4>") 'git-gutter:next-hunk)
+(tv/define-key-with-prefix global-map (kbd "C-x v n") ?n 'git-gutter:next-hunk)
+(tv/define-key-with-prefix global-map (kbd "C-x v p") ?p 'git-gutter:previous-hunk)
 (global-set-key [remap vc-dir] 'git-gutter:popup-hunk)
 ;; Stage current hunk
 (global-set-key [remap vc-create-tag] 'git-gutter:stage-hunk)

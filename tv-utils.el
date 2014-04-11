@@ -931,6 +931,22 @@ With a prefix arg remove new lines."
            (message "Votre poids %s kg est idéal pour votre taille %s avec une masse corporelle de %d"
                     weight size res)))))
 
+(defmacro tv/define-key-with-prefix (map prefix key command)
+  "Allow defining a repeated key without having to type its prefix.
+e.g:
+
+\(tv/define-key-with-prefix global-map (kbd \"C-x v n\") ?n 'git-gutter:next-hunk\)
+
+after typing C-x v n, you can type only \"n\" to repeat this command,
+as many time as needed."
+  `(define-key ,map ,prefix
+    #'(lambda ()
+        (interactive)
+        (call-interactively ,command)
+        (while (let ((input (read-key)))
+                 (case input
+                   (,key (call-interactively ,command) t)))))))
+
 (provide 'tv-utils)
 
 ;; Local Variables:
