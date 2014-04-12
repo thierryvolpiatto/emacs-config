@@ -262,7 +262,7 @@ in case that file does not provide any feature."
 (autoload 'markdown-mode "markdown-mode.el")
 (autoload 'gfm-mode "markdown-mode.el")
 (autoload 'boxquote-region "boxquote.el" nil t)
-(autoload 'psession-mode "persistent-sessions.el")
+(autoload 'psession-mode "psession.el")
 (tv-require 'wgrep-helm)
 (when (tv-require 'dired-aux)
   (tv-require 'dired-async))
