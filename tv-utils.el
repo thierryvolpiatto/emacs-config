@@ -944,7 +944,7 @@ as many time as needed."
         (interactive)
         (call-interactively ,command)
         (while (let ((input (read-key)))
-                 (case input
+                 (cl-case input
                    (,key (call-interactively ,command) t)))))))
 
 (provide 'tv-utils)
