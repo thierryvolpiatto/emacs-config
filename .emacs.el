@@ -48,7 +48,7 @@ If your system's ping continues until interrupted, you can try setting
   (defmacro with-eval-after-load (file &rest body)
     "Execute BODY after FILE is loaded.
 FILE is normally a feature name, but it can also be a file name,
-in case that file does not provide any feature."
+in cl-case that file does not provide any feature."
     (declare (indent 1) (debug t))
     `(eval-after-load ,file (lambda () ,@body))))
 
@@ -302,7 +302,7 @@ in case that file does not provide any feature."
   "Start Gnus.
 If Gnus have been started and a *Group* buffer exists,
 switch to it, otherwise check if a connection is available and
-in this case start Gnus plugged, otherwise start it unplugged."
+in this cl-case start Gnus plugged, otherwise start it unplugged."
   (interactive "P")
   (let ((buf (get-buffer "*Group*")))
     (if (buffer-live-p buf)
@@ -435,7 +435,6 @@ in this case start Gnus plugged, otherwise start it unplugged."
 (global-set-key (kbd "M-e")                        'tv-eval-last-sexp-at-eol)
 (global-set-key (kbd "C-d")                        'tv-delete-char)
 (global-set-key (kbd "C-x C-'")                    'tv-toggle-resplit-window)
-(global-set-key (kbd "C-x C-(")                    'tv-resize-window)
 (global-set-key (kbd "C-§")                        'iedit-narrow-to-end)
 (global-set-key (kbd "C-²")                        'iedit-narrow-to-defun)
 (defun goto-scratch () (interactive) (switch-to-buffer "*scratch*"))
@@ -627,33 +626,6 @@ With a prefix arg decrease transparency."
 
 ;; Pas-de-dialog-gtk
 (setq use-file-dialog nil)
-
-(defun tv-resize-window ()
-  (interactive)
-  (assert (not (one-window-p t)) nil "Can't resize main frame!")
-  (while (let ((input (read-key (propertize "Resize window (Arrow keys, split h/v |_, Ow `C-<')"
-                                            'face 'minibuffer-prompt))))
-           (case input
-             (right
-              (and (or (window-in-direction 'right)
-                       (window-in-direction 'left))
-                   (enlarge-window-horizontally 1)))
-             (left
-              (and (or (window-in-direction 'right)
-                       (window-in-direction 'left))
-                   (shrink-window-horizontally 1)))
-             (down
-              (and (or (window-in-direction 'above)
-                       (window-in-direction 'below))
-                   (enlarge-window 1)))
-             (up
-              (and (or (window-in-direction 'above)
-                       (window-in-direction 'below))
-                   (shrink-window 1)))
-             (?| (split-window-horizontally))
-             (?_ (split-window-vertically))
-             (?\C-< (other-window-backward 1) t)
-             (t nil)))))
 
 
 ;;; Banish mouse on bottom right
@@ -1377,7 +1349,7 @@ With prefix arg always start and let me choose dictionary."
 ;;      ("(\\<\\(return-from\\|return\\|block\\)\\_>" 1 font-lock-keyword-face)
 ;;      ("(\\<\\(lexical-let[*]?\\|destructuring-bind\\)\\_>" 1 font-lock-keyword-face)
 ;;      ("(\\<\\(eval-when\\|declaim\\|proclaim\\)\\_>" 1 font-lock-keyword-face)
-;;      ("(\\<\\(assert\\)\\_>" 1 font-lock-warning-face)
+;;      ("(\\<\\(cl-assert\\)\\_>" 1 font-lock-warning-face)
 ;;      ("(\\<\\(defun[*]?\\|defmacro[*]?\\|defsubst[*]?\\|defstruct\\)\\_>" 1 font-lock-keyword-face)
 ;;      ("(\\<\\(defun[*]?\\|defmacro[*]?\\|defsubst[*]?\\)\\_>\\s-+\\<\\([^ ]*\\)\\>" 2 font-lock-function-name-face)
 ;;      ("(\\<\\(defstruct\\)\\_>\\s-+\\<\\([^ ]*\\)\\>" 2 font-lock-type-face))))
