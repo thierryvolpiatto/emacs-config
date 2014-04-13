@@ -925,7 +925,7 @@ Arg ALTERNATIVE-KEYS is an unquoted alist specifying other short keybinding
 to use once started.
 e.g:
 
-\(tv/define-key-with-prefix global-map
+\(tv/define-assoc-key-with-prefix global-map
       \(kbd \"C-x v n\") ?n 'git-gutter:next-hunk ((?p 'git-gutter:previous-hunk))\)
 
 
