@@ -944,7 +944,9 @@ Any other keys pressed exit the loop."
            (while (let ((input (read-key))) 
                  (cl-case input
                    (,key (call-interactively ,command) t)
-                   ,(car other-keys))))))))
+                   ,(car other-keys)
+                   (t (call-interactively
+                       (lookup-key ,map (this-command-keys-vector)) nil)))))))))
 
 (provide 'tv-utils)
 
