@@ -8,6 +8,7 @@
 (require 'mu4e-contrib)
 (require 'helm-mu)
 (require 'org-mu4e)
+(require 'config-w3m)
 
 ;; default
 (setq mu4e-maildir "~/Maildir")

@@ -271,6 +271,7 @@ in case that file does not provide any feature."
 (autoload 'golden-ratio-mode "golden-ratio.el" nil t)
 (autoload 'emamux:send-command "emamux.el" nil t)
 (autoload 'emamux:copy-kill-ring "emamux.el" nil t)
+(tv-require 'config-w3m)
 (tv-require 'mu4e-config)
 
 
@@ -1759,8 +1760,11 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;
 (autoload 'git-gutter-mode "git-gutter")
 (add-hook 'emacs-lisp-mode-hook 'git-gutter-mode)
-(tv/define-key-with-prefix global-map (kbd "C-x v n") ?n 'git-gutter:next-hunk)
-(tv/define-key-with-prefix global-map (kbd "C-x v p") ?p 'git-gutter:previous-hunk)
+(tv/define-assoc-key-with-prefix
+ global-map (kbd "C-x v n") ?n 'git-gutter:next-hunk ((?p . 'git-gutter:previous-hunk)))
+(tv/define-assoc-key-with-prefix
+ global-map (kbd "C-x v p") ?p 'git-gutter:previous-hunk ((?n . 'git-gutter:next-hunk)))
+
 (global-set-key [remap vc-dir] 'git-gutter:popup-hunk)
 ;; Stage current hunk
 (global-set-key [remap vc-create-tag] 'git-gutter:stage-hunk)
@@ -1819,10 +1823,6 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
          ("^[A-Z][a-z- ]*:" . font-lock-variable-name-face))))
 
 (add-hook 'Info-mode-hook 'tv-font-lock-doc-rules)
-
-;;; W3m
-;;
-(require 'config-w3m)
 
 ;;; Be sure to reenable touchpad when quitting emacs
 ;;  (emacs 24.4 don't exit properly)

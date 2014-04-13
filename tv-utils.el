@@ -917,21 +917,34 @@ With a prefix arg remove new lines."
    (format "tar cJvf $(basename %s).tar.xz $(basename %s)"
            file file)))
 
-(defmacro tv/define-key-with-prefix (map prefix key command)
-  "Allow defining a repeated key without having to type its prefix.
+(defmacro tv/define-assoc-key-with-prefix (map prefix key command &rest alternative-keys)
+  "Allow defining a repeated key without having to type its prefix
+Arg MAP is the keymap to use, PREFIX is the initial long keybinding to
+call COMMAND.
+Arg ALTERNATIVE-KEYS is an unquoted alist specifying other short keybinding
+to use once started.
 e.g:
 
-\(tv/define-key-with-prefix global-map (kbd \"C-x v n\") ?n 'git-gutter:next-hunk\)
+\(tv/define-key-with-prefix global-map
+      \(kbd \"C-x v n\") ?n 'git-gutter:next-hunk ((?p 'git-gutter:previous-hunk))\)
 
-after typing C-x v n, you can type only \"n\" to repeat this command,
-as many time as needed."
-  `(define-key ,map ,prefix
-    #'(lambda ()
-        (interactive)
-        (call-interactively ,command)
-        (while (let ((input (read-key)))
+
+In this example, `C-x v n' will run `git-gutter:next-hunk' subsequent hit on \"n\"
+will run this command again and subsequent hit on \"p\" will run `git-gutter:previous-hunk'.
+
+Any other keys pressed exit the loop."
+
+  (let ((other-keys (and alternative-keys
+                         (cl-loop for ((x . y)) in alternative-keys
+                               collect (list x (list 'call-interactively y) t)))))
+    `(define-key ,map ,prefix
+       #'(lambda ()
+           (interactive)
+           (call-interactively ,command)
+           (while (let ((input (read-key))) 
                  (cl-case input
-                   (,key (call-interactively ,command) t)))))))
+                   (,key (call-interactively ,command) t)
+                   ,(car other-keys))))))))
 
 (provide 'tv-utils)
 
