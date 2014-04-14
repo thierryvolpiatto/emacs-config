@@ -1732,9 +1732,9 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;
 (autoload 'git-gutter-mode "git-gutter")
 (add-hook 'emacs-lisp-mode-hook 'git-gutter-mode)
-(tv/define-assoc-key-with-prefix
+(tv/define-key-with-subkeys
  global-map (kbd "C-x v n") ?n 'git-gutter:next-hunk ((?p . 'git-gutter:previous-hunk)))
-(tv/define-assoc-key-with-prefix
+(tv/define-key-with-subkeys
  global-map (kbd "C-x v p") ?p 'git-gutter:previous-hunk ((?n . 'git-gutter:next-hunk)))
 
 (global-set-key [remap vc-dir] 'git-gutter:popup-hunk)
