@@ -128,6 +128,7 @@
   (interactive)
   (browse-url (w3m-active-region-or-url-at-point)))
 (define-key mu4e-view-mode-map (kbd "C-c C-c") 'tv/mu4e-browse-url)
+(define-key mu4e-view-mode-map (kbd "C-i") 'w3m-next-anchor)
 
 (provide 'mu4e-config)
 

@@ -641,12 +641,12 @@ With a prefix arg decrease transparency."
 (add-hook 'bookmark-bmenu-mode-hook 'hl-line-mode)
 (setq bookmark-default-file "~/.emacs.d/.emacs.bmk")
 (setq bookmark-automatically-show-annotations nil)
-(with-eval-after-load "bookmark.el"
+(eval-after-load "bookmark.el"
   (and (boundp 'bookmark-bmenu-use-header-line)
        (setq bookmark-bmenu-use-header-line nil)))
 (setq bmkext-external-browse-url-function 'browse-url-firefox) ; 'browse-url-uzbl
 (setq bmkext-jump-w3m-defaut-method 'external) ; Set to 'external to use external browser, w3m for w3m.
-(with-eval-after-load "addressbook-bookmark.el"
+(eval-after-load "addressbook-bookmark.el"
   (addressbook-turn-on-mail-completion))
 
 (defun tv-pp-bookmark-alist ()
@@ -1320,7 +1320,7 @@ With prefix arg always start and let me choose dictionary."
 (setq lisp-loop-forms-indentation 6)
 
 ;; Fix indentation in cl-flet and cl-labels
-(with-eval-after-load "cl-indent.el"
+(eval-after-load "cl-indent.el"
   (let ((l '((flet ((&whole 4 &rest (&whole 1 &lambda &body)) &body))
              (cl-flet* . flet)
              (labels . flet)

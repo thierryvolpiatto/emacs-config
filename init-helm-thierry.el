@@ -181,7 +181,7 @@
 ;;; Modify source attributes
 ;;
 ;; Add actions to `helm-source-find-files' IF:
-(with-eval-after-load "helm-files.el"
+(eval-after-load "helm-files.el"
   (progn
     ;; List Hg files in project.
     (helm-add-action-to-source-if
