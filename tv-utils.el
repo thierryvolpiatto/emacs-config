@@ -925,7 +925,7 @@ Arg OTHER-SUBKEYS is an unquoted alist specifying other short keybindings
 to use once started.
 e.g:
 
-\(tv/define-assoc-key-with-prefix global-map
+\(tv/define-key-with-subkeys global-map
       \(kbd \"C-x v n\") ?n 'git-gutter:next-hunk ((?p 'git-gutter:previous-hunk))\)
 
 
