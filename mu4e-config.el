@@ -124,6 +124,10 @@
 ;; Handle quoted text added with `message-mark-inserted-region' (`C-c M-m')
 (add-hook 'mu4e-view-mode-hook 'mu4e-mark-region-code)
 
+(defun tv/mu4e-browse-url ()
+  (interactive)
+  (browse-url (w3m-active-region-or-url-at-point)))
+(define-key mu4e-view-mode-map (kbd "C-c C-c") 'tv/mu4e-browse-url)
 
 (provide 'mu4e-config)
 

@@ -918,10 +918,10 @@ With a prefix arg remove new lines."
            file file)))
 
 (defmacro tv/define-key-with-subkeys (map key subkey command &optional other-subkeys)
-  "Allow defining a repeated key without having to type its prefix
-Arg MAP is the keymap to use, PREFIX is the initial long keybinding to
+  "Allow defining a KEY without having to type its prefix again on next calls.
+Arg MAP is the keymap to use, SUBKEY is the initial long keybinding to
 call COMMAND.
-Arg ALTERNATIVE-KEYS is an unquoted alist specifying other short keybinding
+Arg OTHER-SUBKEYS is an unquoted alist specifying other short keybindings
 to use once started.
 e.g:
 
@@ -932,7 +932,7 @@ e.g:
 In this example, `C-x v n' will run `git-gutter:next-hunk' subsequent hit on \"n\"
 will run this command again and subsequent hit on \"p\" will run `git-gutter:previous-hunk'.
 
-Any other keys pressed exit the loop."
+Any other keys pressed run their assigned command defined in MAP and exit the loop."
 
   (let ((other-keys (and other-subkeys
                          (cl-loop for (x . y) in other-subkeys
