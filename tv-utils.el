@@ -917,7 +917,7 @@ With a prefix arg remove new lines."
    (format "tar cJvf $(basename %s).tar.xz $(basename %s)"
            file file)))
 
-(defmacro tv/define-assoc-key-with-prefix (map prefix key command &rest alternative-keys)
+(defmacro tv/define-assoc-key-with-prefix (map prefix key command &optional alternative-keys)
   "Allow defining a repeated key without having to type its prefix
 Arg MAP is the keymap to use, PREFIX is the initial long keybinding to
 call COMMAND.
@@ -935,18 +935,18 @@ will run this command again and subsequent hit on \"p\" will run `git-gutter:pre
 Any other keys pressed exit the loop."
 
   (let ((other-keys (and alternative-keys
-                         (cl-loop for ((x . y)) in alternative-keys
+                         (cl-loop for (x . y) in alternative-keys
                                collect (list x (list 'call-interactively y) t)))))
     `(define-key ,map ,prefix
        #'(lambda ()
            (interactive)
            (call-interactively ,command)
            (while (let ((input (read-key))) 
-                 (cl-case input
-                   (,key (call-interactively ,command) t)
-                   ,(car other-keys)
-                   (t (call-interactively
-                       (lookup-key ,map (this-command-keys-vector)) nil)))))))))
+                    (cl-case input
+                      (,key (call-interactively ,command) t)
+                      ,@other-keys
+                      (t (call-interactively
+                          (lookup-key ,map (this-command-keys-vector)) nil)))))))))
 
 (provide 'tv-utils)
 
