@@ -945,8 +945,11 @@ Any other keys pressed run their assigned command defined in MAP and exit the lo
                     (cl-case input
                       (,subkey (call-interactively ,command) t)
                       ,@other-keys
-                      (t (call-interactively
-                          (lookup-key ,map (this-command-keys-vector)) nil)))))))))
+                      (t (let ((com (lookup-key ,map (this-command-keys-vector))))
+                           (when (commandp com) (call-interactively com)))
+                         ;; FIXME handle prefix keys.
+                         nil))))))))
+
 
 (provide 'tv-utils)
 
