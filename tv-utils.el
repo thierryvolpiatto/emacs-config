@@ -945,9 +945,14 @@ Any other keys pressed run their assigned command defined in MAP and exit the lo
                     (cl-case input
                       (,subkey (call-interactively ,command) t)
                       ,@other-keys
-                      (t (let ((com (lookup-key ,map (this-command-keys-vector))))
-                           (when (commandp com) (call-interactively com)))
-                         ;; FIXME handle prefix keys.
+                      (t (let* ((kb (this-command-keys-vector))
+                                (com (lookup-key ,map kb)))
+                           (if (commandp com)
+                               (call-interactively com)
+                             (setq unread-command-events
+                                   (nconc (mapcar 'identity
+                                                  (this-single-command-raw-keys))
+                                          unread-command-events))))
                          nil))))))))
 
 
