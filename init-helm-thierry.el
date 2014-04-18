@@ -12,22 +12,6 @@
 
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
-(defun helm--temp-follow-action (arg)
-  (if (> arg 0)
-      (helm-next-line)
-      (helm-previous-line))
-  (helm-execute-persistent-action))
-
-(defun helm-temp-follow-action-forward ()
-  (interactive)
-  (helm--temp-follow-action 1))
-
-(defun helm-temp-follow-action-backward ()
-  (interactive)
-  (helm--temp-follow-action -1))
-
-(define-key helm-map (kbd "<C-down>") 'helm-temp-follow-action-forward)
-(define-key helm-map (kbd "<C-up>") 'helm-temp-follow-action-backward)
 
 (defun helm-version ()
   (with-current-buffer (find-file-noselect (find-library-name "helm-pkg"))
