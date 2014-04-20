@@ -917,7 +917,7 @@ With a prefix arg remove new lines."
    (format "tar cJvf $(basename %s).tar.xz $(basename %s)"
            file file)))
 
-(defmacro tv/define-key-with-subkeys (map key subkey command &optional other-subkeys)
+(defmacro tv/define-key-with-subkeys (map key subkey command &optional other-subkeys menu)
   "Allow defining a KEY without having to type its prefix again on next calls.
 Arg MAP is the keymap to use, SUBKEY is the initial long keybinding to
 call COMMAND.
@@ -932,6 +932,8 @@ e.g:
 In this example, `C-x v n' will run `git-gutter:next-hunk' subsequent hit on \"n\"
 will run this command again and subsequent hit on \"p\" will run `git-gutter:previous-hunk'.
 
+Arg MENU is a string to display in minibuffer to describe KEY, SUBKEY and OTHER-SUBKEYS.
+
 Any other keys pressed run their assigned command defined in MAP and exit the loop."
 
   (let ((other-keys (and other-subkeys
@@ -941,7 +943,7 @@ Any other keys pressed run their assigned command defined in MAP and exit the lo
        #'(lambda ()
            (interactive)
            (call-interactively ,command)
-           (while (let ((input (read-key)) kb com) 
+           (while (let ((input (read-key ,menu)) kb com)
                     (cl-case input
                       (,subkey (call-interactively ,command) t)
                       ,@other-keys
