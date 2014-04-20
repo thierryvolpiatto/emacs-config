@@ -932,7 +932,7 @@ e.g:
 In this example, `C-x v n' will run `git-gutter:next-hunk' subsequent hit on \"n\"
 will run this command again and subsequent hit on \"p\" will run `git-gutter:previous-hunk'.
 
-Arg MENU is a string to display in minibuffer to describe KEY, SUBKEY and OTHER-SUBKEYS.
+Arg MENU is a string to display in minibuffer to describe SUBKEY and OTHER-SUBKEYS.
 
 Any other keys pressed run their assigned command defined in MAP and exit the loop."
 
