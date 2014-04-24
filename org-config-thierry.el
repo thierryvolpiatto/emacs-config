@@ -133,8 +133,17 @@
                          (format-time-string "%Y/%m/%d")
                          " " payee " " amount)))))
 
+(defun tv/insert-org-src-keyword (beg end)
+  (interactive "r")
+  (save-excursion
+    (goto-char beg)
+    (insert "#+begin_src\n")
+    (goto-char end)
+    (forward-line 1)
+    (insert "\n#+end_src")))
+
 (define-key org-mode-map (kbd "<f11> o") 'helm-org-headlines)
-(define-key org-mode-map (kbd "<f11> k") 'helm-org-keywords)
+(define-key org-mode-map (kbd "<f11> k") 'tv/insert-org-src-keyword)
                                              
 ;; Colorize-Diary's-entries-in-agenda 
 (defvar tv-diary-regexp "^ *[Dd]iary")

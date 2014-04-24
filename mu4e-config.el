@@ -128,7 +128,19 @@
   (interactive)
   (browse-url (w3m-active-region-or-url-at-point)))
 (define-key mu4e-view-mode-map (kbd "C-c C-c") 'tv/mu4e-browse-url)
+
+(defadvice w3m-goto-next-anchor (before go-to-end-of-anchor activate)
+  (when (w3m-anchor-sequence)
+    (goto-char (next-single-property-change
+                (point) 'w3m-anchor-sequence))))
+
+(defadvice w3m-goto-previous-anchor (before go-to-end-of-anchor activate)
+  (when (w3m-anchor-sequence)
+    (goto-char (previous-single-property-change
+                (point) 'w3m-anchor-sequence))))
+
 (define-key mu4e-view-mode-map (kbd "C-i") 'w3m-next-anchor)
+(define-key mu4e-view-mode-map (kbd "M-<tab>") 'w3m-previous-anchor)
 
 (provide 'mu4e-config)
 
