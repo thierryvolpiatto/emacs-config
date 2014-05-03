@@ -3,6 +3,7 @@
 
 (tv-require 'helm-config)
 
+
 ;;;; Extensions
 ;;
 (tv-require 'helm-ls-hg)
@@ -10,6 +11,7 @@
 (tv-require 'helm-ls-git)
 (tv-require 'helm-dictionary)
 
+
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
 
@@ -25,6 +27,7 @@
   (shell-command-to-string
    "git log --pretty='format:%H' -1"))
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Helm-command-map
@@ -32,6 +35,7 @@
 ;;
 (define-key helm-command-map (kbd "g")   'helm-apt)
 (define-key helm-command-map (kbd "w")   'psession-restore-winconf)
+(define-key helm-command-map (kbd "z")   'helm-complex-command-history)
 
 ;;; Global-map
 ;;
@@ -82,11 +86,13 @@
 (define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
 (define-key helm-buffer-map (kbd "C-d")     'helm-buffer-run-kill-persistent)
 
+
 ;;; Describe key-bindings
 ;;
 ;;
 (helm-descbinds-install)            ; C-h b, C-x C-h
 
+
 ;;; Helm-variables
 ;;
 ;;
@@ -129,8 +135,10 @@
       helm-move-to-line-cycle-in-source           t
       ido-use-virtual-buffers                     t             ; Needed in helm-buffers-list
       helm-tramp-verbose                          6
+      helm-buffers-fuzzy-matching                 t
       )
 
+
 ;;; Toggle grep program
 ;;
 ;;
@@ -162,6 +170,7 @@
   (cl-loop for cand in (helm-marked-candidates)
            always (string-match "\.el$" cand)))
 
+
 ;;; Modify source attributes
 ;;
 ;; Add actions to `helm-source-find-files' IF:
@@ -187,6 +196,7 @@
      (with-helm-buffer (magit-status helm-default-directory)))
  helm-source-ls-git 1)
 
+
 ;;; Save current position to mark ring
 ;;
 (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
@@ -195,6 +205,7 @@
 ;;
 ;(add-hook 'helm-after-update-hook #'(lambda () (fit-window-to-buffer (helm-window))))
 
+
 ;;; Psession source
 ;;
 (defvar helm-psession-windows
@@ -208,6 +219,7 @@
   (interactive)
   (helm :sources 'helm-psession-windows :buffer "*helm psession*"))
 
+
 ;;; helm dictionary
 ;;
 (setq helm-dictionary-database "~/helm-dictionary/dic-en-fr.iso")
@@ -216,6 +228,7 @@
                                      ("translate.reference.com fr->en" .
                                       "http://translate.reference.com/translate?query=%s&src=fr&dst=en")))
 
+
 ;;; enable Modes
 ;;
 (helm-mode 1)

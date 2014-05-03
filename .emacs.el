@@ -629,12 +629,6 @@ With a prefix arg decrease transparency."
 (setq use-file-dialog nil)
 
 
-;;; Banish mouse on bottom right
-;;
-;;
-(mouse-avoidance-mode 'banned)
-
-
 ;;; Bookmarks
 ;;
 ;;

@@ -142,6 +142,9 @@
 (define-key mu4e-view-mode-map (kbd "C-i") 'w3m-next-anchor)
 (define-key mu4e-view-mode-map (kbd "M-<tab>") 'w3m-previous-anchor)
 
+;; Show Smileys
+(add-hook 'mu4e-view-mode-hook 'smiley-buffer)
+
 (provide 'mu4e-config)
 
 ;;; mu4e-config.el ends here
