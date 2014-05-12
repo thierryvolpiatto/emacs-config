@@ -34,7 +34,7 @@
 ;;
 ;;
 (define-key helm-command-map (kbd "g")   'helm-apt)
-(define-key helm-command-map (kbd "w")   'psession-restore-winconf)
+(define-key helm-command-map (kbd "w")   'helm-psession)
 (define-key helm-command-map (kbd "z")   'helm-complex-command-history)
 
 ;;; Global-map

@@ -5,6 +5,17 @@
 (require 'cl-lib)
 
 ;(setenv "LANG" "C")
+
+;;; Compatibility
+;;
+;;
+(unless (fboundp 'with-eval-after-load)
+  (defmacro with-eval-after-load (file &rest body)
+    "Execute BODY after FILE is loaded.
+FILE is normally a feature name, but it can also be a file name,
+in cl-case that file does not provide any feature."
+    (declare (indent 1) (debug t))
+    `(eval-after-load ,file (lambda () ,@body))))
 
 
 ;;; Temporary Bugfixes until fixed in trunk.
@@ -40,17 +51,29 @@ If your system's ping continues until interrupted, you can try setting
 
 (when (version< emacs-version "24.3.50.1") (ad-activate 'term-command-hook))
 
-
-;;; Compatibility
-;;
-;;
-(unless (fboundp 'with-eval-after-load)
-  (defmacro with-eval-after-load (file &rest body)
-    "Execute BODY after FILE is loaded.
-FILE is normally a feature name, but it can also be a file name,
-in cl-case that file does not provide any feature."
-    (declare (indent 1) (debug t))
-    `(eval-after-load ,file (lambda () ,@body))))
+(with-eval-after-load "avoid.el"
+  (defun mouse-avoidance-ignore-p ()
+    (let ((mp (mouse-position)))
+      (or (not (frame-pointer-visible-p)) ; The pointer is hidden
+          (not cursor-type)               ; There's no cursor
+          executing-kbd-macro             ; don't check inside macro
+          (null (cadr mp))       ; don't move unless in an Emacs frame
+          (not (eq (car mp) (selected-frame)))
+          ;; Don't do anything if last event was a mouse event.
+          ;; FIXME: this code fails in the case where the mouse was moved
+          ;; since the last key-press but without generating any event.
+          (and (consp last-input-event)
+               (symbolp (car last-input-event))
+               (let ((modifiers (event-modifiers (car last-input-event))))
+                 (or (memq (car last-input-event)
+                           '(mouse-movement scroll-bar-movement
+                             select-window switch-frame
+                             focus-in focus-out))
+                     (memq 'click modifiers)
+                     (memq 'double modifiers)
+                     (memq 'triple modifiers)
+                     (memq 'drag modifiers)
+                     (memq 'down modifiers))))))))
 
 
 ;;; Annoyances section
@@ -1797,6 +1820,12 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
                                (and (executable-find "reenable_touchpad.sh")
                                     (shell-command "reenable_touchpad.sh"))))
 
+
+;;; Mouse avoid
+;;
+;; [BUG] it seem this have no effect when called from lisp
+;; only when set from custom.
+(mouse-avoidance-mode 'banish)
 
 ;;; Save/restore emacs-session
 ;;
