@@ -961,7 +961,6 @@ Any other keys pressed run their assigned command defined in MAP and exit the lo
   "Needed to save-buffer from tmux to \"/tmp/tmux-ring\" file.
 Setting in .tmux.conf is:
  bind-key C-w save-buffer -b 0 /tmp/tmux-ring \; display-message \"Buffer[0] copied\"."
-  (interactive)
   (kill-new
    (with-current-buffer (find-file-noselect "/tmp/tmux-ring")
      (prog1 (buffer-substring (point-min) (point-max))

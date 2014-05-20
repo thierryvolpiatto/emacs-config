@@ -51,30 +51,6 @@ If your system's ping continues until interrupted, you can try setting
 
 (when (version< emacs-version "24.3.50.1") (ad-activate 'term-command-hook))
 
-(with-eval-after-load "avoid.el"
-  (defun mouse-avoidance-ignore-p ()
-    (let ((mp (mouse-position)))
-      (or (not (frame-pointer-visible-p)) ; The pointer is hidden
-          (not cursor-type)               ; There's no cursor
-          executing-kbd-macro             ; don't check inside macro
-          (null (cadr mp))       ; don't move unless in an Emacs frame
-          (not (eq (car mp) (selected-frame)))
-          ;; Don't do anything if last event was a mouse event.
-          ;; FIXME: this code fails in the case where the mouse was moved
-          ;; since the last key-press but without generating any event.
-          (and (consp last-input-event)
-               (symbolp (car last-input-event))
-               (let ((modifiers (event-modifiers (car last-input-event))))
-                 (or (memq (car last-input-event)
-                           '(mouse-movement scroll-bar-movement
-                             select-window switch-frame
-                             focus-in focus-out))
-                     (memq 'click modifiers)
-                     (memq 'double modifiers)
-                     (memq 'triple modifiers)
-                     (memq 'drag modifiers)
-                     (memq 'down modifiers))))))))
-
 
 ;;; Annoyances section
 ;;
@@ -187,7 +163,7 @@ If your system's ping continues until interrupted, you can try setting
              "~/elisp/helm"
              "~/elisp/helm-extensions"
              "~/elisp/google-maps"
-             "~/elisp/org-active/contrib/lisp" ; Contain htmlize.el
+             ;"~/elisp/org-active/contrib/lisp" ; Contain htmlize.el
              "~/elisp/slime"
              "~/elisp/slime/contrib"
              "~/.emacs.d/themes/"
@@ -280,7 +256,7 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'zop-up-to-char "zop-to-char.el" nil t)
 (tv-require 'iedit)
 (tv-require 'iedit-rect)
-(tv-require 'simple-call-tree)
+;(tv-require 'simple-call-tree)
 (autoload 'google-maps "google-maps.el" nil t)
 (tv-require 'iterator)
 (autoload 'markdown-mode "markdown-mode.el")
@@ -295,8 +271,11 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'golden-ratio-mode "golden-ratio.el" nil t)
 (autoload 'emamux:send-command "emamux.el" nil t)
 (autoload 'emamux:copy-kill-ring "emamux.el" nil t)
+(autoload 'emamux:yank-from-list-buffers "emamux.el" nil t)
 (tv-require 'config-w3m)
 (tv-require 'mu4e-config)
+
+(setq emamux:completing-read-type 'helm)
 
 
 ;;; Gnus-config
@@ -435,7 +414,7 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 (global-set-key (kbd "C-x r h")                    'rectangle-menu)
 (global-set-key (kbd "C-x r <right>")              'rectangle-insert-at-right)
 (global-set-key (kbd "C-x r M-w")                  'copy-rectangle)
-(global-set-key [remap zap-to-char]                'zop-up-to-char)
+(global-set-key [remap zap-to-char]                'zop-to-char)
 (global-set-key (kbd "<f5> g m")                   'google-maps)
 (global-set-key (kbd "M-\"")                       'tv-insert-double-quote)
 (global-set-key (kbd "C-M-\`")                     'tv-insert-double-backquote)
@@ -910,7 +889,7 @@ account add <protocol> moi@mail.com password."
 
 ;;; Python config
 ;;
-;; python.el
+;;
 (tv-require 'helm-ipython)
 (define-key python-mode-map (kbd "<M-tab>") 'helm-ipython-complete)
 (define-key python-mode-map (kbd "C-c C-i") 'helm-ipython-import-modules-from-buffer)
@@ -932,10 +911,6 @@ from IPython.core.completerlib import module_completion"
 (add-hook 'python-mode-hook
   #'(lambda ()
       (define-key python-mode-map (kbd "C-m") 'newline-and-indent)))
-
-;; (elpy-enable)
-;; (elpy-use-ipython)
-;; (elpy-clean-modeline)
 
 ;; Entete-py
 (defun tv-insert-python-header ()
@@ -1622,7 +1597,6 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
                               "*inferior-lisp*"
                               "*Fuzzy Completions*"
                               "*Apropos*"
-                              "*dvc-error*"
                               "*Help*"
                               "*cvs*"
                               "*Buffer List*"
@@ -1631,8 +1605,7 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
                               ))
 
 (when (tv-require 'winner)
-  (defvar winner-boring-buffers-regexp
-    "\*[hH]elm.*\\|\*xhg.*\\|\*xgit.*")
+  (defvar winner-boring-buffers-regexp "\\*[hH]elm.*")
   (defun winner-set1 (conf)
     ;; For the format of `conf', see `winner-conf'.
     (let* ((buffers nil)
@@ -1718,13 +1691,9 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;; Semantic
 ;;
 ;;
-(semantic-mode 1)
-;(global-semantic-idle-completions-mode t)
-;(global-semantic-decoration-mode t)
-;(global-semantic-highlight-func-mode t)
-;(global-semantic-show-unmatched-syntax-mode t)
-(when (fboundp 'semantic-default-elisp-setup)
-  (semantic-default-elisp-setup))
+;; (semantic-mode 1)
+;; (when (fboundp 'semantic-default-elisp-setup)
+;;   (semantic-default-elisp-setup))
 ;; With my fixes in lisp/cedet/semantic/bovine/el.el.
 
 ;;; Ffap
@@ -1819,13 +1788,6 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 (add-hook 'kill-emacs-hook #'(lambda ()
                                (and (executable-find "reenable_touchpad.sh")
                                     (shell-command "reenable_touchpad.sh"))))
-
-
-;;; Mouse avoid
-;;
-;; [BUG] it seem this have no effect when called from lisp
-;; only when set from custom.
-(mouse-avoidance-mode 'banish)
 
 ;;; Save/restore emacs-session
 ;;
