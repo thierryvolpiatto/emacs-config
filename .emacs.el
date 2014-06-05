@@ -4,7 +4,8 @@
 
 (require 'cl-lib)
 
-;(setenv "LANG" "C")
+;; (setenv "LANG" "C")
+
 
 ;;; Compatibility
 ;;
@@ -63,7 +64,7 @@ If your system's ping continues until interrupted, you can try setting
 ;; Annoyance number 1 is bidi
 ;; Turn OFF bidi everywhere.
 (setq-default bidi-display-reordering nil)
-(setq-default cache-long-scans nil) ; Fix bug#15973
+;(setq-default cache-long-scans nil) ; Fix bug#15973
 
 ;; Disable uniquify enabled by default in 24.4.
 (setq uniquify-buffer-name-style nil)
@@ -101,32 +102,6 @@ If your system's ping continues until interrupted, you can try setting
           (message "Loading %s Failed" (symbol-name feature)))
     (error
      (signal 'error (list feature (car err) (cadr err))))))
-
-(defun tv-maybe-add-org-load-path (&optional force)
-  (when (or (< emacs-major-version 24) force)
-    (setq load-path (cl-loop for i in load-path
-                          unless (string-match "org" i)
-                          collect i))
-    (dolist (lib '("~/elisp/org-active"
-                   "~/elisp/org-active/lisp"))
-      (add-to-list 'load-path lib))))
-;; (tv-maybe-add-org-load-path t)
-
-(defun tv-maybe-add-tramp-load-path (&optional force)
-  (when (or (version< emacs-version "24.3.50") force)
-    (setq load-path (cl-loop for i in load-path
-                          unless (string-match "tramp" i)
-                          collect i))
-    (add-to-list 'load-path "~/elisp/tramp/lisp")))
-;; (tv-maybe-add-tramp-load-path)
-
-(defun tv-maybe-add-ngnus-load-path (&optional force)
-  (when (or (version< emacs-version "24.3.50") force)
-    (setq load-path (cl-loop for i in load-path
-                          unless (string-match "gnus" i)
-                          collect i))
-    (add-to-list 'load-path "~/elisp/ngnus/lisp" t)))
-(tv-maybe-add-ngnus-load-path)
 
 
 ;;; load-paths
@@ -396,7 +371,7 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 (global-set-key (kbd "<f11> l e")                  'slime-scratch)
 (global-set-key (kbd "<f11> l l")                  'slime-list-connections)
 (global-set-key [remap occur]                      'ioccur) ; M-s o
-(global-set-key (kbd "C-s")                        'tv-helm-or-ioccur)
+(global-set-key (kbd "C-s")                        'helm-occur);'tv-helm-or-ioccur)
 (global-set-key (kbd "M-s s")                      'isearch-forward)
 (global-set-key (kbd "C-c C-o")                    'ioccur-find-buffer-matching)
 (global-set-key (kbd "<M-down>")                   'tv-scroll-down)
@@ -462,23 +437,8 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 ;; Load my favourite theme.
 (add-hook 'emacs-startup-hook #'(lambda () (load-theme 'naquadah)))
 
-
-;; libidn is not in gentoo.d. load it
-;(tv-require 'idna)
-;(tv-require 'punycode)
-
 ;; column-number
 (column-number-mode 1)
-
-;;; desktop-save
-;;
-;; (desktop-save-mode 1)
-;; (setq desktop-restore-eager 5)
-;; (add-to-list 'desktop-globals-to-save 'ioccur-history)
-;; (add-to-list 'desktop-globals-to-save 'helm-external-command-history)
-;; (add-to-list 'desktop-globals-to-save 'helm-surfraw-engines-history)
-;; (add-to-list 'desktop-globals-to-save 'helm-ff-history)
-;; (add-to-list 'desktop-globals-to-save 'helm-external-command-history)
 
 
 ;;; Font lock
@@ -653,12 +613,6 @@ With a prefix arg decrease transparency."
   (erase-buffer)
   (dolist (i bookmark-alist)
     (pp i (current-buffer))))
-
-;;; Muse
-;;
-;;
-;(add-hook 'find-file-hooks 'muse-mode-maybe)
-;(setq muse-wiki-allow-nonexistent-wikiword t)
 
 ;;; Browse url
 ;;
@@ -1544,7 +1498,7 @@ With prefix arg always start and let me choose dictionary."
 ;(setq delete-by-moving-to-trash t)
 
 ;; Minibuffers completion
-;(setq completion-cycle-threshold t) ; always cycle, no completion buffers.
+(setq completion-cycle-threshold t) ; always cycle, no completion buffers.
 
 ;;; VC
 ;;
@@ -1729,10 +1683,6 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 (global-set-key [remap vc-create-tag] 'git-gutter:stage-hunk)
 ;; Revert current hunk
 (global-set-key (kbd "C-x v r") 'git-gutter:revert-hunk)
-
-;;; Monky - hg frontend
-;;
-;(setq monky-process-type 'cmdserver)
 
 ;;; Golden ratio
 ;;
