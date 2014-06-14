@@ -67,16 +67,27 @@
 ;; Use `completion-at-point' with `helm-mode' if available
 ;; otherwise fallback to helm implementation.
 
-(and (boundp 'tab-always-indent) (setq tab-always-indent 'complete))
-(unless (and (boundp 'tab-always-indent)
+;; Set to `complete' will use `completion-at-point'.
+;; (and (boundp 'tab-always-indent)
+;;      (setq tab-always-indent 'complete))
+
+(if (and (boundp 'tab-always-indent)
              (eq tab-always-indent 'complete)
              (boundp 'completion-in-region-function))
-  (define-key lisp-interaction-mode-map [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
-  (define-key emacs-lisp-mode-map [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
-
-  ;; lisp complete. (Rebind M-<tab>)
-  (define-key lisp-interaction-mode-map [remap completion-at-point] 'helm-lisp-completion-at-point)
-  (define-key emacs-lisp-mode-map       [remap completion-at-point] 'helm-lisp-completion-at-point))
+    (progn
+      (define-key lisp-interaction-mode-map [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
+      (define-key emacs-lisp-mode-map [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
+      
+      ;; lisp complete. (Rebind M-<tab>)
+      (define-key lisp-interaction-mode-map [remap completion-at-point] 'helm-lisp-completion-at-point)
+      (define-key emacs-lisp-mode-map       [remap completion-at-point] 'helm-lisp-completion-at-point))
+    
+    (define-key lisp-interaction-mode-map [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
+    (define-key emacs-lisp-mode-map [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
+    
+    ;; lisp complete. (Rebind M-<tab>)
+    (define-key lisp-interaction-mode-map [remap completion-at-point] 'helm-lisp-completion-at-point)
+    (define-key emacs-lisp-mode-map       [remap completion-at-point] 'helm-lisp-completion-at-point))
 
 (unless (boundp 'completion-in-region-function)
   (add-hook 'ielm-mode-hook

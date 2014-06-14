@@ -195,7 +195,8 @@ If entries are already pointed, skip."
       (ledger-mode)
       (remove-overlays)
       (setq ov (make-overlay beg (point-max)))
-      (overlay-put ov 'face '((:background "DarkSlateGray"))))))
+      (overlay-put ov 'face '((:background "DarkSlateGray"))))
+    (switch-to-buffer obuf)))
 
 (defvar ledger-previous-window-configuration nil)
 (defadvice ledger-reconcile (before save-winconf activate)

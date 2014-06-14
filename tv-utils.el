@@ -204,7 +204,7 @@ depending the value of N is positive or negative."
   (when (or (eq (point-min) (point-max))
             ;; For some reason the scratch buffer have not a zero size.
             (<= (buffer-size) 2))
-    (insert ";; SCRATCH BUFFER\n;; ==============\n\n")))
+    (insert ";;; -*- coding: utf-8; mode: lisp-interaction; lexical-binding: t -*-\n;;\n;; SCRATCH BUFFER\n;; ==============\n\n")))
 
 ;;; registers-config 
 ;; Redefine append-to-register with a "\n"
