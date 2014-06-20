@@ -64,7 +64,7 @@ If your system's ping continues until interrupted, you can try setting
 ;; Annoyance number 1 is bidi
 ;; Turn OFF bidi everywhere.
 (setq-default bidi-display-reordering nil)
-;(setq-default cache-long-scans nil) ; Fix bug#15973 among others.
+(setq-default cache-long-scans nil) ; Fix bug#15973 among others.
 
 ;; Disable uniquify enabled by default in 24.4.
 (setq uniquify-buffer-name-style nil)
@@ -1186,16 +1186,10 @@ With prefix arg always start and let me choose dictionary."
 (defadvice newsticker-mark-all-items-at-point-as-read-and-redraw (after recenter activate)
   (recenter))
 
-(defun newsticker--next-line ()
-  (interactive)
-  (let ((line-move-visual t))
-    (next-line)))
-
-(when (tv-require 'newsticker)
-  (define-key newsticker-mode-map (kbd "Q") 'newsticker-quit-and-stop)
-  (define-key newsticker-mode-map (kbd "b") 'newsticker-previous-feed))
-
-;;(add-hook 'newsticker-mode-hook #'(lambda () (setq bidi-display-reordering nil)))
+(add-hook 'newsticker-mode-hook
+          (lambda ()
+            (define-key newsticker-mode-map (kbd "Q") 'newsticker-quit-and-stop)
+            (define-key newsticker-mode-map (kbd "b") 'newsticker-previous-feed)))
 
 
 ;;; Tramp-config

@@ -198,6 +198,20 @@ If entries are already pointed, skip."
       (overlay-put ov 'face '((:background "DarkSlateGray"))))
     (switch-to-buffer obuf)))
 
+(defun ledger-exchange-point-an-mark-or-overlay ()
+  (interactive)
+  (if (region-active-p)
+      (exchange-point-and-mark)
+      (helm-aif (overlays-at (point))
+          (cond ((eq (overlay-start (car it)) (point))
+                 (goto-char (next-overlay-change (point)))
+                 (forward-line -1))
+                (t
+                 (goto-char (previous-overlay-change (point)))))
+        (and (delq nil (overlay-lists))
+             (goto-char (next-overlay-change (point)))))))
+(define-key ledger-mode-map (kbd "C-x C-x") 'ledger-exchange-point-an-mark-or-overlay)
+
 (defvar ledger-previous-window-configuration nil)
 (defadvice ledger-reconcile (before save-winconf activate)
   (setq ledger-previous-window-configuration (current-window-configuration)))
