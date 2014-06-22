@@ -484,10 +484,10 @@ Can be used from any place in the line."
 (defun tv-eval-last-sexp-at-eol ()
   (interactive)
   (save-excursion
-    (beginning-of-line)
-    (search-forward "(" (point-at-eol))
-    (skip-chars-forward "^;" (point-at-eol))
-    (call-interactively 'eval-last-sexp)))
+    (end-of-line)
+    (when (search-backward ")" (point-at-bol) t)
+      (forward-char 1)
+      (call-interactively 'eval-last-sexp))))
 ;; (message "hello") ;; test
 
 ;; Delete-char-or-region 
