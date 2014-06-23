@@ -144,7 +144,7 @@
 
 ;;; Same as W-Q in gnus.
 ;;
-;; Stolen in gnus-art.el
+;; Stolen in gnus-art.el and adapted to mu4e.
 (defun mu4e-view-fill-long-lines ()
   "Fill lines that are wider than the window width."
   (interactive)
@@ -166,6 +166,54 @@
             (forward-line 1)))))))
 
 (define-key mu4e-view-mode-map (kbd "M-q") 'mu4e-view-fill-long-lines)
+
+;; A simplified and more efficient version of `article-translate-strings'.
+;; Transform also in headers.
+(defun mu4e~view-translate-strings (map)
+  "Translate all string in the the article according to MAP.
+MAP is an alist where the elements are on the form (\"from\" \"to\")."
+  (save-excursion
+    (goto-char (point-min))
+    (let ((inhibit-read-only t))
+      (dolist (elem map)
+        (let* ((key  (car elem))
+               (from (if (characterp key) (string key) key))
+               (to   (cdr elem)))
+          (save-excursion
+            (while (search-forward from nil t)
+              (replace-match to))))))))
+
+(defun mu4e-view-treat-dumbquotes ()
+    "Translate M****s*** sm*rtq**t*s and other symbols into proper text.
+Note that this function guesses whether a character is a sm*rtq**t* or
+not, so it should only be used interactively.
+
+Sm*rtq**t*s are M****s***'s unilateral extension to the
+iso-8859-1 character map in an attempt to provide more quoting
+characters.  If you see something like \\222 or \\264 where
+you're expecting some kind of apostrophe or quotation mark, then
+try this wash."
+  (interactive)
+  (with-current-buffer mu4e~view-buffer
+    (mu4e~view-translate-strings
+     '((128 . "EUR") (130 . ",") (131 . "f") (132 . ",,")
+       (133 . "...") (139 . "<") (140 . "OE") (145 . "`")
+       (146 . "'") (147 . "``") (148 . "\"") (149 . "*")
+       (150 . "-") (151 . "--") (152 . "~") (153 . "(TM)")
+       (155 . ">") (156 . "oe") (180 . "'")))))
+
+;; Same as `article-remove-cr' (W-c) but simplified and more efficient.
+;; Not sure it is needed in mu4e though.
+(defun mu4e-view-remove-cr ()
+  "Remove trailing CRs and then translate remaining CRs into LFs."
+  (interactive)
+  (save-excursion
+    (let ((inhibit-read-only t))
+      (goto-char (point-min))
+      (while (re-search-forward "\r" nil t)
+        (if (eolp)
+            (replace-match "" t t)
+            (replace-match "\n" t t))))))
 
 ;; Show Smileys
 (add-hook 'mu4e-view-mode-hook 'smiley-buffer)
