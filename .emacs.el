@@ -1716,10 +1716,18 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
   "Face for item stating with -- in info." :group 'Info :group 'faces)
 
 (defvar tv-info-title-face 'tv-info-ref-item)
-
+(defvar info-unicode-quote-start (string 8216))
+(defvar info-unicode-quote-end (string 8217))
+(defvar info-unicode-quoted-regexp (format "[%s]\\([^%s %s]+\\)[%s]"
+                                           info-unicode-quote-start
+                                           info-unicode-quote-start
+                                           info-unicode-quote-end
+                                           info-unicode-quote-end
+                                           ))
 (defun tv-font-lock-doc-rules ()
   (font-lock-add-keywords
-   nil '(("[^\\s\][`]\\([^`']+\\)[`']?[^\\s\][']?" 1 font-lock-type-face)
+   nil `(("[^\\s\][`]\\([^`']+\\)[`']?[^\\s\][']?" 1 font-lock-type-face)
+         (,info-unicode-quoted-regexp 1 font-lock-type-face)
          ("^ --.*$" . tv-info-title-face)
          ("\"\\([^\"]*\\)[\"]" . font-lock-string-face)
          ("\\*Warning:\\*" . font-lock-warning-face)
