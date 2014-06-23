@@ -1718,7 +1718,7 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 (defvar tv-info-title-face 'tv-info-ref-item)
 (defvar info-unicode-quote-start (string 8216))
 (defvar info-unicode-quote-end (string 8217))
-(defvar info-unicode-quoted-regexp (format "[%s]\\([^%s %s]+\\)[%s]"
+(defvar info-unicode-quoted-regexp (format "[%s]\\([^%s%s]+\\)[%s]"
                                            info-unicode-quote-start
                                            info-unicode-quote-start
                                            info-unicode-quote-end
