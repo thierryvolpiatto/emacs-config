@@ -142,31 +142,6 @@
 (define-key mu4e-view-mode-map (kbd "C-i") 'w3m-next-anchor)
 (define-key mu4e-view-mode-map (kbd "M-<tab>") 'w3m-previous-anchor)
 
-;;; Same as W-Q in gnus.
-;;
-;; Stolen in gnus-art.el and adapted to mu4e.
-(defun mu4e-view-fill-long-lines ()
-  "Fill lines that are wider than the window width."
-  (interactive)
-  (with-current-buffer mu4e~view-buffer
-    (save-excursion
-      (let ((inhibit-read-only t)
-            (width (window-width (get-buffer-window (current-buffer)))))
-        (save-restriction
-          (message-goto-body)
-          (while (not (eobp))
-            (end-of-line)
-            (when (>= (current-column) (min fill-column width))
-              (narrow-to-region (min (1+ (point)) (point-max))
-                                (point-at-bol))
-              (let ((goback (point-marker)))
-                (fill-paragraph nil)
-                (goto-char (marker-position goback)))
-              (widen))
-            (forward-line 1)))))))
-
-(define-key mu4e-view-mode-map (kbd "M-q") 'mu4e-view-fill-long-lines)
-
 ;; A simplified and more efficient version of `article-translate-strings'.
 ;; Transform also in headers.
 (defun mu4e~view-translate-strings (map)

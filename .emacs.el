@@ -6,6 +6,10 @@
 
 ;; (setenv "LANG" "C")
 
+;; Fix loosing focus on window manager
+;; when quitting emacs.
+(setq focus-follows-mouse t)
+
 
 ;;; Compatibility
 ;;
@@ -233,6 +237,7 @@ If your system's ping continues until interrupted, you can try setting
 (tv-require 'iedit)
 (tv-require 'iedit-rect)
 ;(tv-require 'simple-call-tree)
+(tv-require 'lacarte)
 (autoload 'google-maps "google-maps.el" nil t)
 (tv-require 'iterator)
 (autoload 'markdown-mode "markdown-mode.el")
@@ -1731,8 +1736,10 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
          ("^ --.*$" . tv-info-title-face)
          ("\"\\([^\"]*\\)[\"]" . font-lock-string-face)
          ("\\*Warning:\\*" . font-lock-warning-face)
-         ("^ +\\(\\*\\) " 1 font-lock-variable-name-face)
-         ("^[A-Z][a-z- ]*:" . font-lock-variable-name-face))))
+         ("^ *\\([*]\\) " 1 font-lock-variable-name-face)
+         ("^[A-Z ]+$" . font-lock-comment-face)
+         ("^[A-Z][a-z- ]*:" . font-lock-variable-name-face)
+         )))
 
 (add-hook 'Info-mode-hook 'tv-font-lock-doc-rules)
 

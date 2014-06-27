@@ -103,13 +103,14 @@
 
 ;; Insinuate-appt 
 ;(require 'appt)
-(org-agenda-to-appt)
+;(org-agenda-to-appt)
 ;; When use 'r' (rebuild agenda) reload appt
 (add-hook 'org-agenda-mode-hook #'(lambda ()
                                     (setq appt-time-msg-list nil)
-                                    (org-agenda-to-appt)))
+                                    (org-agenda-to-appt)
+                                    (define-key org-agenda-mode-map (kbd "C-c M") 'org-agenda-month-view)))
 
-(setq appt-display-format 'window) ;echo, window, nil
+(setq appt-display-format 'window) ; Values: 'echo, 'window or nil.
 (appt-activate 1)
 (global-set-key (kbd "<f5> d a") 'appt-add)
 
@@ -190,8 +191,6 @@
 (define-key org-mode-map (kbd "C-c e") 'org-encrypt-entry)
 (define-key org-mode-map (kbd "C-c d") 'org-decrypt-entry)
 
-(define-key org-agenda-mode-map (kbd "C-c M") 'org-agenda-month-view)
-
 ;; fontify source code
 (setq org-src-fontify-natively t)
 
@@ -205,7 +204,7 @@
     (insert-image (create-image file) )))
 
 ;; Bugfix: Incompatibility with bidi.
-(add-hook 'org-mode-hook #'(lambda () (setq bidi-display-reordering nil)))
+;(add-hook 'org-mode-hook #'(lambda () (setq bidi-display-reordering nil)))
 
 ;;; setting for org-refile full completion
 ;;
