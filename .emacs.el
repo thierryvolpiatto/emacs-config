@@ -1749,24 +1749,6 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
                                (and (executable-find "reenable_touchpad.sh")
                                     (shell-command "reenable_touchpad.sh"))))
 
-;;; Use new hooks `focus-out-hook' and `focus-in-hook'.
-;;
-(defvar tv/touchpad-enabled-interactively-p nil) ; Modified in toggletouchpad.sh.
-(when (and (boundp 'focus-in-hook) (boundp 'focus-out-hook))
-  (add-hook 'focus-out-hook #'(lambda ()
-                                ;; Renable touchpad when switching somewhere
-                                ;; else than emacs.
-                                (shell-command "synclient TouchpadOff=0 > /dev/null")
-                                (message nil)))
-  
-  (add-hook 'focus-in-hook #'(lambda ()
-                               (unless tv/touchpad-enabled-interactively-p
-                                 ;; Disable touchpad unless reenabled explicitely
-                                 ;; with toggletouchpad.sh.
-                                 (shell-command "synclient TouchpadOff=1 > /dev/null")
-                                 (message nil)))))
-
-
 ;;; Save/restore emacs-session
 ;;
 ;;
