@@ -216,15 +216,6 @@
  helm-source-ls-git 1)
 
 
-;;; Save current position to mark ring
-;;
-(add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
-
-;;; Fit window to buffer
-;;
-;(add-hook 'helm-after-update-hook #'(lambda () (fit-window-to-buffer (helm-window))))
-
-
 ;;; Psession source
 ;;
 (defvar helm-psession-windows
