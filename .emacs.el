@@ -611,6 +611,7 @@ With a prefix arg decrease transparency."
 (setq bmkext-jump-w3m-defaut-method 'external) ; Set to 'external to use external browser, w3m for w3m.
 (eval-after-load "addressbook-bookmark.el"
   (addressbook-turn-on-mail-completion))
+(setq bmkext-external-browse-url-function 'helm-browse-url-conkeror)
 
 (defun tv-pp-bookmark-alist ()
   "Quickly print `bookmark-alist'."
@@ -623,7 +624,8 @@ With a prefix arg decrease transparency."
 ;;; Browse url
 ;;
 ;;
-(setq browse-url-browser-function 'browse-url-firefox)
+;(setq browse-url-browser-function 'browse-url-firefox)
+(setq browse-url-browser-function 'helm-browse-url-conkeror)
 
 ;;; Erc config
 ;;
@@ -808,7 +810,87 @@ account add <protocol> moi@mail.com password."
 (add-hook 'eshell-mode-hook 'turn-on-eldoc-mode)
 
 (when (tv-require 'eldoc)
-  (set-face-attribute 'eldoc-highlight-function-argument nil :underline "red"))
+  (set-face-attribute 'eldoc-highlight-function-argument nil :underline "red")
+  (defun eldoc-get-fnsym-args-string (sym &optional index)
+    "Return a string containing the parameter list of the function SYM.
+If SYM is a subr and no arglist is obtainable from the docstring
+or elsewhere, return a 1-line docstring.  Calls the functions
+`eldoc-function-argstring-format' and
+`eldoc-highlight-function-argument' to format the result.  The
+former calls `eldoc-argument-case'; the latter gives the
+function name `font-lock-function-name-face', and optionally
+highlights argument number INDEX."
+    (let (args doc advertised (prop (get sym 'eldoc)))
+      (cond (prop (setq doc prop))
+            ((not (and sym (symbolp sym) (fboundp sym))))
+            ((and (eq sym (aref eldoc-last-data 0))
+                  (eq 'function (aref eldoc-last-data 2)))
+             (setq doc (aref eldoc-last-data 1)))
+            ((listp (setq advertised (gethash (indirect-function sym)
+                                              advertised-signature-table t)))
+             (setq args advertised))
+            ((setq doc (help-split-fundoc (documentation sym t) sym))
+             (setq args (car doc))
+             ;; Remove any enclosing (), since e-function-argstring adds them.
+             (string-match "\\`[^ )]* ?" args)
+             (setq args (substring args (match-end 0)))
+             (if (string-match-p ")\\'" args)
+                 (setq args (substring args 0 -1))))
+            (t
+             (setq args (help-function-arglist sym))))
+      (if args
+          ;; Stringify, and store before highlighting, downcasing, etc.
+          ;; FIXME should truncate before storing.
+          (eldoc-last-data-store sym (setq args (eldoc-function-argstring args))
+                                 'function)
+          (setq args doc))        ; use stored value
+      ;; Change case, highlight, truncate.
+      (if args
+          (eldoc-highlight-function-argument
+           sym (eldoc-function-argstring-format args) index))))
+
+  (defun eldoc-highlight-function-argument (sym args index)
+    "Highlight argument INDEX in ARGS list for function SYM.
+In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
+    (let ((start          nil)
+          (end            0)
+          (argument-face  'eldoc-highlight-function-argument))
+      ;; Find the current argument in the argument string.  We need to
+      ;; handle `&rest' and informal `...' properly.
+      ;;
+      ;; FIXME: What to do with optional arguments, like in
+      ;;        (defun NAME ARGLIST [DOCSTRING] BODY...) case?
+      ;;        The problem is there is no robust way to determine if
+      ;;        the current argument is indeed a docstring.
+      (while (and index (>= index 1))
+        (if (string-match "[^ ()]+" args end)
+            (progn
+              (setq start (match-beginning 0)
+                    end   (match-end 0))
+              (let ((argument (match-string 0 args)))
+                (cond ((string= argument "&rest")
+                       ;; All the rest arguments are the same.
+                       (setq index 1))
+                      ((string= argument "&optional"))
+                      ((or (string-match-p "\\.\\.\\.$" argument)
+                           (and (string-match-p "\\.\\.\\.)?$" args)
+                                (> index 1) (oddp index)))
+                       (setq index 0))
+                      (t
+                       (setq index (1- index))))))
+            (setq end           (length args)
+                  start         (1- end)
+                  argument-face 'font-lock-warning-face
+                  index         0)))
+      (let ((doc args))
+        (when start
+          (setq doc (copy-sequence args))
+          (add-text-properties start end (list 'face argument-face) doc))
+        (setq doc (eldoc-docstring-format-sym-doc
+                   sym doc (if (functionp sym) 'font-lock-function-name-face
+                               'font-lock-keyword-face)))
+        doc)))
+  )
 
 ;; Tooltip face
 (set-face-attribute 'tooltip nil

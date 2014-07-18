@@ -27,6 +27,9 @@
   (shell-command-to-string
    "git log --pretty='format:%H' -1"))
 
+(put 'helm-set-local-variable 'eldoc "([VAR VALUE]...)")
+(put 'helm 'eldoc "(&key sources input prompt resume preselect buffer keymap default history local-vars...)")
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -72,8 +75,8 @@
 ;;      (setq tab-always-indent 'complete))
 
 (if (and (boundp 'tab-always-indent)
-             (eq tab-always-indent 'complete)
-             (boundp 'completion-in-region-function))
+         (eq tab-always-indent 'complete)
+         (boundp 'completion-in-region-function))
     (progn
       (define-key lisp-interaction-mode-map [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
       (define-key emacs-lisp-mode-map [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
@@ -227,7 +230,8 @@
 
 (defun helm-psession ()
   (interactive)
-  (helm :sources 'helm-psession-windows :buffer "*helm psession*"))
+  (helm :sources 'helm-psession-windows
+        :buffer "*helm psession*"))
 
 
 ;;; helm dictionary

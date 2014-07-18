@@ -39,7 +39,8 @@
 (when (require 'w3m)
   (define-key w3m-mode-map (kbd "M-<right>") 'w3m-next-buffer)
   (define-key w3m-mode-map (kbd "M-<left>") 'w3m-previous-buffer)
-  (define-key w3m-mode-map (kbd "V") 'helm-w3m-bookmarks))
+  (define-key w3m-mode-map (kbd "V") 'helm-w3m-bookmarks)
+  (define-key w3m-mode-map (kbd "M") 'w3m-view-url-with-external-browser))
 
 ;; Remove-trailing-white-space-in-w3m-buffers 
 (add-hook 'w3m-display-hook
