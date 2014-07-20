@@ -811,44 +811,6 @@ account add <protocol> moi@mail.com password."
 
 (when (tv-require 'eldoc)
   (set-face-attribute 'eldoc-highlight-function-argument nil :underline "red")
-  (defun eldoc-get-fnsym-args-string (sym &optional index)
-    "Return a string containing the parameter list of the function SYM.
-If SYM is a subr and no arglist is obtainable from the docstring
-or elsewhere, return a 1-line docstring.  Calls the functions
-`eldoc-function-argstring-format' and
-`eldoc-highlight-function-argument' to format the result.  The
-former calls `eldoc-argument-case'; the latter gives the
-function name `font-lock-function-name-face', and optionally
-highlights argument number INDEX."
-    (let (args doc advertised (prop (get sym 'eldoc)))
-      (cond (prop (setq doc prop))
-            ((not (and sym (symbolp sym) (fboundp sym))))
-            ((and (eq sym (aref eldoc-last-data 0))
-                  (eq 'function (aref eldoc-last-data 2)))
-             (setq doc (aref eldoc-last-data 1)))
-            ((listp (setq advertised (gethash (indirect-function sym)
-                                              advertised-signature-table t)))
-             (setq args advertised))
-            ((setq doc (help-split-fundoc (documentation sym t) sym))
-             (setq args (car doc))
-             ;; Remove any enclosing (), since e-function-argstring adds them.
-             (string-match "\\`[^ )]* ?" args)
-             (setq args (substring args (match-end 0)))
-             (if (string-match-p ")\\'" args)
-                 (setq args (substring args 0 -1))))
-            (t
-             (setq args (help-function-arglist sym))))
-      (if args
-          ;; Stringify, and store before highlighting, downcasing, etc.
-          ;; FIXME should truncate before storing.
-          (eldoc-last-data-store sym (setq args (eldoc-function-argstring args))
-                                 'function)
-          (setq args doc))        ; use stored value
-      ;; Change case, highlight, truncate.
-      (if args
-          (eldoc-highlight-function-argument
-           sym (eldoc-function-argstring-format args) index))))
-
   (defun eldoc-highlight-function-argument (sym args index)
     "Highlight argument INDEX in ARGS list for function SYM.
 In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
@@ -872,6 +834,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                        ;; All the rest arguments are the same.
                        (setq index 1))
                       ((string= argument "&optional"))
+                      ((string= argument "&key"))
                       ((or (string-match-p "\\.\\.\\.$" argument)
                            (and (string-match-p "\\.\\.\\.)?$" args)
                                 (> index 1) (oddp index)))
@@ -890,7 +853,18 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                    sym doc (if (functionp sym) 'font-lock-function-name-face
                                'font-lock-keyword-face)))
         doc)))
-  )
+  
+  (defun eldoc-function-argstring-format (argstring)
+    "Apply `eldoc-argument-case' to each word in ARGSTRING.
+The words \"&rest\", \"&optional\", \"&key\" and \"&allow-other-keys\"
+are returned unchanged."
+    (mapconcat
+     (lambda (s)
+       (if (string-match-p
+            "\\`(?&\\(?:optional\\|rest\\|key\\|allow-other-keys\\))?\\'" s)
+           s
+         (funcall eldoc-argument-case s)))
+     (split-string argstring) " ")))
 
 ;; Tooltip face
 (set-face-attribute 'tooltip nil
@@ -1824,6 +1798,20 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
          )))
 
 (add-hook 'Info-mode-hook 'tv-font-lock-doc-rules)
+
+;;; Outline-mode bindings
+(tv/define-key-with-subkeys outline-mode-map (kbd "C-c C-p")
+                            ?p 'outline-previous-visible-heading
+                            ((?n . 'outline-next-visible-heading)))
+(tv/define-key-with-subkeys outline-mode-map (kbd "C-c C-n")
+                            ?n 'outline-next-visible-heading
+                            ((?p . 'outline-previous-visible-heading)))
+(tv/define-key-with-subkeys outline-mode-map (kbd "C-c C-f")
+                            ?f 'outline-forward-same-level
+                            ((?b . 'outline-backward-same-level)))
+(tv/define-key-with-subkeys outline-mode-map (kbd "C-c C-b")
+                            ?b 'outline-backward-same-level
+                            ((?f . 'outline-forward-same-level)))
 
 ;;; Be sure to reenable touchpad when quitting emacs
 ;; See configuration screenshot here:

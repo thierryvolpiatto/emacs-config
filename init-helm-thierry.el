@@ -27,9 +27,6 @@
   (shell-command-to-string
    "git log --pretty='format:%H' -1"))
 
-(put 'helm-set-local-variable 'eldoc "([VAR VALUE]...)")
-(put 'helm 'eldoc "(&key sources input prompt resume preselect buffer keymap default history local-vars...)")
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
