@@ -841,8 +841,8 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                               (match-string 1)
                             cur-w)))))
           (when (member (upcase cur-a) args-lst-ak)
-            (setq index 0
-                  start (string-match (upcase cur-a) args)
+            (setq index nil
+                  start (string-match (concat "\\_<" (upcase cur-a) "\\_>") args)
                   end   (match-end 0)))))
       (while (and index (>= index 1))
         (if (string-match "[^ ()]+" args end)
