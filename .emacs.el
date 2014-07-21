@@ -810,7 +810,6 @@ account add <protocol> moi@mail.com password."
 (add-hook 'eshell-mode-hook 'turn-on-eldoc-mode)
 
 (when (tv-require 'eldoc)
-  (set-face-attribute 'eldoc-highlight-function-argument nil :underline "red")
   (defun eldoc-highlight-function-argument (sym args index)
     "Highlight argument INDEX in ARGS list for function SYM.
 In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
@@ -838,7 +837,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                (cur-a (if (string-match ":\\([^ ()]*\\)" cur-w)
                           (substring cur-w 1)
                         (save-excursion
-                          (if (re-search-backward ":\\([^ ()]*\\)" limit t)
+                          (if (re-search-backward ":\\([^ ()\n]*\\)" limit t)
                               (match-string 1)
                             cur-w)))))
           (when (member (upcase cur-a) args-lst-ak)
