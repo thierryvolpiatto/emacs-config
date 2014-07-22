@@ -826,23 +826,18 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
       (when (string-match "&key" args)
         (let* (case-fold-search
                (cur-w (current-word))
-               (args-lst (mapcar (lambda (x)
-                                   (replace-regexp-in-string
-                                    "\\`[(]\\|[)]\\'" "" x))
-                                 (split-string args)))
-               (args-lst-ak (member "&key" args-lst))
                (limit (save-excursion
                         (when (re-search-backward (symbol-name sym) nil t)
                           (match-end 0))))
                (cur-a (if (string-match ":\\([^ ()]*\\)" cur-w)
                           (substring cur-w 1)
-                        (save-excursion
-                          (if (re-search-backward ":\\([^ ()\n]*\\)" limit t)
-                              (match-string 1)
-                            cur-w)))))
-          (when (member (upcase cur-a) args-lst-ak)
+                          (save-excursion
+                            (when (re-search-backward ":\\([^ ()\n]*\\)" limit t)
+                              (match-string 1))))))
+          (when (and cur-a
+                     (string-match (concat "\\_<" (upcase cur-a) "\\_>") args))
             (setq index nil
-                  start (string-match (concat "\\_<" (upcase cur-a) "\\_>") args)
+                  start (match-beginning 0)
                   end   (match-end 0)))))
       (while (and index (>= index 1))
         (if (string-match "[^ ()]+" args end)
@@ -861,17 +856,17 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                        (setq index 0))
                       (t
                        (setq index (1- index))))))
-          (setq end           (length args)
-                start         (1- end)
-                argument-face 'font-lock-warning-face
-                index         0)))
+            (setq end           (length args)
+                  start         (1- end)
+                  argument-face 'font-lock-warning-face
+                  index         0)))
       (let ((doc args))
         (when start
           (setq doc (copy-sequence args))
           (add-text-properties start end (list 'face argument-face) doc))
         (setq doc (eldoc-docstring-format-sym-doc
                    sym doc (if (functionp sym) 'font-lock-function-name-face
-                             'font-lock-keyword-face)))
+                               'font-lock-keyword-face)))
         doc)))
   
   (defun eldoc-function-argstring-format (argstring)
