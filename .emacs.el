@@ -829,7 +829,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                (limit (save-excursion
                         (when (re-search-backward (symbol-name sym) nil t)
                           (match-end 0))))
-               (cur-a (if (string-match ":\\([^ ()]*\\)" cur-w)
+               (cur-a (if (and cur-w (string-match ":\\([^ ()]*\\)" cur-w))
                           (substring cur-w 1)
                           (save-excursion
                             (when (re-search-backward ":\\([^ ()\n]*\\)" limit t)
