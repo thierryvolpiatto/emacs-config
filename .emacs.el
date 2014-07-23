@@ -823,6 +823,10 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
       ;;        (defun NAME ARGLIST [DOCSTRING] BODY...) case?
       ;;        The problem is there is no robust way to determine if
       ;;        the current argument is indeed a docstring.
+
+      ;; When `&key' is used finding position based on `index'
+      ;; would be wrong, so find the arg at point and determine
+      ;; position in ARGS based on this current arg.
       (when (string-match "&key" args)
         (let* (case-fold-search
                (cur-w (current-word))
@@ -834,11 +838,15 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                           (save-excursion
                             (when (re-search-backward ":\\([^ ()\n]*\\)" limit t)
                               (match-string 1))))))
+          ;; If `cur-a' is nil probably cursor is on a positional arg
+          ;; before `&key', in this case, exit this block and determine
+          ;; position with `index'.
           (when (and cur-a
                      (string-match (concat "\\_<" (upcase cur-a) "\\_>") args))
-            (setq index nil
+            (setq index nil ; Skip next block based on positional args.
                   start (match-beginning 0)
                   end   (match-end 0)))))
+      ;; Handle now positional arguments.
       (while (and index (>= index 1))
         (if (string-match "[^ ()]+" args end)
             (progn
@@ -848,8 +856,10 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                 (cond ((string= argument "&rest")
                        ;; All the rest arguments are the same.
                        (setq index 1))
-                      ((string= argument "&optional"))
-                      ((string= argument "&allow-other-keys"))
+                      ((string= argument "&optional"))       ; Skip.
+                      ((string= argument "&allow-other-keys")) ; Skip.
+                      ;; Back to index 0 in ARG1 ARG2 ARG2 ARG3 etc...
+                      ;; like in `setq'.
                       ((or (string-match-p "\\.\\.\\.$" argument)
                            (and (string-match-p "\\.\\.\\.)?$" args)
                                 (> index 1) (oddp index)))
