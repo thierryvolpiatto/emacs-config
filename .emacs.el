@@ -852,6 +852,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                ;; assume user is entering an unknow key
                ;; referenced in last position in signature.
                (other-key-arg (and cur-a
+                                   args-lst-ak
                                    (not (member (upcase cur-a) args-lst-ak))
                                    (upcase (car (last args-lst-ak))))))
           ;; The last keyword have already a value
