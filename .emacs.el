@@ -829,23 +829,51 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
       ;; position in ARGS based on this current arg.
       (when (string-match "&key" args)
         (let* (case-fold-search
+               key-have-value
                (cur-w (current-word))
+               (args-lst (mapcar (lambda (x)
+                                   (replace-regexp-in-string
+                                    "\\`[(]\\|[)]\\'" "" x))
+                                 (split-string args)))
+               (args-lst-ak (cdr (member "&key" args-lst)))
                (limit (save-excursion
                         (when (re-search-backward (symbol-name sym) nil t)
                           (match-end 0))))
                (cur-a (if (and cur-w (string-match ":\\([^ ()]*\\)" cur-w))
                           (substring cur-w 1)
                           (save-excursion
-                            (when (re-search-backward ":\\([^ ()\n]*\\)" limit t)
-                              (match-string 1))))))
-          ;; If `cur-a' is nil probably cursor is on a positional arg
-          ;; before `&key', in this case, exit this block and determine
-          ;; position with `index'.
-          (when (and cur-a
-                     (string-match (concat "\\_<" (upcase cur-a) "\\_>") args))
-            (setq index nil ; Skip next block based on positional args.
-                  start (match-beginning 0)
-                  end   (match-end 0)))))
+                            (let (split)
+                              (when (re-search-backward ":\\([^()\n]*\\)" limit t)
+                                (setq split (split-string (match-string 1) " " t))
+                                (prog1 (car split)
+                                  (when (cdr split)
+                                    (setq key-have-value t))))))))
+               ;; If `cur-a' is not one of `args-lst-ak'
+               ;; assume user is entering an unknow key
+               ;; referenced in last position in signature.
+               (other-key-arg (and cur-a
+                                   (not (member (upcase cur-a) args-lst-ak))
+                                   (upcase (car (last args-lst-ak))))))
+          ;; The last keyword have already a value
+          ;; i.e :foo a b and cursor is at b.
+          ;; If signature have also `&rest'
+          ;; (assume it is after the `&key' section)
+          ;; go to the arg after `&rest'.
+          (if (and key-have-value (string-match "&rest \\([^ ()]*\\)" args))
+              (setq index nil ; Skip next block based on positional args.
+                    start (match-beginning 1)
+                    end   (match-end 1))
+              ;; If `cur-a' is nil probably cursor is on a positional arg
+              ;; before `&key', in this case, exit this block and determine
+              ;; position with `index'.
+              (when (and cur-a   ; A keyword arg (dot removed) or nil.
+                         (or (string-match
+                              (concat "\\_<" (upcase cur-a) "\\_>") args)
+                             (string-match
+                              (concat "\\_<" other-key-arg "\\_>") args)))
+                (setq index nil ; Skip next block based on positional args.
+                      start (match-beginning 0)
+                      end   (match-end 0))))))
       ;; Handle now positional arguments.
       (while (and index (>= index 1))
         (if (string-match "[^ ()]+" args end)
@@ -888,7 +916,7 @@ are returned unchanged."
        (if (string-match-p
             "\\`(?&\\(?:optional\\|rest\\|key\\|allow-other-keys\\))?\\'" s)
            s
-         (funcall eldoc-argument-case s)))
+           (funcall eldoc-argument-case s)))
      (split-string argstring) " ")))
 
 ;; Tooltip face
