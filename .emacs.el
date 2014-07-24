@@ -893,6 +893,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                       ;; like in `setq'.
                       ((or (string-match-p "\\.\\.\\.$" argument)
                            (and (string-match-p "\\.\\.\\.)?$" args)
+                                (= (length (split-string args " " t)) 2)
                                 (> index 1) (oddp index)))
                        (setq index 0))
                       (t
