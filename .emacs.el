@@ -815,7 +815,11 @@ account add <protocol> moi@mail.com password."
 In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
     (let ((start          nil)
           (end            0)
-          (argument-face  'eldoc-highlight-function-argument))
+          (argument-face  'eldoc-highlight-function-argument)
+          (args-lst (mapcar (lambda (x)
+                              (replace-regexp-in-string
+                               "\\`[(]\\|[)]\\'" "" x))
+                            (split-string args))))
       ;; Find the current argument in the argument string.  We need to
       ;; handle `&rest' and informal `...' properly.
       ;;
@@ -831,10 +835,6 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
         (let* (case-fold-search
                key-have-value
                (cur-w (current-word))
-               (args-lst (mapcar (lambda (x)
-                                   (replace-regexp-in-string
-                                    "\\`[(]\\|[)]\\'" "" x))
-                                 (split-string args)))
                (args-lst-ak (cdr (member "&key" args-lst)))
                (limit (save-excursion
                         (when (re-search-backward (symbol-name sym) nil t)
@@ -851,7 +851,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                ;; If `cur-a' is not one of `args-lst-ak'
                ;; assume user is entering an unknow key
                ;; referenced in last position in signature.
-               (other-key-arg (and cur-a
+               (other-key-arg (and (stringp cur-a)
                                    args-lst-ak
                                    (not (member (upcase cur-a) args-lst-ak))
                                    (upcase (car (last args-lst-ak))))))
@@ -894,7 +894,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                       ;; like in `setq'.
                       ((or (string-match-p "\\.\\.\\.$" argument)
                            (and (string-match-p "\\.\\.\\.)?$" args)
-                                (= (length (split-string args " " t)) 2)
+                                (= (length (remove "..." args-lst)) 2)
                                 (> index 1) (oddp index)))
                        (setq index 0))
                       (t
@@ -911,7 +911,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                    sym doc (if (functionp sym) 'font-lock-function-name-face
                                'font-lock-keyword-face)))
         doc)))
-  
+
   (defun eldoc-function-argstring-format (argstring)
     "Apply `eldoc-argument-case' to each word in ARGSTRING.
 The words \"&rest\", \"&optional\", \"&key\" and \"&allow-other-keys\"
