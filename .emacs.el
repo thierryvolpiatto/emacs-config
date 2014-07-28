@@ -834,10 +834,11 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
       (when (string-match "&key" args)
         (let* (case-fold-search
                key-have-value
+               (sym-name (symbol-name sym))
                (cur-w (current-word))
                (args-lst-ak (cdr (member "&key" args-lst)))
                (limit (save-excursion
-                        (when (re-search-backward (symbol-name sym) nil t)
+                        (when (re-search-backward sym-name nil t)
                           (match-end 0))))
                (cur-a (if (and cur-w (string-match ":\\([^ ()]*\\)" cur-w))
                           (substring cur-w 1)
@@ -855,29 +856,30 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                                    args-lst-ak
                                    (not (member (upcase cur-a) args-lst-ak))
                                    (upcase (car (last args-lst-ak))))))
-          ;; The last keyword have already a value
-          ;; i.e :foo a b and cursor is at b.
-          ;; If signature have also `&rest'
-          ;; (assume it is after the `&key' section)
-          ;; go to the arg after `&rest'.
-          (if (and key-have-value
-                   (save-excursion
-                     (not (re-search-forward ":.*" (point-at-eol) t)))
-                   (string-match "&rest \\([^ ()]*\\)" args))
-              (setq index nil ; Skip next block based on positional args.
-                    start (match-beginning 1)
-                    end   (match-end 1))
-              ;; If `cur-a' is nil probably cursor is on a positional arg
-              ;; before `&key', in this case, exit this block and determine
-              ;; position with `index'.
-              (when (and cur-a   ; A keyword arg (dot removed) or nil.
-                         (or (string-match
-                              (concat "\\_<" (upcase cur-a) "\\_>") args)
-                             (string-match
-                              (concat "\\_<" other-key-arg "\\_>") args)))
+          (unless (string= cur-w sym-name)
+            ;; The last keyword have already a value
+            ;; i.e :foo a b and cursor is at b.
+            ;; If signature have also `&rest'
+            ;; (assume it is after the `&key' section)
+            ;; go to the arg after `&rest'.
+            (if (and key-have-value
+                     (save-excursion
+                       (not (re-search-forward ":.*" (point-at-eol) t)))
+                     (string-match "&rest \\([^ ()]*\\)" args))
                 (setq index nil ; Skip next block based on positional args.
-                      start (match-beginning 0)
-                      end   (match-end 0))))))
+                      start (match-beginning 1)
+                      end   (match-end 1))
+                ;; If `cur-a' is nil probably cursor is on a positional arg
+                ;; before `&key', in this case, exit this block and determine
+                ;; position with `index'.
+                (when (and cur-a ; A keyword arg (dot removed) or nil.
+                           (or (string-match
+                                (concat "\\_<" (upcase cur-a) "\\_>") args)
+                               (string-match
+                                (concat "\\_<" other-key-arg "\\_>") args)))
+                  (setq index nil ; Skip next block based on positional args.
+                        start (match-beginning 0)
+                        end   (match-end 0)))))))
       ;; Handle now positional arguments.
       (while (and index (>= index 1))
         (if (string-match "[^ ()]+" args end)
