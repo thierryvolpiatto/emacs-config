@@ -377,7 +377,7 @@ START and END are buffer positions indicating what to append."
   (if (region-active-p)
       (progn (goto-char beg) (insert "(")
              (goto-char (1+ end)) (insert ")"))
-      (let (action)
+      (let (action kb com)
         (catch 'break
           (while t
             (setq action (read-key "`(': Insert, (any key to exit)."))
@@ -387,15 +387,22 @@ START and END are buffer positions indicating what to append."
                (insert "(")
                (forward-sexp 1)
                (insert ")"))
-              (t
-               (throw 'break nil))))))))
+              (t (setq kb  (this-command-keys-vector))
+                 (setq com (lookup-key (current-local-map) kb))
+                 (if (commandp com)
+                     (call-interactively com)
+                     (setq unread-command-events
+                           (nconc (mapcar 'identity
+                                          (this-single-command-raw-keys))
+                                  unread-command-events)))
+                 (throw 'break nil))))))))
 
 (defun tv-insert-pair-and-close-forward (beg end)
   (interactive "r")
   (if (region-active-p)
       (progn (goto-char beg) (insert "(")
              (goto-char (1+ end)) (insert ")"))
-      (let (action)
+      (let (action kb com)
         (insert "(")
         (catch 'break
           (while t
@@ -407,16 +414,22 @@ START and END are buffer positions indicating what to append."
                (skip-chars-forward " ")
                (forward-symbol 1)
                (insert ")"))
-              (t
-               (forward-char -1)
-               (throw 'break nil))))))))
+              (t (setq kb  (this-command-keys-vector))
+                 (setq com (lookup-key (current-local-map) kb))
+                 (if (commandp com)
+                     (call-interactively com)
+                     (setq unread-command-events
+                           (nconc (mapcar 'identity
+                                          (this-single-command-raw-keys))
+                                  unread-command-events)))
+                 (throw 'break nil))))))))
 
 (defun tv-insert-double-quote-and-close-forward (beg end)
   (interactive "r")
   (if (region-active-p)
       (progn (goto-char beg) (insert "\"")
              (goto-char (1+ end)) (insert "\""))
-      (let (action
+      (let (action kb com
             (prompt (and (not (minibufferp))
                          "\": Insert, (any key to exit).")))
         (unless prompt (message "\": Insert, (any key to exit)."))
@@ -429,8 +442,15 @@ START and END are buffer positions indicating what to append."
                (insert "\"")
                (forward-sexp 1)
                (insert "\""))
-              (t
-               (throw 'break (when (characterp action) (insert (string action)))))))))))
+              (t (setq kb  (this-command-keys-vector))
+                 (setq com (lookup-key (current-local-map) kb))
+                 (if (commandp com)
+                     (call-interactively com)
+                     (setq unread-command-events
+                           (nconc (mapcar 'identity
+                                          (this-single-command-raw-keys))
+                                  unread-command-events)))
+                 (throw 'break nil))))))))
 
 ;;; Insert-an-image-at-point 
 (defun tv-insert-image-at-point (image)
