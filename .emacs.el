@@ -607,11 +607,10 @@ With a prefix arg decrease transparency."
 (eval-after-load "bookmark.el"
   (and (boundp 'bookmark-bmenu-use-header-line)
        (setq bookmark-bmenu-use-header-line nil)))
-(setq bmkext-external-browse-url-function 'browse-url-firefox) ; 'browse-url-uzbl
+(setq bmkext-external-browse-url-function 'browse-url-firefox)
 (setq bmkext-jump-w3m-defaut-method 'external) ; Set to 'external to use external browser, w3m for w3m.
 (eval-after-load "addressbook-bookmark.el"
   (addressbook-turn-on-mail-completion))
-(setq bmkext-external-browse-url-function 'browse-url-firefox)
 
 (defun tv-pp-bookmark-alist ()
   "Quickly print `bookmark-alist'."
