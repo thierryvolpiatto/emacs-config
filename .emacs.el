@@ -611,7 +611,7 @@ With a prefix arg decrease transparency."
 (setq bmkext-jump-w3m-defaut-method 'external) ; Set to 'external to use external browser, w3m for w3m.
 (eval-after-load "addressbook-bookmark.el"
   (addressbook-turn-on-mail-completion))
-(setq bmkext-external-browse-url-function 'helm-browse-url-conkeror)
+(setq bmkext-external-browse-url-function 'browse-url-firefox)
 
 (defun tv-pp-bookmark-alist ()
   "Quickly print `bookmark-alist'."
@@ -624,8 +624,7 @@ With a prefix arg decrease transparency."
 ;;; Browse url
 ;;
 ;;
-;(setq browse-url-browser-function 'browse-url-firefox)
-(setq browse-url-browser-function 'helm-browse-url-conkeror)
+(setq browse-url-browser-function 'browse-url-firefox)
 
 ;;; Erc config
 ;;
