@@ -37,11 +37,11 @@
                                       ;; (nnimap "gmail" ; Label for reference in .authinfo for machine name.
                                       ;;  (nnimap-address "imap.gmail.com")
                                       ;;  (nnimap-fetch-partial-articles "text/"))
-                                        ; [1]
+                                      ;; ;;[1]
                                       ;; (nnimap "yahoo"
                                       ;;  (nnimap-address "imap.mail.yahoo.com")
                                       ;;  (nnimap-fetch-partial-articles "text/"))
-                                        ; [1]
+                                      ;; [1]
                                       ;(nntp "news.gwene.org")
                                       ))
 

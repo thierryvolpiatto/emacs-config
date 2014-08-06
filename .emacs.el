@@ -888,7 +888,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                 (cond ((string= argument "&rest")
                        ;; All the rest arguments are the same.
                        (setq index 1))
-                      ((string= argument "&optional"))       ; Skip.
+                      ((string= argument "&optional"))         ; Skip.
                       ((string= argument "&allow-other-keys")) ; Skip.
                       ;; Back to index 0 in ARG1 ARG2 ARG2 ARG3 etc...
                       ;; like in `setq'.
