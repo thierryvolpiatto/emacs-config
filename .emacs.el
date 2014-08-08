@@ -76,6 +76,8 @@ If your system's ping continues until interrupted, you can try setting
 ;; electric-indent-mode
 (electric-indent-mode -1)
 
+(setq register-preview-delay nil)
+
 ;;; Environment
 ;; For eshell env settings.
 (setenv "STARDICT_DATA_DIR" "~/.stardict/dic")
@@ -892,8 +894,10 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                       ((string= argument "&allow-other-keys")) ; Skip.
                       ;; Back to index 0 in ARG1 ARG2 ARG2 ARG3 etc...
                       ;; like in `setq'.
-                      ((or (string-match-p "\\.\\.\\.$" argument)
-                           (and (string-match-p "\\.\\.\\.)?$" args)
+                      ((or (and (string-match-p "\\.\\.\\.$" argument)
+                                (string= argument (car (last args-lst))))
+                           (and (string-match-p "\\.\\.\\.$"
+                                                (substring args 1 (1- (length args))))
                                 (= (length (remove "..." args-lst)) 2)
                                 (> index 1) (oddp index)))
                        (setq index 0))
@@ -922,7 +926,89 @@ are returned unchanged."
             "\\`(?&\\(?:optional\\|rest\\|key\\|allow-other-keys\\))?\\'" s)
            s
            (funcall eldoc-argument-case s)))
-     (split-string argstring) " ")))
+     (split-string argstring) " "))
+
+  
+  (defun eldoc-fnsym-in-previous-sexp ()
+    (save-excursion
+      (let ((n 0)
+            (current-pair (eldoc-fnsym-in-current-sexp))
+            doc
+            new-pair)
+        (if (or (eq (car current-pair) nil)
+                (eq (cadr current-pair) nil))
+            current-pair
+            (while (let* ((pair (eldoc-fnsym-in-current-sexp))
+                          (sym (car pair)))
+                     (not (and (symbolp sym)
+                               (fboundp sym))))
+              (condition-case nil
+                  (progn
+                    (skip-syntax-backward "w_")
+                    (forward-sexp
+                     (if (eldoc--end-of-sexp-p) -2 -1)))
+                (scan-error (forward-char -1)))
+              (cl-incf n))
+            (setq new-pair (eldoc-fnsym-in-current-sexp)
+                  doc      (cadr (split-string
+                                  (eldoc-get-fnsym-args-string
+                                   (car new-pair)) ": ")))
+            (list (car new-pair)
+                  (if (and (zerop n)
+                           (not (string-match-p "&key" doc))
+                           (string-match-p
+                            "[()]" (substring doc 1 (1- (length doc)))))
+                      (eldoc-get-index-from-args-lst
+                       (cadr current-pair) doc)
+                      (if (zerop n) (cadr current-pair) n)))))))
+
+
+  (defun eldoc--end-of-sexp-p ()
+    (condition-case nil
+        (save-excursion
+          (forward-sexp 1))
+      (scan-error t)))
+
+  (defun eldoc--split-args (args &optional by-sexp)
+    (if by-sexp
+        (with-temp-buffer
+          (save-excursion
+            (insert args))
+          (cl-loop for i in (read (current-buffer))
+                   collect (replace-regexp-in-string
+                            "\\s\\" "" (prin1-to-string i))))
+        (cl-loop for a in (split-string args "\\s-" t)
+                 collect (replace-regexp-in-string "[()]" "" a))))
+
+  (defun eldoc-get-index-from-args-lst (index args)
+    (let* ((lst-sexp (eldoc--split-args args t))
+           (ls-args  (eldoc--split-args args))
+           (cur-arg  (nth (max (1- index) 0) lst-sexp)))
+      (cond ((= (length lst-sexp) (length ls-args))
+             index)
+            ((string= (car lst-sexp) cur-arg)
+             (setq index 1))
+            ((string= (car (reverse lst-sexp)) cur-arg)
+             (setq index (cl-loop for i in ls-args
+                                  for count from 1
+                                  when (string= cur-arg i)
+                                  return count)))
+            (t 0))))
+
+  (defun tv/eldoc-documentation-function-default ()
+    "Default value for `eldoc-documentation-function' (which see)."
+    (let ((current-symbol (eldoc-current-symbol))
+          (current-fnsym  (eldoc-fnsym-in-previous-sexp)))
+      (cond ((null current-fnsym)
+             nil)
+            ((eq current-symbol (car current-fnsym))
+             (or (apply #'eldoc-get-fnsym-args-string current-fnsym)
+                 (eldoc-get-var-docstring current-symbol)))
+            (t
+             (or (eldoc-get-var-docstring current-symbol)
+                 (apply #'eldoc-get-fnsym-args-string current-fnsym))))))
+
+  (setq eldoc-documentation-function #'tv/eldoc-documentation-function-default))
 
 ;; Tooltip face
 (set-face-attribute 'tooltip nil
