@@ -193,6 +193,11 @@ try this wash."
 ;; Show Smileys
 (add-hook 'mu4e-view-mode-hook 'smiley-buffer)
 
+;; Fix bug when gnus-agent is offline.
+(add-hook 'mu4e-compose-mode-hook
+          (lambda ()
+            (set (make-local-variable 'message-send-mail-real-function) nil)))
+
 (provide 'mu4e-config)
 
 ;;; mu4e-config.el ends here
