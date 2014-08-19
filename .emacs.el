@@ -915,18 +915,19 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                    sym doc (if (functionp sym) 'font-lock-function-name-face
                                'font-lock-keyword-face)))
         doc)))
-
-  (defun eldoc-function-argstring-format (argstring)
-    "Apply `eldoc-argument-case' to each word in ARGSTRING.
+  
+  (when (fboundp 'eldoc-function-argstring-format)
+    (defun eldoc-function-argstring-format (argstring)
+      "Apply `eldoc-argument-case' to each word in ARGSTRING.
 The words \"&rest\", \"&optional\", \"&key\" and \"&allow-other-keys\"
 are returned unchanged."
-    (mapconcat
-     (lambda (s)
-       (if (string-match-p
-            "\\`(?&\\(?:optional\\|rest\\|key\\|allow-other-keys\\))?\\'" s)
-           s
+      (mapconcat
+       (lambda (s)
+         (if (string-match-p
+              "\\`(?&\\(?:optional\\|rest\\|key\\|allow-other-keys\\))?\\'" s)
+             s
            (funcall eldoc-argument-case s)))
-     (split-string argstring) " ")))
+       (split-string argstring) " "))))
 
 ;; Tooltip face
 (set-face-attribute 'tooltip nil
