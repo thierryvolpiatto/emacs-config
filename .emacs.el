@@ -8,6 +8,10 @@
 
 ;; Fix loosing focus on window manager
 ;; when quitting emacs.
+;; WM should be set accordingly.
+;; See WM configuration screenshot here:
+;; /home/thierry/Documents/configuration_screenshots_xubuntu/Screenshot - 30062014 - 17:09:56.png
+
 (setq focus-follows-mouse t)
 
 
@@ -1877,8 +1881,6 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
                             ((?f . 'outline-forward-same-level)))
 
 ;;; Be sure to reenable touchpad when quitting emacs
-;; See configuration screenshot here:
-;; /home/thierry/Documents/configuration_screenshots_xubuntu/Screenshot - 30062014 - 17:09:56.png
 (add-hook 'kill-emacs-hook #'(lambda ()
                                (and (executable-find "reenable_touchpad.sh")
                                     (shell-command "reenable_touchpad.sh"))))
