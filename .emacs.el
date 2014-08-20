@@ -1859,9 +1859,9 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
          ("^ --.*$" . tv-info-title-face)
          ("\"\\([^\"]*\\)[\"]" . font-lock-string-face)
          ("\\*Warning:\\*" . font-lock-warning-face)
-         ("^ *\\([*]\\) " 1 font-lock-variable-name-face)
-         ("^[A-Z ]+$" . font-lock-comment-face)
-         ("^[A-Z][a-z- ]*:" . font-lock-variable-name-face)
+         ("^ *\\([*•]\\) " 1 font-lock-variable-name-face)
+         ("^[[:upper:]]+ ?$" . font-lock-comment-face)
+         ("^[[:upper]][a-z- ]*:" . font-lock-variable-name-face)
          )))
 
 (add-hook 'Info-mode-hook 'tv-font-lock-doc-rules)
