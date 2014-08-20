@@ -103,7 +103,7 @@
 
 ;; Insinuate-appt 
 (require 'appt)
-(org-agenda-to-appt)
+
 ;; When use 'r' (rebuild agenda) reload appt
 (add-hook 'org-agenda-mode-hook #'(lambda ()
                                     (setq appt-time-msg-list nil)
@@ -111,7 +111,6 @@
 
 (setq appt-display-format 'window) ; Values: 'echo, 'window or nil.
 (appt-activate 1)
-(global-set-key (kbd "<f5> d a") 'appt-add)
 
 ;; Subtasks 
 (defun org-summary-todo (n-done n-not-done)
