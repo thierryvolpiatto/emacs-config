@@ -102,12 +102,11 @@
 (setq org-agenda-include-diary t) ; show also content of regular diary file.
 
 ;; Insinuate-appt 
-;(require 'appt)
-;(org-agenda-to-appt)
+(require 'appt)
+(org-agenda-to-appt)
 ;; When use 'r' (rebuild agenda) reload appt
 (add-hook 'org-agenda-mode-hook #'(lambda ()
                                     (setq appt-time-msg-list nil)
-                                    (org-agenda-to-appt)
                                     (define-key org-agenda-mode-map (kbd "C-c M") 'org-agenda-month-view)))
 
 (setq appt-display-format 'window) ; Values: 'echo, 'window or nil.

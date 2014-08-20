@@ -128,7 +128,7 @@ If your system's ping continues until interrupted, you can try setting
              "/usr/local/share/emacs/site-lisp/mu4e"
 	     "~/elisp/"
              "~/elisp/emacs-w3m"
-	     "~/elisp/magit"
+	     ;"~/elisp/magit"
              "~/elisp/Emacs-wgrep"
              "~/elisp/auctex"
              "~/elisp/auctex/preview"
