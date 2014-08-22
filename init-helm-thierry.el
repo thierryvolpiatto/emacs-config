@@ -144,6 +144,7 @@
       helm-M-x-requires-pattern                  0
       helm-dabbrev-cycle-thresold                3
       helm-surfraw-duckduckgo-url                "https://duckduckgo.com/?q=%s&ke=-1&kf=fw&kl=fr-fr&kr=b&k1=-1&k4=-1"
+      helm-surfraw-default-browser-function      'w3m-browse-url
       helm-boring-file-regexp-list               '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$" "\\._darcs$" "\\.la$" "\\.o$" "\\.i$")
       ;helm-mode-handle-completion-in-region      t
       ;helm-moccur-always-search-in-current        t
