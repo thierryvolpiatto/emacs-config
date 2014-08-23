@@ -131,7 +131,6 @@ If your system's ping continues until interrupted, you can try setting
              "/usr/local/share/emacs/site-lisp/mu4e"
 	     "~/elisp/"
              "~/elisp/emacs-w3m"
-	     ;"~/elisp/magit"
              "~/elisp/Emacs-wgrep"
              "~/elisp/auctex"
              "~/elisp/auctex/preview"
@@ -151,7 +150,6 @@ If your system's ping continues until interrupted, you can try setting
              "~/elisp/helm"
              "~/elisp/helm-extensions"
              "~/elisp/google-maps"
-             ;"~/elisp/org-active/contrib/lisp" ; Contain htmlize.el
              "~/elisp/slime"
              "~/elisp/slime/contrib"
              "~/.emacs.d/themes/"
