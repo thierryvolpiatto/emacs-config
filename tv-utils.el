@@ -829,7 +829,13 @@ In this case, sexps are searched before point."
                     (insert-file-contents async-byte-compile-log-file)
                     (compilation-mode)
                     (delete-file async-byte-compile-log-file)
-                    (message "Failed to compile directory `%s'" ,directory))
+                    (let ((n 0))
+                      (save-excursion
+                        (goto-char (point-min))
+                        (while (re-search-forward "^.*:Error:" nil t)
+                          (incf n)))
+                      (when (> n 0)
+                        (message "Failed to compile %d files in directory `%s'" n ,directory))))
                   (message "Directory `%s' compiled asynchronously with success" ,directory)))))
       (async-start
        `(lambda ()
