@@ -1771,9 +1771,10 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;
 ;;
 ;; (semantic-mode 1)
+;; With my fixes in lisp/cedet/semantic/bovine/el.el.
 ;; (load-file "~/elisp/el.el")
 ;; (when (fboundp 'semantic-default-elisp-setup) (semantic-default-elisp-setup))
-;; With my fixes in lisp/cedet/semantic/bovine/el.el.
+
 
 ;;; Ffap
 ;;

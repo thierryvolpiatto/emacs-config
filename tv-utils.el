@@ -813,24 +813,41 @@ In this case, sexps are searched before point."
                  (ignore (message "Error: %s" (car err)))))
         (ignore (message "Recompiling %s...FAILED" file)))))
 
+  (defvar async-byte-compile-log-file "/tmp/async-bytecomp.log")
   (defun async-byte-recompile-directory (directory &optional arg force)
     (cl-loop with dir = (directory-files directory t "\\.elc\\'")
              unless dir return nil
              for f in dir
              when (file-exists-p f) do (delete-file f))
-    (let ((proc
-           (async-start
-            `(lambda ()
-               (require 'bytecomp)
-               ,(async-inject-variables "\\`load-path\\'")
-               (let ((default-directory (file-name-as-directory ,directory)))
-                 (add-to-list 'load-path default-directory)
-                 (byte-recompile-directory ,directory ,arg ,force))))))
-      (unless (condition-case err
-                  (async-get proc)
-                (error
-                 (ignore (message "Error: %s" (car err)))))
-        (ignore (message "Recompiling %s...FAILED" directory))))))
+    (let ((call-back
+           `(lambda (&optional ignore)
+              (if (file-exists-p async-byte-compile-log-file)
+                  (progn
+                    (pop-to-buffer (generate-new-buffer-name
+                                    byte-compile-log-buffer))
+                    (erase-buffer)
+                    (insert-file-contents async-byte-compile-log-file)
+                    (compilation-mode)
+                    (delete-file async-byte-compile-log-file)
+                    (message "Failed to compile directory `%s'" ,directory))
+                  (message "Directory `%s' compiled asynchronously with success" ,directory)))))
+      (async-start
+       `(lambda ()
+          (require 'bytecomp)
+          ,(async-inject-variables "\\`load-path\\'")
+          (let ((default-directory (file-name-as-directory ,directory))
+                error-data)
+            (add-to-list 'load-path default-directory)
+            (byte-recompile-directory ,directory ,arg ,force)
+            (when (get-buffer byte-compile-log-buffer)
+              (setq error-data (with-current-buffer byte-compile-log-buffer
+                                 (buffer-substring-no-properties (point-min) (point-max))))
+              (unless (string= error-data "")
+                (with-temp-file ,async-byte-compile-log-file
+                  (erase-buffer)
+                  (insert error-data))))))
+       call-back)
+      (message "Started compiling asynchronously directory %s..." directory))))
 
 (defadvice package--compile (around byte-compile-async activate)
   (package-activate-1 pkg-desc)

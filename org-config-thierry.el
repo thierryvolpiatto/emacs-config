@@ -98,7 +98,7 @@
 (require 'org-annotation-helper)
 
 ;; Diary-integration-in-org 
-(setq org-agenda-diary-file "~/org/diary.org") ; org diary file (use i in agenda).
+;(setq org-agenda-diary-file "~/org/diary.org") ; org diary file (use i in agenda).
 (setq org-agenda-include-diary t) ; show also content of regular diary file.
 
 ;; Insinuate-appt 
