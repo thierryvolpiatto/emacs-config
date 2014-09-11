@@ -208,6 +208,7 @@ If your system's ping continues until interrupted, you can try setting
 (setq package-archives '(
                          ;("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "http://melpa.milkbox.net/packages/")
+                         ;("melpa-stable" . "http://melpa-stable.milkbox.net/packages/")
                          ;("marmalade" . "http://marmalade-repo.org/packages/")
                          ))
 
@@ -255,6 +256,7 @@ If your system's ping continues until interrupted, you can try setting
 (when (tv-require 'dired-aux)
   (tv-require 'dired-async))
 (tv-require 'smtpmail-async)
+(tv-require 'async-bytecomp)
 (setq aync-debug t)
 (autoload 'golden-ratio-mode "golden-ratio.el" nil t)
 (autoload 'emamux:send-command "emamux.el" nil t)
