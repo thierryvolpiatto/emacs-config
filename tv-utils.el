@@ -963,6 +963,16 @@ Setting in .tmux.conf is:
      (prog1 (buffer-substring (point-min) (point-max))
        (kill-buffer)))))
 
+(defun tv/resize-img (input-file percent-size output-file)
+  (interactive (let* ((in (read-file-name "Input file: " "~/Images"))
+                      (pcge (read-string "Resize percentage: " "25"))
+                      (of (read-file-name "Output file: " nil in nil in)))
+                 (list in pcge of)))
+  (shell-command (format "convert %s -resize %s%% %s"
+                         input-file
+                         percent-size
+                         output-file)))
+
 (provide 'tv-utils)
 
 ;; Local Variables:

@@ -130,6 +130,7 @@ If your system's ping continues until interrupted, you can try setting
              "/usr/local/share/emacs/site-lisp/auctex"
              "/usr/local/share/emacs/site-lisp/mu4e"
 	     "~/elisp/"
+             ;"~/elisp/magit"
              "~/elisp/emacs-w3m"
              "~/elisp/Emacs-wgrep"
              "~/elisp/auctex"
@@ -224,8 +225,8 @@ If your system's ping continues until interrupted, you can try setting
 (tv-require 'firefox-protocol)
 (tv-require 'addressbook-bookmark)
 (tv-require 'org-config-thierry)
-(autoload 'magit-status "magit.el" nil t)
-(autoload 'magit-blame-mode "magit-blame.el" nil t)
+;(autoload 'magit-status "magit.el" nil t)
+;(autoload 'magit-blame-mode "magit-blame.el" nil t)
 (tv-require 'emms-mpd-config)
 (tv-require 'dired-extension)
 (tv-require 'htmlize)
@@ -552,7 +553,7 @@ With a prefix arg decrease transparency."
 ;;; Special buffer display.
 ;;
 ;;
-(setq special-display-regexps `(("\\*Help\\*"
+(setq special-display-regexps `(("\\*Help"
                                  (minibuffer . nil)
                                  (width . 80)
                                  (height . 24)
@@ -567,7 +568,7 @@ With a prefix arg decrease transparency."
                                  (foreground-color . "black")
                                  (alpha . nil)
                                  (fullscreen . nil))
-                                ("\\*Compile-Log\\*"
+                                ("\\*Compile-Log"
                                  (minibuffer . nil)
                                  (width . 85)
                                  (height . 24)
@@ -582,7 +583,7 @@ With a prefix arg decrease transparency."
                                  (foreground-color . "black")
                                  (alpha . nil)
                                  (fullscreen . nil))
-                                ("\\*Dict\\*"
+                                ("\\*Dict"
                                  (minibuffer . nil)
                                  (width . 80)
                                  (height . 24)
@@ -598,6 +599,7 @@ With a prefix arg decrease transparency."
                                  (alpha . nil)
                                  (fullscreen . nil))
                                 ))
+
 ;; Don't split this windows horizontally
 (setq split-width-threshold nil)
 

@@ -77,20 +77,17 @@
                       ("@travel" . ?t)))
 
 ;; org-capture
+(setq org-default-notes-file (expand-file-name "notes.org" org-directory))
 (setq org-capture-templates
-      '(("W" "BROWSER" entry      (file+headline "~/org/notes.org" "Firefox")      "* BROWSER %?\n %:description\n  (created: %U)\n\n  %c\n\n  %i" :prepend t)
-        ("t" "Todo" entry         (file+headline "~/org/agenda.org" "Tasks")       "** TODO %?\n  %i\n  %a"                                        :prepend t)
-        ("R" "Report" entry       (file+headline "~/org/agenda.org" "Development") "** REPORT %?\n  %i\n  %a"                                      :prepend t)
-        ("n" "Notes" entry        (file+headline "~/org/notes.org" "General")      "* %T %?\n\n  %i\n  %a"                                         :prepend t)
-        ("i" "Idea" entry         (file+headline "~/org/notes.org" "New Ideas")    "* %^{Title}\n  %i\n  %a"                                       :prepend t)
-        ("E" "Entrainement" entry  (file+headline "~/org/notes.org" "Entrainement") "* %T %?\n\n  %i\n  %a"                                        :prepend t)
-        ("l" "Lisp" entry         (file+headline "~/org/notes.org" "Notes elisp")  "* %^{Title}\n  %i\n  %a"                                       :prepend t)
-        ("p" "Python" entry       (file+headline "~/org/notes.org" "Notes python") "* %^{Title}\n  %i\n  %a"                                       :prepend t)
-        ("e" "Emacs" entry        (file+headline "~/org/notes.org" "Memo Emacs")   "* %^{Title}\n  %i\n  %a"                                       :prepend t)
-        ("s" "Stump" entry        (file+headline "~/org/notes.org" "Memo Stumpwm") "* %^{Title}\n  %i\n  %a"                                       :prepend t)
-        ("L" "Linux" entry        (file+headline "~/org/notes.org" "Memo Linux")   "* %^{Title}\n  %i\n  %a"                                       :prepend t)
-        ("g" "Gentoo" entry       (file+headline "~/org/notes.org" "Notes Gentoo") "* %^{Title}\n  %i\n  %a"                                       :prepend t)
-        ("w" "Web" entry          (file+headline "~/org/notes.org" "Web links")    "* %u %c \n\n%i"                                                :prepend t)))
+      '(("t" "Todo" entry         (file+headline  "~/org/agenda.org" "Tasks")       "** TODO %?\n  %i\n  %a"  :prepend t)
+        ("n" "Notes" entry        (file+headline  "~/org/notes.org" "General")      "* %T %?\n\n  %i\n"       :prepend t)
+        ("E" "Entrainement" entry  (file+headline "~/org/notes.org" "Entrainement") "* %T %?\n\n  %i\n"       :prepend t)
+        ("H" "Helm" entry         (file+headline  "~/org/notes.org" "Notes helm")   "* %^{Title}\n  %i\n  %a" :prepend t)
+        ("l" "Lisp" entry         (file+headline  "~/org/notes.org" "Notes elisp")  "* %^{Title}\n  %i\n  %a" :prepend t)
+        ("p" "Python" entry       (file+headline  "~/org/notes.org" "Notes python") "* %^{Title}\n  %i\n  %a" :prepend t)
+        ("b" "Bash" entry       (file+headline    "~/org/notes.org" "Notes bash")   "* %^{Title}\n  %i\n  %a" :prepend t)
+        ("L" "Linux" entry        (file+headline  "~/org/notes.org" "Memo Linux")   "* %^{Title}\n  %i\n  %a" :prepend t)
+        ))
 
 (global-set-key (kbd "C-c r") 'org-capture)
 
