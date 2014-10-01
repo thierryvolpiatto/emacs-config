@@ -195,22 +195,18 @@
 ;;
 ;; Add actions to `helm-source-find-files' IF:
 
-(add-hook 'helm-find-files-before-init-hook
-          (lambda ()
-            (progn
-              ;; List Hg files in project.
-              (helm-add-action-to-source-if
-               "Hg list files"
-               'helm-ff-hg-find-files
-               helm-source-find-files
-               'helm-hg-root-p)
-              ;; Byte compile files async
-              (helm-add-action-to-source-if
-               "Byte compile file(s) async"
-               'async-byte-compile-file
-               helm-source-find-files
-               'helm-ff-candidates-lisp-p))))
-                                              
+(defmethod helm--setup-source ((source helm-source-ffiles))
+  (helm-source-add-action-to-source-if
+   "Hg list files"
+   'helm-ff-hg-find-files
+   source
+   'helm-hg-root-p)
+  (helm-source-add-action-to-source-if
+   "Byte compile file(s) async"
+   'async-byte-compile-file
+   source
+   'helm-ff-candidates-lisp-p))
+
 ;; Add magit to `helm-source-ls-git'
 (helm-add-action-to-source
  "Magit status"
