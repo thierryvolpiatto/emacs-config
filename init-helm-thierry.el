@@ -195,12 +195,7 @@
 ;;
 ;; Add actions to `helm-source-find-files' IF:
 
-(defmethod helm--setup-source ((source helm-source-ffiles))
-  (helm-source-add-action-to-source-if
-   "Hg list files"
-   'helm-ff-hg-find-files
-   source
-   'helm-hg-root-p)
+(defmethod helm-setup-user-source ((source helm-source-ffiles))
   (helm-source-add-action-to-source-if
    "Byte compile file(s) async"
    'async-byte-compile-file
