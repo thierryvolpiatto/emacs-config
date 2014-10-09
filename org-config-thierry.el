@@ -121,14 +121,6 @@
 (setq org-blank-before-new-entry '((heading . t)
                                    (plain-list-item . nil)))
 
-;; Insert-cyclic-entries-in-ledger 
-(defun tv-org-add-ledger-entry-from-todo (payee amount)
-  (with-current-buffer (find-file-noselect (getenv "LEDGER_FILE"))
-    (save-excursion
-      (ledger-add-entry (concat
-                         (format-time-string "%Y/%m/%d")
-                         " " payee " " amount)))))
-
 (defun tv/insert-org-src-keyword (beg end)
   (interactive "r")
   (save-excursion
@@ -182,30 +174,12 @@
 (require 'org-crypt)
 (org-crypt-use-before-save-magic)
 (setq org-crypt-key "59F29997")
-(setq org-crypt-disable-auto-save 'encrypt)
+(setq org-crypt-disable-auto-save t) ;'encrypt)
 (define-key org-mode-map (kbd "C-c e") 'org-encrypt-entry)
 (define-key org-mode-map (kbd "C-c d") 'org-decrypt-entry)
 
 ;; fontify source code
 (setq org-src-fontify-natively t)
-
-;; Use C-c on a org block like
-;; #+BEGIN: image :file "~/Pictures/Claude_et_Nathalie.JPG"
-;; #+END
-
-(defun org-dblock-write:image (params)
-  (let ((file (plist-get params :file)))
-    (clear-image-cache file)
-    (insert-image (create-image file) )))
-
-;; Bugfix: Incompatibility with bidi.
-;(add-hook 'org-mode-hook #'(lambda () (setq bidi-display-reordering nil)))
-
-;;; setting for org-refile full completion
-;;
-;; (setq org-outline-path-complete-in-steps nil)
-;; (setq org-refile-use-outline-path t)
-;; (setq org-refile-targets '((nil :maxlevel . 8)))
 
 ;; Always show full path of files 
 (setq org-link-file-path-type 'absolute)

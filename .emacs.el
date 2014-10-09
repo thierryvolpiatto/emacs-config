@@ -87,9 +87,6 @@ If your system's ping continues until interrupted, you can try setting
 (setenv "STARDICT_DATA_DIR" "~/.stardict/dic")
 (prefer-coding-system 'utf-8)
 
-;; calendar-date-style
-(setq calendar-date-style 'european)
-
 ;; No-startup-screen
 (setq inhibit-startup-message t)
 
@@ -1540,16 +1537,18 @@ With prefix arg always start and let me choose dictionary."
 (global-undo-tree-mode)
 
 
-;; Calendar-and-diary
+;;; Calendar and diary
+;;
+;;
+(setq calendar-date-style 'european)
+
 (setq holiday-bahai-holidays nil)
 (setq holiday-solar-holidays nil)
 (setq holiday-hebrew-holidays nil)
 (setq holiday-islamic-holidays nil)
 (setq holiday-oriental-holidays nil)
-;; (setq calendar-christian-all-holidays-flag t)
 
 (setq diary-display-function 'diary-fancy-display)
-;(add-hook 'diary-display-hook 'fancy-diary-display)
 (add-hook 'diary-list-entries-hook 'diary-sort-entries t)
 (add-hook 'calendar-today-visible-hook 'calendar-mark-today)
 (add-hook 'initial-calendar-window-hook 'mark-diary-entries)
@@ -1574,10 +1573,15 @@ With prefix arg always start and let me choose dictionary."
 
 (setq holiday-french-holidays
       `((holiday-fixed 1 1 "Jour de l'an")
+        (holiday-fixed 2 14 "Fête des amoureux")
         (holiday-fixed 5 1 "Fête du travail")
         (holiday-fixed 5 8 "Victoire")
+        (holiday-float 5 0 -1 "Fête des Mères")
+        (holiday-float 6 0 3 "Fête des Pères")
         (holiday-fixed 7 14 "Fête nationale")
         (holiday-fixed 8 15 "Assomption")
+        (holiday-fixed 10 31 "Halloween")
+        (holiday-easter-etc -47 "Mardi Gras")
         (holiday-fixed 11 11 "Armistice")
         (holiday-fixed 11 1 "Toussaint")
         (holiday-fixed 12 25 "Noël")
