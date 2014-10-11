@@ -1540,10 +1540,11 @@ With prefix arg always start and let me choose dictionary."
 ;;; Calendar and diary
 ;;
 ;;
+(unless (fboundp 'fancy-diary-display) ; Fix emacs-25.
+  (defalias 'fancy-diary-display 'diary-fancy-display))
 (setq calendar-date-style 'european)
 
 (setq holiday-bahai-holidays nil)
-(setq holiday-solar-holidays nil)
 (setq holiday-hebrew-holidays nil)
 (setq holiday-islamic-holidays nil)
 (setq holiday-oriental-holidays nil)
@@ -1593,7 +1594,8 @@ With prefix arg always start and let me choose dictionary."
         (holiday-float 3 0 -1 "Heure d'été")
         (holiday-float 10 0 -1 "Heure d'hiver")))
 
-(setq calendar-holidays holiday-french-holidays)
+(setq calendar-holidays `(,@holiday-solar-holidays
+                          ,@holiday-french-holidays))
 
 ;; Checkdoc
 (autoload 'checkdoc-batch       "checkdoc-batch" nil t)
