@@ -1833,8 +1833,8 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;; Magit
 ;;
 (setq magit-restore-window-configuration t)
-(setq git-commit-fill-column 80)
-(setq git-commit-summary-max-length 72)
+(setq git-commit-fill-column 120)
+(setq git-commit-summary-max-length 80)
 
 ;;; Report bug
 ;;
