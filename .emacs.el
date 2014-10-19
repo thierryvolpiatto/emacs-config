@@ -1540,6 +1540,7 @@ With prefix arg always start and let me choose dictionary."
 ;;; Calendar and diary
 ;;
 ;;
+(setq diary-file "~/.emacs.d/diary")
 (unless (fboundp 'fancy-diary-display) ; Fix emacs-25.
   (defalias 'fancy-diary-display 'diary-fancy-display))
 (setq calendar-date-style 'european)
@@ -1596,6 +1597,36 @@ With prefix arg always start and let me choose dictionary."
 
 (setq calendar-holidays `(,@holiday-solar-holidays
                           ,@holiday-french-holidays))
+
+;; Sync diary file with google agenda
+;; Data fetched with this command line:
+;; google calendar list --date $(date +%Y-%m-%d),$(date +%Y-12-31) > ~/tmp/google-calendar.txt
+;; Run as a crontab all 5 mn with errors redirected to /dev/null
+(defvar google-calendar-file "~/tmp/google-calendar.txt")
+(defun tv/sync-diary-with-google-calendar ()
+  (when (file-exists-p google-calendar-file)
+    (let ((go-entries (with-current-buffer (find-file-noselect google-calendar-file)
+                        (goto-char (point-min))
+                        (forward-line 2)
+                        (cl-loop while (re-search-forward "^[^[]" nil t)
+                                 for split = (split-string
+                                              (buffer-substring (point-at-bol) (point-at-eol)) ",")
+                                 for str = (car split)
+                                 for date = (concat (car (split-string (cadr split) " - " t))
+                                                    " " (format-time-string "%Y" (current-time)))
+                                 collect (concat (format-time-string "%B %d,%Y %H:%M " (date-to-time date))
+                                                 str)
+                                 finally (kill-buffer)))))
+      (with-current-buffer (find-file-noselect diary-file)
+        (goto-char (point-max))
+        (cl-loop for l in go-entries
+                 unless (save-excursion
+                          (goto-char (point-min))
+                          (search-forward l nil t))
+                 do (insert (concat l "\n")))
+        (save-buffer)))))
+(add-hook 'calendar-mode-hook 'tv/sync-diary-with-google-calendar)
+
 
 ;; Checkdoc
 (autoload 'checkdoc-batch       "checkdoc-batch" nil t)
