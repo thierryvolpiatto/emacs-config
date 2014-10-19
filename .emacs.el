@@ -1608,25 +1608,27 @@ With prefix arg always start and let me choose dictionary."
                                               (format-time-string "%Y-%m-%d")
                                               (format-time-string "%Y-12-31"))
                                       t)
-                      (goto-char (point-min))
-                      (forward-line 2)
-                      (cl-loop while (re-search-forward "^[^[]" nil t)
-                               for split = (split-string
-                                            (buffer-substring (point-at-bol) (point-at-eol)) ",")
-                               for str = (car split)
-                               for date = (concat (car (split-string (cadr split) " - " t))
-                                                  " " (format-time-string "%Y" (current-time)))
-                               collect (concat (format-time-string "%B %d,%Y %H:%M " (date-to-time date))
-                                               str)
-                               finally (kill-buffer)))))
-    (with-current-buffer (find-file-noselect diary-file)
-      (goto-char (point-max))
-      (cl-loop for l in go-entries
-               unless (save-excursion
+                      (when (eq 0 eshell-last-command-status)
                         (goto-char (point-min))
-                        (search-forward l nil t))
-               do (insert (concat l "\n")))
-      (save-buffer))))
+                        (forward-line 2)
+                        (cl-loop while (re-search-forward "^[^[]" nil t)
+                                 for split = (split-string
+                                              (buffer-substring (point-at-bol) (point-at-eol)) ",")
+                                 for str = (car split)
+                                 for date = (concat (car (split-string (cadr split) " - " t))
+                                                    " " (format-time-string "%Y" (current-time)))
+                                 collect (concat (format-time-string "%B %d,%Y %H:%M " (date-to-time date))
+                                                 str)
+                                 finally (kill-buffer))))))
+    (when go-entries
+      (with-current-buffer (find-file-noselect diary-file)
+        (goto-char (point-max))
+        (cl-loop for l in go-entries
+                 unless (save-excursion
+                          (goto-char (point-min))
+                          (search-forward l nil t))
+                 do (insert (concat l "\n")))
+        (save-buffer)))))
 (add-hook 'calendar-mode-hook 'tv/sync-diary-with-google-calendar)
 
 
