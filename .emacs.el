@@ -1599,7 +1599,7 @@ With prefix arg always start and let me choose dictionary."
                           ,@holiday-french-holidays))
 
 ;; Sync diary file with google agenda
-;; Data fetched with this command line:
+;; Data fetched with this command line: (Need to register with a browser first time).
 ;; google calendar list --date $(date +%Y-%m-%d),$(date +%Y-12-31)
 (defun tv/sync-diary-with-google-calendar ()
   (let ((go-entries (with-temp-buffer
@@ -1630,6 +1630,7 @@ With prefix arg always start and let me choose dictionary."
                  do (insert (concat l "\n")))
         (save-buffer)))))
 (add-hook 'calendar-mode-hook 'tv/sync-diary-with-google-calendar)
+(add-hook 'org-agenda-mode-hook 'tv/sync-diary-with-google-calendar)
 
 
 ;; Checkdoc
