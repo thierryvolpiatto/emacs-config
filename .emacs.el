@@ -364,8 +364,6 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 (global-set-key (kbd "<f7> m")                     'tv-gnus)
 (global-set-key (kbd "<f8>")                       'mu4e)
 (global-set-key (kbd "<f7> j")                     'webjump)
-(global-set-key (kbd "<f7> i")                     'erc-freenode-connect)
-(global-set-key (kbd "<f7> g")                     'bitlbee)
 (global-set-key (kbd "<f7> n")                     'newsticker-show-news)
 (global-set-key (kbd "<f11> e c")                  'eshell-toggle-cd)
 (global-set-key (kbd "<f11> e t")                  'eshell-toggle)
