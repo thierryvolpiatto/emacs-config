@@ -1447,7 +1447,8 @@ With prefix arg always start and let me choose dictionary."
 (unless (fboundp 'fancy-diary-display) ; Fix emacs-25.
   (defalias 'fancy-diary-display 'diary-fancy-display))
 (setq calendar-date-style 'european)
-
+(setq calendar-mark-diary-entries-flag t)
+(setq calendar-mark-holidays-flag t)
 (setq holiday-bahai-holidays nil)
 (setq holiday-hebrew-holidays nil)
 (setq holiday-islamic-holidays nil)
@@ -1459,9 +1460,6 @@ With prefix arg always start and let me choose dictionary."
 (add-hook 'initial-calendar-window-hook 'mark-diary-entries)
 (setq mark-holidays-in-calendar t)
 (setq diary-number-of-entries 4)
-
-(defface diary-special-event '((t (:foreground "green")))
-  "*Face used for special event in diary."  :group 'diary)
 
 ;; calendar-date-style is set [HERE]:
 (setq calendar-week-start-day 1
