@@ -194,6 +194,9 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'wget "wget" "wget interface for Emacs." t)
 (autoload 'wget-web-page "wget" "wget interface to download whole web page." t)
 (tv-require 'w3m-wget)
+;; Use wget in eshell.
+(defun eshell/wget (url)
+  (wget url))
 
 ;;; Emacs customize have it's own file
 ;;
@@ -1716,10 +1719,10 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;; Semantic
 ;;
 ;;
-(semantic-mode 1)
+;;(semantic-mode 1)
 ;; With my fixes in lisp/cedet/semantic/bovine/el.el.
-(load-file "~/elisp/el.el")
-(when (fboundp 'semantic-default-elisp-setup) (semantic-default-elisp-setup))
+;;(load-file "~/elisp/el.el")
+;;(when (fboundp 'semantic-default-elisp-setup) (semantic-default-elisp-setup))
 
 ;;; Ffap
 ;;
@@ -1759,7 +1762,7 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;
 (defun helm-running-p () helm-alive-p)
 (setq golden-ratio-inhibit-functions '(helm-running-p))
-(setq golden-ratio-exclude-modes '("ediff-mode" "calendar-mode"))
+(setq golden-ratio-exclude-modes '("ediff-mode" "calendar-mode" "wget-mode"))
 (setq golden-ratio-exclude-buffer-names '("*helm marked*"))
 (setq golden-ratio-recenter t)
 (add-hook 'ediff-before-setup-windows-hook #'(lambda () (golden-ratio-mode -1)))
