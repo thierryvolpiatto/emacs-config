@@ -127,7 +127,6 @@ If your system's ping continues until interrupted, you can try setting
              "/usr/local/share/emacs/site-lisp/auctex"
              "/usr/local/share/emacs/site-lisp/mu4e"
 	     "~/elisp/"
-             ;"~/elisp/magit"
              "~/elisp/emacs-w3m"
              "~/elisp/Emacs-wgrep"
              "~/elisp/auctex"
@@ -153,7 +152,7 @@ If your system's ping continues until interrupted, you can try setting
              "~/.emacs.d/themes/"
 	     "~/.emacs.d/emacs-config/"
              "~/elisp/emacs-async"
-             "~/elisp/elscreen"
+             ;"~/elisp/elscreen"
 	     ))
   (add-to-list 'load-path i t)) ; Add all at end of `load-path' to avoid conflicts.
 
@@ -1822,6 +1821,7 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 (add-hook 'Info-mode-hook 'tv-font-lock-doc-rules)
 
 ;;; Outline-mode bindings
+;;
 (tv/define-key-with-subkeys outline-mode-map (kbd "C-c C-p")
                             ?p 'outline-previous-visible-heading
                             ((?n . 'outline-next-visible-heading)))
@@ -1834,6 +1834,13 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 (tv/define-key-with-subkeys outline-mode-map (kbd "C-c C-b")
                             ?b 'outline-backward-same-level
                             ((?f . 'outline-forward-same-level)))
+
+;;; emacs-zoom-window
+;;
+;; https://github.com/syohex/emacs-zoom-window
+(require 'zoom-window)
+(global-set-key (kbd "C-x C-z") 'zoom-window-zoom)
+(setq zoom-window-mode-line-color "DarkGreen")
 
 ;;; Be sure to reenable touchpad when quitting emacs
 (add-hook 'kill-emacs-hook #'(lambda ()
