@@ -1535,6 +1535,9 @@ With prefix arg always start and let me choose dictionary."
 (add-hook 'calendar-mode-hook 'tv/sync-diary-with-google-calendar)
 (add-hook 'org-agenda-mode-hook 'tv/sync-diary-with-google-calendar)
 
+(define-key calendar-mode-map (kbd "C-<right>") 'calendar-forward-month)
+(define-key calendar-mode-map (kbd "C-<left>")  'calendar-backward-month)
+
 
 ;; Checkdoc
 (autoload 'checkdoc-batch       "checkdoc-batch" nil t)
