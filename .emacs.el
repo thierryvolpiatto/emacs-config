@@ -1535,8 +1535,19 @@ With prefix arg always start and let me choose dictionary."
 (add-hook 'calendar-mode-hook 'tv/sync-diary-with-google-calendar)
 (add-hook 'org-agenda-mode-hook 'tv/sync-diary-with-google-calendar)
 
+(defun tv/calendar-diary-or-holiday ()
+  "A single command for diary and holiday entries."
+  ;; Assume diary and holidays are shown in calendar.
+  (interactive)
+  (let ((ov (overlays-at (point))))
+    (cl-case (and ov (cadr (overlay-properties (car ov))))
+      (diary (diary-view-entries 1))
+      (holiday (calendar-cursor-holidays))
+      (t (message "Nothing special on this date")))))
+
 (define-key calendar-mode-map (kbd "C-<right>") 'calendar-forward-month)
 (define-key calendar-mode-map (kbd "C-<left>")  'calendar-backward-month)
+(define-key calendar-mode-map (kbd "RET") 'tv/calendar-diary-or-holiday)
 
 
 ;; Checkdoc
