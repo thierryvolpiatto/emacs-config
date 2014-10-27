@@ -1539,11 +1539,22 @@ With prefix arg always start and let me choose dictionary."
   "A single command for diary and holiday entries."
   ;; Assume diary and holidays are shown in calendar.
   (interactive)
-  (let ((ov (overlays-at (point))))
-    (cl-case (and ov (cadr (overlay-properties (car ov))))
-      (diary (diary-view-entries 1))
-      (holiday (calendar-cursor-holidays))
-      (t (message "Nothing special on this date")))))
+  (let* ((ovs (overlays-at (point)))
+         (props (cl-loop for ov in ovs
+                        for prop = (cadr (overlay-properties ov))
+                        when (or (and (eq prop 'diary)
+                                      'diary)
+                                 (and (eq prop 'holiday)
+                                      'holiday))
+                        collect prop)))
+    (cond ((and (memq 'diary props) (memq 'holiday props))
+           (diary-view-entries 1)
+           (calendar-cursor-holidays))
+          ((memq 'diary props)
+           (diary-view-entries 1))
+          ((memq 'holiday props)
+           (calendar-cursor-holidays))
+          (t (message "Nothing special on this date")))))
 
 (define-key calendar-mode-map (kbd "C-<right>") 'calendar-forward-month)
 (define-key calendar-mode-map (kbd "C-<left>")  'calendar-backward-month)
