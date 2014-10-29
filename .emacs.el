@@ -1535,6 +1535,39 @@ With prefix arg always start and let me choose dictionary."
 (add-hook 'calendar-mode-hook 'tv/sync-diary-with-google-calendar)
 (add-hook 'org-agenda-mode-hook 'tv/sync-diary-with-google-calendar)
 
+(defun tv/delete-diary (beg end)
+  "Delete diary entry.
+Mark the title only, the entry will be deleted both from entry
+and google calendar.
+Note that multiline entries will not be deleted fully fromdiary file,
+only one line entries are supported."
+  (interactive "r")
+  (let ((str (buffer-substring-no-properties beg end)))
+    (delete-region (point-at-bol) (point-at-eol))
+    (set-process-sentinel
+     (start-process-shell-command
+      "googlecl" nil
+      (format "google calendar delete '%s' --yes" str))
+     (lambda (process event)
+       (when (string= event "finished\n")
+         (message "Diary entry deleted from google calendar"))))))
+
+(defun tv/gcalcli-calw (arg)
+  (interactive "p")
+  (switch-to-buffer "*gcalcli*")
+  (let* ((inhibit-read-only t)
+         (user "thierry.volpiatto@gmail.com")
+         (pwd (funcall (plist-get
+                        (car (auth-source-search
+                              :user user :port 993))
+                        :secret))))
+    (erase-buffer)
+    (special-mode)
+    (apply #'call-process
+           "gcalcli" nil (current-buffer) nil
+           `("--user" ,user "--pw" ,pwd "calw" ,(int-to-string arg)))
+    (ansi-color-apply-on-region (point-min) (point-max))))
+
 (defun tv/calendar-diary-or-holiday (arg)
   "A single command for diary and holiday entries."
   ;; Assume diary and holidays are shown in calendar.
