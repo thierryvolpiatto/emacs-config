@@ -406,7 +406,6 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 (global-set-key (kbd "<f5> g m")                   'google-maps)
 (global-set-key (kbd "M-\"")                       'tv-insert-double-quote)
 (global-set-key (kbd "C-M-\`")                     'tv-insert-double-backquote)
-;(global-set-key (kbd "M-\[")                       'tv-insert-vector)
 (global-set-key (kbd "C-M-(")                      'tv-move-pair-forward)
 (global-set-key (kbd "C-M-\"")                     'tv-insert-double-quote-and-close-forward)
 (global-set-key (kbd "C-M-)")                      'tv-insert-pair-and-close-forward)
@@ -1556,16 +1555,15 @@ only one line entries are supported."
   (interactive "p")
   (switch-to-buffer "*gcalcli*")
   (let* ((inhibit-read-only t)
-         (user "thierry.volpiatto@gmail.com")
          (pwd (funcall (plist-get
                         (car (auth-source-search
-                              :user user :port 993))
+                              :user user-mail-address :port 993))
                         :secret))))
     (erase-buffer)
     (special-mode)
     (apply #'call-process
            "gcalcli" nil (current-buffer) nil
-           `("--user" ,user "--pw" ,pwd "calw" ,(int-to-string arg)))
+           `("--user" ,user-mail-address "--pw" ,pwd "calw" ,(int-to-string arg)))
     (ansi-color-apply-on-region (point-min) (point-max))))
 
 (defun tv/calendar-diary-or-holiday (arg)
