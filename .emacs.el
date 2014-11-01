@@ -1557,6 +1557,7 @@ With prefix arg always start and let me choose dictionary."
 (add-hook 'calendar-mode-hook 'tv/sync-diary-with-google-calendar)
 (add-hook 'org-agenda-mode-hook 'tv/sync-diary-with-google-calendar)
 
+;; FIXME: Automatize the detection of string instead of marking it.
 (defun tv/delete-diary (beg end)
   "Delete diary entry.
 Mark the title only, the entry will be deleted both from entry
