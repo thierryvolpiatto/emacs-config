@@ -1503,25 +1503,48 @@ With prefix arg always start and let me choose dictionary."
 ;; Sync diary file with google agenda
 ;; Data fetched with this command line (Need to register with a browser first time):
 ;; google calendar list --date $(date +%Y-%m-%d),$(date +%Y-12-31)
+;; It is only one way sync for now.
 (defun tv/sync-diary-with-google-calendar ()
-  (let ((go-entries (with-temp-buffer
-                      ;; Use Eshell to decode strings properly. 
-                      (eshell-command (format "google calendar list --date %s,%s"
-                                              (format-time-string "%Y-%m-%d")
-                                              (format-time-string "%Y-12-31"))
-                                      t)
-                      (when (eq 0 eshell-last-command-status)
-                        (goto-char (point-min))
-                        (forward-line 2)
-                        (cl-loop while (re-search-forward "^[^[]" nil t)
-                                 for split = (split-string
-                                              (buffer-substring (point-at-bol) (point-at-eol)) ",")
-                                 for str = (car split)
-                                 for date = (concat (car (split-string (cadr split) " - " t))
-                                                    " " (format-time-string "%Y" (current-time)))
-                                 collect (concat (format-time-string "%B %d,%Y %H:%M " (date-to-time date))
-                                                 str)
-                                 finally (kill-buffer))))))
+  (let ((go-entries
+         (with-temp-buffer
+           ;; Use Eshell to decode strings properly. 
+           (eshell-command (format "google calendar list --date %s,%s"
+                                   (format-time-string "%Y-%m-%d")
+                                   (format-time-string "%Y-12-31"))
+                           t)
+           (when (eq 0 eshell-last-command-status)
+             (goto-char (point-min))
+             (forward-line 2)
+             (cl-loop with this-year = (format-time-string "%Y" (current-time))
+                      while (re-search-forward "^[^[]" nil t)
+                      for split = (split-string
+                                   (buffer-substring
+                                    (point-at-bol) (point-at-eol)) ",")
+                      for str = (car split)
+                      for split = (split-string (cadr split) " - " t)
+                      for date-beg = (concat (car split) " " this-year)
+                      for date-end = (concat (cadr split) " " this-year)
+                      for from-date = (date-to-time
+                                       (replace-regexp-in-string
+                                        "[0-9]+:[0-9]+" "00:00" date-beg))
+                      for to-date = (date-to-time
+                                     (replace-regexp-in-string
+                                      "[0-9]+:[0-9]+" "00:00" date-end))
+                      for use-diary-block = (time-less-p from-date to-date)
+                      for date = (if use-diary-block
+                                     (format "%%%%(diary-block %s %s) %s"
+                                             (format-time-string
+                                              "%d %m %Y" from-date)
+                                             (format-time-string
+                                              "%d %m %Y" to-date)
+                                             str)
+                                     (concat date-beg " " this-year))
+                      collect (if use-diary-block
+                                  date
+                                  (concat (format-time-string
+                                           "%B %d,%Y %H:%M "
+                                           (date-to-time date)) str))
+                      finally (kill-buffer))))))
     (when go-entries
       (with-current-buffer (find-file-noselect diary-file)
         (goto-char (point-max))
@@ -1563,7 +1586,10 @@ only one line entries are supported."
     (special-mode)
     (apply #'call-process
            "gcalcli" nil (current-buffer) nil
-           `("--user" ,user-mail-address "--pw" ,pwd "calw" ,(int-to-string arg)))
+           `("--mon"
+             "--user" ,user-mail-address
+             "--pw" ,pwd
+             "calw" ,(int-to-string arg)))
     (ansi-color-apply-on-region (point-min) (point-max))))
 
 (defun tv/calendar-diary-or-holiday (arg)
@@ -1774,10 +1800,13 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;; Semantic
 ;;
 ;;
-;;(semantic-mode 1)
-;; With my fixes in lisp/cedet/semantic/bovine/el.el.
-;;(load-file "~/elisp/el.el")
-;;(when (fboundp 'semantic-default-elisp-setup) (semantic-default-elisp-setup))
+;(semantic-mode 1)
+(add-hook 'semantic-mode-hook
+          ;; With my fixes in lisp/cedet/semantic/bovine/el.el.
+          (lambda ()
+            (load-file "~/elisp/el.el")
+            (when (fboundp 'semantic-default-elisp-setup)
+              (semantic-default-elisp-setup))))
 
 ;;; Ffap
 ;;
