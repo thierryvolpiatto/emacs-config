@@ -675,7 +675,7 @@ With a prefix arg decrease transparency."
       kept-new-versions 20
       delete-old-versions t)
 (setq tramp-backup-directory-alist backup-directory-alist)
-(setq auto-save-file-name-transforms nil)
+;;(setq auto-save-file-name-transforms nil)
 
 
 (setq case-fold-search t)
@@ -719,7 +719,9 @@ With a prefix arg decrease transparency."
 (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'eshell-mode-hook 'turn-on-eldoc-mode)
 
-(when (tv-require 'eldoc)
+(when (and (tv-require 'eldoc)
+           ;; Don't load this on emacs-25
+           (fboundp 'eldoc-highlight-function-argument))
   (defun eldoc-highlight-function-argument (sym args index)
     "Highlight argument INDEX in ARGS list for function SYM.
 In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
