@@ -954,15 +954,6 @@ Any other keys pressed run their assigned command defined in MAP and exit the lo
                                         unread-command-events)))
                          nil))))))))
 
-(defun tv/emamux-copy-buffer-to-kill-ring ()
-  "Needed to save-buffer from tmux to \"/tmp/tmux-ring\" file.
-Setting in .tmux.conf is:
- bind-key C-w save-buffer -b 0 /tmp/tmux-ring \; display-message \"Buffer[0] copied\"."
-  (kill-new
-   (with-current-buffer (find-file-noselect "/tmp/tmux-ring")
-     (prog1 (buffer-substring (point-min) (point-max))
-       (kill-buffer)))))
-
 (defun tv/resize-img (input-file percent-size output-file)
   (interactive (let* ((in (read-file-name "Input file: " "~/Images"))
                       (pcge (read-string "Resize percentage: " "25"))

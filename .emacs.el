@@ -886,6 +886,7 @@ are returned unchanged."
 (define-key python-mode-map (kbd "C-c C-i") 'helm-ipython-import-modules-from-buffer)
 
 (setq
+ gud-pdb-command-name "ipdb"
  python-shell-interpreter "ipython"
  python-shell-interpreter-args "-i --autoindent"
  python-shell-prompt-regexp "In \\[[0-9]+\\]: "
