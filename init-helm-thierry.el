@@ -203,35 +203,30 @@
    'helm-ff-candidates-lisp-p))
 
 ;; Add magit to `helm-source-ls-git'
-;; (helm-add-action-to-source
-;;  "Magit status"
-;;  #'(lambda (_candidate)
-;;      (with-helm-buffer (magit-status helm-default-directory)))
-;;  helm-source-ls-git 1)
 
 (defmethod helm-setup-user-source ((source helm-ls-git-source))
   (let ((actions (oref source :action)))
     (oset source
           :action
-          (helm-append-at-nth actions
-                              '(("Magit status"
-                                 . (lambda (_candidate)
-                                     (with-helm-buffer
-                                       (magit-status helm-default-directory)))))
-                              1))))
+          (helm-append-at-nth
+           actions
+           (helm-make-actions
+            "Magit status"
+            (lambda (_candidate)
+              (with-helm-buffer
+                (magit-status helm-default-directory))))
+           1))))
 
-;;; Psession source
+;;; Psession windows
 ;;
-(defvar helm-psession-windows
-  '((name . "Psession windows")
-    (candidates . (lambda ()
-                    (sort (mapcar 'car psession--winconf-alist) #'string-lessp)))
-    (action . (("Restore" . psession-restore-winconf)
-               ("Delete" . psession-delete-winconf)))))
-
 (defun helm-psession ()
   (interactive)
-  (helm :sources 'helm-psession-windows
+  (helm :sources (helm-build-sync-source "Psession windows"
+                   :candidates (lambda ()
+                                 (sort (mapcar 'car psession--winconf-alist) #'string-lessp))
+                   :action (helm-make-actions
+                            "Restore" psession-restore-winconf
+                            "Delete" psession-delete-winconf))
         :buffer "*helm psession*"))
 
 
