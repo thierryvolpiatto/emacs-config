@@ -51,11 +51,11 @@
 (global-set-key (kbd "C-,")                     'helm-calcul-expression)
 (global-set-key (kbd "C-h d")                   'helm-info-at-point)
 (global-set-key (kbd "C-c g")                   'helm-google-suggest)
-(global-set-key (kbd "M-g s")                   'helm-do-grep)
 (global-set-key (kbd "C-x C-d")                 'helm-browse-project)
 (global-set-key (kbd "<f1>")                    'helm-resume)
 (global-set-key (kbd "C-h C-f")                 'helm-apropos)
 (global-set-key (kbd "<f5> s")                  'helm-find)
+(global-set-key (kbd "<f2>")                    'helm-execute-kmacro)
 (define-key global-map [remap jump-to-register] 'helm-register)
 (define-key global-map [remap list-buffers]     'helm-buffers-list)
 (define-key global-map [remap dabbrev-expand]   'helm-dabbrev)
@@ -203,12 +203,22 @@
    'helm-ff-candidates-lisp-p))
 
 ;; Add magit to `helm-source-ls-git'
-(helm-add-action-to-source
- "Magit status"
- #'(lambda (_candidate)
-     (with-helm-buffer (magit-status helm-default-directory)))
- helm-source-ls-git 1)
+;; (helm-add-action-to-source
+;;  "Magit status"
+;;  #'(lambda (_candidate)
+;;      (with-helm-buffer (magit-status helm-default-directory)))
+;;  helm-source-ls-git 1)
 
+(defmethod helm-setup-user-source ((source helm-ls-git-source))
+  (let ((actions (oref source :action)))
+    (oset source
+          :action
+          (helm-append-at-nth actions
+                              '(("Magit status"
+                                 . (lambda (_candidate)
+                                     (with-helm-buffer
+                                       (magit-status helm-default-directory)))))
+                              1))))
 
 ;;; Psession source
 ;;

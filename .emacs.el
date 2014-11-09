@@ -374,7 +374,7 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 (global-set-key (kbd "<f11> i")                    'ielm)
 (global-set-key (kbd "<f11> p")                    'python-shell-switch-to-shell)
 (global-set-key (kbd "C-%")                        'calculator)
-(global-set-key (kbd "<f2>")                       'tv-flyspell)
+(global-set-key (kbd "C-c @")                      'tv-flyspell)
 (global-set-key (kbd "<f5> p s b")                 'tv-ps-print-buffer)
 (global-set-key (kbd "<f5> p s r")                 'tv-ps-print-region)
 (global-set-key (kbd "<f5> p b")                   'print-buffer)
