@@ -1557,8 +1557,8 @@ With prefix arg always start and let me choose dictionary."
                           (search-forward l nil t))
                  do (insert (concat l "\n")))
         (save-buffer)))))
-(add-hook 'calendar-mode-hook 'tv/sync-diary-with-google-calendar)
-(add-hook 'org-agenda-mode-hook 'tv/sync-diary-with-google-calendar)
+;; (add-hook 'calendar-mode-hook 'tv/sync-diary-with-google-calendar)
+;; (add-hook 'org-agenda-mode-hook 'tv/sync-diary-with-google-calendar)
 
 ;; FIXME: Automatize the detection of string instead of marking it.
 (defun tv/delete-diary (beg end)

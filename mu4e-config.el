@@ -54,11 +54,14 @@
       '(("/Gmail/INBOX"               . ?i)
         ("/Gmail/github-emacs-helm"   . ?h)
         ("/Gmail/emacs-helm"          . ?e)
+        ("/Gmail/Emacs development"   . ?E)
         ("/Gmail/Friends"             . ?f)
         ("/Gmail/[Gmail].Sent Mail"   . ?s)
         ("/Gmail/[Gmail].Trash"       . ?t)
         ("/Gmail/[Gmail].Spam"        . ?!)
-        ("/Gmail/[Gmail].All Mail"    . ?a)))
+        ("/Gmail/[Gmail].All Mail"    . ?a)
+        ("/Yahoo/Trash"               . ?p)
+        ("/Yahoo/Inbox"               . ?y)))
 
 (setq mu4e-bookmarks
       '(("date:1w..now helm AND NOT flag:trashed" "Last 7 days helm messages"                                                                           ?h)
