@@ -225,8 +225,8 @@
                    :candidates (lambda ()
                                  (sort (mapcar 'car psession--winconf-alist) #'string-lessp))
                    :action (helm-make-actions
-                            "Restore" psession-restore-winconf
-                            "Delete" psession-delete-winconf))
+                            "Restore" 'psession-restore-winconf
+                            "Delete" 'psession-delete-winconf))
         :buffer "*helm psession*"))
 
 
