@@ -140,7 +140,7 @@
                                                          '(picture-mode artist-mode))
       helm-ls-git-status-command                 'magit-status
       ;helm-never-delay-on-input                  nil
-      helm-candidate-number-limit                200
+      ;helm-candidate-number-limit                200
       helm-M-x-requires-pattern                  0
       helm-dabbrev-cycle-thresold                3
       helm-surfraw-duckduckgo-url                "https://duckduckgo.com/?q=%s&ke=-1&kf=fw&kl=fr-fr&kr=b&k1=-1&k4=-1"
@@ -152,7 +152,7 @@
       ;helm-ff-file-name-history-use-recentf      t
       ;helm-follow-mode-persistent                t
       ;helm-apropos-fuzzy-match                    t
-      ;helm-M-x-fuzzy-match                        t
+      helm-M-x-fuzzy-match                        t
       ;helm-lisp-fuzzy-completion                  t
       helm-move-to-line-cycle-in-source           t
       ido-use-virtual-buffers                     t             ; Needed in helm-buffers-list
@@ -160,6 +160,9 @@
       helm-buffers-fuzzy-matching                 t
       helm-locate-command                         "locate %s -e -A --regex %s"
       )
+
+(custom-set-variables '(helm-recentf-fuzzy-match t)
+                      '(helm-imenu-fuzzy-match t))
 
 ;; Avoid hitting forbidden directory .gvfs when using find.
 (add-to-list 'completion-ignored-extensions ".gvfs/")
@@ -222,6 +225,10 @@
               (with-helm-buffer
                 (magit-status helm-default-directory))))
            1))))
+
+(defmethod helm-setup-user-source ((source helm-source-buffers))
+  (oset source :candidate-number-limit 200))
+
 
 ;;; Psession windows
 ;;
