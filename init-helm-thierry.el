@@ -151,14 +151,16 @@
       ;helm-tramp-verbose                         6
       ;helm-ff-file-name-history-use-recentf      t
       ;helm-follow-mode-persistent                t
-      ;helm-apropos-fuzzy-match                    t
+      helm-apropos-fuzzy-match                    t
       helm-M-x-fuzzy-match                        t
-      ;helm-lisp-fuzzy-completion                  t
+      helm-lisp-fuzzy-completion                  t
+      helm-locate-fuzzy-match                     t
       helm-move-to-line-cycle-in-source           t
       ido-use-virtual-buffers                     t             ; Needed in helm-buffers-list
       helm-tramp-verbose                          6
       helm-buffers-fuzzy-matching                 t
       helm-locate-command                         "locate %s -e -A --regex %s"
+      helm-org-headings-fontify                   t
       )
 
 (custom-set-variables '(helm-recentf-fuzzy-match t)
