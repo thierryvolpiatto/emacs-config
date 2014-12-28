@@ -662,8 +662,8 @@ With a prefix arg decrease transparency."
 (setq display-time-use-mail-icon t)
 
 ;; Limite-max-lisp
-(setq max-lisp-eval-depth '40000)
-(setq max-specpdl-size '100000)
+(setq max-lisp-eval-depth 40000)
+(setq max-specpdl-size 100000)
 
 
 ;;; emacs-backup-config
