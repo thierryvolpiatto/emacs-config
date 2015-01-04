@@ -161,6 +161,7 @@
       helm-buffers-fuzzy-matching                 t
       helm-locate-command                         "locate %s -e -A --regex %s"
       helm-org-headings-fontify                   t
+      helm-autoresize-max-height                  30
       )
 
 (custom-set-variables '(helm-recentf-fuzzy-match t)
@@ -258,6 +259,7 @@
 ;;
 (helm-mode 1)
 (helm-adaptative-mode 1)
+(helm-autoresize-mode 1)
 
 (provide 'init-helm-thierry)
 

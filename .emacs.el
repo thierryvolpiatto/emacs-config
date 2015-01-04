@@ -207,7 +207,7 @@ If your system's ping continues until interrupted, you can try setting
 (package-initialize)
 (setq package-archives '(
                          ;("gnu" . "http://elpa.gnu.org/packages/")
-                         ("melpa" . "http://melpa.milkbox.net/packages/")
+			 ("melpa" . "http://melpa.milkbox.net/packages/")
                          ;("melpa-stable" . "http://melpa-stable.milkbox.net/packages/")
                          ;("marmalade" . "http://marmalade-repo.org/packages/")
                          ))
@@ -881,9 +881,11 @@ are returned unchanged."
 ;;; Python config
 ;;
 ;;
-(tv-require 'helm-ipython)
-(define-key python-mode-map (kbd "<M-tab>") 'helm-ipython-complete)
-(define-key python-mode-map (kbd "C-c C-i") 'helm-ipython-import-modules-from-buffer)
+;; (tv-require 'helm-ipython)
+;; (define-key python-mode-map (kbd "<M-tab>") 'helm-ipython-complete)
+;; (define-key python-mode-map (kbd "C-c C-i") 'helm-ipython-import-modules-from-buffer)
+
+(tv-require 'python)
 
 (setq
  gud-pdb-command-name "ipdb"
@@ -903,6 +905,9 @@ from IPython.core.completerlib import module_completion"
 (add-hook 'python-mode-hook
   #'(lambda ()
       (define-key python-mode-map (kbd "C-m") 'newline-and-indent)))
+
+(when (fboundp 'jedi:setup)
+  (add-hook 'python-mode-hook 'jedi:setup))
 
 ;; Entete-py
 (defun tv-insert-python-header ()
