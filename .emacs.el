@@ -1882,6 +1882,15 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
           (message "Bug `#%d' url's copied to kill-ring" bug-number))
         (browse-url url))))
 
+(defun tv-find-or-kill-helm-bug-number (bug-number arg)
+  (interactive (list (read-number "Bug number: " (thing-at-point 'number))
+                     current-prefix-arg))
+  (let ((url (format "https://github.com/emacs-helm/helm/issues/%s" bug-number)))
+    (if arg
+        (progn
+          (kill-new url)
+          (message "Bug `#%d' url's copied to kill-ring" bug-number))
+        (browse-url url))))
 ;;; Info
 ;;
 (defface tv-info-ref-item

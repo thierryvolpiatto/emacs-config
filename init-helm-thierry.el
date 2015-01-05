@@ -71,6 +71,14 @@
 ;; (and (boundp 'tab-always-indent)
 ;;      (setq tab-always-indent 'complete))
 
+(helm-multi-key-defun helm-multi-lisp-complete-at-point
+    "Multi key function for completion in emacs lisp buffers.
+First call indent, second complete symbol, third complete fname."
+  '(helm-lisp-indent
+    helm-lisp-completion-at-point
+    helm-complete-file-name-at-point)
+  0.3)
+
 (if (and (boundp 'tab-always-indent)
          (eq tab-always-indent 'complete)
          (boundp 'completion-in-region-function))
@@ -161,7 +169,8 @@
       helm-buffers-fuzzy-matching                 t
       helm-locate-command                         "locate %s -e -A --regex %s"
       helm-org-headings-fontify                   t
-      helm-autoresize-max-height                  30
+      helm-autoresize-max-height                  80 ; it is %.
+      helm-autoresize-min-height                  20 ; it is %.
       )
 
 (custom-set-variables '(helm-recentf-fuzzy-match t)
@@ -232,6 +241,10 @@
 (defmethod helm-setup-user-source ((source helm-source-buffers))
   (oset source :candidate-number-limit 200))
 
+(add-hook 'helm-before-initialize-hook (lambda ()
+                                         (helm-set-local-variable
+                                          'current-input-method
+                                          current-input-method)))
 
 ;;; Psession windows
 ;;
