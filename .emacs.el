@@ -124,7 +124,7 @@ If your system's ping continues until interrupted, you can try setting
 (add-to-list 'Info-directory-list "~/elisp/info/eshell-doc")
 
 (dolist (i '("/usr/local/share/emacs/site-lisp"
-             "/usr/local/share/emacs/site-lisp/auctex"
+             ;"/usr/local/share/emacs/site-lisp/auctex"
              "/usr/local/share/emacs/site-lisp/mu4e"
 	     "~/elisp/"
              "~/elisp/emacs-w3m"
@@ -136,7 +136,7 @@ If your system's ping continues until interrupted, you can try setting
 	     "~/elisp/desktop-file-utils"
 	     "~/elisp/emacs-wget"
              "~/elisp/undo-tree"
-             "~/elisp/emacs-git-gutter"
+             ;"~/elisp/emacs-git-gutter"
              "~/elisp/iedit"
              "~/elisp/emacs-wgrep"
 	     "~/elisp/tex-utils"

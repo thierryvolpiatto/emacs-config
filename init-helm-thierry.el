@@ -241,14 +241,10 @@ First call indent, second complete symbol, third complete fname."
 (defmethod helm-setup-user-source ((source helm-source-buffers))
   (oset source :candidate-number-limit 200))
 
-(add-hook 'helm-before-initialize-hook (lambda ()
-                                         (helm-set-local-variable
-                                          'current-input-method
-                                          current-input-method)))
 
 ;;; Psession windows
 ;;
-(defun helm-psession ()
+(defun helm-psession-windows ()
   (interactive)
   (helm :sources (helm-build-sync-source "Psession windows"
                    :candidates (lambda ()
