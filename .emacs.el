@@ -135,7 +135,7 @@ If your system's ping continues until interrupted, you can try setting
 	     "~/elisp/cmake"
 	     "~/elisp/desktop-file-utils"
 	     "~/elisp/emacs-wget"
-             "~/elisp/undo-tree"
+             ;"~/elisp/undo-tree"
              ;"~/elisp/emacs-git-gutter"
              "~/elisp/iedit"
              "~/elisp/emacs-wgrep"
@@ -1442,7 +1442,6 @@ With prefix arg always start and let me choose dictionary."
 ;(setq undo-outer-limit 20000000)
 ;; undo-limit
 ;(setq undo-limit 100000)
-(tv-require 'undo-tree)
 (global-undo-tree-mode)
 
 
