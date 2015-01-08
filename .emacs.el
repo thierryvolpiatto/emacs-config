@@ -224,8 +224,6 @@ If your system's ping continues until interrupted, you can try setting
 (tv-require 'firefox-protocol)
 (tv-require 'addressbook-bookmark)
 (tv-require 'org-config-thierry)
-;(autoload 'magit-status "magit.el" nil t)
-;(autoload 'magit-blame-mode "magit-blame.el" nil t)
 (tv-require 'emms-mpd-config)
 (tv-require 'dired-extension)
 (tv-require 'htmlize)
@@ -244,7 +242,6 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'zop-up-to-char "zop-to-char.el" nil t)
 (tv-require 'iedit)
 (tv-require 'iedit-rect)
-;(tv-require 'simple-call-tree)
 (tv-require 'lacarte)
 (autoload 'google-maps "google-maps.el" nil t)
 (tv-require 'iterator)
@@ -1940,8 +1937,7 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 
 ;;; emacs-zoom-window
 ;;
-;; https://github.com/syohex/emacs-zoom-window
-(require 'zoom-window)
+;; Installed from package.
 (global-set-key (kbd "C-x C-z") 'zoom-window-zoom)
 (setq zoom-window-mode-line-color "DarkGreen")
 
