@@ -28,8 +28,6 @@
    "git log --pretty='format:%H' -1"))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;; Helm-command-map
 ;;
 ;;
@@ -171,6 +169,7 @@ First call indent, second complete symbol, third complete fname."
       helm-org-headings-fontify                   t
       helm-autoresize-max-height                  80 ; it is %.
       helm-autoresize-min-height                  20 ; it is %.
+      fit-window-to-buffer-horizontally           1
       )
 
 (custom-set-variables '(helm-recentf-fuzzy-match t)
