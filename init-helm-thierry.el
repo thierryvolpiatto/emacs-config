@@ -4,12 +4,16 @@
 (tv-require 'helm-config)
 
 
+;;; Enable Modes (This is loading nearly everything).
+;;
+(helm-mode 1)
+(helm-adaptative-mode 1)
+(helm-autoresize-mode 1)
+
+
 ;;;; Extensions
 ;;
-(tv-require 'helm-ls-hg)
-(tv-require 'helm-descbinds)
-(tv-require 'helm-ls-git)
-(tv-require 'helm-dictionary)
+(load "/home/thierry/elisp/helm-extensions/helm-extensions-autoloads.el")
 
 
 ;;;; Test Sources or new helm code. 
@@ -222,20 +226,21 @@ First call indent, second complete symbol, third complete fname."
    source
    'helm-ff-candidates-lisp-p))
 
-;; Add magit to `helm-source-ls-git'
-
-(defmethod helm-setup-user-source ((source helm-ls-git-source))
-  (let ((actions (oref source :action)))
-    (oset source
-          :action
-          (helm-append-at-nth
-           actions
-           (helm-make-actions
-            "Magit status"
-            (lambda (_candidate)
-              (with-helm-buffer
-                (magit-status helm-default-directory))))
-           1))))
+;;; Add magit to `helm-source-ls-git'
+;;
+(with-eval-after-load "helm-ls-git.el"
+  (defmethod helm-setup-user-source ((source helm-ls-git-source))
+    (let ((actions (oref source :action)))
+      (oset source
+	    :action
+	    (helm-append-at-nth
+	     actions
+	     (helm-make-actions
+	      "Magit status"
+	      (lambda (_candidate)
+		(with-helm-buffer
+		  (magit-status helm-default-directory))))
+	     1)))))
 
 (defmethod helm-setup-user-source ((source helm-source-buffers))
   (oset source :candidate-number-limit 200))
@@ -262,12 +267,6 @@ First call indent, second complete symbol, third complete fname."
                                      ("translate.reference.com fr->en" .
                                       "http://translate.reference.com/translate?query=%s&src=fr&dst=en")))
 
-
-;;; enable Modes
-;;
-(helm-mode 1)
-(helm-adaptative-mode 1)
-(helm-autoresize-mode 1)
 
 (provide 'init-helm-thierry)
 
