@@ -228,19 +228,18 @@ First call indent, second complete symbol, third complete fname."
 
 ;;; Add magit to `helm-source-ls-git'
 ;;
-(with-eval-after-load "helm-ls-git.el"
-  (defmethod helm-setup-user-source ((source helm-ls-git-source))
-    (let ((actions (oref source :action)))
-      (oset source
-	    :action
-	    (helm-append-at-nth
-	     actions
-	     (helm-make-actions
-	      "Magit status"
-	      (lambda (_candidate)
-		(with-helm-buffer
-		  (magit-status helm-default-directory))))
-	     1)))))
+(defmethod helm-setup-user-source ((source helm-ls-git-source))
+  (let ((actions (oref source :action)))
+    (oset source
+          :action
+          (helm-append-at-nth
+           actions
+           (helm-make-actions
+            "Magit status"
+            (lambda (_candidate)
+              (with-helm-buffer
+                (magit-status helm-default-directory))))
+           1))))
 
 (defmethod helm-setup-user-source ((source helm-source-buffers))
   (oset source :candidate-number-limit 200))
