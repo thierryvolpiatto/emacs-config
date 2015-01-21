@@ -42,27 +42,28 @@
 ;;; Global-map
 ;;
 ;;
-(global-set-key (kbd "M-x")                     'helm-M-x)
-(global-set-key (kbd "M-y")                     'helm-show-kill-ring)
-(global-set-key (kbd "C-c f")                   'helm-recentf)
-(global-set-key (kbd "C-x C-f")                 'helm-find-files)
-(global-set-key (kbd "C-c <SPC>")               'helm-all-mark-rings)
-(global-set-key (kbd "C-x r b")                 'helm-filtered-bookmarks)
-(global-set-key (kbd "C-h r")                   'helm-info-emacs)
-(global-set-key (kbd "C-:")                     'helm-eval-expression-with-eldoc)
-(global-set-key (kbd "C-,")                     'helm-calcul-expression)
-(global-set-key (kbd "C-h d")                   'helm-info-at-point)
-(global-set-key (kbd "C-c g")                   'helm-google-suggest)
-(global-set-key (kbd "C-x C-d")                 'helm-browse-project)
-(global-set-key (kbd "<f1>")                    'helm-resume)
-(global-set-key (kbd "C-h C-f")                 'helm-apropos)
-(global-set-key (kbd "<f5> s")                  'helm-find)
-(global-set-key (kbd "<f2>")                    'helm-execute-kmacro)
-(define-key global-map [remap jump-to-register] 'helm-register)
-(define-key global-map [remap list-buffers]     'helm-buffers-list)
-(define-key global-map [remap dabbrev-expand]   'helm-dabbrev)
-(define-key global-map [remap find-tag]         'helm-etags-select)
-(define-key shell-mode-map (kbd "M-p")          'helm-comint-input-ring) ; shell history.
+(global-set-key (kbd "M-x")                          'helm-M-x)
+(global-set-key (kbd "M-y")                          'helm-show-kill-ring)
+(global-set-key (kbd "C-c f")                        'helm-recentf)
+(global-set-key (kbd "C-x C-f")                      'helm-find-files)
+(global-set-key (kbd "C-c <SPC>")                    'helm-all-mark-rings)
+(global-set-key (kbd "C-x r b")                      'helm-filtered-bookmarks)
+(global-set-key (kbd "C-h r")                        'helm-info-emacs)
+(global-set-key (kbd "C-:")                          'helm-eval-expression-with-eldoc)
+(global-set-key (kbd "C-,")                          'helm-calcul-expression)
+(global-set-key (kbd "C-h d")                        'helm-info-at-point)
+(global-set-key (kbd "C-c g")                        'helm-google-suggest)
+(global-set-key (kbd "C-x C-d")                      'helm-browse-project)
+(global-set-key (kbd "<f1>")                         'helm-resume)
+(global-set-key (kbd "C-h C-f")                      'helm-apropos)
+(global-set-key (kbd "<f5> s")                       'helm-find)
+(global-set-key (kbd "<f2>")                         'helm-execute-kmacro)
+(define-key global-map [remap jump-to-register]      'helm-register)
+(define-key global-map [remap list-buffers]          'helm-buffers-list)
+(define-key global-map [remap dabbrev-expand]        'helm-dabbrev)
+(define-key global-map [remap find-tag]              'helm-etags-select)
+(define-key global-map [remap xref-find-definitions] 'helm-etags-select)
+(define-key shell-mode-map (kbd "M-p")               'helm-comint-input-ring) ; shell history.
 
 ;;; Lisp complete or indent. (Rebind <tab>)
 ;;
@@ -257,6 +258,18 @@ First call indent, second complete symbol, third complete fname."
                             "Delete" 'psession-delete-winconf))
         :buffer "*helm psession*"))
 
+
+;;; Byte recompile helm extensions directory
+;;  and regenerate autoload file.
+(defvar tv/helm-extensions-directory "~/elisp/helm-extensions/")
+(defun tv/helm-update-extensions (dir)
+  (interactive (list (read-directory-name
+                      "Helm extensions directory: "
+                      tv/helm-extensions-directory)))
+  (let* ((generated-autoload-file
+          (expand-file-name "helm-extensions-autoloads.el" dir)))
+    (update-directory-autoloads dir)
+    (async-byte-recompile-directory dir)))
 
 ;;; helm dictionary
 ;;
