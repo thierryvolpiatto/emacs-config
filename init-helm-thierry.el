@@ -266,8 +266,8 @@ First call indent, second complete symbol, third complete fname."
   (interactive (list (read-directory-name
                       "Helm extensions directory: "
                       tv/helm-extensions-directory)))
-  (let* ((generated-autoload-file
-          (expand-file-name "helm-extensions-autoloads.el" dir)))
+  (let ((generated-autoload-file
+         (expand-file-name "helm-extensions-autoloads.el" dir)))
     (update-directory-autoloads dir)
     (async-byte-recompile-directory dir)))
 

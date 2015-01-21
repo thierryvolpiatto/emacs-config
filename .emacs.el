@@ -147,8 +147,8 @@ If your system's ping continues until interrupted, you can try setting
              "~/elisp/helm"
              "~/elisp/helm-extensions"
              "~/elisp/google-maps"
-             "~/elisp/slime"
-             "~/elisp/slime/contrib"
+             ;"~/elisp/slime"
+             ;"~/elisp/slime/contrib"
              "~/.emacs.d/themes/"
 	     "~/.emacs.d/emacs-config/"
              "~/elisp/emacs-async"
@@ -230,7 +230,7 @@ If your system's ping continues until interrupted, you can try setting
 (tv-require 'no-word)
 (tv-require 'flymake)
 (tv-require 'esh-toggle)
-(tv-require 'slime-autoloads)
+;(tv-require 'slime-autoloads)
 (tv-require 'cl-info)
 (autoload 'ioccur "ioccur.el" nil t)
 (tv-require 'mb-depth)
@@ -1284,7 +1284,7 @@ With prefix arg always start and let me choose dictionary."
 ;;
 ;;
 (setq inferior-lisp-program "/usr/bin/sbcl")
-(setq slime-backend "/home/thierry/elisp/slime/swank-loader.lisp")
+;(setq slime-backend "/home/thierry/elisp/slime/swank-loader.lisp")
 (slime-setup '(slime-fancy
                slime-asdf
                slime-tramp
@@ -1821,7 +1821,7 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 
 ;;; Deactivate mouse scrolling
 ;;
-(mouse-wheel-mode -1)
+;(mouse-wheel-mode -1)
 
 ;;; Printing variables
 ;;
