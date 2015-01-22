@@ -124,7 +124,6 @@ If your system's ping continues until interrupted, you can try setting
 (add-to-list 'Info-directory-list "~/elisp/info/eshell-doc")
 
 (dolist (i '("/usr/local/share/emacs/site-lisp"
-             ;"/usr/local/share/emacs/site-lisp/auctex"
              "/usr/local/share/emacs/site-lisp/mu4e"
 	     "~/elisp/"
              "~/elisp/emacs-w3m"
@@ -135,8 +134,6 @@ If your system's ping continues until interrupted, you can try setting
 	     "~/elisp/cmake"
 	     "~/elisp/desktop-file-utils"
 	     "~/elisp/emacs-wget"
-             ;"~/elisp/undo-tree"
-             ;"~/elisp/emacs-git-gutter"
              "~/elisp/iedit"
              "~/elisp/emacs-wgrep"
 	     "~/elisp/tex-utils"
@@ -146,13 +143,9 @@ If your system's ping continues until interrupted, you can try setting
 	     "~/elisp/ledger/"
              "~/elisp/helm"
              "~/elisp/helm-extensions"
-             "~/elisp/google-maps"
-             ;"~/elisp/slime"
-             ;"~/elisp/slime/contrib"
              "~/.emacs.d/themes/"
 	     "~/.emacs.d/emacs-config/"
              "~/elisp/emacs-async"
-             ;"~/elisp/elscreen"
 	     ))
   (add-to-list 'load-path i t)) ; Add all at end of `load-path' to avoid conflicts.
 
@@ -243,7 +236,6 @@ If your system's ping continues until interrupted, you can try setting
 (tv-require 'iedit)
 (tv-require 'iedit-rect)
 (tv-require 'lacarte)
-(autoload 'google-maps "google-maps.el" nil t)
 (tv-require 'iterator)
 (autoload 'markdown-mode "markdown-mode.el")
 (autoload 'gfm-mode "markdown-mode.el")
@@ -1284,7 +1276,6 @@ With prefix arg always start and let me choose dictionary."
 ;;
 ;;
 (setq inferior-lisp-program "/usr/bin/sbcl")
-;(setq slime-backend "/home/thierry/elisp/slime/swank-loader.lisp")
 (slime-setup '(slime-fancy
                slime-asdf
                slime-tramp
@@ -1558,8 +1549,6 @@ With prefix arg always start and let me choose dictionary."
                           (search-forward l nil t))
                  do (insert (concat l "\n")))
         (save-buffer)))))
-;; (add-hook 'calendar-mode-hook 'tv/sync-diary-with-google-calendar)
-;; (add-hook 'org-agenda-mode-hook 'tv/sync-diary-with-google-calendar)
 
 ;; FIXME: Automatize the detection of string instead of marking it.
 (defun tv/delete-diary (beg end)
