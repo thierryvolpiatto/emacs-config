@@ -46,8 +46,9 @@
   (if (> (length (directory-files
                   mp nil directory-files-no-dot-files-regexp)) 0)
       (message "Directory %s is busy, mountsshfs aborted" mp)
-      (if (= (call-process-shell-command "sshfs" nil t nil
-                                         (format "%s %s" fs mp)) 0)
+      (if (= (call-process-shell-command
+              (format "sshfs %s %s" fs mp) nil t nil)
+             0)
           (message "%s Mounted successfully on %s" fs mp)
           (message "Failed to mount remote filesystem %s on %s" fs mp))))
 
@@ -63,8 +64,9 @@
       (message "Filesystem is busy can't umount!")
       (progn
         (if (>= (length (cddr (directory-files mp))) 0)
-            (if (= (call-process-shell-command "fusermount" nil t nil
-                                               (format "-u %s" mp)) 0)
+            (if (= (call-process-shell-command
+                    (format "fusermount -u %s" mp) nil t nil)
+                   0)
                 (message "%s Successfully unmounted" mp)
                 (message "Failed to unmount %s" mp))
             (message "No existing remote filesystem to unmount!")))))
@@ -913,46 +915,6 @@ With a prefix arg remove new lines."
   (shell-command
    (format "tar cJvf $(basename %s).tar.xz $(basename %s)"
            file file)))
-
-(defmacro tv/define-key-with-subkeys (map key subkey command &optional other-subkeys menu)
-  "Allow defining a KEY without having to type its prefix again on next calls.
-Arg MAP is the keymap to use, SUBKEY is the initial long keybinding to
-call COMMAND.
-Arg OTHER-SUBKEYS is an unquoted alist specifying other short keybindings
-to use once started.
-e.g:
-
-\(tv/define-key-with-subkeys global-map
-      \(kbd \"C-x v n\") ?n 'git-gutter:next-hunk ((?p . 'git-gutter:previous-hunk))\)
-
-
-In this example, `C-x v n' will run `git-gutter:next-hunk' subsequent hit on \"n\"
-will run this command again and subsequent hit on \"p\" will run `git-gutter:previous-hunk'.
-
-Arg MENU is a string to display in minibuffer to describe SUBKEY and OTHER-SUBKEYS.
-
-Any other keys pressed run their assigned command defined in MAP and exit the loop."
-
-  (let ((other-keys (and other-subkeys
-                         (cl-loop for (x . y) in other-subkeys
-                               collect (list x (list 'call-interactively y) t)))))
-    `(define-key ,map ,key
-       #'(lambda ()
-           (interactive)
-           (call-interactively ,command)
-           (while (let ((input (read-key ,menu)) kb com)
-                    (cl-case input
-                      (,subkey (call-interactively ,command) t)
-                      ,@other-keys
-                      (t (setq kb  (this-command-keys-vector))
-                         (setq com (lookup-key ,map kb))
-                         (if (commandp com)
-                             (call-interactively com)
-                           (setq unread-command-events
-                                 (nconc (mapcar 'identity
-                                                (this-single-command-raw-keys))
-                                        unread-command-events)))
-                         nil))))))))
 
 (defun tv/resize-img (input-file percent-size output-file)
   (interactive (let* ((in (read-file-name "Input file: " "~/Images"))
