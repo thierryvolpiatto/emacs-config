@@ -1826,9 +1826,9 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 (autoload 'git-gutter-mode "git-gutter")
 (add-hook 'emacs-lisp-mode-hook 'git-gutter-mode)
 (helm-define-key-with-subkeys
- global-map (kbd "C-x v n") ?n 'git-gutter:next-hunk ((?p . 'git-gutter:previous-hunk)))
+ global-map (kbd "C-x v n") ?n 'git-gutter:next-hunk ((?p . git-gutter:previous-hunk)))
 (helm-define-key-with-subkeys
- global-map (kbd "C-x v p") ?p 'git-gutter:previous-hunk ((?n . 'git-gutter:next-hunk)))
+ global-map (kbd "C-x v p") ?p 'git-gutter:previous-hunk ((?n . git-gutter:next-hunk)))
 
 (global-set-key [remap vc-dir] 'git-gutter:popup-hunk)
 ;; Stage current hunk
@@ -1912,16 +1912,16 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;
 (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-p")
                             ?p 'outline-previous-visible-heading
-                            ((?n . 'outline-next-visible-heading)))
+                            ((?n . outline-next-visible-heading)))
 (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-n")
                             ?n 'outline-next-visible-heading
-                            ((?p . 'outline-previous-visible-heading)))
+                            ((?p . outline-previous-visible-heading)))
 (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-f")
                             ?f 'outline-forward-same-level
-                            ((?b . 'outline-backward-same-level)))
+                            ((?b . outline-backward-same-level)))
 (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-b")
                             ?b 'outline-backward-same-level
-                            ((?f . 'outline-forward-same-level)))
+                            ((?f . outline-forward-same-level)))
 
 ;;; emacs-zoom-window
 ;;

@@ -165,7 +165,7 @@ First call indent, second complete symbol, third complete fname."
       helm-apropos-fuzzy-match                    t
       helm-M-x-fuzzy-match                        t
       helm-lisp-fuzzy-completion                  t
-      helm-locate-fuzzy-match                     t
+      ;helm-locate-fuzzy-match                     t
       helm-move-to-line-cycle-in-source           t
       ido-use-virtual-buffers                     t             ; Needed in helm-buffers-list
       helm-tramp-verbose                          6
