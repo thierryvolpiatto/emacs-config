@@ -197,6 +197,11 @@ If your system's ping continues until interrupted, you can try setting
 
 ;;; Melpa marmalade
 ;;
+(add-to-list 'load-path "~/elisp/shadow/")
+(if (= emacs-major-version 25)
+    (load "package-25")
+  (load "package-24"))
+
 (package-initialize)
 (setq package-archives '(
                          ;("gnu" . "http://elpa.gnu.org/packages/")
