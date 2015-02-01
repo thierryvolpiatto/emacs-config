@@ -39,8 +39,8 @@
                        (car id))
         for installed-p = (assq name package-alist)
         for upgrade-p = (assq name helm-el-package--upgrades)
-        for user-installed-p = (and (boundp 'packages-installed-directly)
-                                    (memq name packages-installed-directly))
+        for user-installed-p = (and (boundp 'package-selected-packages)
+                                    (memq name package-selected-packages))
         do (when user-installed-p (put-text-property 0 2 'display "I " c))
         for cand = (cons c (car (split-string c)))
         when (or (and upgrade-p
