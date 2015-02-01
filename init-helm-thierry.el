@@ -291,7 +291,8 @@ First call indent, second complete symbol, third complete fname."
                       "Helm extensions directory: "
                       tv/helm-extensions-directory)))
   (let ((generated-autoload-file
-         (expand-file-name "helm-extensions-autoloads.el" dir)))
+         (expand-file-name "helm-extensions-autoloads.el" dir))
+        (backup-inhibited t))
     (update-directory-autoloads dir)
     (async-byte-recompile-directory dir)))
 

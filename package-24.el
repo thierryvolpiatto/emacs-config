@@ -312,7 +312,7 @@ contents of the archive."
   :group 'package
   :version "24.4")
 
-(defcustom packages-installed-directly nil
+(defcustom package-selected-packages nil
   "Store here packages installed explicitely by user.
 This variable will be feeded automatically by emacs,
 when installing a new package.
@@ -1092,9 +1092,9 @@ using `package-compute-transaction'."
   "Install the package PKG.
 PKG can be a package-desc or the package name of one the available packages
 in an archive in `package-archives'.  Interactively, prompt for its name
-and add PKG to `packages-installed-directly'.
+and add PKG to `package-selected-packages'.
 When called from lisp you will have to use ARG if you want to
-simulate an interactive call to add PKG to `packages-installed-directly'."
+simulate an interactive call to add PKG to `package-selected-packages'."
   (interactive
    (progn
      ;; Initialize the package system to get the list of package
@@ -1112,9 +1112,9 @@ simulate an interactive call to add PKG to `packages-installed-directly'."
                                   package-archive-contents))
                     nil t))
            "\p")))
-  (when (and arg (not (memq pkg packages-installed-directly)))
-    (customize-save-variable 'packages-installed-directly
-                            (cons pkg packages-installed-directly)))
+  (when (and arg (not (memq pkg package-selected-packages)))
+    (customize-save-variable 'package-selected-packages
+                            (cons pkg package-selected-packages)))
   (package-download-transaction
    (if (package-desc-p pkg)
        (package-compute-transaction (list pkg)
@@ -1237,10 +1237,10 @@ Downloads and installs required packages as needed."
       (package-download-transaction transaction))
     ;; Install the package itself.
     (package-unpack pkg-desc)
-    (unless (memq name packages-installed-directly)
-      (push name packages-installed-directly)
-      (customize-save-variable 'packages-installed-directly
-                               packages-installed-directly))
+    (unless (memq name package-selected-packages)
+      (push name package-selected-packages)
+      (customize-save-variable 'package-selected-packages
+                               package-selected-packages))
     pkg-desc))
 
 ;;;###autoload
@@ -1274,10 +1274,10 @@ The file can either be a tar file or an Emacs Lisp file."
 
 ;;;###autoload
 (defun package-user-selected-packages-install ()
-  "Ensure packages in `packages-installed-directly' are installed.
+  "Ensure packages in `package-selected-packages' are installed.
 If some packages are not installed propose to install them."
   (interactive)
-  (cl-loop for p in packages-installed-directly
+  (cl-loop for p in package-selected-packages
            unless (package-installed-p p)
            collect p into lst
            finally
@@ -1289,17 +1289,19 @@ If some packages are not installed propose to install them."
                  (mapc 'package-install lst))
                (message "All your packages are already installed"))))
 
-(defun package-used-elsewhere-p (pkg &optional pkg-list)
+(defun package-used-elsewhere-p (pkg-desc &optional pkg-list)
   "Check in PKG-LIST if PKG is used elsewhere as dependency.
 When not specified, PKG-LIST default to `package-alist' with PKG entry removed.
 Argument PKG is a symbol.
 Returns the first package found in PKG-LIST where PKG is used as dependency."
-  (cl-loop with alist = (or pkg-list
-                            (remove (assq pkg package-alist)
-                                    package-alist))
-           for p in alist thereis
-           (and (memq pkg (mapcar 'car (package-desc-reqs (cadr p))))
-                (car p))))
+  (unless (string= (package-desc-status pkg-desc) "obsolete")
+    (let ((pkg (package-desc-name pkg-desc)))
+      (cl-loop with alist = (or pkg-list
+                                (remove (assq pkg package-alist)
+                                        package-alist))
+               for p in alist thereis
+               (and (memq pkg (mapcar 'car (package-desc-reqs (cadr p))))
+                    (car p))))))
 
 ;;;###autoload
 (defun package-reinstall (pkg)
@@ -1352,18 +1354,18 @@ elsewhere."
   "Remove packages that are no more needed.
 
 Packages that are no more needed by other packages in
-`packages-installed-directly' and their dependencies
+`package-selected-packages' and their dependencies
 will be deleted."
   (interactive)
   (let* (old-direct
-         (needed (cl-loop for p in packages-installed-directly
+         (needed (cl-loop for p in package-selected-packages
                           if (assq p package-alist)
                           append (package--get-deps p) into lst
                           else do (push p old-direct)
                           finally return lst)))
     (cl-loop for p in (mapcar 'car package-alist)
              unless (or (memq p needed)
-                        (memq p packages-installed-directly))
+                        (memq p package-selected-packages))
              collect p into lst
              finally (if lst
                          (when (y-or-n-p (format "%s packages will be deleted:\n%s, proceed? "
@@ -1373,8 +1375,8 @@ will be deleted."
                                    (package-delete (cadr (assq p package-alist)) t))
                                  lst)
                            (customize-save-variable
-                            'packages-installed-directly
-                            (cl-loop for p in packages-installed-directly
+                            'package-selected-packages
+                            (cl-loop for p in package-selected-packages
                                      unless (memq p old-direct)
                                      collect p)))
                        (message "Nothing to autoremove")))))
