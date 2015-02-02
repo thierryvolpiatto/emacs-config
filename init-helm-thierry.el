@@ -31,26 +31,6 @@
   (shell-command-to-string
    "git log --pretty='format:%H' -1"))
 
-(defun tv/helm-el-package--transformer (candidates _source)
-  (cl-loop for c in candidates
-        for id = (get-text-property 0 'tabulated-list-id c)
-        for name = (if (fboundp 'package-desc-name)
-                       (package-desc-name id)
-                       (car id))
-        for installed-p = (assq name package-alist)
-        for upgrade-p = (assq name helm-el-package--upgrades)
-        for user-installed-p = (and (boundp 'package-selected-packages)
-                                    (memq name package-selected-packages))
-        do (when user-installed-p (put-text-property 0 2 'display "I " c))
-        for cand = (cons c (car (split-string c)))
-        when (or (and upgrade-p
-                      (eq helm-el-package--show-only 'upgrade))
-                 (and installed-p
-                      (eq helm-el-package--show-only 'installed))
-                 (and (not installed-p)
-                      (eq helm-el-package--show-only 'uninstalled)) 
-                 (eq helm-el-package--show-only 'all))
-        collect cand))
 
 ;;; Helm-command-map
 ;;
@@ -264,10 +244,6 @@ First call indent, second complete symbol, third complete fname."
 
 (defmethod helm-setup-user-source ((source helm-source-buffers))
   (oset source :candidate-number-limit 200))
-
-(when (require 'helm-elisp-package)
-  (defmethod helm-setup-user-source :after ((source helm-list-el-package-source))
-    (oset source :filtered-candidate-transformer 'tv/helm-el-package--transformer)))
 
 
 ;;; Psession windows

@@ -1474,6 +1474,15 @@ If optional arg NO-ACTIVATE is non-nil, don't activate packages."
   (unless no-activate
     (dolist (elt package-alist)
       (package-activate (car elt))))
+  (setq package-selected-packages
+	(cl-loop for p in package-alist
+		 for name = (car p)
+		 unless
+		 (cl-loop for pkg in package-alist thereis
+			  (memq name
+				(mapcar 'car
+					(package-desc-reqs (cadr pkg)))))
+		 collect name))
   (setq package--initialized t))
 
 
