@@ -1127,9 +1127,10 @@ simulate an interactive call to add PKG to `package-selected-packages'."
   "Reinstall package PKG."
   (interactive (list (intern (completing-read
                               "Reinstall package: "
-                              (mapcar 'symbol-name
-                                      (mapcar 'car package-alist))))))
-  (package-delete (cadr (assq pkg package-alist)) t)
+                              (mapcar #'symbol-name
+                                      (mapcar #'car package-alist))))))
+  (package-delete (cadr (assq pkg package-alist)) 'force
+                  (memq pkg package-selected-packages))
   (package-install pkg))
 
 (defun package-strip-rcs-id (str)
@@ -1277,7 +1278,7 @@ The file can either be a tar file or an Emacs Lisp file."
       (direct   direct-deps)
       (separate (list direct-deps indirect-deps))
       (indirect indirect-deps)
-      (t        (append direct-deps indirect-deps)))))
+      (t        (delete-dups (append direct-deps indirect-deps))))))
 
 ;;;###autoload
 (defun package-user-selected-packages-install ()
@@ -1311,7 +1312,7 @@ Returns the first package found in PKG-LIST where PKG is used as dependency."
                (and (memq pkg (mapcar 'car (package-desc-reqs (cadr p))))
                     (car p))))))
 
-(defun package-delete (pkg-desc &optional force)
+(defun package-delete (pkg-desc &optional force nosave)
   "Delete package PKG-DESC.
 
 Argument PKG-DESC is a full description of package as vector.
@@ -1347,7 +1348,8 @@ elsewhere."
              (unless (cdr pkgs)
                (setq package-alist (delq pkgs package-alist))))
            ;; Update package-selected-packages.
-           (when (memq name package-selected-packages)
+           (when (and (memq name package-selected-packages)
+                      (null nosave))
              (customize-save-variable
               'package-selected-packages (remove name package-selected-packages)))
            (message "Package `%s' deleted." (package-desc-full-name pkg-desc))))))
