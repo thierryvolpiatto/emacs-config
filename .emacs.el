@@ -208,6 +208,17 @@ If your system's ping continues until interrupted, you can try setting
                          ;("marmalade" . "http://marmalade-repo.org/packages/")
                          ))
 
+(unless package-selected-packages
+  (setq package-selected-packages
+        (cl-loop for p in package-alist
+         for name = (car p)
+         unless
+         (cl-loop for pkg in package-alist thereis
+                  (memq name
+                        (mapcar 'car
+                                (package-desc-reqs (cadr pkg)))))
+         collect name)))
+
 
 ;;; Require's
 ;;
