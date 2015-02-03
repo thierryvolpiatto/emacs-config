@@ -1271,7 +1271,7 @@ The file can either be a tar file or an Emacs Lisp file."
                                collect name))
          (indirect-deps (unless (eq only 'direct)
                           (cl-loop for p in direct-deps
-                                append (package--get-deps p 'direct) into lst
+                                append (package--get-deps p) into lst
                                 finally return (delete-dups lst)))))
     (cl-case only
       (direct   direct-deps)
