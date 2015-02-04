@@ -289,6 +289,8 @@ contrast, `package-user-dir' contains packages for personal use."
   :group 'package
   :version "24.1")
 
+(defvar epg-gpg-program)
+
 (defcustom package-check-signature
   (if (progn (require 'epg-config) (executable-find epg-gpg-program))
       'allow-unsigned)
@@ -1354,6 +1356,18 @@ elsewhere."
               'package-selected-packages (remove name package-selected-packages)))
            (message "Package `%s' deleted." (package-desc-full-name pkg-desc))))))
 
+(defun package--removable-packages ()
+  "Return a list of names of packages no longer needed.
+These are packages which are neither contained in
+`package-selected-packages' nor a dependency of one that is."
+  (let ((needed (cl-loop for p in package-selected-packages
+                         if (assq p package-alist)
+                         ;; `p' and its dependencies are needed.
+                         append (cons p (package--get-deps p)))))
+    (cl-loop for p in (mapcar #'car package-alist)
+             unless (memq p needed)
+             collect p)))
+
 ;;;###autoload
 (defun package-autoremove ()
   "Remove packages that are no more needed.
@@ -1362,21 +1376,22 @@ Packages that are no more needed by other packages in
 `package-selected-packages' and their dependencies
 will be deleted."
   (interactive)
-  (let* ((needed (cl-loop for p in package-selected-packages
-                          when (assq p package-alist)
-                          append (package--get-deps p))))
-    (cl-loop for p in (mapcar 'car package-alist)
-             unless (or (memq p needed)
-                        (memq p package-selected-packages))
-             collect p into lst
-             finally (if lst
-                         (when (y-or-n-p (format "%s packages will be deleted:\n%s, proceed? "
-                                                 (length lst)
-                                                 (mapconcat 'symbol-name lst ", ")))
-                           (mapc (lambda (p)
-                                   (package-delete (cadr (assq p package-alist)) t))
-                                 lst))
-                       (message "Nothing to autoremove")))))
+  ;; If `package-selected-packages' is nil, it would make no sense to
+  ;; try to populate it here, because then `package-autoremove' will
+  ;; do absolutely nothing.
+  (when (or package-selected-packages
+            (yes-or-no-p
+             "`package-selected-packages' is empty! Really remove ALL packages? "))
+    (let ((removable (package--removable-packages)))
+      (if removable
+          (when (y-or-n-p
+                 (format "%s packages will be deleted:\n%s, proceed? "
+                   (length removable)
+                   (mapconcat #'symbol-name removable ", ")))
+            (mapc (lambda (p)
+                    (package-delete (cadr (assq p package-alist)) t))
+              removable)
+            (message "Nothing to autoremove"))))))
 
 (defun package-archive-base (desc)
   "Return the archive containing the package NAME."
