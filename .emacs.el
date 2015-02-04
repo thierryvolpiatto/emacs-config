@@ -219,6 +219,8 @@ If your system's ping continues until interrupted, you can try setting
                                 (package-desc-reqs (cadr pkg)))))
          collect name)))
 
+(setq async-bytecomp-allowed-packages package-selected-packages)
+
 
 ;;; Require's
 ;;
@@ -260,7 +262,7 @@ If your system's ping continues until interrupted, you can try setting
   (tv-require 'dired-async))
 (tv-require 'smtpmail-async)
 (tv-require 'async-bytecomp)
-(setq aync-debug t)
+(setq async-debug t)
 (autoload 'golden-ratio-mode "golden-ratio.el" nil t)
 (autoload 'emamux:send-command "emamux.el" nil t)
 (autoload 'emamux:copy-kill-ring "emamux.el" nil t)
