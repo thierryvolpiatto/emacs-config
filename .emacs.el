@@ -134,7 +134,7 @@ If your system's ping continues until interrupted, you can try setting
 	     "~/elisp/cmake"
 	     "~/elisp/desktop-file-utils"
 	     "~/elisp/emacs-wget"
-             "~/elisp/iedit"
+             ;"~/elisp/iedit"
              "~/elisp/emacs-wgrep"
 	     "~/elisp/tex-utils"
 	     "~/elisp/muse/lisp"
@@ -432,6 +432,7 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 (global-set-key (kbd "C-x C-'")                    'tv-toggle-resplit-window)
 (global-set-key (kbd "C-§")                        'iedit-narrow-to-end)
 (global-set-key (kbd "C-²")                        'iedit-narrow-to-defun)
+(global-set-key [C-return]                         'iedit-rectangle-mode)
 (defun goto-scratch () (interactive) (switch-to-buffer "*scratch*"))
 (global-set-key (kbd "<f11> s c")                  'goto-scratch)
 
@@ -497,9 +498,10 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 (if (or (daemonp)
         (not (window-system))
         (< emacs-major-version 24))
-    (setq default-frame-alist '((vertical-scroll-bars . nil)
+    (setq default-frame-alist `((vertical-scroll-bars . nil)
                                 (tool-bar-lines . 0)
                                 (menu-bar-lines . 0)
+                                (title . ,(format "Emacs-%s" emacs-version))
                                 (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
                                 (cursor-color . "red")))
 
@@ -509,6 +511,7 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
                                 ;; New frames go in right corner.
                                 (left . ,(- (* (window-width) 8) 160)) ; Chars are 8 bits long.
                                 (vertical-scroll-bars . nil)
+                                (title . ,(format "Emacs-%s" emacs-version))
                                 (tool-bar-lines . 0)
                                 (menu-bar-lines . 0)
                                 (font . ,tv-default-font)
