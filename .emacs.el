@@ -233,7 +233,7 @@ If your system's ping continues until interrupted, you can try setting
 (tv-require 'firefox-protocol)
 (tv-require 'addressbook-bookmark)
 (tv-require 'org-config-thierry)
-(tv-require 'emms-mpd-config)
+(tv-require 'emms-vlc-config)
 (tv-require 'dired-extension)
 (tv-require 'htmlize)
 (tv-require 'no-word)
