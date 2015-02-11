@@ -140,8 +140,8 @@ First call indent, second complete symbol, third complete fname."
       helm-pdfgrep-default-read-command          "evince --page-label=%p '%f'"
       ;helm-ff-transformer-show-only-basename     t
       helm-ff-auto-update-initial-value          t
-      helm-grep-default-command                  "ack-grep -Hn --smart-case --no-group --no-color %e %p %f"
-      helm-grep-default-recurse-command          "ack-grep -H --smart-case --no-group --no-color %e %p %f"
+      helm-grep-default-command                  "ack-grep -Hn --smart-case --no-group %e %p %f"
+      helm-grep-default-recurse-command          "ack-grep -H --smart-case --no-group %e %p %f"
       helm-reuse-last-window-split-state         t
       ;helm-split-window-default-side             'other
       ;helm-split-window-in-side-p                nil
@@ -194,13 +194,13 @@ First call indent, second complete symbol, third complete fname."
                           (helm-grep-command)))
     (if (helm-grep-use-ack-p)
         (setq helm-grep-default-command
-              "grep -d skip %e -n%cH -e %p %f"
+              "grep --color=never -d skip %e -n%cH -e %p %f"
               helm-grep-default-recurse-command
-              "grep -d recurse %e -n%cH -e %p %f")
+              "grep --color=never -d recurse %e -n%cH -e %p %f")
         (setq helm-grep-default-command
-              "ack-grep -Hn --smart-case --no-group --no-color %e %p %f"
+              "ack-grep -Hn --smart-case --no-group %e %p %f"
               helm-grep-default-recurse-command
-              "ack-grep -H --smart-case --no-group --no-color %e %p %f"))
+              "ack-grep -H --smart-case --no-group %e %p %f"))
     (message "Switched to %s" (helm-grep-command))))
 
 ;;; Debugging

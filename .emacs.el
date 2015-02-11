@@ -239,7 +239,6 @@ If your system's ping continues until interrupted, you can try setting
 (tv-require 'no-word)
 (tv-require 'flymake)
 (tv-require 'esh-toggle)
-;(tv-require 'slime-autoloads)
 (tv-require 'cl-info)
 (autoload 'ioccur "ioccur.el" nil t)
 (tv-require 'mb-depth)
