@@ -5,6 +5,7 @@
 (require 'cl-lib)
 
 ;; (setenv "LANG" "C")
+(setenv "GREP_COLORS" "ms=01;31:mc=01;31:sl=01;37:cx=:fn=35:ln=32:bn=32:se=36")
 
 ;; Fix loosing focus on window manager
 ;; when quitting emacs.
