@@ -142,7 +142,9 @@ First call indent, second complete symbol, third complete fname."
       helm-ff-auto-update-initial-value          t
       helm-grep-default-command                  "ack-grep -Hn --smart-case --no-group %e %p %f"
       helm-grep-default-recurse-command          "ack-grep -H --smart-case --no-group %e %p %f"
-      ;helm-ls-git-grep-command                   "git grep -n%cH --color=always --full-name -e %p %f"
+      helm-ls-git-grep-command                   "git grep -n%cH --color=always --full-name -e %p %f"
+      helm-default-zgrep-command                 "zgrep --color=always -a -n%cH -e %p %f"
+      ;helm-pdfgrep-default-command               "pdfgrep --color never -niH %s %s"
       helm-reuse-last-window-split-state         t
       ;helm-split-window-default-side             'other
       ;helm-split-window-in-side-p                nil
@@ -195,9 +197,9 @@ First call indent, second complete symbol, third complete fname."
                           (helm-grep-command)))
     (if (helm-grep-use-ack-p)
         (setq helm-grep-default-command
-              "grep --color=never -d skip %e -n%cH -e %p %f"
+              "grep --color=always -d skip %e -n%cH -e %p %f"
               helm-grep-default-recurse-command
-              "grep --color=never -d recurse %e -n%cH -e %p %f")
+              "grep --color=always -d recurse %e -n%cH -e %p %f")
         (setq helm-grep-default-command
               "ack-grep -Hn --smart-case --no-group %e %p %f"
               helm-grep-default-recurse-command
