@@ -31,49 +31,6 @@
   (shell-command-to-string
    "git log --pretty='format:%H' -1"))
 
-(defvar helm-killed-buffers-max-items 50)
-(defvar helm-killed-buffers-alist nil)
-(defun helm-save-killed-buffer ()
-  (helm-aif buffer-file-name
-      (progn (setq helm-killed-buffers-alist
-                   (delete (assoc it helm-killed-buffers-alist)
-                           helm-killed-buffers-alist)) 
-             (push (cons it (with-current-buffer (current-buffer)
-                              (point)))
-                   helm-killed-buffers-alist)
-             (setq helm-killed-buffers-alist
-                   (let ((len (length helm-killed-buffers-alist)))
-                     (if (> len helm-killed-buffers-max-items)
-                         (butlast helm-killed-buffers-alist
-                                   (- len helm-killed-buffers-max-items))
-                         helm-killed-buffers-alist))))))
-(add-hook 'kill-buffer-hook #'helm-save-killed-buffer)
-
-(defun helm-restore-killed-buffer (buffer)
-  (let ((mkd (helm-marked-candidates)))
-    (cl-loop for (f . p) in mkd
-             do (with-current-buffer (find-file-noselect f)
-                  (goto-char p) (push-mark p 'nomsg)
-                  (setq helm-killed-buffers-alist
-                        (delete (assoc f helm-killed-buffers-alist)
-                                helm-killed-buffers-alist))))
-    (find-file (caar mkd))))
-
-(defvar helm-source-killed-buffers
-  (helm-build-sync-source "killed buffers"
-    :candidates (lambda () helm-killed-buffers-alist)
-    :candidate-transformer
-    (lambda (candidates)
-      (cl-loop for f in candidates collect
-               (cons (propertize (helm-basename (car f))
-                                 'face 'helm-ff-file)
-                     f)))
-    :action 'helm-restore-killed-buffer))
-
-(setq helm-mini-default-sources '(helm-source-buffers-list
-                                  helm-source-killed-buffers
-                                  helm-source-buffer-not-found))
-
 
 ;;; Helm-command-map
 ;;
@@ -102,7 +59,7 @@
 (global-set-key (kbd "<f5> s")                       'helm-find)
 (global-set-key (kbd "<f2>")                         'helm-execute-kmacro)
 (define-key global-map [remap jump-to-register]      'helm-register)
-(define-key global-map [remap list-buffers]          'helm-mini)
+(define-key global-map [remap list-buffers]          'helm-buffers-list)
 (define-key global-map [remap dabbrev-expand]        'helm-dabbrev)
 (define-key global-map [remap find-tag]              'helm-etags-select)
 (define-key global-map [remap xref-find-definitions] 'helm-etags-select)
