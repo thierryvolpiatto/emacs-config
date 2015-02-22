@@ -201,7 +201,8 @@ If your system's ping continues until interrupted, you can try setting
 
 ;;; Melpa marmalade
 ;;
-(when (= emacs-major-version 24)
+(when (and (= emacs-major-version 24)
+           (not (version<= emacs-version "24.4.1")))
   (load "package-24"))
 
 (package-initialize)
@@ -212,18 +213,19 @@ If your system's ping continues until interrupted, you can try setting
                          ;("marmalade" . "http://marmalade-repo.org/packages/")
                          ))
 
-(unless package-selected-packages
-  (setq package-selected-packages
-        (cl-loop for p in package-alist
-         for name = (car p)
-         unless
-         (cl-loop for pkg in package-alist thereis
-                  (memq name
-                        (mapcar 'car
-                                (package-desc-reqs (cadr pkg)))))
-         collect name)))
+(when (and (boundp 'package-selected-packages) 
+           (not package-selected-packages))
+    (setq package-selected-packages
+          (cl-loop for p in package-alist
+                   for name = (car p)
+                   unless
+                   (cl-loop for pkg in package-alist thereis
+                            (memq name
+                                  (mapcar 'car
+                                          (package-desc-reqs (cadr pkg)))))
+                   collect name))
 
-(setq async-bytecomp-allowed-packages package-selected-packages)
+    (setq async-bytecomp-allowed-packages package-selected-packages))
 
 
 ;;; Require's
@@ -272,7 +274,6 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'emamux:yank-from-list-buffers "emamux.el" nil t)
 (tv-require 'config-w3m)
 (tv-require 'mu4e-config)
-
 (setq emamux:completing-read-type 'helm)
 
 
@@ -473,7 +474,7 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 ;;
 (setq savehist-file "~/.emacs.d/history"
       history-delete-duplicates t)
-(setq history-length 50) ; default is 30.
+(setq history-length 100) ; default is 30.
 (savehist-mode 1)
 
 ;;; Recentf
@@ -482,6 +483,7 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 (setq recentf-save-file "~/.emacs.d/recentf")
 ;; `recentf-mode' will be started by helm when needed,
 ;; so no need to start it here
+(setq recentf-max-saved-items 100)
 (recentf-mode 1)
 
 
