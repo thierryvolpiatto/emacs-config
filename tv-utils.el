@@ -202,6 +202,7 @@ depending the value of N is positive or negative."
   (with-current-buffer (find-file-noselect "~/.emacs.d/save-scratch.el")
     (rename-buffer "*scratch*")
     (lisp-interaction-mode)
+    (setq lexical-binding t)
     (use-local-map lisp-interaction-mode-map))
   (when (or (eq (point-min) (point-max))
             ;; For some reason the scratch buffer have not a zero size.

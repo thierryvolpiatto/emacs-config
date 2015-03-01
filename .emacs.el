@@ -208,8 +208,8 @@ If your system's ping continues until interrupted, you can try setting
 (package-initialize)
 (setq package-archives '(
                          ;("gnu" . "http://elpa.gnu.org/packages/")
-			 ("melpa" . "http://melpa.milkbox.net/packages/")
-                         ;("melpa-stable" . "http://melpa-stable.milkbox.net/packages/")
+			 ("melpa" . "http://melpa.org/packages/")
+                         ;("melpa-stable" . "http://stable.melpa.org/packages/")
                          ;("marmalade" . "http://marmalade-repo.org/packages/")
                          ))
 
