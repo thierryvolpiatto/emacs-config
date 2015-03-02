@@ -202,7 +202,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Melpa marmalade
 ;;
 (when (and (= emacs-major-version 24)
-           (not (version<= emacs-version "24.4.1")))
+           (not (version< emacs-version "24.4.1")))
   (load "package-24"))
 
 (package-initialize)
