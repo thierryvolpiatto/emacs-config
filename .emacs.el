@@ -433,7 +433,7 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 (global-set-key [remap kill-whole-line]            'tv-kill-whole-line)
 (global-set-key (kbd "M-e")                        'tv-eval-last-sexp-at-eol)
 (global-set-key (kbd "C-d")                        'tv-delete-char)
-(global-set-key (kbd "C-x C-'")                    'tv-toggle-resplit-window)
+(global-set-key (kbd "C-x C-'")                    'tv/split-windows)
 (global-set-key (kbd "C-§")                        'iedit-narrow-to-end)
 (global-set-key (kbd "C-²")                        'iedit-narrow-to-defun)
 (global-set-key [C-return]                         'iedit-rectangle-mode)

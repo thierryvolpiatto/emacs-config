@@ -478,14 +478,14 @@ START and END are buffer positions indicating what to append."
     (sit-for 10)))
 
 ;;; Align-for-sections-in-loop 
-(defun align-loop-region-for (beg end)
+(defun tv/align-loop-region-for (beg end)
   (interactive "r")
   (align-regexp beg end "\\(\\s-*\\) = " 1 1 nil)
   (indent-region beg end))
 
-(define-key lisp-interaction-mode-map (kbd "C-M-&") 'align-loop-region-for)
-(define-key lisp-mode-map (kbd "C-M-&") 'align-loop-region-for)
-(define-key emacs-lisp-mode-map (kbd "C-M-&") 'align-loop-region-for)
+(define-key lisp-interaction-mode-map (kbd "C-M-&") 'tv/align-loop-region-for)
+(define-key lisp-mode-map (kbd "C-M-&") 'tv/align-loop-region-for)
+(define-key emacs-lisp-mode-map (kbd "C-M-&") 'tv/align-loop-region-for)
 
 ;; Kill-backward 
 (defun tv-kill-whole-line ()
@@ -669,19 +669,17 @@ If a prefix arg is given choose directory, otherwise use `default-directory'."
     (if (called-interactively-p 'interactive) 
         (message "%s" result) result)))
 
-(defun tv-toggle-resplit-window ()
-  (interactive)
-  (when (> (count-windows) 1)
-    (let ((buf (current-buffer))
-          before-height) 
-      (with-current-buffer buf
-        (setq before-height (window-height))
-        (delete-window)
-        (set-window-buffer
-         (select-window (if (= (window-height) before-height)
-                            (split-window-vertically)
-                            (split-window-horizontally)))
-         buf)))))
+(defun tv/split-windows (arg)
+  (interactive "P")
+  (let ((bufs (cdr (cl-loop for w being the windows
+                            collect (window-buffer w)))))
+    (when bufs
+      (delete-other-windows)
+      (cl-loop for b in bufs do
+               (with-selected-window (if arg
+                                         (split-window-vertically)
+                                         (split-window-horizontally))
+                 (switch-to-buffer b))))))
 
 ;; Euro million
 (defun euro-million ()
