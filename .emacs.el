@@ -228,7 +228,7 @@ If your system's ping continues until interrupted, you can try setting
 (tv-require 'init-helm-thierry)
 (tv-require 'bookmark-extensions)
 (tv-require 'bookmark-firefox-handler)
-(tv-require 'firefox-protocol)
+(autoload 'firefox-protocol-installer-install "firefox-protocol.el" nil t)
 (tv-require 'addressbook-bookmark)
 (tv-require 'org-config-thierry)
 (tv-require 'emms-vlc-config)
