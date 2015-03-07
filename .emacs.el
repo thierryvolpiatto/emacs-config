@@ -1089,9 +1089,7 @@ With prefix arg always start and let me choose dictionary."
 
 ;;; Printing config
 ;;
-;(setq helm-ff-printer-list (helm-ff-find-printers))
 (setq lpr-command "gtklp")
-;(setq lpr-switches '("-P"))
 (setq printer-name "EpsonStylus")
 (setq-default ps-print-header nil)
 (setq ps-font-size   '(10 . 11.5))

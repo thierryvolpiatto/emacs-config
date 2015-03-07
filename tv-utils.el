@@ -851,14 +851,14 @@ the password will be of length (floor LIMIT)."
   (assert (> (length (window-list)) 1)
           nil "Error: Can't rotate with a single window")
   (unless helm-alive-p
-    (cl-loop with wlist1 = (iter-circular (window-list))
-             with wlist2 = (iter-circular (cdr (window-list))) 
+    (cl-loop with wlist1 = (iterator:circular (window-list))
+             with wlist2 = (iterator:circular (cdr (window-list))) 
              with len = (length (window-list))
              for count from 1
-             for w1 = (iter-next wlist1)
+             for w1 = (iterator:next wlist1)
              for b1 = (window-buffer w1)
              for s1 = (window-start w1)
-             for w2 = (iter-next wlist2)
+             for w2 = (iterator:next wlist2)
              for b2 = (window-buffer w2)
              for s2 = (window-start w2)
              while (< count len)
