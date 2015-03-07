@@ -1,7 +1,7 @@
 ;;; .emacs-config-w3m.el -- config w3m for thievol
 
 ;; Code:
-(require 'w3m-load)
+(load "w3m-autoloads.el");(require 'w3m-load)
 (setq w3m-bookmark-file "~/.w3m/bookmark.html")
 (setq w3m-icon-directory "~/elisp/emacs-w3m/icons")
 (setq w3m-default-save-directory "~/download/")
