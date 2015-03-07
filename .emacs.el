@@ -134,7 +134,6 @@ If your system's ping continues until interrupted, you can try setting
              "~/elisp/auctex"
              "~/elisp/auctex/preview"
 	     "~/elisp/autoconf-mode"
-	     "~/elisp/cmake"
 	     "~/elisp/desktop-file-utils"
 	     "~/elisp/emacs-wget"
 	     "~/elisp/tex-utils"
