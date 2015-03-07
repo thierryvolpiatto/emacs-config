@@ -158,7 +158,6 @@ If your system's ping continues until interrupted, you can try setting
 	     '("\\.at\\'" . autotest-mode))
 
 ;;; cmake site-lisp configuration
-(autoload 'cmake-mode "cmake-mode" "Major mode for editing CMake files." t)
 (add-to-list 'auto-mode-alist '("CMakeLists\\.txt\\'" . cmake-mode))
 (add-to-list 'auto-mode-alist '("\\.cmake\\'" . cmake-mode))
 
