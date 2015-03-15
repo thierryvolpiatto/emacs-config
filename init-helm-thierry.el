@@ -184,7 +184,12 @@ First call indent, second complete symbol, third complete fname."
       helm-autoresize-max-height                  80 ; it is %.
       helm-autoresize-min-height                  20 ; it is %.
       fit-window-to-buffer-horizontally           1
-      )
+      helm-search-suggest-action-wikipedia-url
+      "https://fr.wikipedia.org/wiki/Special:Search?search=%s"
+      helm-wikipedia-suggest-url
+      "http://fr.wikipedia.org/w/api.php?action=opensearch&search="
+      helm-wikipedia-summary-url
+      "http://fr.wikipedia.org/w/api.php?action=parse&format=json&prop=text&section=0&page=")
 
 (custom-set-variables '(helm-recentf-fuzzy-match t)
                       '(helm-imenu-fuzzy-match t))
