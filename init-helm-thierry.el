@@ -294,11 +294,6 @@ First call indent, second complete symbol, third complete fname."
                                      ("translate.reference.com fr->en" .
                                       "http://translate.reference.com/translate?query=%s&src=fr&dst=en")))
 
-
-;;; Remove helm buffers from winner-boring-buffers
-;;
-;;
-(add-hook 'helm-cleanup-hook #'helm-handle-winner-boring-buffers)
 
 (provide 'init-helm-thierry)
 
