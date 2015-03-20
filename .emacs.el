@@ -1793,8 +1793,11 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 
 ;;; git-gutter-mode
 ;;
-(autoload 'git-gutter-mode "git-gutter")
-(add-hook 'emacs-lisp-mode-hook 'git-gutter-mode)
+(customize-set-variable
+ 'git-gutter:update-interval 2) ; Activate live update timer.
+(setq git-gutter:hide-gutter t) ; Always a 0 width margin when no changes.
+(global-git-gutter-mode)        ; Enable live update.
+;; (add-hook 'emacs-lisp-mode-hook 'git-gutter-mode)
 (helm-define-key-with-subkeys
  global-map (kbd "C-x v n") ?n 'git-gutter:next-hunk '((?p . git-gutter:previous-hunk)))
 (helm-define-key-with-subkeys
