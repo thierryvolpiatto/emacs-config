@@ -1718,7 +1718,6 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
                               "*cvs*"
                               "*Buffer List*"
                               "*Ibuffer*"
-                              "*esh command on file*"
                               ))
 
 (winner-mode 1)
