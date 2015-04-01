@@ -185,7 +185,8 @@ First call indent, second complete symbol, third complete fname."
       helm-autoresize-min-height                  20 ; it is %.
       helm-buffers-to-resize-on-pa                '("*helm apropos*" "*helm ack-grep*"
                                                     "*helm grep*" "*helm occur*"
-                                                    "*helm multi occur*" "*helm ls-git*")
+                                                    "*helm multi occur*" "*helm lsgit*"
+                                                    "*helm git-grep*")
       fit-window-to-buffer-horizontally           1
       helm-search-suggest-action-wikipedia-url
       "https://fr.wikipedia.org/wiki/Special:Search?search=%s"

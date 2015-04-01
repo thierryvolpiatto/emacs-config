@@ -385,9 +385,7 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 (global-set-key (kbd "<f11> l e")                  'slime-scratch)
 (global-set-key (kbd "<f11> l l")                  'slime-list-connections)
 (global-set-key [remap occur]                      'ioccur) ; M-s o
-(global-set-key (kbd "C-s")                        'helm-occur);'tv-helm-or-ioccur)
-(global-set-key (kbd "M-s s")                      'isearch-forward)
-(global-set-key (kbd "C-c C-o")                    'ioccur-find-buffer-matching)
+(global-set-key (kbd "C-s")                        'helm-occur)
 (global-set-key (kbd "<M-down>")                   'tv-scroll-down)
 (global-set-key (kbd "<M-up>")                     'tv-scroll-up)
 (global-set-key (kbd "<C-M-down>")                 'tv-scroll-other-down)
