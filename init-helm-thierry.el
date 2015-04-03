@@ -264,6 +264,22 @@ First call indent, second complete symbol, third complete fname."
 (defmethod helm-setup-user-source ((source helm-source-buffers))
   (set-slot-value source 'candidate-number-limit 200))
 
+(defmethod helm-setup-user-source :after ((source helm-source-buffers))
+  (let ((actions (oref source :action))
+        (name (oref source :name)))
+    (when (string= name "Buffers in project")
+      (set-slot-value
+       source
+       'action
+       (helm-append-at-nth
+        actions
+        (helm-make-actions
+         "Magit status"
+         (lambda (_candidate)
+           (with-helm-buffer
+             (magit-status helm-default-directory))))
+        1)))))
+
 
 ;;; Psession windows
 ;;
