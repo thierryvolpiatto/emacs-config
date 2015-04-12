@@ -1819,6 +1819,7 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 
 ;;; Magit
 ;;
+(setq magit-last-seen-setup-instructions "1.4.0")
 (setq magit-restore-window-configuration t)
 (setq git-commit-fill-column 120)
 (setq git-commit-summary-max-length 80)
