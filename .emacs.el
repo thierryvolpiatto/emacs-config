@@ -205,6 +205,7 @@ If your system's ping continues until interrupted, you can try setting
                          ;("marmalade" . "http://marmalade-repo.org/packages/")
                          ))
 
+;; Ensure `package-selected-packages' is loaded.
 (when (and (boundp 'package-selected-packages) 
            (not package-selected-packages))
     (setq package-selected-packages
@@ -215,9 +216,10 @@ If your system's ping continues until interrupted, you can try setting
                             (memq name
                                   (mapcar 'car
                                           (package-desc-reqs (cadr pkg)))))
-                   collect name))
+                   collect name)))
 
-    (setq async-bytecomp-allowed-packages package-selected-packages))
+(when (boundp 'async-bytecomp-allowed-packages)
+  (setq async-bytecomp-allowed-packages 'all))
 
 
 ;;; Require's
