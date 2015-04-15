@@ -257,8 +257,7 @@ First call indent, second complete symbol, third complete fname."
       (helm-make-actions
        "Magit status"
        (lambda (_candidate)
-         (with-helm-buffer
-           (magit-status helm-default-directory))))
+         (magit-status (helm-default-directory))))
       1))))
 
 (defmethod helm-setup-user-source ((source helm-source-buffers))
@@ -276,8 +275,7 @@ First call indent, second complete symbol, third complete fname."
         (helm-make-actions
          "Magit status"
          (lambda (_candidate)
-           (with-helm-buffer
-             (magit-status helm-default-directory))))
+           (magit-status (helm-default-directory))))
         1)))))
 
 
