@@ -1673,7 +1673,7 @@ only one line entries are supported."
 ;;; Redefine push-mark to update mark in global-mark-ring
 ;;
 ;;
-(defun push-mark (&optional location nomsg activate)
+(defun tv/push-mark (&optional location nomsg activate)
   "Set mark at LOCATION (point, by default) and push old mark on mark ring.
 If the last global mark pushed was not in the current buffer,
 also push LOCATION on the global mark ring.
@@ -1704,6 +1704,8 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
   (if (or activate (not transient-mark-mode))
       (set-mark (mark t)))
   nil)
+
+(advice-add 'push-mark :override #'tv/push-mark)
 
 
 ;;; winner-mode config
