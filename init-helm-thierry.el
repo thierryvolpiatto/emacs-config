@@ -196,9 +196,6 @@ First call indent, second complete symbol, third complete fname."
       helm-wikipedia-summary-url
       "http://fr.wikipedia.org/w/api.php?action=parse&format=json&prop=text&section=0&page=")
 
-(custom-set-variables '(helm-recentf-fuzzy-match t)
-                      '(helm-imenu-fuzzy-match t))
-
 ;; Avoid hitting forbidden directory .gvfs when using find.
 (add-to-list 'completion-ignored-extensions ".gvfs/")
 

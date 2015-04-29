@@ -2,6 +2,43 @@
 
 ;;; Code:
 
+;;; Emacs customize have it's own file
+;;
+(setq custom-file "~/.emacs.d/.emacs-custom.el")
+(load custom-file)
+
+;;; Melpa marmalade
+;;
+(when (and (= emacs-major-version 24)
+           (not (version< emacs-version "24.4.1")))
+  (add-to-list 'load-path "~/.emacs.d/emacs-config")
+  (load "package-24"))
+
+(package-initialize)
+(setq package-archives '(
+                         ;("gnu" . "http://elpa.gnu.org/packages/")
+			 ("melpa" . "http://melpa.org/packages/")
+                         ;("melpa-stable" . "http://stable.melpa.org/packages/")
+                         ;("marmalade" . "http://marmalade-repo.org/packages/")
+                         ))
+
+;; Ensure `package-selected-packages' is loaded.
+(when (and (boundp 'package-selected-packages) 
+           (not package-selected-packages))
+    (setq package-selected-packages
+          (cl-loop for p in package-alist
+                   for name = (car p)
+                   unless
+                   (cl-loop for pkg in package-alist thereis
+                            (memq name
+                                  (mapcar 'car
+                                          (package-desc-reqs (cadr pkg)))))
+                   collect name)))
+
+(when (boundp 'async-bytecomp-allowed-packages)
+  (setq async-bytecomp-allowed-packages 'all))
+
+;;; Load cl-lib
 (require 'cl-lib)
 
 ;; (setenv "LANG" "C")
@@ -185,41 +222,6 @@ If your system's ping continues until interrupted, you can try setting
 ;; Use wget in eshell.
 (defun eshell/wget (url)
   (wget url))
-
-;;; Emacs customize have it's own file
-;;
-(setq custom-file "~/.emacs.d/.emacs-custom.el")
-(load custom-file)
-
-;;; Melpa marmalade
-;;
-(when (and (= emacs-major-version 24)
-           (not (version< emacs-version "24.4.1")))
-  (load "package-24"))
-
-(package-initialize)
-(setq package-archives '(
-                         ;("gnu" . "http://elpa.gnu.org/packages/")
-			 ("melpa" . "http://melpa.org/packages/")
-                         ;("melpa-stable" . "http://stable.melpa.org/packages/")
-                         ;("marmalade" . "http://marmalade-repo.org/packages/")
-                         ))
-
-;; Ensure `package-selected-packages' is loaded.
-(when (and (boundp 'package-selected-packages) 
-           (not package-selected-packages))
-    (setq package-selected-packages
-          (cl-loop for p in package-alist
-                   for name = (car p)
-                   unless
-                   (cl-loop for pkg in package-alist thereis
-                            (memq name
-                                  (mapcar 'car
-                                          (package-desc-reqs (cadr pkg)))))
-                   collect name)))
-
-(when (boundp 'async-bytecomp-allowed-packages)
-  (setq async-bytecomp-allowed-packages 'all))
 
 
 ;;; Require's
@@ -1794,8 +1796,7 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 
 ;;; git-gutter-mode
 ;;
-(customize-set-variable
- 'git-gutter:update-interval 2) ; Activate live update timer.
+(customize-set-variable 'git-gutter:update-interval 2) ; Activate live update timer.
 (setq git-gutter:hide-gutter t) ; Always a 0 width margin when no changes.
 (global-git-gutter-mode)        ; Enable live update.
 ;; (add-hook 'emacs-lisp-mode-hook 'git-gutter-mode)
