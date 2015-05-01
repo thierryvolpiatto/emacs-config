@@ -1719,7 +1719,9 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
       (set-mark (mark t)))
   nil)
 
-;(advice-add 'push-mark :override #'tv/push-mark)
+(if (fboundp 'advice-add)
+    (advice-add 'push-mark :override #'tv/push-mark)
+    (fset 'push-mark 'tv/push-mark))
 
 
 ;;; winner-mode config
