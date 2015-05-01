@@ -1833,7 +1833,8 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;;
 (defun helm-running-p () helm-alive-p)
 (setq golden-ratio-inhibit-functions '(helm-running-p))
-(setq golden-ratio-exclude-modes '(ediff-mode calendar-mode wget-mode))
+(setq golden-ratio-exclude-modes '(ediff-mode calendar-mode wget-mode
+                                   gnus-summary-mode gnus-article-mode))
 (setq golden-ratio-exclude-buffer-names '("*helm marked*"))
 (setq golden-ratio-recenter t)
 (add-hook 'ediff-before-setup-windows-hook #'(lambda () (golden-ratio-mode -1)))
