@@ -2,6 +2,9 @@
 
 ;;; Code:
 
+;;; Load cl-lib
+(require 'cl-lib)
+
 ;;; Emacs customize have it's own file
 ;;
 (setq custom-file "~/.emacs.d/.emacs-custom.el")
@@ -38,8 +41,17 @@
 (when (boundp 'async-bytecomp-allowed-packages)
   (setq async-bytecomp-allowed-packages 'all))
 
-;;; Load cl-lib
-(require 'cl-lib)
+;; Fix compatibility with emacs 24.3.
+;; Avoid rebuilding all the autoloads just for this when switching to 24.3.
+(unless (fboundp 'function-put)
+  (defalias 'function-put
+      ;; We don't want people to just use `put' because we can't conveniently
+      ;; hook into `put' to remap old properties to new ones.  But for now, there's
+      ;; no such remapping, so we just call `put'.
+      #'(lambda (f prop value) (put f prop value))
+    "Set function F's property PROP to VALUE.
+The namespace for PROP is shared with symbols.
+So far, F can only be a symbol, not a lambda expression."))
 
 ;; (setenv "LANG" "C")
 ;; foreground red:
@@ -1707,7 +1719,7 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
       (set-mark (mark t)))
   nil)
 
-(advice-add 'push-mark :override #'tv/push-mark)
+;(advice-add 'push-mark :override #'tv/push-mark)
 
 
 ;;; winner-mode config
@@ -1811,11 +1823,15 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
 ;; Revert current hunk
 (global-set-key (kbd "C-x v r") 'git-gutter:revert-hunk)
 
+;;; Diff
+;;
+(customize-set-variable 'diff-switches "-w")
+
 ;;; Golden ratio
 ;;
 (defun helm-running-p () helm-alive-p)
 (setq golden-ratio-inhibit-functions '(helm-running-p))
-(setq golden-ratio-exclude-modes '("ediff-mode" "calendar-mode" "wget-mode"))
+(setq golden-ratio-exclude-modes '(ediff-mode calendar-mode wget-mode))
 (setq golden-ratio-exclude-buffer-names '("*helm marked*"))
 (setq golden-ratio-recenter t)
 (add-hook 'ediff-before-setup-windows-hook #'(lambda () (golden-ratio-mode -1)))
