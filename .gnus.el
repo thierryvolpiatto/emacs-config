@@ -55,137 +55,6 @@
 ;;
 (setq gnus-message-archive-group '((when (message-news-p) "sent-news")))
 
-;;; Smtp settings - Sending mail
-;;
-;;
-;; Posting-styles - must be set correctly for
-;;  following smtp settings.
-;;
-;; [EVAL] (info "(gnus) Posting Styles")
-;; [EVAL] (info "(gnus) X-Face")
-;; [EVAL] (info "(gnus) Face")
-(setq gnus-posting-styles
-      '((".*"
-         (name "Thierry Volpiatto")
-         (address "thierry.volpiatto@gmail.com")
-         (organization "Emacs Helm")
-         (signature-file "~/.signature"))
-        ;; Reply to message sent to gmail with my gmail account.
-        ((header "to" "thierry.volpiatto@gmail.com")
-         (from "Thierry Volpiatto <thierry.volpiatto@gmail.com>")
-         (organization "Emacs Helm")
-         (signature-file "~/.signature"))
-        ;; Reply to message sent to yahoo with my yahoo account.
-        ((header "to" "tvolpiatto@yahoo.fr")
-         (from "Thierry Volpiatto <tvolpiatto@yahoo.fr>")
-         (signature-file "~/.signature"))
-        ;; Don't use a borring signature for Friends.
-        (".*Friends"
-         (from "Thierry Volpiatto <thierry.volpiatto@gmail.com>")
-         (signature-file "~/.signature-friends"))))
-
-;; Don't send to these address in wide reply.
-(setq message-dont-reply-to-names '("notifications@github\\.com"
-                                    ".*@noreply\\.github\\.com"
-                                    "thierry\\.volpiatto@gmail\\.com"))
-
-(setq user-mail-address "thierry.volpiatto@gmail.com")
-(setq user-full-name "Thierry Volpiatto")
-
-;; [smtpmail-async] Experimental, use `smtpmail-send-it' otherwise. 
-(setq message-send-mail-function 'async-smtpmail-send-it
-      ;smtpmail-debug-info t        ; Uncomment to debug
-      ;smtpmail-debug-verb t        ; Uncomment to debug on server
-      mail-specify-envelope-from t ; Use from field to specify sender name.
-      mail-envelope-from 'header)  ; otherwise `user-mail-address' is used. 
-
-;; Default settings.
-;; This are default setting, they could be modified
-;; by `tv-change-smtp-server' according to `tv-smtp-accounts'
-;; and `gnus-posting-styles'.
-(setq smtpmail-default-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-user user-mail-address
-      smtpmail-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-service 587)
-
-(defvar tv-smtp-accounts
-  '(("thierry.volpiatto@gmail.com"
-     (:server "smtp.gmail.com"
-      :port 587
-      :name "Thierry Volpiatto"))
-    ("tvolpiatto@yahoo.fr"
-     (:server "smtp.mail.yahoo.com"
-      :port 587
-      :name "Thierry Volpiatto"))))
-
-(defun tv-change-smtp-server ()
-  "Use account found in `tv-smtp-accounts' according to from header.
-`from' is set in `gnus-posting-styles' according to `to' header.
-or manually with `tv-send-mail-with-account'.
-This will run in `message-send-hook'."
-  (save-excursion
-    (save-restriction
-      (message-narrow-to-headers)
-      (let* ((from         (message-fetch-field "from"))
-             (user-account (cl-loop for account in tv-smtp-accounts thereis
-                                    (and (string-match (car account) from)
-                                         account)))
-             (server (cl-getf (cadr user-account) :server))
-             (port (cl-getf (cadr user-account) :port))
-             (user (car user-account)))
-        (setq smtpmail-smtp-user            user
-              smtpmail-default-smtp-server  server
-              smtpmail-smtp-server          server
-              smtpmail-smtp-service         port)))))
-
-(add-hook 'message-send-hook 'tv-change-smtp-server)
-
-(defun tv-send-mail-with-account ()
-  "Change mail account to send this mail."
-  (interactive)
-  (save-excursion
-    (let* ((from (save-restriction
-                   (message-narrow-to-headers)
-                   (message-fetch-field "from")))
-           (mail (completing-read
-                  "Use account: "
-                  (mapcar 'car tv-smtp-accounts)))
-           (name (cl-getf (cadr (assoc mail tv-smtp-accounts)) :name))
-           (new-from (message-make-from name mail)))
-        (message-goto-from)
-        (forward-line 0)
-        (re-search-forward ": " (point-at-eol))
-        (delete-region (point) (point-at-eol))
-        (insert new-from))))
-(define-key message-mode-map (kbd "C-c p") 'tv-send-mail-with-account)
-
-;;; Junk mail
-;;
-;;
-(when (require 'mm-decode)
-  (setq mm-discouraged-alternatives
-        '("text/html"
-          "text/richtext"
-          "text/enriched"
-          "multipart/related"
-          "image/.*")
-        mm-automatic-display
-        (remove "text/html" mm-automatic-display)
-        gnus-buttonized-mime-types
-        '("multipart/alternative"
-          ".*/signed"
-          "multipart/encrypted")))
-
-;;; Remove white space in filenames
-;;
-;;
-(setq mm-file-name-rewrite-functions
-      '(mm-file-name-delete-control
-        mm-file-name-delete-gotchas
-        mm-file-name-trim-whitespace
-        mm-file-name-collapse-whitespace
-        mm-file-name-replace-whitespace))
-
 ;;; Show all these headers
 ;;
 ;;
@@ -228,55 +97,58 @@ This will run in `message-send-hook'."
                                 "^X-Mailer:"
                                 "^X-Newsreader:"))
 
-;; Ne pas demander si on splitte les pa 
-(setq message-send-mail-partially-limit nil)
-
-;;; Html renderer
+;; Posting-styles - must be set correctly for
+;;  following smtp settings.
 ;;
-;;
-(cond ((fboundp 'w3m)
-       ;; Emacs-w3m
-       (setq mm-text-html-renderer 'w3m))
-      ((executable-find "w3m")
-       ;; W3m (Don't need emacs-w3m)
-       (setq mm-text-html-renderer 'w3m-standalone))
-      (t ; Fall back to shr.
-       (setq shr-color-visible-luminance-min 75)
-       (setq shr-width nil) ; Use all window width.
-       (setq mm-text-html-renderer 'shr)))
+;; [EVAL] (info "(gnus) Posting Styles")
+;; [EVAL] (info "(gnus) X-Face")
+;; [EVAL] (info "(gnus) Face")
+(setq gnus-posting-styles
+      '((".*"
+         (name "Thierry Volpiatto")
+         (address "thierry.volpiatto@gmail.com")
+         (organization "Emacs Helm")
+         (signature-file "~/.signature"))
+        ;; Reply to message sent to gmail with my gmail account.
+        ((header "to" "thierry.volpiatto@gmail.com")
+         (from "Thierry Volpiatto <thierry.volpiatto@gmail.com>")
+         (organization "Emacs Helm")
+         (signature-file "~/.signature"))
+        ;; Reply to message sent to yahoo with my yahoo account.
+        ((header "to" "tvolpiatto@yahoo.fr")
+         (from "Thierry Volpiatto <tvolpiatto@yahoo.fr>")
+         (signature-file "~/.signature"))
+        ;; Don't use a borring signature for Friends.
+        (".*Friends"
+         (from "Thierry Volpiatto <thierry.volpiatto@gmail.com>")
+         (signature-file "~/.signature-friends"))))
 
-;; Try to inline images
-(setq mm-inline-text-html-with-images t)
+(setq gnus-buttonized-mime-types
+      '("multipart/alternative"
+        ".*/signed"
+        "multipart/encrypted"))
 
-;; Passage à la ligne automatique
-;;
-(defun tv/message-mode-setup ()
-  (setq fill-column 72)
-  (turn-on-auto-fill)
-  (epa-mail-mode 1))
-(add-hook 'message-mode-hook 'tv/message-mode-setup)
+;; timestamp 
+(add-hook 'gnus-select-group-hook 'gnus-group-set-timestamp)
+(setq gnus-group-line-format "%M\%S\%p\%P\%5y: %(%-40,40g%) %ud\n")
 
-;;; Mail encryption.
-;;
-;;
-(setq mml2015-use 'epg)
-(setq mml2015-encrypt-to-self t)
+(defun gnus-user-format-function-d (headers)
+  (declare (special gnus-tmp-group))
+  (let ((time (gnus-group-timestamp gnus-tmp-group)))
+    (if time (format-time-string "%b %d  %H:%M" time) "")))
 
-;; Verify/Decrypt automatically
-;; only if mml knows about the protocol used.
-(setq mm-verify-option 'known)
-(setq mm-decrypt-option 'known)
+(setq gnus-summary-line-format "%U%R%z %(%&user-date;  %-15,15f %* %B%s%)\n"
+      gnus-user-date-format-alist '((t . "%d.%m.%Y %H:%M"))
+      gnus-sum-thread-tree-false-root ""
+      gnus-sum-thread-tree-indent " "
+      gnus-sum-thread-tree-root ""
+      gnus-sum-thread-tree-leaf-with-other "├► "
+      gnus-sum-thread-tree-single-leaf "╰► "
+      gnus-sum-thread-tree-vertical "│")
 
-(setq gnus-inhibit-mime-unbuttonizing nil)
-(setq gnus-buttonized-mime-types '("multipart/signed"
-                                   "multipart/alternative"))
-
-;; Automatically sign/encrypt replies to signed/encrypted mails. 
-(setq gnus-message-replysign t)
-(setq gnus-message-replyencrypt t)
-
-;; Suppression de la signature quand on quote. 
-(setq message-cite-function 'message-cite-original-without-signature)
+;; Gravatar
+;(setq gnus-treat-from-gravatar 'head) ; in From header
+;(setq gnus-treat-mail-gravatar 'head) ; in To/Cc header
 
 ;; Integration dans dired
 (require 'gnus-dired)
@@ -335,31 +207,159 @@ This will run in `message-send-hook'."
                                                        (interactive)
                                                        (scroll-other-window -1)))
 
+
+;;; Message and smtp settings
+;;
+;;
+;; Don't send to these address in wide reply.
+(setq message-dont-reply-to-names '("notifications@github\\.com"
+                                    ".*@noreply\\.github\\.com"
+                                    "thierry\\.volpiatto@gmail\\.com"))
+
+(setq user-mail-address "thierry.volpiatto@gmail.com")
+(setq user-full-name "Thierry Volpiatto")
+
+;; [smtpmail-async] Experimental, use `smtpmail-send-it' otherwise. 
+(setq message-send-mail-function 'async-smtpmail-send-it
+      ;smtpmail-debug-info t        ; Uncomment to debug
+      ;smtpmail-debug-verb t        ; Uncomment to debug on server
+      mail-specify-envelope-from t ; Use from field to specify sender name.
+      mail-envelope-from 'header)  ; otherwise `user-mail-address' is used. 
+
+;; Default settings.
+;; This are default setting, they could be modified
+;; by `tv-change-smtp-server' according to `tv-smtp-accounts'
+;; and `gnus-posting-styles'.
+(setq smtpmail-default-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-user user-mail-address
+      smtpmail-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-service 587)
+
+;; Passage à la ligne automatique
+;;
+(defun tv/message-mode-setup ()
+  (setq fill-column 72)
+  (turn-on-auto-fill)
+  (epa-mail-mode 1))
+(add-hook 'message-mode-hook 'tv/message-mode-setup)
+
+(defvar tv-smtp-accounts
+  '(("thierry.volpiatto@gmail.com"
+     (:server "smtp.gmail.com"
+      :port 587
+      :name "Thierry Volpiatto"))
+    ("tvolpiatto@yahoo.fr"
+     (:server "smtp.mail.yahoo.com"
+      :port 587
+      :name "Thierry Volpiatto"))))
+
+(defun tv-change-smtp-server ()
+  "Use account found in `tv-smtp-accounts' according to from header.
+`from' is set in `gnus-posting-styles' according to `to' header.
+or manually with `tv-send-mail-with-account'.
+This will run in `message-send-hook'."
+  (save-excursion
+    (save-restriction
+      (message-narrow-to-headers)
+      (let* ((from         (message-fetch-field "from"))
+             (user-account (cl-loop for account in tv-smtp-accounts thereis
+                                    (and (string-match (car account) from)
+                                         account)))
+             (server (cl-getf (cadr user-account) :server))
+             (port (cl-getf (cadr user-account) :port))
+             (user (car user-account)))
+        (setq smtpmail-smtp-user            user
+              smtpmail-default-smtp-server  server
+              smtpmail-smtp-server          server
+              smtpmail-smtp-service         port)))))
+
+(add-hook 'message-send-hook 'tv-change-smtp-server)
+
+(defun tv-send-mail-with-account ()
+  "Change mail account to send this mail."
+  (interactive)
+  (save-excursion
+    (let* ((from (save-restriction
+                   (message-narrow-to-headers)
+                   (message-fetch-field "from")))
+           (mail (completing-read
+                  "Use account: "
+                  (mapcar 'car tv-smtp-accounts)))
+           (name (cl-getf (cadr (assoc mail tv-smtp-accounts)) :name))
+           (new-from (message-make-from name mail)))
+        (message-goto-from)
+        (forward-line 0)
+        (re-search-forward ": " (point-at-eol))
+        (delete-region (point) (point-at-eol))
+        (insert new-from))))
+(define-key message-mode-map (kbd "C-c p") 'tv-send-mail-with-account)
+
+;; Ne pas demander si on splitte les pa 
+(setq message-send-mail-partially-limit nil)
+
+;;; mm-* settings
+;;
+;; Junk mail
+
+(when (require 'mm-decode)
+  (setq mm-discouraged-alternatives
+        '("text/html"
+          "text/richtext"
+          "text/enriched"
+          "multipart/related"
+          "image/.*")
+        mm-automatic-display
+        (remove "text/html" mm-automatic-display)))
+
+;;; Remove white space in filenames
+;;
+;;
+(setq mm-file-name-rewrite-functions
+      '(mm-file-name-delete-control
+        mm-file-name-delete-gotchas
+        mm-file-name-trim-whitespace
+        mm-file-name-collapse-whitespace
+        mm-file-name-replace-whitespace))
+
+;; Html renderer
+(cond ((fboundp 'w3m)
+       ;; Emacs-w3m
+       (setq mm-text-html-renderer 'w3m))
+      ((executable-find "w3m")
+       ;; W3m (Don't need emacs-w3m)
+       (setq mm-text-html-renderer 'w3m-standalone))
+      (t ; Fall back to shr.
+       (setq shr-color-visible-luminance-min 75)
+       (setq shr-width nil) ; Use all window width.
+       (setq mm-text-html-renderer 'shr)))
+
+;; Try to inline images
+(setq mm-inline-text-html-with-images t)
+
+;;; Mail encryption.
+;;
+;;
+(setq mml2015-use 'epg)
+(setq mml2015-encrypt-to-self t)
+
+;; Verify/Decrypt automatically
+;; only if mml knows about the protocol used.
+(setq mm-verify-option 'known)
+(setq mm-decrypt-option 'known)
+
+(setq gnus-inhibit-mime-unbuttonizing nil)
+(setq gnus-buttonized-mime-types '("multipart/signed"
+                                   "multipart/alternative"))
+
+;; Automatically sign/encrypt replies to signed/encrypted mails. 
+(setq gnus-message-replysign t)
+(setq gnus-message-replyencrypt t)
+
+;; Suppression de la signature quand on quote. 
+(setq message-cite-function 'message-cite-original-without-signature)
+
 ;; Default directory to save attached files 
 (setq mm-default-directory "~/download/")
-
-;; timestamp 
-(add-hook 'gnus-select-group-hook 'gnus-group-set-timestamp)
-(setq gnus-group-line-format "%M\%S\%p\%P\%5y: %(%-40,40g%) %ud\n")
-
-(defun gnus-user-format-function-d (headers)
-  (declare (special gnus-tmp-group))
-  (let ((time (gnus-group-timestamp gnus-tmp-group)))
-    (if time (format-time-string "%b %d  %H:%M" time) "")))
-
-(setq gnus-summary-line-format "%U%R%z %(%&user-date;  %-15,15f %* %B%s%)\n"
-      gnus-user-date-format-alist '((t . "%d.%m.%Y %H:%M"))
-      gnus-sum-thread-tree-false-root ""
-      gnus-sum-thread-tree-indent " "
-      gnus-sum-thread-tree-root ""
-      gnus-sum-thread-tree-leaf-with-other "├► "
-      gnus-sum-thread-tree-single-leaf "╰► "
-      gnus-sum-thread-tree-vertical "│")
-
-;; Gravatar
-;(setq gnus-treat-from-gravatar 'head) ; in From header
-;(setq gnus-treat-mail-gravatar 'head) ; in To/Cc header
-
 
 ;;; .gnus.el ends here
 
