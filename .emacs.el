@@ -699,10 +699,6 @@ With a prefix arg decrease transparency."
 
 (setq case-fold-search t)
 
-;; Mark-ring
-(setq mark-ring-max 50)
-(setq global-mark-ring-max 120)
-
 ;; show-paren-mode
 (show-paren-mode 1)
 (setq show-paren-ring-bell-on-mismatch t)
@@ -1684,19 +1680,10 @@ only one line entries are supported."
 (setq vc-handled-backends '(RCS Hg Git))
 
 
-;;; Redefine push-mark to update mark in global-mark-ring
+;;; Mark-ring
 ;;
-;;
+;; Redefine push-mark to update mark in global-mark-ring
 (defun tv/push-mark (&optional location nomsg activate)
-  "Set mark at LOCATION (point, by default) and push old mark on mark ring.
-If the last global mark pushed was not in the current buffer,
-also push LOCATION on the global mark ring.
-Display `Mark set' unless the optional second arg NOMSG is non-nil.
-
-Novice Emacs Lisp programmers often try to use the mark for the wrong
-purposes.  See the documentation of `set-mark' for more information.
-
-In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
   (unless (null (mark t))
     (setq mark-ring (cons (copy-marker (mark-marker)) mark-ring))
     (when (> (length mark-ring) mark-ring-max)
@@ -1709,7 +1696,13 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
       ;; The last global mark pushed was in this same buffer.
       ;; Don't push another one but update it (Original code return nil here).
       (setcar global-mark-ring (copy-marker (mark-marker))) ; Diff => - nil.
-      (setq global-mark-ring (cons (copy-marker (mark-marker)) global-mark-ring))
+      ;; Avoid having multiple entries for same buffer in `global-mark-ring'.
+      (setq global-mark-ring (cons (copy-marker (mark-marker))
+                                   (cl-loop with mb = (marker-buffer (copy-marker (mark-marker)))
+                                            for m in global-mark-ring
+                                            for nmb = (marker-buffer m)
+                                            unless (eq mb nmb)
+                                            collect m)))
       (when (> (length global-mark-ring) global-mark-ring-max)
         (move-marker (car (nthcdr global-mark-ring-max global-mark-ring)) nil)
         (setcdr (nthcdr (1- global-mark-ring-max) global-mark-ring) nil)))
