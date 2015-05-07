@@ -1696,20 +1696,23 @@ only one line entries are supported."
       ;; The last global mark pushed was in this same buffer.
       ;; Don't push another one but update it (Original code return nil here).
       (setcar global-mark-ring (copy-marker (mark-marker))) ; Diff => - nil.
+      
       ;; Avoid having multiple entries for same buffer in `global-mark-ring'.
-      (setq global-mark-ring (cons (copy-marker (mark-marker))
-                                   (cl-loop with mb = (marker-buffer (copy-marker (mark-marker)))
-                                            for m in global-mark-ring
-                                            for nmb = (marker-buffer m)
-                                            unless (eq mb nmb)
-                                            collect m)))
+      (let ((cmarker (copy-marker (mark-marker))))
+        (setq global-mark-ring
+              (cons cmarker
+                    (cl-loop with mb = (marker-buffer cmarker)
+                             for m in global-mark-ring
+                             for nmb = (marker-buffer m)
+                             unless (eq mb nmb)
+                             collect m))))
       (when (> (length global-mark-ring) global-mark-ring-max)
         (move-marker (car (nthcdr global-mark-ring-max global-mark-ring)) nil)
         (setcdr (nthcdr (1- global-mark-ring-max) global-mark-ring) nil)))
   (or nomsg executing-kbd-macro (> (minibuffer-depth) 0)
       (message "Mark set"))
-  (if (or activate (not transient-mark-mode))
-      (set-mark (mark t)))
+  (when (or activate (not transient-mark-mode))
+    (set-mark (mark t)))
   nil)
 
 (if (fboundp 'advice-add)
