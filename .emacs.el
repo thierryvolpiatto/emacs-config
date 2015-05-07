@@ -1707,8 +1707,8 @@ In Transient Mark mode, activate mark if optional third arg ACTIVATE non-nil."
   (if (and global-mark-ring
            (eq (marker-buffer (car global-mark-ring)) (current-buffer)))
       ;; The last global mark pushed was in this same buffer.
-      ;; Don't push another one but update it.
-      (setcar global-mark-ring (copy-marker (mark-marker)))
+      ;; Don't push another one but update it (Original code return nil here).
+      (setcar global-mark-ring (copy-marker (mark-marker))) ; Diff => - nil.
       (setq global-mark-ring (cons (copy-marker (mark-marker)) global-mark-ring))
       (when (> (length global-mark-ring) global-mark-ring-max)
         (move-marker (car (nthcdr global-mark-ring-max global-mark-ring)) nil)
