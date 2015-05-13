@@ -190,6 +190,7 @@ First call indent, second complete symbol, third complete fname."
       ;helm-mode-handle-completion-in-region      t
       ;helm-moccur-always-search-in-current        t
       ;helm-tramp-verbose                         6
+      helm-buffer-skip-remote-checking            t
       ;helm-ff-file-name-history-use-recentf      t
       ;helm-follow-mode-persistent                t
       helm-apropos-fuzzy-match                    t
@@ -219,6 +220,10 @@ First call indent, second complete symbol, third complete fname."
 
 ;; Avoid hitting forbidden directory .gvfs when using find.
 (add-to-list 'completion-ignored-extensions ".gvfs/")
+
+;; Add moccur/occur sources to helm-sources-using-default-as-input.
+(add-to-list 'helm-sources-using-default-as-input 'helm-source-occur)
+(add-to-list 'helm-sources-using-default-as-input 'helm-source-moccur)
 
 
 ;;; Toggle grep program
