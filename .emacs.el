@@ -1681,6 +1681,8 @@ only one line entries are supported."
 ;; by helm-ls-git/hg and magit.
 ;; This speedup loading buffers at startup.
 (setq vc-handled-backends '(RCS))
+(remove-hook 'find-file-hook 'vc-find-file-hook)
+(remove-hook 'find-file-hook 'cvs-insert-visited-file)
 
 
 ;;; Mark-ring
