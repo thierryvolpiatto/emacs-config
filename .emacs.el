@@ -1252,7 +1252,7 @@ With prefix arg always start and let me choose dictionary."
 ;;
 (tv-require 'tramp)
 (setq tramp-default-method "ssh") ; methode par defaut
-(setq tramp-verbose 6) ; See `helm-tramp-verbose' in init-helm.
+;(setq tramp-verbose 6) ; See `helm-tramp-verbose' in init-helm.
 
 ;; Android settings (Only available on trunk)
 ;;
@@ -1677,7 +1677,7 @@ only one line entries are supported."
 ;;
 ;;
 ;; Possible values: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
-(setq vc-handled-backends '(RCS Hg Git))
+(setq vc-handled-backends '(RCS))
 
 
 ;;; Mark-ring
