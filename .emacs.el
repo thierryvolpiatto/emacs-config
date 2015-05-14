@@ -1836,6 +1836,7 @@ only one line entries are supported."
 (setq magit-restore-window-configuration t)
 (setq git-commit-fill-column 120)
 (setq git-commit-summary-max-length 80)
+(setq auto-revert-verbose nil)
 
 ;;; Report bug
 ;;
