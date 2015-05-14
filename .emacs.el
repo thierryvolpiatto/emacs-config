@@ -1677,6 +1677,9 @@ only one line entries are supported."
 ;;
 ;;
 ;; Possible values: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
+;; Keep only RCS, I don't need other backends, they are handled
+;; by helm-ls-git/hg and magit.
+;; This speedup loading buffers at startup.
 (setq vc-handled-backends '(RCS))
 
 
