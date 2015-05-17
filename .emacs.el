@@ -900,7 +900,8 @@ are returned unchanged."
 ;; (define-key python-mode-map (kbd "<M-tab>") 'helm-ipython-complete)
 ;; (define-key python-mode-map (kbd "C-c C-i") 'helm-ipython-import-modules-from-buffer)
 
-(tv-require 'python)
+(when (require 'python)
+  (load "python-24"))
 
 (setq
  gud-pdb-command-name "ipdb"
@@ -923,6 +924,8 @@ from IPython.core.completerlib import module_completion"
 
 (when (fboundp 'jedi:setup)
   (add-hook 'python-mode-hook 'jedi:setup))
+
+(add-hook 'python-mode-hook 'semantic-mode t)
 
 ;; Entete-py
 (defun tv-insert-python-header ()
@@ -1770,13 +1773,13 @@ only one line entries are supported."
 ;;; Semantic
 ;;
 ;;
-;(semantic-mode 1)
-(add-hook 'semantic-mode-hook
-          ;; With my fixes in lisp/cedet/semantic/bovine/el.el.
-          (lambda ()
-            (load-file "~/elisp/el.el")
-            (when (fboundp 'semantic-default-elisp-setup)
-              (semantic-default-elisp-setup))))
+;; (semantic-mode 1)
+;; (add-hook 'semantic-mode-hook
+;;           ;; With my fixes in lisp/cedet/semantic/bovine/el.el.
+;;           (lambda ()
+;;             (load-file "~/elisp/el.el")
+;;             (when (fboundp 'semantic-default-elisp-setup)
+;;               (semantic-default-elisp-setup))))
 
 ;;; Ffap
 ;;
