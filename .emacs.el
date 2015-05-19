@@ -383,7 +383,6 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 (global-set-key (kbd "<f7> m")                     'tv-gnus)
 (global-set-key (kbd "<f8>")                       'mu4e)
 (global-set-key (kbd "<f7> j")                     'webjump)
-(global-set-key (kbd "<f7> n")                     'newsticker-show-news)
 (global-set-key (kbd "<f11> e c")                  'eshell-toggle-cd)
 (global-set-key (kbd "<f11> e t")                  'eshell-toggle)
 (global-set-key (kbd "<f11> s h")                  'tv-shell)
@@ -1221,33 +1220,6 @@ With prefix arg always start and let me choose dictionary."
       (re-search-forward "[\\]begin\{letter\}")
     (beginning-of-line)
     (forward-char 15)))
-
-;; newsticker-config
-(setq newsticker-frontend 'newsticker-plainview)
-(setq newsticker-retrieval-method 'extern)
-(setq newsticker-show-descriptions-of-new-items nil)
-
-(defun newsticker-quit-and-stop ()
-  (interactive)
-  (with-current-buffer "*newsticker*"
-    (newsticker-close-buffer)
-    (newsticker-stop)))
-
-(defadvice newsticker-next-feed (around recenter activate)
-  (interactive)
-  (widen)
-  (newsticker--buffer-goto '(feed))
-  (run-hooks 'newsticker-select-feed-hook)
-  (force-mode-line-update)
-  (prog1 (point) (recenter)))
-
-(defadvice newsticker-mark-all-items-at-point-as-read-and-redraw (after recenter activate)
-  (recenter))
-
-(add-hook 'newsticker-mode-hook
-          (lambda ()
-            (define-key newsticker-mode-map (kbd "Q") 'newsticker-quit-and-stop)
-            (define-key newsticker-mode-map (kbd "b") 'newsticker-previous-feed)))
 
 
 ;;; Tramp-config
