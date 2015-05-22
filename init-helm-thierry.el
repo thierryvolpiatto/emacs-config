@@ -31,35 +31,37 @@
   (shell-command-to-string
    "git log --pretty='format:%H' -1"))
 
+(defvar helm-gid-db-file-name "ID")
 (defun helm-gid ()
   "Helm UI for `gid' command line of `ID-Utils'.
-Need A database created with the command `mkid' which see."
+Need A database created with the command `mkid'
+above `default-directory'."
   (interactive)
-  (let ((helm-grep-default-directory-fn
-         (lambda ()
-           (expand-file-name
-            default-directory
-            (locate-dominating-file default-directory "ID")))))
-    (helm :sources
-          (helm-build-async-source "Gid"
-            :candidates-process (lambda () (start-process
-                                            "gid" nil "gid"
-                                            "-r" helm-pattern))
-            :filter-one-by-one 'helm-grep-filter-one-by-one
-            :candidate-number-limit 99999
-            :keymap helm-grep-map
-            :action (helm-make-actions
-                     "Find File" 'helm-grep-action
-                     "Find file other frame" 'helm-grep-other-frame
-                     (lambda () (and (locate-library "elscreen")
-                                     "Find file in Elscreen"))
-                     'helm-grep-jump-elscreen
-                     "Save results in grep buffer" 'helm-grep-save-results
-                     "Find file other window" 'helm-grep-other-window)
-            :persistent-action 'helm-grep-persistent-action
-            :history 'helm-grep-history
-            :nohighlight t
-            :requires-pattern 2))))
+  (cl-assert (locate-dominating-file
+              default-directory
+              helm-gid-db-file-name) nil
+             "No DataBase found, create one with `mkid'")
+  (helm :sources
+        (helm-build-async-source "Gid"
+          :candidates-process (lambda () (start-process
+                                          "gid" nil "gid"
+                                          "-r" helm-pattern))
+          :filter-one-by-one 'helm-grep-filter-one-by-one
+          :candidate-number-limit 99999
+          :keymap helm-grep-map
+          :action (helm-make-actions
+                   "Find File" 'helm-grep-action
+                   "Find file other frame" 'helm-grep-other-frame
+                   (lambda () (and (locate-library "elscreen")
+                                   "Find file in Elscreen"))
+                   'helm-grep-jump-elscreen
+                   "Save results in grep buffer" 'helm-grep-save-results
+                   "Find file other window" 'helm-grep-other-window)
+          :persistent-action 'helm-grep-persistent-action
+          :history 'helm-grep-history
+          :nohighlight t
+          :requires-pattern 2)
+        :buffer "*helm gid*"))
 
 ;;; Helm-command-map
 ;;
