@@ -1134,8 +1134,7 @@ Will throw an error if the archive version is too new."
   (let ((filename (expand-file-name file package-user-dir)))
     (when (file-exists-p filename)
       (with-temp-buffer
-        (let ((coding-system-for-read 'utf-8))
-          (insert-file-contents filename))
+        (insert-file-contents filename)
         (let ((contents (read (current-buffer))))
           (if (> (car contents) package-archive-version)
               (error "Package archive version %d is higher than %d"
