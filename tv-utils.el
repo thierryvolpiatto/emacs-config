@@ -888,7 +888,7 @@ With a prefix arg remove new lines."
     (save-excursion
       (while (and (re-search-forward "\"[^\"]*\"" nil t arg)
                   (not (looking-at ")")))
-        (insert "\n")))))
+        (newline-and-indent)))))
 
 ;; Stollen somewhere.
 (defun describe-key-name (key)
