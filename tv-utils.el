@@ -881,16 +881,14 @@ With a prefix arg remove new lines."
         (delete-region (point-min) (point-max))
         (cl-loop for l in lines do (insert (concat l "\n")))))))
 
-(defun tv-break-long-string-list-at-point ()
-  (interactive)
+(defun tv-break-long-string-list-at-point (arg)
+  (interactive "p")
   (when (and (looking-at "(")
              (> (point-at-eol) (+ (point) 50)))
     (save-excursion
-      (move-to-column 50)
-      (while (or (or (looking-back "[\"]") (looking-at "[\"]"))
-                 (re-search-forward "[^ ()][\"]" (point-at-eol) t))
-        (unless (looking-at "\n")
-          (insert "\n") (move-to-column 50))))))
+      (while (and (re-search-forward "\"[^\"]*\"" nil t arg)
+                  (not (looking-at ")")))
+        (insert "\n")))))
 
 ;; Stollen somewhere.
 (defun describe-key-name (key)
