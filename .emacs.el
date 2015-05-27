@@ -272,10 +272,11 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'psession-mode "psession.el")
 (tv-require 'wgrep-helm)
 (tv-require 'smtpmail-async)
-(tv-require 'async-bytecomp)
 ;(setq async-debug t)
 (autoload 'dired-async-mode "dired-async.el" nil t)
 (dired-async-mode 1)
+;; async-bytecomp-package-mode is enabled by helm.
+(setq async-bytecomp-allowed-packages 'all)
 (autoload 'golden-ratio-mode "golden-ratio.el" nil t)
 (autoload 'emamux:send-command "emamux.el" nil t)
 (autoload 'emamux:copy-kill-ring "emamux.el" nil t)
