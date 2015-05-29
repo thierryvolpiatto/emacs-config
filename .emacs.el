@@ -38,9 +38,6 @@
                                           (package-desc-reqs (cadr pkg)))))
                    collect name)))
 
-(when (boundp 'async-bytecomp-allowed-packages)
-  (setq async-bytecomp-allowed-packages 'all))
-
 ;; Fix compatibility with emacs 24.3.
 ;; Avoid rebuilding all the autoloads just for this when switching to 24.3.
 (unless (fboundp 'function-put)
@@ -276,7 +273,7 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'dired-async-mode "dired-async.el" nil t)
 (dired-async-mode 1)
 ;; async-bytecomp-package-mode is enabled by helm.
-(setq async-bytecomp-allowed-packages 'all)
+(setq async-bytecomp-allowed-packages '(all))
 (autoload 'golden-ratio-mode "golden-ratio.el" nil t)
 (autoload 'emamux:send-command "emamux.el" nil t)
 (autoload 'emamux:copy-kill-ring "emamux.el" nil t)
