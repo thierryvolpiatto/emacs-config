@@ -785,7 +785,7 @@ In this case, sexps are searched before point."
             (forward-list 9999)
           (error
            (throw 'error
-             (setq pos-err (caddr err)))))))
+             (setq pos-err (cl-caddr err)))))))
     (if pos-err
         (message "Paren error found in sexp starting at %s"
                  (goto-char pos-err))
