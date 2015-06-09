@@ -259,6 +259,8 @@ If your system's ping continues until interrupted, you can try setting
 (tv-require 'smallurl)
 (autoload 'zop-to-char "zop-to-char.el" nil t)
 (autoload 'zop-up-to-char "zop-to-char.el" nil t)
+(setq zop-to-char-prec-keys '(left ?\C-b ?\M-a)
+      zop-to-char-next-keys '(right ?\C-f ?\M-e))
 (tv-require 'iedit)
 (tv-require 'iedit-rect)
 (tv-require 'lacarte)
@@ -414,7 +416,7 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 (global-set-key (kbd "C-x r h")                    'rectangle-menu)
 (global-set-key (kbd "C-x r <right>")              'rectangle-insert-at-right)
 (global-set-key (kbd "C-x r M-w")                  'copy-rectangle)
-(global-set-key [remap zap-to-char]                'zop-to-char)
+(global-set-key [remap zap-to-char]                'zop-to-char) ; M-z 
 (global-set-key (kbd "<f5> g m")                   'google-maps)
 (global-set-key (kbd "M-\"")                       'tv-insert-double-quote)
 (global-set-key (kbd "C-M-\`")                     'tv-insert-double-backquote)
@@ -442,6 +444,7 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 (global-set-key [C-return]                         'iedit-rectangle-mode)
 (defun goto-scratch () (interactive) (switch-to-buffer "*scratch*"))
 (global-set-key (kbd "<f11> s c")                  'goto-scratch)
+(global-set-key [remap mark-sexp] 'er/expand-region) ; C-M-SPC
 
 
 ;;; Elscreen
