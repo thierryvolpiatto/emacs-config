@@ -444,7 +444,6 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 (global-set-key [C-return]                         'iedit-rectangle-mode)
 (defun goto-scratch () (interactive) (switch-to-buffer "*scratch*"))
 (global-set-key (kbd "<f11> s c")                  'goto-scratch)
-(global-set-key [remap mark-sexp] 'er/expand-region) ; C-M-SPC
 
 
 ;;; Elscreen
