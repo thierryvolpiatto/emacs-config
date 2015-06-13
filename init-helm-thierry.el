@@ -41,6 +41,7 @@
 (define-key helm-command-map (kbd "w")   'helm-w3m-bookmarks)
 (define-key helm-command-map (kbd "x")   'helm-firefox-bookmarks)
 (define-key helm-command-map (kbd "#")   'helm-emms)
+(define-key helm-command-map (kbd "I")   'helm-imenu-in-all-buffers)
 
 ;;; Global-map
 ;;
@@ -56,13 +57,13 @@
 (global-set-key (kbd "C-:")                          'helm-eval-expression-with-eldoc)
 (global-set-key (kbd "C-,")                          'helm-calcul-expression)
 (global-set-key (kbd "C-h d")                        'helm-info-at-point)
-(global-set-key (kbd "C-c g")                        'helm-google-suggest)
 (global-set-key (kbd "C-x C-d")                      'helm-browse-project)
 (global-set-key (kbd "<f1>")                         'helm-resume)
 (global-set-key (kbd "C-h C-f")                      'helm-apropos)
 (global-set-key (kbd "<f5> s")                       'helm-find)
 (global-set-key (kbd "<f2>")                         'helm-execute-kmacro)
-(global-set-key (kbd "M-n")                          'helm-gid)
+(global-set-key (kbd "C-c g")                        'helm-gid)
+(global-set-key (kbd "C-c i")                        'helm-imenu-in-all-buffers)
 (define-key global-map [remap jump-to-register]      'helm-register)
 (define-key global-map [remap list-buffers]          'helm-buffers-list)
 (define-key global-map [remap dabbrev-expand]        'helm-dabbrev)
@@ -119,6 +120,9 @@ First call indent, second complete symbol, third complete fname."
 ;;
 (define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
 (define-key helm-buffer-map (kbd "C-d")     'helm-buffer-run-kill-persistent)
+
+;; Use default-as-input in grep
+(add-to-list 'helm-sources-using-default-as-input 'helm-source-grep)
 
 
 ;;; Describe key-bindings
@@ -202,10 +206,6 @@ First call indent, second complete symbol, third complete fname."
 
 ;; Avoid hitting forbidden directory .gvfs when using find.
 (add-to-list 'completion-ignored-extensions ".gvfs/")
-
-;; Add moccur/occur sources to helm-sources-using-default-as-input.
-(add-to-list 'helm-sources-using-default-as-input 'helm-source-occur)
-(add-to-list 'helm-sources-using-default-as-input 'helm-source-moccur)
 
 
 ;;; Toggle grep program
