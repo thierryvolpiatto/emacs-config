@@ -8,7 +8,7 @@
 ;;
 (helm-mode 1)
 (helm-adaptative-mode 1)
-(helm-autoresize-mode 1)
+;(helm-autoresize-mode 1)
 (helm-push-mark-mode 1)
 
 
@@ -158,8 +158,9 @@ First call indent, second complete symbol, third complete fname."
       helm-default-zgrep-command                 "zgrep --color=always -a -n%cH -e %p %f"
       ;helm-pdfgrep-default-command               "pdfgrep --color always -niH %s %s"
       helm-reuse-last-window-split-state         t
-      ;helm-split-window-default-side             'other
-      ;helm-split-window-in-side-p                nil
+      ;helm-split-window-default-side             'below
+      ;helm-split-window-in-side-p                t
+      helm-echo-input-in-header-line             t
       helm-always-two-windows                    t
       ;helm-persistent-action-use-special-display t
       helm-buffers-favorite-modes                (append helm-buffers-favorite-modes
@@ -198,6 +199,7 @@ First call indent, second complete symbol, third complete fname."
                                                     "*helm imenu*" "*helm imenu all*"
                                                     "*helm gid*" "*helm semantic/imenu*")
       fit-window-to-buffer-horizontally           1
+      helm-open-github-closed-issue-since         7
       helm-search-suggest-action-wikipedia-url
       "https://fr.wikipedia.org/wiki/Special:Search?search=%s"
       helm-wikipedia-suggest-url
