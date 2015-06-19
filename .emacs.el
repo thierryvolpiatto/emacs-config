@@ -971,16 +971,18 @@ from IPython.core.completerlib import module_completion"
                                 (setq eshell-pwd-convert-function (lambda (f)
                                                                     (if (file-equal-p (file-truename f) "/")
                                                                         "/" f)))
-                                ;; helm completion with pcomplete
+                                ;; Helm completion with pcomplete
                                 (setq eshell-cmpl-ignore-case t)
                                 (eshell-cmpl-initialize)
                                 (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
-                                ;; helm lisp completion
+                                ;; Helm lisp completion
                                 (define-key eshell-mode-map [remap eshell-complete-lisp-symbol] 'helm-lisp-completion-at-point)
-                                ;; helm completion on eshell history.
+                                ;; Helm completion on eshell history.
                                 (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)
                                 ;; Eshell prompt
-                                (set-face-attribute 'eshell-prompt nil :foreground "DeepSkyBlue")))
+                                (set-face-attribute 'eshell-prompt nil :foreground "DeepSkyBlue")
+                                ;; Allow yanking right now instead of returning "Mark set"
+                                (push-mark)))
 
 ;; Eshell history size
 (setq eshell-history-size 1000) ; Same as env var HISTSIZE.
@@ -1853,6 +1855,9 @@ only one line entries are supported."
 ;; Installed from package.
 (global-set-key (kbd "C-x C-z") 'zoom-window-zoom)
 (setq zoom-window-mode-line-color "DarkGreen")
+
+;;; js2-mode
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 
 ;;; Be sure to reenable touchpad when quitting emacs
 (add-hook 'kill-emacs-hook #'(lambda ()
