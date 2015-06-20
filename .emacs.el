@@ -19,7 +19,7 @@
 
 (package-initialize)
 (setq package-archives '(
-                         ;("gnu" . "http://elpa.gnu.org/packages/")
+                         ("gnu" . "http://elpa.gnu.org/packages/")
 			 ("melpa" . "http://melpa.org/packages/")
                          ;("melpa-stable" . "http://stable.melpa.org/packages/")
                          ;("marmalade" . "http://marmalade-repo.org/packages/")
@@ -520,8 +520,8 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
                                 (cursor-color . "red")))
 
     (setq default-frame-alist `((foreground-color . "Wheat")
-                                (background-color . "DarkSlateBlue")
-                                (alpha . nil)
+                                (background-color . "#436D6D")
+                                (alpha . 80)
                                 ;; New frames go in right corner.
                                 (left . ,(- (* (window-width) 8) 160)) ; Chars are 8 bits long.
                                 (vertical-scroll-bars . nil)
