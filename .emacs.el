@@ -386,6 +386,7 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 (global-set-key (kbd "<f7> m")                     'tv-gnus)
 (global-set-key (kbd "<f8>")                       'mu4e)
 (global-set-key (kbd "<f7> j")                     'webjump)
+(global-set-key (kbd "<f11> o")                    'helm-org-agenda-files-headings)
 (global-set-key (kbd "<f11> e c")                  'eshell-toggle-cd)
 (global-set-key (kbd "<f11> e t")                  'eshell-toggle)
 (global-set-key (kbd "<f11> s h")                  'tv-shell)
