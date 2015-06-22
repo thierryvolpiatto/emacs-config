@@ -8,7 +8,7 @@
 ;;
 (helm-mode 1)
 (helm-adaptative-mode 1)
-;(helm-autoresize-mode 1)
+(helm-autoresize-mode 1)
 (helm-push-mark-mode 1)
 
 
@@ -160,7 +160,7 @@ First call indent, second complete symbol, third complete fname."
       helm-reuse-last-window-split-state         t
       ;helm-split-window-default-side             'below
       ;helm-split-window-in-side-p                t
-      helm-echo-input-in-header-line             t
+      ;helm-echo-input-in-header-line             t
       helm-always-two-windows                    t
       ;helm-persistent-action-use-special-display t
       helm-buffers-favorite-modes                (append helm-buffers-favorite-modes
@@ -210,13 +210,24 @@ First call indent, second complete symbol, third complete fname."
 ;; Avoid hitting forbidden directory .gvfs when using find.
 (add-to-list 'completion-ignored-extensions ".gvfs/")
 
-(when helm-echo-input-in-header-line
-  (add-hook 'helm-minibuffer-set-up-hook
-            (lambda ()
-              (when (with-helm-buffer helm-echo-input-in-header-line)
-                (text-scale-set -12)
-                (window--resize-mini-window
-                 (selected-window) -15)))))
+;;; Hide minibuffer
+;;
+;; (when helm-echo-input-in-header-line
+;;   (add-hook 'helm-minibuffer-set-up-hook
+;;             (lambda ()
+;;               (when (with-helm-buffer helm-echo-input-in-header-line)
+;;                 (text-scale-set -12)
+;;                 (window--resize-mini-window
+;;                  (selected-window) -15)))))
+
+;; (defun helm-hide-minibuffer-maybe ()
+;;   (when (with-helm-buffer helm-echo-input-in-header-line)
+;;     (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
+;;       (overlay-put ov 'window (selected-window))
+;;       (overlay-put ov 'face (let ((bg-color (face-background 'default nil)))
+;;                               `(:background ,bg-color :foreground ,bg-color)))
+;;       (setq-local cursor-type nil))))
+
 
 ;;; Toggle grep program
 ;;
