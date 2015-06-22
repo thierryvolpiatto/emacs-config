@@ -21,12 +21,12 @@
 ;;   !!!WARNING EXPERIMENTAL!!!
 
 (defun helm-version ()
-  (with-current-buffer (find-file-noselect (find-library-name "helm-pkg"))
-    (save-excursion
-      (goto-char (point-min))
-      (when (re-search-forward
-             "\\([0-9]+?\\)\\.\\([0-9]+?\\)\\.\\([0-9]+?\\)\\.?[0-9]*" nil t)
-      (prog1 (match-string-no-properties 0) (kill-buffer))))))
+  (with-temp-buffer
+    (insert-file-contents (find-library-name "helm-pkg"))
+    (goto-char (point-min))
+    (when (re-search-forward
+           "\\([0-9]+?\\)\\.\\([0-9]+?\\)\\.\\([0-9]+?\\)\\.?[0-9]*" nil t)
+      (match-string-no-properties 0))))
 
 (defun helm-git-version ()
   (shell-command-to-string
@@ -210,6 +210,13 @@ First call indent, second complete symbol, third complete fname."
 ;; Avoid hitting forbidden directory .gvfs when using find.
 (add-to-list 'completion-ignored-extensions ".gvfs/")
 
+(when helm-echo-input-in-header-line
+  (add-hook 'helm-minibuffer-set-up-hook
+            (lambda ()
+              (when (with-helm-buffer helm-echo-input-in-header-line)
+                (text-scale-set -12)
+                (window--resize-mini-window
+                 (selected-window) -15)))))
 
 ;;; Toggle grep program
 ;;
