@@ -18,12 +18,7 @@
   (load "package-24"))
 
 (package-initialize)
-(setq package-archives '(
-                         ;("gnu" . "http://elpa.gnu.org/packages/")
-			 ("melpa" . "http://melpa.org/packages/")
-                         ;("melpa-stable" . "http://stable.melpa.org/packages/")
-                         ;("marmalade" . "http://marmalade-repo.org/packages/")
-                         ))
+(setq package-archives '(("melpa" . "http://melpa.org/packages/")))
 
 ;; Ensure `package-selected-packages' is loaded.
 (when (and (boundp 'package-selected-packages) 

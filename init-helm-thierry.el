@@ -32,6 +32,28 @@
   (shell-command-to-string
    "git log --pretty='format:%H' -1"))
 
+(unless (fboundp 'helm-hide-minibuffer-maybe)
+  (defun helm-hide-minibuffer-maybe ()
+    (when (with-helm-buffer helm-echo-input-in-header-line)
+      (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
+        (overlay-put ov 'window (selected-window))
+        (overlay-put ov 'face (let ((bg-color (face-background 'default nil)))
+                                `(:background ,bg-color :foreground ,bg-color)))
+        (setq-local cursor-type nil)))))
+
+(defun helm/turn-on-header-line ()
+  (interactive)
+  (setq helm-echo-input-in-header-line t)
+  (helm-autoresize-mode -1)
+  (add-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)
+  )
+
+(defun helm/turn-off-header-line ()
+  (interactive)
+  (setq helm-echo-input-in-header-line nil)
+  (helm-autoresize-mode 1)
+  (remove-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)
+  )
 
 ;;; Helm-command-map
 ;;
