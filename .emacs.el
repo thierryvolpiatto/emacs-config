@@ -21,17 +21,17 @@
 (setq package-archives '(("melpa" . "http://melpa.org/packages/")))
 
 ;; Ensure `package-selected-packages' is loaded.
-(when (and (boundp 'package-selected-packages) 
+(when (and (boundp 'package-selected-packages)
            (not package-selected-packages))
-    (setq package-selected-packages
-          (cl-loop for p in package-alist
-                   for name = (car p)
-                   unless
-                   (cl-loop for pkg in package-alist thereis
-                            (memq name
-                                  (mapcar 'car
-                                          (package-desc-reqs (cadr pkg)))))
-                   collect name)))
+  (setq package-selected-packages
+        (cl-loop for p in package-alist
+                 for name = (car p)
+                 unless
+                 (cl-loop for pkg in package-alist thereis
+                          (memq name
+                                (mapcar 'car
+                                        (package-desc-reqs (cadr pkg)))))
+                 collect name)))
 
 ;; Fix compatibility with emacs 24.3.
 ;; Avoid rebuilding all the autoloads just for this when switching to 24.3.
