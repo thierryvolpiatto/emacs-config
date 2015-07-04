@@ -175,6 +175,7 @@ If your system's ping continues until interrupted, you can try setting
              "/usr/local/share/emacs/site-lisp/mu4e"
 	     "~/elisp/"
              "~/elisp/magit"
+             "~/elisp/git-modes"
              "~/elisp/Emacs-wgrep"
              "~/elisp/auctex"
              "~/elisp/auctex/preview"
@@ -1684,11 +1685,11 @@ With prefix arg always start and let me choose dictionary."
 
 ;;; Magit
 ;;
-;(setq magit-last-seen-setup-instructions "1.4.0")
-;(setq magit-restore-window-configuration t)
-;(setq git-commit-fill-column 120)
-;(setq git-commit-summary-max-length 80)
-;(setq auto-revert-verbose nil)
+(setq magit-last-seen-setup-instructions "1.4.0")
+(setq magit-restore-window-configuration t)
+(setq git-commit-fill-column 120)
+(setq git-commit-summary-max-length 80)
+(setq auto-revert-verbose nil)
 
 ;;; Report bug
 ;;
