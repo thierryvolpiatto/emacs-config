@@ -174,6 +174,7 @@ If your system's ping continues until interrupted, you can try setting
 (dolist (i '("/usr/local/share/emacs/site-lisp"
              "/usr/local/share/emacs/site-lisp/mu4e"
 	     "~/elisp/"
+             "~/elisp/magit"
              "~/elisp/Emacs-wgrep"
              "~/elisp/auctex"
              "~/elisp/auctex/preview"
@@ -281,6 +282,7 @@ If your system's ping continues until interrupted, you can try setting
 (tv-require 'config-w3m)
 (tv-require 'mu4e-config)
 (setq emamux:completing-read-type 'helm)
+(autoload 'magit-status "magit.el" nil t)
 
 
 ;;; Gnus-config
@@ -1682,11 +1684,11 @@ With prefix arg always start and let me choose dictionary."
 
 ;;; Magit
 ;;
-(setq magit-last-seen-setup-instructions "1.4.0")
-(setq magit-restore-window-configuration t)
-(setq git-commit-fill-column 120)
-(setq git-commit-summary-max-length 80)
-(setq auto-revert-verbose nil)
+;(setq magit-last-seen-setup-instructions "1.4.0")
+;(setq magit-restore-window-configuration t)
+;(setq git-commit-fill-column 120)
+;(setq git-commit-summary-max-length 80)
+;(setq auto-revert-verbose nil)
 
 ;;; Report bug
 ;;
