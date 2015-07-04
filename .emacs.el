@@ -120,7 +120,7 @@ If your system's ping continues until interrupted, you can try setting
 ;; Annoyance number 1 is bidi
 ;; Turn OFF bidi everywhere.
 (setq-default bidi-display-reordering nil)
-;(setq-default cache-long-scans nil) ; Fix bug#15973 among others.
+;; (setq-default cache-long-scans nil) ; Fix bug#15973 among others.
 
 ;; Disable uniquify enabled by default in 24.4.
 (setq uniquify-buffer-name-style nil)
@@ -211,7 +211,7 @@ If your system's ping continues until interrupted, you can try setting
 (add-to-list 'load-path "~/elisp/desktop-file-utils/")
 (autoload 'desktop-entry-mode "desktop-entry-mode" "Desktop Entry mode" t)
 (add-to-list 'auto-mode-alist
- '("\\.desktop\\(\\.in\\)?$" . desktop-entry-mode))
+             '("\\.desktop\\(\\.in\\)?$" . desktop-entry-mode))
 (add-hook 'desktop-entry-mode-hook 'turn-on-font-lock)
 
 ;;; app-office/ledger site-lisp configuration
@@ -271,7 +271,7 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'psession-mode "psession.el")
 (tv-require 'wgrep-helm)
 (tv-require 'smtpmail-async)
-;(setq async-debug t)
+;; (setq async-debug t)
 (autoload 'dired-async-mode "dired-async.el" nil t)
 (dired-async-mode 1)
 ;; async-bytecomp-package-mode is enabled by helm.
@@ -283,7 +283,12 @@ If your system's ping continues until interrupted, you can try setting
 (tv-require 'config-w3m)
 (tv-require 'mu4e-config)
 (setq emamux:completing-read-type 'helm)
-(autoload 'magit-status "magit.el" nil t)
+(let ((mag-autoload (expand-file-name
+                     "magit-autoloads.el"
+                     (file-name-directory (locate-library "magit.el")))))
+  (if (file-exists-p mag-autoload)
+      (load mag-autoload)
+      (autoload 'magit-status "magit.el" nil t)))
 
 
 ;;; Gnus-config
@@ -291,9 +296,9 @@ If your system's ping continues until interrupted, you can try setting
 ;;
 ;;
 (setq gnus-asynchronous t)
-;(setq mail-user-agent 'gnus-user-agent)
-;(setq read-mail-command 'gnus)
-;(setq send-mail-command 'gnus-msg-mail)
+;; (setq mail-user-agent 'gnus-user-agent)
+;; (setq read-mail-command 'gnus)
+;; (setq send-mail-command 'gnus-msg-mail)
 (setq gnus-init-file "~/.emacs.d/.gnus.el")
 
 (defvar tv-gnus-loaded-p nil)
@@ -327,8 +332,8 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 ;; Kill all nnimap/nntpd processes when exiting summary.
 (defun tv-gnus-kill-all-procs ()
   (cl-loop for proc in (process-list)
-        when (string-match "\\*?\\(nnimap\\|nntpd\\)" (process-name proc))
-        do (delete-process proc)))
+           when (string-match "\\*?\\(nnimap\\|nntpd\\)" (process-name proc))
+           do (delete-process proc)))
 (add-hook 'gnus-exit-group-hook 'tv-gnus-kill-all-procs)
 (add-hook 'gnus-group-catchup-group-hook 'tv-gnus-kill-all-procs)
 
@@ -634,7 +639,7 @@ With a prefix arg decrease transparency."
   (and (boundp 'bookmark-bmenu-use-header-line)
        (setq bookmark-bmenu-use-header-line nil)))
 (setq bmkext-external-browse-url-function 'browse-url-firefox)
-;(setq bmkext-jump-w3m-defaut-method 'external) ; Set to 'external to use external browser, w3m for w3m.
+;; (setq bmkext-jump-w3m-defaut-method 'external) ; Set to 'external to use external browser, w3m for w3m.
 (eval-after-load "addressbook-bookmark.el"
   (addressbook-turn-on-mail-completion))
 
@@ -665,7 +670,7 @@ With a prefix arg decrease transparency."
 
 ;;; Dired
 ;;
-;
+;;
 (setq dired-dwim-target t)
 (setq dired-auto-revert-buffer t)
 (setq dired-backup-overwrite nil) ; nil, always, ask.
@@ -818,7 +823,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                 (cond ((string= argument "&rest")
                        ;; All the rest arguments are the same.
                        (setq index 1))
-                      ((string= argument "&optional"))         ; Skip.
+                      ((string= argument "&optional")) ; Skip.
                       ((string= argument "&allow-other-keys")) ; Skip.
                       ;; Back to index 0 in ARG1 ARG2 ARG2 ARG3 etc...
                       ;; like in `setq'.
@@ -854,7 +859,7 @@ are returned unchanged."
          (if (string-match-p
               "\\`(?&\\(?:optional\\|rest\\|key\\|allow-other-keys\\))?\\'" s)
              s
-           (funcall eldoc-argument-case s)))
+             (funcall eldoc-argument-case s)))
        (split-string argstring) " "))))
 
 ;; Tooltip face
@@ -862,7 +867,7 @@ are returned unchanged."
                     :foreground "black"
                     :background "NavajoWhite"
                     :family "unknown-DejaVu Sans Mono-bold-normal-normal"
-		    :underline t)
+                    :underline t)
 
 (autoload 'eldoc-in-minibuffer-mode "eldoc-eval")
 (eldoc-in-minibuffer-mode 1)
@@ -920,8 +925,8 @@ from IPython.core.completerlib import module_completion"
  "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
 
 (add-hook 'python-mode-hook
-  #'(lambda ()
-      (define-key python-mode-map (kbd "C-m") 'newline-and-indent)))
+          #'(lambda ()
+              (define-key python-mode-map (kbd "C-m") 'newline-and-indent)))
 
 (when (fboundp 'jedi:setup)
   (add-hook 'python-mode-hook 'jedi:setup))
@@ -1052,8 +1057,8 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
   (interactive "p")
   (let ((proc (get-buffer-process (current-buffer))))
     (if (and (eobp) proc (= (point) (marker-position (process-mark proc))))
-	(progn (comint-send-eof) (kill-buffer))
-      (delete-char arg))))
+        (progn (comint-send-eof) (kill-buffer))
+        (delete-char arg))))
 
 ;; Entete-Bash
 (defun tv-insert-bash-header ()
@@ -1130,7 +1135,7 @@ With prefix arg always start and let me choose dictionary."
 (tv-require 'xdvi-search)
 
 ;; To turn on RefTeX Minor Mode for all LaTeX files,
-(add-hook 'LaTeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex) ; with AUCTeX LaTeX mode
 
 ;; Replace AUCTeX functions
 (setq reftex-plug-into-AUCTeX t)
@@ -1154,37 +1159,37 @@ With prefix arg always start and let me choose dictionary."
   "Insert a LaTeX skeleton in an empty file."
   (interactive)
   (insert "\\documentclass[a4paper,11pt]{article}\n"
-       "\\usepackage[french]{babel}\n"
-       "\\usepackage[utf8]{inputenc}\n"
-       "\\usepackage{textcomp}% Allow to use euro sign\n"
-       "\n"
-       "%\\usepackage[pdftex=true,
+          "\\usepackage[french]{babel}\n"
+          "\\usepackage[utf8]{inputenc}\n"
+          "\\usepackage{textcomp}% Allow to use euro sign\n"
+          "\n"
+          "%\\usepackage[pdftex=true,
            %hyperindex=true,
            %colorlinks=true]{hyperref}"
-       "\n"
-       "%\\usepackage[hypertex=true,
+          "\n"
+          "%\\usepackage[hypertex=true,
            %hyperindex=true,
            %colorlinks=false]{hyperref}"
-       "\n"
-       "%\\usepackage{url}\n"
-       "%\\usepackage{natbib}\n"
-       "%\\usepackage{setspace}\n"
-       "%\\usepackage{qtree}\n"
-       "%\\usepackage{booktabs}\n"
-       "\n"
-       "\n"
-       "\\begin{document}\n"
-       "%\n"
-       "%\\begin{titlepage}\n"
-       "\\title{}\n"
-       "\\date{\\today}\n"
-       "\\author{}\n"
-       "\\maketitle\n"
-       "%\\tableofcontents\n"
-       "%\\end{titlepage}\n"
-       "\n"
-       "\n"
-       "\\end{document}\n")
+          "\n"
+          "%\\usepackage{url}\n"
+          "%\\usepackage{natbib}\n"
+          "%\\usepackage{setspace}\n"
+          "%\\usepackage{qtree}\n"
+          "%\\usepackage{booktabs}\n"
+          "\n"
+          "\n"
+          "\\begin{document}\n"
+          "%\n"
+          "%\\begin{titlepage}\n"
+          "\\title{}\n"
+          "\\date{\\today}\n"
+          "\\author{}\n"
+          "\\maketitle\n"
+          "%\\tableofcontents\n"
+          "%\\end{titlepage}\n"
+          "\n"
+          "\n"
+          "\\end{document}\n")
   (goto-char (point-min))
   (when (re-search-forward "[\\]title")
     (beginning-of-line)
@@ -1196,27 +1201,27 @@ With prefix arg always start and let me choose dictionary."
   "Insert a latex skeleton letter in an empty file"
   (interactive)
   (insert "\\documentclass[a4paper,11pt]{letter}\n"
-       "\\usepackage[french]{babel}\n"
-       "\\usepackage[utf8]{inputenc}\n"
-       "\\usepackage{textcomp}% Allow to use euro sign\n"
-       "\\begin{document}\n"
-       "%\\name{}% Nom de l'expéditeur\n"
-       "\\address{Thierry Volpiatto \\\\ 430 Chemin des Amandiers \\\\ 83330 Le Beausset}% Adresse de l'expéditeur\n"
-       "\\signature{Thierry Volpiatto}% Signature de l'expéditeur\n"
-       "\\date{\\today}\n"
-       "\n"
-       "\n"
-       "\\begin{letter}{}% Nom du destinataire\n"
-       "\\opening{}% Formule de salutation : cher monsieur, etc.\n"
-       "\n"
-       "% Corps de la lettre\n"
-       "\n"
-       "\\closing{}% Formule de politesse : veuillez agréer, etc.\n"
-       "\\ps{PS:}{}% Post-scriptum\n"
-       "\\cc{}% Autres destinataires de la lettre\n"
-       "\\encl{}% Pièces jointes\n"
-       "\\end{letter}\n"
-       "\\end{document}\n")
+          "\\usepackage[french]{babel}\n"
+          "\\usepackage[utf8]{inputenc}\n"
+          "\\usepackage{textcomp}% Allow to use euro sign\n"
+          "\\begin{document}\n"
+          "%\\name{}% Nom de l'expéditeur\n"
+          "\\address{Thierry Volpiatto \\\\ 430 Chemin des Amandiers \\\\ 83330 Le Beausset}% Adresse de l'expéditeur\n"
+          "\\signature{Thierry Volpiatto}% Signature de l'expéditeur\n"
+          "\\date{\\today}\n"
+          "\n"
+          "\n"
+          "\\begin{letter}{}% Nom du destinataire\n"
+          "\\opening{}% Formule de salutation : cher monsieur, etc.\n"
+          "\n"
+          "% Corps de la lettre\n"
+          "\n"
+          "\\closing{}% Formule de politesse : veuillez agréer, etc.\n"
+          "\\ps{PS:}{}% Post-scriptum\n"
+          "\\cc{}% Autres destinataires de la lettre\n"
+          "\\encl{}% Pièces jointes\n"
+          "\\end{letter}\n"
+          "\\end{document}\n")
   (goto-char (point-min))
   (when
       (re-search-forward "[\\]begin\{letter\}")
@@ -1229,7 +1234,7 @@ With prefix arg always start and let me choose dictionary."
 ;;
 (tv-require 'tramp)
 (setq tramp-default-method "ssh") ; methode par defaut
-;(setq tramp-verbose 6) ; See `helm-tramp-verbose' in init-helm.
+;; (setq tramp-verbose 6) ; See `helm-tramp-verbose' in init-helm.
 
 ;; Android settings (Only available on trunk)
 ;;
@@ -1363,12 +1368,12 @@ With prefix arg always start and let me choose dictionary."
 (add-hook 'ioccur-save-pos-before-jump-hook 'ioccur-save-current-pos-to-mark-ring)
 
 ;; Enable-commands-disabled-by-default
-(put 'narrow-to-region 'disabled nil)          ; C-x n n
-(put 'narrow-to-page 'disabled nil)            ; C-x n p
-(put 'scroll-left 'disabled nil)               ; C-x > or <
-(put 'downcase-region 'disabled nil)           ; C-x C-l
-(put 'upcase-region 'disabled nil)             ; C-x C-u
-(put 'set-goal-column 'disabled nil)           ; C-x C-n ==> disable with C-u
+(put 'narrow-to-region 'disabled nil) ; C-x n n
+(put 'narrow-to-page 'disabled nil)   ; C-x n p
+(put 'scroll-left 'disabled nil)     ; C-x > or <
+(put 'downcase-region 'disabled nil) ; C-x C-l
+(put 'upcase-region 'disabled nil)   ; C-x C-u
+(put 'set-goal-column 'disabled nil) ; C-x C-n ==> disable with C-u
 (put 'dired-find-alternate-file 'disabled nil) ; a in dired
 
 ;; setup-minibuffer
@@ -1422,7 +1427,7 @@ With prefix arg always start and let me choose dictionary."
 ;; When nil scrolling performances are better in files with long lines.
 ;; When non--nil move to next visual line. (slow)
 (setq line-move-visual nil)
-;(add-hook 'html-mode-hook 'visual-line-mode)
+;; (add-hook 'html-mode-hook 'visual-line-mode)
 
 ;;; Rst-mode
 ;;
@@ -1431,9 +1436,9 @@ With prefix arg always start and let me choose dictionary."
 ;;; Undo-tree
 ;;
 ;; Set `undo-outer-limit' to high value to avoid messages on long output.
-;(setq undo-outer-limit 20000000)
+;; (setq undo-outer-limit 20000000)
 ;; undo-limit
-;(setq undo-limit 100000)
+;; (setq undo-limit 100000)
 (global-undo-tree-mode)
 
 
@@ -1462,11 +1467,11 @@ With prefix arg always start and let me choose dictionary."
 (setq calendar-week-start-day 1
       calendar-day-name-array
       ["Dimanche" "Lundi" "Mardi"
-       "Mercredi" "Jeudi" "Vendredi" "Samedi"]
+                  "Mercredi" "Jeudi" "Vendredi" "Samedi"]
       calendar-month-name-array
       ["Janvier" "Février" "Mars" "Avril"
-       "Mai" "Juin" "Juillet" "Août" "Septembre"
-       "Octobre" "Novembre" "Décembre"])
+                 "Mai" "Juin" "Juillet" "Août" "Septembre"
+                 "Octobre" "Novembre" "Décembre"])
 
 (defvar holiday-french-holidays nil
   "French holidays")
@@ -1554,7 +1559,7 @@ With prefix arg always start and let me choose dictionary."
 
 ;;; Trash
 ;;
-;(setq delete-by-moving-to-trash t)
+;; (setq delete-by-moving-to-trash t)
 
 ;; Minibuffers completion
 (setq completion-cycle-threshold t) ; always cycle, no completion buffers.
@@ -1593,7 +1598,7 @@ With prefix arg always start and let me choose dictionary."
 ;;
 ;;
 (setq display-time-string-forms
-      '(;; date
+      '( ;; date
         (if (and (not display-time-format) display-time-day-and-date)
             (format-time-string "[%a %e %b " now)
             "")
@@ -1603,8 +1608,8 @@ With prefix arg always start and let me choose dictionary."
           (format-time-string (or display-time-format
                                   (if display-time-24hr-format " %H:%M" " %-I:%M%p"))
                               now)
-         'face '((:foreground "green"))
-         'help-echo (format-time-string " %a %b %e, %Y" now)) "]")
+          'face '((:foreground "green"))
+          'help-echo (format-time-string " %a %b %e, %Y" now)) "]")
         ;; cpu load average
         ;; (if (and load (not (string= load "")))
         ;;     (format "cpu:%s" load) "")
@@ -1639,7 +1644,7 @@ With prefix arg always start and let me choose dictionary."
 
 ;;; Deactivate mouse scrolling
 ;;
-;(mouse-wheel-mode -1)
+;; (mouse-wheel-mode -1)
 
 ;;; Printing variables
 ;;
@@ -1654,12 +1659,12 @@ With prefix arg always start and let me choose dictionary."
 ;;
 (customize-set-variable 'git-gutter:update-interval 2) ; Activate live update timer.
 (setq git-gutter:hide-gutter t) ; Always a 0 width margin when no changes.
-(global-git-gutter-mode)        ; Enable live update.
+(global-git-gutter-mode) ; Enable live update.
 ;; (add-hook 'emacs-lisp-mode-hook 'git-gutter-mode)
 (helm-define-key-with-subkeys
- global-map (kbd "C-x v n") ?n 'git-gutter:next-hunk '((?p . git-gutter:previous-hunk)))
+    global-map (kbd "C-x v n") ?n 'git-gutter:next-hunk '((?p . git-gutter:previous-hunk)))
 (helm-define-key-with-subkeys
- global-map (kbd "C-x v p") ?p 'git-gutter:previous-hunk '((?n . git-gutter:next-hunk)))
+    global-map (kbd "C-x v p") ?p 'git-gutter:previous-hunk '((?n . git-gutter:next-hunk)))
 
 (global-set-key [remap vc-dir] 'git-gutter:popup-hunk)
 ;; Stage current hunk
@@ -1749,17 +1754,17 @@ With prefix arg always start and let me choose dictionary."
 ;;; Outline-mode bindings
 ;;
 (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-p")
-                            ?p 'outline-previous-visible-heading
-                            '((?n . outline-next-visible-heading)))
+                              ?p 'outline-previous-visible-heading
+                              '((?n . outline-next-visible-heading)))
 (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-n")
-                            ?n 'outline-next-visible-heading
-                            '((?p . outline-previous-visible-heading)))
+                              ?n 'outline-next-visible-heading
+                              '((?p . outline-previous-visible-heading)))
 (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-f")
-                            ?f 'outline-forward-same-level
-                            '((?b . outline-backward-same-level)))
+                              ?f 'outline-forward-same-level
+                              '((?b . outline-backward-same-level)))
 (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-b")
-                            ?b 'outline-backward-same-level
-                            '((?f . outline-forward-same-level)))
+                              ?b 'outline-backward-same-level
+                              '((?f . outline-forward-same-level)))
 
 ;;; emacs-zoom-window
 ;;
