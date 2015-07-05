@@ -255,9 +255,12 @@ If your system's ping continues until interrupted, you can try setting
 (tv-require 'mb-depth)
 (tv-require 'tv-utils)
 (tv-require 'ledger-config)
-(tv-require 'rectangle-utils)
+(autoload 'rectangle-menu            "rectangle-utils.el" nil t)
+(autoload 'copy-rectangle            "rectangle-utils.el" nil t)
+(autoload 'rectangle-insert-at-right "rectangle-utils.el" nil t)
+(autoload 'extend-rectangle-to-end   "rectangle-utils.el" nil t)
 (tv-require 'smallurl)
-(autoload 'zop-to-char "zop-to-char.el" nil t)
+(autoload 'zop-to-char    "zop-to-char.el" nil t)
 (autoload 'zop-up-to-char "zop-to-char.el" nil t)
 (setq zop-to-char-prec-keys '(left ?\C-b ?\M-a)
       zop-to-char-next-keys '(right ?\C-f ?\M-e))
@@ -265,9 +268,6 @@ If your system's ping continues until interrupted, you can try setting
 (tv-require 'iedit-rect)
 (tv-require 'lacarte)
 (tv-require 'iterator)
-(autoload 'markdown-mode "markdown-mode.el")
-(autoload 'gfm-mode "markdown-mode.el")
-(autoload 'boxquote-region "boxquote.el" nil t)
 (autoload 'psession-mode "psession.el")
 (tv-require 'wgrep-helm)
 (tv-require 'smtpmail-async)
@@ -277,9 +277,6 @@ If your system's ping continues until interrupted, you can try setting
 ;; async-bytecomp-package-mode is enabled by helm.
 (setq async-bytecomp-allowed-packages '(all))
 (autoload 'golden-ratio-mode "golden-ratio.el" nil t)
-(autoload 'emamux:send-command "emamux.el" nil t)
-(autoload 'emamux:copy-kill-ring "emamux.el" nil t)
-(autoload 'emamux:yank-from-list-buffers "emamux.el" nil t)
 (tv-require 'config-w3m)
 (tv-require 'mu4e-config)
 (setq emamux:completing-read-type 'helm)
@@ -423,7 +420,7 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 (global-set-key (kbd "C-x r h")                    'rectangle-menu)
 (global-set-key (kbd "C-x r <right>")              'rectangle-insert-at-right)
 (global-set-key (kbd "C-x r M-w")                  'copy-rectangle)
-(global-set-key [remap zap-to-char]                'zop-to-char) ; M-z 
+(global-set-key [remap zap-to-char]                'zop-to-char) ; M-z
 (global-set-key (kbd "<f5> g m")                   'google-maps)
 (global-set-key (kbd "M-\"")                       'tv-insert-double-quote)
 (global-set-key (kbd "C-M-\`")                     'tv-insert-double-backquote)
@@ -848,7 +845,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                    sym doc (if (functionp sym) 'font-lock-function-name-face
                                'font-lock-keyword-face)))
         doc)))
-  
+
   (when (fboundp 'eldoc-function-argstring-format)
     (defun eldoc-function-argstring-format (argstring)
       "Apply `eldoc-argument-case' to each word in ARGSTRING.
