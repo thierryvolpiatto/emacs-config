@@ -62,6 +62,8 @@ So far, F can only be a symbol, not a lambda expression."))
 
 (setq focus-follows-mouse t)
 
+(setq x-select-enable-primary t)
+
 
 ;;; Compatibility
 ;;

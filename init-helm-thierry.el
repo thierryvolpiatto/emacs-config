@@ -288,7 +288,7 @@ First call indent, second complete symbol, third complete fname."
      source
      'action
      (helm-append-at-nth
-      actions
+      (helm-interpret-value actions nil 'ignorefn)
       (helm-make-actions
        "Magit status"
        (lambda (_candidate)
@@ -306,7 +306,7 @@ First call indent, second complete symbol, third complete fname."
        source
        'action
        (helm-append-at-nth
-        actions
+        (helm-interpret-value actions nil 'ignorefn)
         (helm-make-actions
          "Magit status"
          (lambda (_candidate)
