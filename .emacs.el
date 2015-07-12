@@ -161,7 +161,7 @@ If your system's ping continues until interrupted, you can try setting
      (signal 'error (list feature (car err) (cadr err))))))
 
 ;; kill-ring
-(setq kill-ring-max 30)
+(setq kill-ring-max 60)
 
 
 ;;; load-paths
