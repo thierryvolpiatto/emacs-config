@@ -1,4 +1,4 @@
-;;; .emacs.el ---
+;;; .emacs.el --- emacs configuration
 
 ;;; Code:
 
@@ -18,7 +18,8 @@
   (load "package-24"))
 
 (package-initialize)
-(setq package-archives '(("melpa" . "http://melpa.org/packages/")))
+(setq package-archives '(("melpa" . "http://melpa.org/packages/")
+                         ("gnu" . "http://elpa.gnu.org/packages/")))
 
 ;; Ensure `package-selected-packages' is loaded.
 (when (and (boundp 'package-selected-packages)
