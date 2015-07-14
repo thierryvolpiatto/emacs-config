@@ -1568,7 +1568,7 @@ With prefix arg always start and let me choose dictionary."
 ;;
 ;;
 ;; Possible values for vc backends: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
-(setq vc-handled-backends '(Git Hg RCS))
+(setq vc-handled-backends '(RCS))
 
 
 ;;; winner-mode config
