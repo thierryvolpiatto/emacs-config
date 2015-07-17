@@ -155,8 +155,9 @@ If entries are already pointed, skip."
 
 (defvar csv2ledger-default-input-dir "~/Téléchargements/")
 (defvar csv2ledger-default-output-dir "~/finance")
-(defun csv2ledger (infile ofile)
-  (interactive (list (read-file-name "Input cvs file: "
+(defun csv2ledger (account infile ofile)
+  (interactive (list (completing-read "Account: " '("Socgen" "Paypal" "livretA"))
+                     (read-file-name "Input cvs file: "
                                      csv2ledger-default-input-dir
                                      nil nil nil (lambda (f)
                                                    (or (file-directory-p f)
@@ -192,7 +193,7 @@ If entries are already pointed, skip."
                  (concat date " * " payee "\n    "
                          (if deb
                              (format "Expenses:unknown    € %s\n    Liabilities:Socgen\n\n" amountstr)
-                             (format "Assets:Socgen:Checking    € %s\n    Income\n\n" amountstr))))))))))
+                             (format "Assets:%s:Checking    € %s\n    Income\n\n" account amountstr))))))))))
     (with-current-buffer obuf
       (ledger-mode)
       (remove-overlays)

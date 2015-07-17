@@ -2,7 +2,6 @@
 ;;; Code:
 
 (tv-require 'helm-config)
-
 
 ;;; Enable Modes (This is loading nearly everything).
 ;;

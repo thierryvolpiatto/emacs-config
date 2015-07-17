@@ -173,6 +173,7 @@ If your system's ping continues until interrupted, you can try setting
 (add-to-list 'Info-directory-list "/usr/share/info")
 (add-to-list 'Info-directory-list "~/elisp/info")
 (add-to-list 'Info-directory-list "~/elisp/info/eshell-doc")
+(add-to-list 'Info-additional-directory-list "~/elisp/magit")
 
 (dolist (i '("/usr/local/share/emacs/site-lisp"
              "/usr/local/share/emacs/site-lisp/mu4e"
@@ -1357,7 +1358,7 @@ With prefix arg always start and let me choose dictionary."
       (slime)))
 
 ;; common-lisp-info
-(setq Info-additional-directory-list '("~/elisp/info/gcl-info/"))
+(add-to-list 'Info-additional-directory-list "~/elisp/info/gcl-info/")
 
 ;; Save-slime-scratch-buffer
 (setq slime-scratch-file "~/.emacs.d/slime-scratch.lisp")
