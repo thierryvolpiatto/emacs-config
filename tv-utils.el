@@ -196,21 +196,6 @@ depending the value of N is positive or negative."
   (other-window n t)
   (select-frame-set-input-focus (selected-frame)))
 
-;;; Persistent-scratch
-;;;###autoload
-(defun tv-restore-scratch-buffer ()
-  (unless (buffer-file-name (get-buffer "*scratch*"))
-    (and (get-buffer "*scratch*") (kill-buffer "*scratch*")))
-  (with-current-buffer (find-file-noselect "~/.emacs.d/save-scratch.el")
-    (rename-buffer "*scratch*")
-    (lisp-interaction-mode)
-    (setq lexical-binding t)
-    (use-local-map lisp-interaction-mode-map))
-  (when (or (eq (point-min) (point-max))
-            ;; For some reason the scratch buffer have not a zero size.
-            (<= (buffer-size) 2))
-    (insert ";;; -*- coding: utf-8; mode: lisp-interaction; lexical-binding: t -*-\n;;\n;; SCRATCH BUFFER\n;; ==============\n\n")))
-
 ;;; registers-config 
 ;; Redefine append-to-register with a "\n"
 

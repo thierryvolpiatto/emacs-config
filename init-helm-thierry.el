@@ -296,19 +296,6 @@ First call indent, second complete symbol, third complete fname."
         :buffer "*helm psession*"))
 
 
-;;; Byte recompile helm extensions directory
-;;  and regenerate autoload file.
-(defvar tv/helm-extensions-directory "~/elisp/helm-extensions/")
-(defun tv/helm-update-extensions (dir)
-  (interactive (list (read-directory-name
-                      "Helm extensions directory: "
-                      tv/helm-extensions-directory)))
-  (let ((generated-autoload-file
-         (expand-file-name "helm-extensions-autoloads.el" dir))
-        (backup-inhibited t))
-    (update-directory-autoloads dir)
-    (async-byte-recompile-directory dir)))
-
 ;;; helm dictionary
 ;;
 (setq helm-dictionary-database "~/helm-dictionary/dic-en-fr.iso")

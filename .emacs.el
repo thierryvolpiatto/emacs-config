@@ -1801,6 +1801,21 @@ With prefix arg always start and let me choose dictionary."
 ;;; Link scratch buffer to file
 ;;
 ;;
+;;; Persistent-scratch
+;;;###autoload
+(defun tv-restore-scratch-buffer ()
+  (unless (buffer-file-name (get-buffer "*scratch*"))
+    (and (get-buffer "*scratch*") (kill-buffer "*scratch*")))
+  (with-current-buffer (find-file-noselect "~/.emacs.d/save-scratch.el")
+    (rename-buffer "*scratch*")
+    (lisp-interaction-mode)
+    (setq lexical-binding t)
+    (use-local-map lisp-interaction-mode-map))
+  (when (or (eq (point-min) (point-max))
+            ;; For some reason the scratch buffer have not a zero size.
+            (<= (buffer-size) 2))
+    (insert ";;; -*- coding: utf-8; mode: lisp-interaction; lexical-binding: t -*-\n;;\n;; SCRATCH BUFFER\n;; ==============\n\n")))
+
 (add-hook 'emacs-startup-hook 'tv-restore-scratch-buffer)
 
 ;;; .emacs.el ends here
