@@ -1546,6 +1546,7 @@ With prefix arg always start and let me choose dictionary."
 ;;; World-time
 ;;
 ;;
+(add-to-list 'display-time-world-list '("Greenwich" "Greenwich"))
 (add-to-list 'display-time-world-list '("Australia/Sydney" "Sydney"))
 (add-to-list 'display-time-world-list '("Australia/Melbourne" "Melbourne"))
 (add-to-list 'display-time-world-list '("Australia/Canberra" "Canberra"))
@@ -1556,6 +1557,15 @@ With prefix arg always start and let me choose dictionary."
 (add-to-list 'display-time-world-list '("America/Vancouver" "Vancouver"))
 (add-to-list 'display-time-world-list '("America/Montreal" "Montreal"))
 (add-to-list 'display-time-world-list '("America/New_York" "Ottawa"))
+(add-to-list 'display-time-world-list '("Europe/Moscow" "Moscow"))
+(add-to-list 'display-time-world-list '("Europe/Berlin" "Berlin"))
+(add-to-list 'display-time-world-list '("Europe/Oslo" "Oslo"))
+(add-to-list 'display-time-world-list '("Europe/Lisbon" "Lisbon"))
+(add-to-list 'display-time-world-list '("Asia/Dubai" "Dubai"))
+(add-to-list 'display-time-world-list '("Asia/Tokyo" "Tokyo"))
+(add-to-list 'display-time-world-list '("Hongkong" "Hongkong"))
+(add-to-list 'display-time-world-list '("Indian/Antananarivo" "Antananarivo"))
+(add-to-list 'display-time-world-list '("Indian/Reunion" "Reunion"))
 
 
 ;;; Trash
@@ -1569,7 +1579,7 @@ With prefix arg always start and let me choose dictionary."
 ;;
 ;;
 ;; Possible values for vc backends: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
-(setq vc-handled-backends '(RCS))
+(setq vc-handled-backends '(RCS Hg))
 
 
 ;;; winner-mode config

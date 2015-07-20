@@ -112,6 +112,7 @@
         (list :address address :broadcast broadcast
               :netmask netmask :mac (cdr mac) :state state)))))
 
+;;;###autoload
 (defun tv-network-state (network &optional arg)
   (interactive (list (read-string "Network: " "wlan0")
                      "\np"))
@@ -196,6 +197,7 @@ depending the value of N is positive or negative."
   (select-frame-set-input-focus (selected-frame)))
 
 ;;; Persistent-scratch
+;;;###autoload
 (defun tv-restore-scratch-buffer ()
   (unless (buffer-file-name (get-buffer "*scratch*"))
     (and (get-buffer "*scratch*") (kill-buffer "*scratch*")))
@@ -229,6 +231,7 @@ START and END are buffer positions indicating what to append."
 
 ;;; Stardict
 ;;
+;;;###autoload
 (defun translate-at-point (arg)
   (interactive "P")
   (let* ((word (if arg
@@ -252,6 +255,7 @@ START and END are buffer positions indicating what to append."
 
 ;;; Get-mime-type-of-file
 ;;
+;;;###autoload
 (defun file-mime-type (fname &optional arg)
   "Get the mime-type of fname"
   (interactive "fFileName: \np")
@@ -262,6 +266,7 @@ START and END are buffer positions indicating what to append."
 ;;; Eval-region
 ;;
 ;;
+;;;###autoload
 (defun tv-eval-region (beg end)
   (interactive "r")
   (let ((str (buffer-substring beg end))
@@ -315,7 +320,8 @@ START and END are buffer positions indicating what to append."
            ,seq)
      (progress-reporter-done progress-reporter)))
 
-;; Send current buffer htmlized to web browser. 
+;; Send current buffer htmlized to web browser.
+;;;###autoload
 (defun tv-htmlize-buffer-to-browser ()
   (interactive)
   (let* ((fname           (concat "/tmp/" (symbol-name (gensym "emacs2browser"))))
@@ -330,6 +336,7 @@ START and END are buffer positions indicating what to append."
 
 ;; key-for-calendar 
 (defvar tv-calendar-alive nil)
+;;;###autoload
 (defun tv-toggle-calendar ()
   (interactive)
   (if tv-calendar-alive
@@ -349,6 +356,7 @@ START and END are buffer positions indicating what to append."
 ;; Cvs-update-current-directory-and-compile-it 
 ;; <2009-04-17 Ven. 16:15>
 (require 'pcvs)
+;;;###autoload
 (defun update-cvs-dir-and-compile ()
   "Cvs update current dir and compile it."
   (interactive)
@@ -363,18 +371,22 @@ START and END are buffer positions indicating what to append."
 ;;
 (setq parens-require-spaces t)
 
+;;;###autoload
 (defun tv-insert-double-quote (&optional arg)
   (interactive "P")
   (insert-pair arg ?\" ?\"))
 
+;;;###autoload
 (defun tv-insert-double-backquote (&optional arg)
   (interactive "P")
   (insert-pair arg ?\` ?\'))
 
+;;;###autoload
 (defun tv-insert-vector (&optional arg)
   (interactive "P")
   (insert-pair arg ?\[ ?\]))
 
+;;;###autoload
 (defun tv-move-pair-forward (beg end)
   (interactive "r")
   (if (region-active-p)
@@ -400,6 +412,7 @@ START and END are buffer positions indicating what to append."
                                   unread-command-events)))
                  (throw 'break nil))))))))
 
+;;;###autoload
 (defun tv-insert-pair-and-close-forward (beg end)
   (interactive "r")
   (if (region-active-p)
@@ -427,6 +440,7 @@ START and END are buffer positions indicating what to append."
                                   unread-command-events)))
                  (throw 'break nil))))))))
 
+;;;###autoload
 (defun tv-insert-double-quote-and-close-forward (beg end)
   (interactive "r")
   (if (region-active-p)
@@ -455,20 +469,23 @@ START and END are buffer positions indicating what to append."
                                   unread-command-events)))
                  (throw 'break nil))))))))
 
-;;; Insert-an-image-at-point 
+;;; Insert-an-image-at-point
+;;;###autoload
 (defun tv-insert-image-at-point (image)
   (interactive "fImage: ")
   (let ((img (create-image image)))
     (insert-image img)))
 
+;;;###autoload
 (defun tv-show-img-from-fname-at-point ()
   (interactive)
   (let ((img (thing-at-point 'sexp)))
     (forward-line)
     (tv-insert-image-at-point img)))
 
-;;; Show-message-buffer-a-few-seconds 
+;;; Show-message-buffer-a-few-seconds
 (autoload 'View-scroll-to-buffer-end "view")
+;;;###autoload
 (defun tv-tail-echo-area-messages ()
   (interactive)
   (save-window-excursion
@@ -477,7 +494,8 @@ START and END are buffer positions indicating what to append."
     (View-scroll-to-buffer-end)
     (sit-for 10)))
 
-;;; Align-for-sections-in-loop 
+;;; Align-for-sections-in-loop
+;;;###autoload
 (defun tv/align-loop-region-for (beg end)
   (interactive "r")
   (align-regexp beg end "\\(\\s-*\\) = " 1 1 nil)
@@ -487,7 +505,8 @@ START and END are buffer positions indicating what to append."
 (define-key lisp-mode-map (kbd "C-M-&") 'tv/align-loop-region-for)
 (define-key emacs-lisp-mode-map (kbd "C-M-&") 'tv/align-loop-region-for)
 
-;; Kill-backward 
+;; Kill-backward
+;;;###autoload
 (defun tv-kill-whole-line ()
   "Similar to `kill-whole-line' but don't kill new line.
 Also alow killing whole line in a shell prompt without trying
@@ -504,6 +523,7 @@ Can be used from any place in the line."
     (delete-blank-lines) (skip-chars-forward " ")))
 
 ;; Similar to what eev does
+;;;###autoload
 (defun tv-eval-last-sexp-at-eol ()
   (interactive)
   (save-excursion
@@ -513,14 +533,16 @@ Can be used from any place in the line."
       (call-interactively 'eval-last-sexp))))
 ;; (message "hello") ;; test
 
-;; Delete-char-or-region 
+;; Delete-char-or-region
+;;;###autoload
 (defun tv-delete-char (arg)
   (interactive "p")
   (if (helm-region-active-p)
       (delete-region (region-beginning) (region-end))
       (delete-char arg)))
 
-;; Easypg 
+;; Easypg
+;;;###autoload
 (defun epa-sign-to-armored ()
   "Create a .asc file."
   (interactive)
@@ -528,17 +550,20 @@ Can be used from any place in the line."
     (call-interactively 'epa-sign-file)))
 
 ;; Same as above but usable as alias in eshell
+;;;###autoload
 (defun gpg-sign-to-armored (file)
   "Create a .asc file."
   (let ((epa-armor t))
     (epa-sign-file file nil nil)))
 
 ;; Usable from eshell as alias
+;;;###autoload
 (defun gpg-sign-to-sig (file)
   "Create a .sig file."
   (epa-sign-file file nil 'detached))
 
-;; Insert-log-from-patch 
+;; Insert-log-from-patch
+;;;###autoload
 (defun tv-insert-log-from-patch (patch)
   (interactive (list (helm-read-file-name
                       "Patch: "
@@ -557,6 +582,7 @@ Can be used from any place in the line."
     (delete-file patch)))
 
 ;; Switch indenting lisp style.
+;;;###autoload
 (defun toggle-lisp-indent ()
   (interactive)
   (if (eq lisp-indent-function 'common-lisp-indent-function)
@@ -567,6 +593,7 @@ Can be used from any place in the line."
       (message "Switching to Common lisp indenting style.")))
 
 ;; C-mode conf
+;;;###autoload
 (defun tv-cc-this-file ()
   (interactive)
   (when (eq major-mode 'c-mode)
@@ -578,6 +605,7 @@ Can be used from any place in the line."
                            (define-key c-mode-map (kbd "C-c C-c") 'tv-cc-this-file)))
 
 ;; Insert line numbers in region
+;;;###autoload
 (defun tv-insert-lineno-in-region (beg end)
   (interactive "r")
   (save-restriction
@@ -616,6 +644,7 @@ Can be used from any place in the line."
         result)))
 
 ;; Verlan.
+;;;###autoload
 (defun tv-reverse-chars-in-region (beg end)
   "Verlan region. Unuseful but funny"
   (interactive "r")
@@ -633,6 +662,7 @@ Can be used from any place in the line."
 
 ;; Interface to df command-line.
 ;;
+;;;###autoload
 (defun dfh (directory)
   "Interface to df -h command line.
 If a prefix arg is given choose directory, otherwise use `default-directory'."
@@ -656,6 +686,7 @@ If a prefix arg is given choose directory, otherwise use `default-directory'."
     (view-mode 1)))
 
 ;; Interface to du (directory size)
+;;;###autoload
 (defun duh (directory)
   (interactive "DDirectory: ")
   (let* ((lst
@@ -669,6 +700,7 @@ If a prefix arg is given choose directory, otherwise use `default-directory'."
     (if (called-interactively-p 'interactive) 
         (message "%s" result) result)))
 
+;;;###autoload
 (defun tv/split-windows (arg)
   (interactive "P")
   (let ((bufs (cdr (cl-loop for w being the windows
@@ -682,6 +714,7 @@ If a prefix arg is given choose directory, otherwise use `default-directory'."
                  (switch-to-buffer b))))))
 
 ;; Euro million
+;;;###autoload
 (defun euro-million ()
   (interactive)
   (let* ((star-num #'(lambda (limit)
@@ -727,6 +760,7 @@ If a prefix arg is given choose directory, otherwise use `default-directory'."
                                  (special-mode))))))
 
 ;; Just an example to use `url-retrieve'
+;;;###autoload
 (defun tv-download-file-async (url &optional noheaders to)
   (let ((noheaders noheaders) (to to))
     (url-retrieve url #'(lambda (status)
@@ -747,7 +781,7 @@ If a prefix arg is given choose directory, otherwise use `default-directory'."
 
 ;; Tool to take all sexps matching regexps in buffer and bring
 ;; them at point. Useful to reorder defvar, defcustoms etc...
-
+;;;###autoload
 (defun tv-group-sexp-matching-regexp-at-point (arg regexp)
   "Take all sexps matching REGEXP and put them at point.
 The sexps are searched after point, unless ARG.
@@ -775,6 +809,7 @@ In this case, sexps are searched before point."
              finally do (goto-char pos))))
 
 ;; Check paren errors
+;;;###autoload
 (defun tv-check-paren-error ()
   (interactive)
   (let (pos-err)
@@ -816,6 +851,7 @@ In this case, sexps are searched before point."
 
 ;;; Generate strong passwords.
 ;;
+;;;###autoload
 (cl-defun genpasswd (&optional (limit 12))
   "Generate strong password of length LIMIT.
 LIMIT should be a number divisible by 2, otherwise
@@ -844,7 +880,7 @@ the password will be of length (floor LIMIT)."
 ;;; Rotate windows
 ;;
 ;;
-
+;;;###autoload
 (defun rotate-windows ()
   (interactive)
   (require 'iterator)
@@ -868,6 +904,7 @@ the password will be of length (floor LIMIT)."
                        (set-window-start w2 s1)))))
 (global-set-key (kbd "C-c -") 'rotate-windows)
 
+;;;###autoload
 (defun tv-delete-duplicate-lines (beg end &optional arg)
   "Delete duplicate lines in region omiting new lines.
 With a prefix arg remove new lines."
@@ -881,6 +918,7 @@ With a prefix arg remove new lines."
         (delete-region (point-min) (point-max))
         (cl-loop for l in lines do (insert (concat l "\n")))))))
 
+;;;###autoload
 (defun tv-break-long-string-list-at-point (arg)
   (interactive "p")
   (when (and (looking-at "(")
@@ -891,6 +929,7 @@ With a prefix arg remove new lines."
         (newline-and-indent)))))
 
 ;; Stollen somewhere.
+;;;###autoload
 (defun describe-key-name (key)
   (interactive "kGenerate and kill `kbd' form for key: ")
   (kill-new
@@ -898,21 +937,25 @@ With a prefix arg remove new lines."
             (help-key-description key nil))))
 
 ;; some tar fn to use in eshell aliases.
+;;;###autoload
 (defun tar-gunzip (file)
   (shell-command
    (format "tar czvf $(basename %s).tar.gz $(basename %s)"
            file file)))
 
+;;;###autoload
 (defun tar-bunzip (file)
   (shell-command
    (format "tar cjvf $(basename %s).tar.bz $(basename %s)"
            file file)))
 
+;;;###autoload
 (defun tar-xz (file)
   (shell-command
    (format "tar cJvf $(basename %s).tar.xz $(basename %s)"
            file file)))
 
+;;;###autoload
 (defun tv/resize-img (input-file percent-size output-file)
   (interactive (let* ((in (read-file-name "Input file: " "~/Images"))
                       (pcge (read-string "Resize percentage: " "25"))
