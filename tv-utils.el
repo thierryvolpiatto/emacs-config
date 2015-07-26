@@ -951,6 +951,51 @@ With a prefix arg remove new lines."
                          percent-size
                          output-file)))
 
+(defun tv/split-freeboxvpn-config (file dir)
+  (interactive "fConfigFile: \nDDirectory: ")
+  (unless (file-directory-p dir) (mkdir dir t))
+  (let ((ca (expand-file-name "ca.crt" dir))
+        (client (expand-file-name "client.crt" dir))
+        (key (expand-file-name "client.key" dir))
+        (newfile (expand-file-name (helm-basename file) dir))
+        ca-crt cli-crt key-key cfg beg end)
+    (with-current-buffer (find-file-noselect file)
+      (goto-char (point-min))
+      (when (re-search-forward "<ca>" nil t)
+        (setq cfg (buffer-substring-no-properties
+                   (point-min) (point-at-bol)))
+        (forward-line 1) (setq beg (point)))
+      (when (re-search-forward "</ca>" nil t)
+        (forward-line 0) (setq end (point)))
+      (setq ca-crt (buffer-substring-no-properties beg end))
+      (when (re-search-forward "<cert>" nil t)
+        (forward-line 1) (setq beg (point)))
+      (when (re-search-forward "</cert>" nil t)
+        (forward-line 0) (setq end (point)))
+      (setq cli-crt (buffer-substring-no-properties beg end))
+      (when (re-search-forward "<key>" nil t)
+        (forward-line 1) (setq beg (point)))
+      (when (re-search-forward "</key>" nil t)
+        (forward-line 0) (setq end (point)))
+      (setq key-key (buffer-substring-no-properties beg end))
+      (kill-buffer))
+    (cl-loop for f in `(,ca ,client ,key)
+             for c in `(,ca-crt ,cli-crt ,key-key)
+             do
+             (with-current-buffer (find-file-noselect f)
+               (erase-buffer)
+               (insert c)
+               (save-buffer)
+               (kill-buffer)))
+    (with-current-buffer (find-file-noselect newfile)
+      (erase-buffer)
+      (insert cfg
+              "ca ca.crt\n"
+              "cert client.crt\n"
+              "key client.key\n")
+      (save-buffer)
+      (kill-buffer))))
+
 (provide 'tv-utils)
 
 ;; Local Variables:
