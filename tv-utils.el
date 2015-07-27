@@ -952,7 +952,13 @@ With a prefix arg remove new lines."
                          output-file)))
 
 (defun tv/split-freeboxvpn-config (file dir)
-  (interactive "fConfigFile: \nDDirectory: ")
+  (interactive (list (helm-read-file-name
+                      "ConfigFile: "
+                      :initial-input "~/Téléchargements/"
+                      :must-match t
+                      :preselect ".*\\.ovpn")
+                     (read-directory-name
+                      "SplitToDirectory: " "~/openvpn/")))
   (unless (file-directory-p dir) (mkdir dir t))
   (let ((ca (expand-file-name "ca.crt" dir))
         (client (expand-file-name "client.crt" dir))
@@ -961,21 +967,21 @@ With a prefix arg remove new lines."
         ca-crt cli-crt key-key cfg beg end)
     (with-current-buffer (find-file-noselect file)
       (goto-char (point-min))
-      (when (re-search-forward "<ca>" nil t)
+      (when (re-search-forward "^<ca>" nil t)
         (setq cfg (buffer-substring-no-properties
                    (point-min) (point-at-bol)))
         (forward-line 1) (setq beg (point))
-        (re-search-forward "</ca>" nil t)
+        (re-search-forward "^</ca>" nil t)
         (forward-line 0) (setq end (point))
         (setq ca-crt (buffer-substring-no-properties beg end)))
-      (when (re-search-forward "<cert>" nil t)
+      (when (re-search-forward "^<cert>" nil t)
         (forward-line 1) (setq beg (point))
-        (re-search-forward "</cert>" nil t)
+        (re-search-forward "^</cert>" nil t)
         (forward-line 0) (setq end (point))
         (setq cli-crt (buffer-substring-no-properties beg end)))
-      (when (re-search-forward "<key>" nil t)
+      (when (re-search-forward "^<key>" nil t)
         (forward-line 1) (setq beg (point))
-        (re-search-forward "</key>" nil t)
+        (re-search-forward "^</key>" nil t)
         (forward-line 0) (setq end (point))
         (setq key-key (buffer-substring-no-properties beg end)))
       (kill-buffer))
