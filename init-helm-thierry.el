@@ -186,7 +186,7 @@ First call indent, second complete symbol, third complete fname."
       ;helm-persistent-action-use-special-display t
       helm-buffers-favorite-modes                (append helm-buffers-favorite-modes
                                                          '(picture-mode artist-mode))
-      helm-ls-git-status-command                 'magit-status
+      helm-ls-git-status-command                 'magit-status-internal
       ;helm-never-delay-on-input                  nil
       ;helm-candidate-number-limit                200
       helm-M-x-requires-pattern                  0
