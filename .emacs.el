@@ -189,7 +189,6 @@ If your system's ping continues until interrupted, you can try setting
              "~/elisp/helm-extensions"
              "~/.emacs.d/themes/"
 	     "~/.emacs.d/emacs-config/"
-             "~/elisp/emacs-async"
 	     ))
   (add-to-list 'load-path i t)) ; Add all at end of `load-path' to avoid conflicts.
 
@@ -271,16 +270,16 @@ If your system's ping continues until interrupted, you can try setting
 (tv-require 'iterator)
 (autoload 'psession-mode "psession.el")
 (tv-require 'wgrep-helm)
-(tv-require 'smtpmail-async)
-;; (setq async-debug t)
-(autoload 'dired-async-mode "dired-async.el" nil t)
-(dired-async-mode 1)
-;; async-bytecomp-package-mode is enabled by helm.
-(setq async-bytecomp-allowed-packages '(all))
 (autoload 'golden-ratio-mode "golden-ratio.el" nil t)
 (tv-require 'config-w3m)
 (tv-require 'mu4e-config)
 (setq emamux:completing-read-type 'helm)
+
+;;; Async
+(tv-require 'smtpmail-async)
+(dired-async-mode 1)
+;; `async-bytecomp-package-mode' is enabled by helm.
+(setq async-bytecomp-allowed-packages '(all))
 
 
 ;;; Gnus-config
