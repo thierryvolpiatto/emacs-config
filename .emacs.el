@@ -1693,7 +1693,6 @@ With prefix arg always start and let me choose dictionary."
 
 ;;; Magit
 ;;
-(autoload 'magit-status-internal "magit.el")
 (setq magit-last-seen-setup-instructions "1.4.0")
 (setq magit-restore-window-configuration t)
 (setq git-commit-fill-column 120)
