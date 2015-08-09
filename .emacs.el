@@ -173,13 +173,10 @@ If your system's ping continues until interrupted, you can try setting
 (add-to-list 'Info-directory-list "/usr/share/info")
 (add-to-list 'Info-directory-list "~/elisp/info")
 (add-to-list 'Info-directory-list "~/elisp/info/eshell-doc")
-(add-to-list 'Info-additional-directory-list "~/elisp/magit")
 
 (dolist (i '("/usr/local/share/emacs/site-lisp"
              "/usr/local/share/emacs/site-lisp/mu4e"
 	     "~/elisp/"
-             "~/elisp/magit"
-             "~/elisp/git-modes"
              "~/elisp/Emacs-wgrep"
              "~/elisp/auctex"
              "~/elisp/auctex/preview"
@@ -284,12 +281,6 @@ If your system's ping continues until interrupted, you can try setting
 (tv-require 'config-w3m)
 (tv-require 'mu4e-config)
 (setq emamux:completing-read-type 'helm)
-(let ((mag-autoload (expand-file-name
-                     "magit-autoloads.el"
-                     (file-name-directory (locate-library "magit.el")))))
-  (if (file-exists-p mag-autoload)
-      (load mag-autoload)
-      (autoload 'magit-status "magit.el" nil t)))
 
 
 ;;; Gnus-config
