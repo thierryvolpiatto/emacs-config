@@ -1697,6 +1697,8 @@ With prefix arg always start and let me choose dictionary."
 (setq git-commit-fill-column 120)
 (setq git-commit-summary-max-length 80)
 (setq auto-revert-verbose nil)
+(with-eval-after-load "magit.el"
+  (define-key magit-diff-mode-map (kbd "C") 'magit-commit-add-log))
 
 ;;; Report bug
 ;;
