@@ -1772,10 +1772,6 @@ With prefix arg always start and let me choose dictionary."
                                (and (executable-find "reenable_touchpad.sh")
                                     (shell-command "reenable_touchpad.sh"))))
 
-;;; powerline
-;;
-(powerline-center-theme)
-
 ;;; Save/restore emacs-session
 ;;
 ;;
