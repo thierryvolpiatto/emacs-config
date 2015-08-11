@@ -15,24 +15,12 @@
 (when (and (= emacs-major-version 24)
            (not (version< emacs-version "24.4.1")))
   (add-to-list 'load-path "~/.emacs.d/emacs-config")
+  ;; Load the emacs-25 package.el version adapted to emacs-24.
   (load "package-24"))
 
 (package-initialize)
 (setq package-archives '(("melpa" . "http://melpa.org/packages/")
                          ("gnu" . "http://elpa.gnu.org/packages/")))
-
-;; Ensure `package-selected-packages' is loaded.
-(when (and (boundp 'package-selected-packages)
-           (not package-selected-packages))
-  (setq package-selected-packages
-        (cl-loop for p in package-alist
-                 for name = (car p)
-                 unless
-                 (cl-loop for pkg in package-alist thereis
-                          (memq name
-                                (mapcar 'car
-                                        (package-desc-reqs (cadr pkg)))))
-                 collect name)))
 
 ;; Fix compatibility with emacs 24.3.
 ;; Avoid rebuilding all the autoloads just for this when switching to 24.3.
