@@ -152,6 +152,9 @@ If your system's ping continues until interrupted, you can try setting
 ;; kill-ring
 (setq kill-ring-max 60)
 
+;; mark ring
+(setq mark-ring-max 60)
+
 
 ;;; load-paths
 ;; For Info paths see:
@@ -1212,7 +1215,8 @@ With prefix arg always start and let me choose dictionary."
 ;;
 ;;
 (tv-require 'tramp)
-(setq tramp-default-method "ssh") ; methode par defaut
+;; scp is better for copying large files.
+(setq tramp-default-method "scp")
 ;; (setq tramp-verbose 6) ; See `helm-tramp-verbose' in init-helm.
 
 ;; Android settings (Only available on trunk)
