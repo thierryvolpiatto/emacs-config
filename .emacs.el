@@ -10,6 +10,11 @@
 (setq custom-file "~/.emacs.d/.emacs-custom.el")
 (load custom-file)
 
+;;; VC
+;;
+;; Possible values for vc backends: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
+(setq vc-handled-backends '(RCS Hg))
+
 ;;; Melpa marmalade
 ;;
 (when (and (= emacs-major-version 24)
@@ -1556,12 +1561,6 @@ With prefix arg always start and let me choose dictionary."
 
 ;; Minibuffers completion
 (setq completion-cycle-threshold t) ; always cycle, no completion buffers.
-
-;;; VC
-;;
-;;
-;; Possible values for vc backends: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
-(setq vc-handled-backends '(RCS Hg))
 
 
 ;;; winner-mode config
