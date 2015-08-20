@@ -64,16 +64,25 @@
     (let ((inhibit-read-only t))
       (align-regexp (point-min) (point-max) "\\(\\s-*\\)€" 1 1 nil))))
 
-(defun ledger-reverse-date-to-us ()
-  (interactive)
+(defun ledger-reverse-date-from-regexp (regexp)
   (with-current-buffer (find-file-noselect (getenv "LEDGER_FILE"))
     (goto-char (point-min))
-    (while (re-search-forward "^[0-9]\\{2\\}/[0-9]\\{2\\}/[0-9]\\{4\\}" nil t)
+    (while (re-search-forward regexp nil t)
       (let* ((dt     (match-string-no-properties 0))
              (split  (reverse (split-string dt "/")))
              (new-dt (mapconcat 'identity split "/")))
         (delete-region (point-at-bol) (point))
         (insert new-dt)))))
+
+(defun ledger-reverse-date-to-us ()
+  (interactive)
+  (ledger-reverse-date-from-regexp
+   "^[0-9]\\{2\\}/[0-9]\\{2\\}/[0-9]\\{4\\}"))
+
+(defun ledger-reverse-date-to-fr ()
+  (interactive)
+  (ledger-reverse-date-from-regexp
+   "^[0-9]\\{4\\}/[0-9]\\{2\\}/[0-9]\\{2\\}"))
 
 (defun ledger-add-expense (date payee categorie type amount)
   (interactive
