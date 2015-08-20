@@ -1672,11 +1672,9 @@ With prefix arg always start and let me choose dictionary."
 
 ;;; Golden ratio
 ;;
-(defun helm-running-p () helm-alive-p)
-(setq golden-ratio-inhibit-functions '(helm-running-p))
+(setq golden-ratio-exclude-buffer-regexp '("\\`\\*[Hh]elm.*\\*\\'"))
 (setq golden-ratio-exclude-modes '(ediff-mode calendar-mode wget-mode
                                    gnus-summary-mode gnus-article-mode))
-(setq golden-ratio-exclude-buffer-names '("*helm marked*"))
 (setq golden-ratio-recenter t)
 (add-hook 'ediff-before-setup-windows-hook #'(lambda () (golden-ratio-mode -1)))
 (add-hook 'ediff-quit-hook #'(lambda () (golden-ratio-mode 1)))
