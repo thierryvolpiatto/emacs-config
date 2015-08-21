@@ -883,6 +883,7 @@ are returned unchanged."
 (define-key emacs-lisp-mode-map (kbd "<prior>") 'backward-page)
 
 ;; Which function
+(autoload 'which-function "which-func.el")
 (define-key emacs-lisp-mode-map (kbd "C-c ?")
   (lambda () (interactive) (message "[%s]" (which-function))))
 
