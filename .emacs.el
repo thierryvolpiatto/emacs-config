@@ -882,6 +882,10 @@ are returned unchanged."
 (define-key emacs-lisp-mode-map (kbd "<next>") 'forward-page)
 (define-key emacs-lisp-mode-map (kbd "<prior>") 'backward-page)
 
+;; Which function
+(define-key emacs-lisp-mode-map (kbd "C-c ?")
+  (lambda () (interactive) (message "[%s]" (which-function))))
+
 ;; Indent-only-with-spaces
 (setq-default indent-tabs-mode nil)
 
@@ -1672,6 +1676,8 @@ With prefix arg always start and let me choose dictionary."
 
 ;;; Golden ratio
 ;;
+(defun helm-running-p () helm-alive-p)
+(setq golden-ratio-inhibit-functions '(helm-running-p))
 (setq golden-ratio-exclude-buffer-regexp '("\\`\\*[Hh]elm.*\\*\\'"))
 (setq golden-ratio-exclude-modes '(ediff-mode calendar-mode wget-mode
                                    gnus-summary-mode gnus-article-mode))
