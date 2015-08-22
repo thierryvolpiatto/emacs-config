@@ -50,7 +50,7 @@
 (defun helm/turn-off-header-line ()
   (interactive)
   (setq helm-echo-input-in-header-line nil)
-  (helm-autoresize-mode 1)
+  ;;(helm-autoresize-mode 1)
   (remove-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)
   )
 
