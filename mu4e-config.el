@@ -98,7 +98,11 @@ This will run in `message-send-hook'."
 ;; Ne pas demander si on splitte les pa 
 (setq message-send-mail-partially-limit nil)
 
-;; default
+
+;;; Mu4e settings
+;;
+
+;;; Default
 (setq mu4e-maildir "~/Maildir")
 (setq mu4e-compose-complete-addresses nil)
 (setq mu4e-completing-read-function 'completing-read)
@@ -122,18 +126,18 @@ This will run in `message-send-hook'."
 (define-key mu4e-main-mode-map "q" 'quit-window)
 (define-key mu4e-main-mode-map "Q" 'mu4e-quit)
 
-;; don't save message to Sent Messages, Gmail/IMAP takes care of this
+;;; Don't save message to Sent Messages, Gmail/IMAP takes care of this
 (setq mu4e-sent-messages-behavior 'delete)
 
 (setq mu4e-headers-skip-duplicates t)
 
-;; signature
+;;; Signature
 (setq mu4e-compose-signature t)
 
-;; encryption
+;;; encryption
 (define-key mu4e-view-mode-map [remap mu4e-view-verify-msg-popup] 'epa-mail-verify)
 
-;; setup some handy shortcuts
+;;; Setup some handy shortcuts
 ;; you can quickly switch to your Inbox -- press ``ji''
 ;; then, when you want archive some messages, move them to
 ;; the 'All Mail' folder by pressing ``ma''.
@@ -161,10 +165,10 @@ This will run in `message-send-hook'."
 
 (add-hook 'mu4e-compose-mode-hook 'tv/message-mode-setup) ; loaded from .gnus.el
 
-;; use 'fancy' non-ascii characters in various places in mu4e
+;;; Use 'fancy' non-ascii characters in various places in mu4e
 (setq mu4e-use-fancy-chars t)
 
-;; save attachment (this can also be a function)
+;;; Save attachment (this can also be a function)
 (setq mu4e-attachment-dir "~/download")
 
 ;;; Updating
@@ -173,10 +177,10 @@ This will run in `message-send-hook'."
 ;; allow for updating mail using 'U' in the main view:
 (setq mu4e-get-mail-command "offlineimap -q -u Basic")
 
-;; Automatic updates.
+;;; Automatic updates.
 ;(setq mu4e-update-interval 600)
 
-;; Make a full update all the
+;;; Make a full update all the
 ;; `tv/mu4e-max-number-update-before-toggling' mail retrievals.
 (defvar tv/mu4e-counter 10) ; Ensure a full update on startup.
 (defvar tv/mu4e-max-number-update-before-toggling 10)
@@ -192,19 +196,19 @@ This will run in `message-send-hook'."
       (incf tv/mu4e-counter)))
 (add-hook 'mu4e-update-pre-hook #'tv/mu4e-update-mail-quick-or-full)
 
-;; attempt to show images when viewing messages
+;;; Attempt to show images when viewing messages
 (setq mu4e-view-show-images t
       mu4e-view-image-max-width 800)
 
-;; Allow queuing mails
+;;; Allow queuing mails
 (setq smtpmail-queue-mail  nil  ;; start in non-queuing mode
       smtpmail-queue-dir   "~/Maildir/queue/")
 
-;; View html message in firefox (type aV)
+;;; View html message in firefox (type aV)
 (add-to-list 'mu4e-view-actions
             '("ViewInBrowser" . mu4e-action-view-in-browser) t)
 
-;; Decorate mu main view
+;;; Decorate mu main view
 (defun mu4e-main-mode-font-lock-rules ()
   (save-excursion
     (goto-char (point-min))
@@ -212,7 +216,7 @@ This will run in `message-send-hook'."
       (add-text-properties (match-beginning 1) (match-end 1) '(face font-lock-variable-name-face)))))
 (add-hook 'mu4e-main-mode-hook 'mu4e-main-mode-font-lock-rules)
 
-;; Handle quoted text added with `message-mark-inserted-region' (`C-c M-m')
+;;; Handle quoted text added with `message-mark-inserted-region' (`C-c M-m')
 (add-hook 'mu4e-view-mode-hook 'mu4e-mark-region-code)
 
 (defun tv/mu4e-browse-url ()
@@ -233,7 +237,8 @@ This will run in `message-send-hook'."
 (define-key mu4e-view-mode-map (kbd "C-i") 'w3m-next-anchor)
 (define-key mu4e-view-mode-map (kbd "M-<tab>") 'w3m-previous-anchor)
 
-;; A simplified and more efficient version of `article-translate-strings'.
+;;; A simplified and more efficient version of `article-translate-strings'.
+;;
 ;; Transform also in headers.
 (defun mu4e~view-translate-strings (map)
   "Translate all string in the the article according to MAP.
@@ -268,7 +273,8 @@ try this wash."
        (150 . "-") (151 . "--") (152 . "~") (153 . "(TM)")
        (155 . ">") (156 . "oe") (180 . "'")))))
 
-;; Same as `article-remove-cr' (W-c) but simplified and more efficient.
+;;; Same as `article-remove-cr' (W-c) but simplified and more efficient.
+;;
 ;; Not sure it is needed in mu4e though.
 (defun mu4e-view-remove-cr ()
   "Remove trailing CRs and then translate remaining CRs into LFs."
@@ -281,7 +287,8 @@ try this wash."
             (replace-match "" t t)
             (replace-match "\n" t t))))))
 
-;; Show Smileys
+;;; Show Smileys
+;;
 (add-hook 'mu4e-view-mode-hook 'smiley-buffer)
 
 (provide 'mu4e-config)
