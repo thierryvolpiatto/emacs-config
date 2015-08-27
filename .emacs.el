@@ -380,7 +380,6 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 (global-set-key (kbd "C-c R")                      #'(lambda () (interactive) (revert-buffer t t)))
 (global-set-key (kbd "C-c W")                      'whitespace-mode)
 (global-set-key (kbd "C-M-j")                      #'(lambda () (interactive) (kill-sexp -1)))
-(global-set-key (kbd "<f7> m")                     'tv-gnus)
 (global-set-key (kbd "<f8>")                       'mu4e)
 (global-set-key (kbd "<f7> j")                     'webjump)
 (global-set-key (kbd "<f11> o")                    'helm-org-agenda-files-headings)
