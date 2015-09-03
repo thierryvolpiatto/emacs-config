@@ -31,15 +31,6 @@
   (shell-command-to-string
    "git log --pretty='format:%H' -1"))
 
-(unless (fboundp 'helm-hide-minibuffer-maybe)
-  (defun helm-hide-minibuffer-maybe ()
-    (when (with-helm-buffer helm-echo-input-in-header-line)
-      (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
-        (overlay-put ov 'window (selected-window))
-        (overlay-put ov 'face (let ((bg-color (face-background 'default nil)))
-                                `(:background ,bg-color :foreground ,bg-color)))
-        (setq-local cursor-type nil)))))
-
 (defun helm/turn-on-header-line ()
   (interactive)
   (setq helm-echo-input-in-header-line t)
@@ -93,16 +84,10 @@
 (define-key global-map [remap dabbrev-expand]        'helm-dabbrev)
 (define-key global-map [remap find-tag]              'helm-etags-select)
 (define-key global-map [remap xref-find-definitions] 'helm-etags-select)
+(define-key global-map (kbd "M-g a")                 'helm-do-grep-ag)
+
+;; Shell bindings
 (define-key shell-mode-map (kbd "M-p")               'helm-comint-input-ring) ; shell history.
-
-;;; Lisp complete or indent. (Rebind <tab>)
-;;
-;; Use `completion-at-point' with `helm-mode' if available
-;; otherwise fallback to helm implementation.
-
-;; Set to `complete' will use `completion-at-point'.
-;; (and (boundp 'tab-always-indent)
-;;      (setq tab-always-indent 'complete))
 
 (helm-multi-key-defun helm-multi-lisp-complete-at-point
     "Multi key function for completion in emacs lisp buffers.
@@ -135,11 +120,6 @@ First call indent, second complete symbol, third complete fname."
             #'(lambda ()
                 (define-key ielm-map    [remap completion-at-point] 'helm-lisp-completion-at-point))))
 
-;;; helm completion in minibuffer
-;;
-;; (define-key minibuffer-local-map [remap completion-at-point] 'helm-lisp-completion-at-point)  ; >24.3
-;; (define-key minibuffer-local-map [remap lisp-complete-symbol] 'helm-lisp-completion-at-point) ; <=24.3
-
 ;;; helm find files
 ;;
 (define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
@@ -147,7 +127,7 @@ First call indent, second complete symbol, third complete fname."
 
 ;; Use default-as-input in grep
 (add-to-list 'helm-sources-using-default-as-input 'helm-source-grep)
-
+(add-to-list 'helm-sources-using-default-as-input 'helm-source-grep-ag)
 
 ;;; Describe key-bindings
 ;;
@@ -159,53 +139,36 @@ First call indent, second complete symbol, third complete fname."
 ;;
 ;;
 (setq helm-net-prefer-curl                       t
-      ;helm-kill-ring-threshold                   1
+      helm-kill-ring-threshold                   1
       helm-raise-command                         "wmctrl -xa %s"
       helm-scroll-amount                         4
-      ;helm-quick-update                          t
       helm-idle-delay                            0.01
       helm-input-idle-delay                      0.01
-      ;helm-completion-window-scroll-margin       0
-      ;helm-display-source-at-screen-top          nil
       helm-ff-search-library-in-sexp             t
-      ;helm-kill-ring-max-lines-number            5
       helm-default-external-file-browser         "thunar"
       helm-pdfgrep-default-read-command          "evince --page-label=%p '%f'"
-      ;helm-ff-transformer-show-only-basename     t
       helm-ff-auto-update-initial-value          t
       helm-grep-default-command                  "ack-grep -Hn --smart-case --no-group %e %p %f"
       helm-grep-default-recurse-command          "ack-grep -H --smart-case --no-group %e %p %f"
+      helm-grep-ag-command                       "ag --line-numbers -S --hidden --color --nogroup %s %s"
       ;; Allow skipping unwanted files specified in ~/.gitignore_global
       ;; Added in my .gitconfig with "git config --global core.excludesfile ~/.gitignore_global"
       helm-ls-git-grep-command                   "git grep -n%cH --color=always --exclude-standard --no-index --full-name -e %p %f"
       helm-default-zgrep-command                 "zgrep --color=always -a -n%cH -e %p %f"
-      ;helm-pdfgrep-default-command               "pdfgrep --color always -niH %s %s"
+      ;; helm-pdfgrep-default-command               "pdfgrep --color always -niH %s %s"
       helm-reuse-last-window-split-state         t
-      ;helm-split-window-default-side             'below
-      ;helm-split-window-in-side-p                t
-      ;helm-echo-input-in-header-line             t
       helm-always-two-windows                    t
-      ;helm-persistent-action-use-special-display t
       helm-buffers-favorite-modes                (append helm-buffers-favorite-modes
                                                          '(picture-mode artist-mode))
       helm-ls-git-status-command                 'magit-status-internal
-      ;helm-never-delay-on-input                  nil
-      ;helm-candidate-number-limit                200
       helm-M-x-requires-pattern                  0
       helm-dabbrev-cycle-threshold               5
       helm-surfraw-duckduckgo-url                "https://duckduckgo.com/?q=%s&ke=-1&kf=fw&kl=fr-fr&kr=b&k1=-1&k4=-1"
-      ;helm-surfraw-default-browser-function      'w3m-browse-url
       helm-boring-file-regexp-list               '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$" "\\._darcs$" "\\.la$" "\\.o$" "\\.i$")
-      ;helm-mode-handle-completion-in-region      t
-      ;helm-moccur-always-search-in-current        t
-      ;helm-tramp-verbose                         6
       helm-buffer-skip-remote-checking           t
-      ;helm-ff-file-name-history-use-recentf      t
-      ;helm-follow-mode-persistent                t
       helm-apropos-fuzzy-match                   t
       helm-M-x-fuzzy-match                       t
       helm-lisp-fuzzy-completion                 t
-      ;helm-locate-fuzzy-match                     t
       helm-completion-in-region-fuzzy-match      t
       helm-move-to-line-cycle-in-source          t
       ido-use-virtual-buffers                    t             ; Needed in helm-buffers-list
@@ -231,10 +194,6 @@ First call indent, second complete symbol, third complete fname."
 
 ;; Avoid hitting forbidden directory .gvfs when using find.
 (add-to-list 'completion-ignored-extensions ".gvfs/")
-
-;;; Hide minibuffer
-;;
-;; (add-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)
 
 
 ;;; Toggle grep program

@@ -43,7 +43,7 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;
 ;; (setenv "LANG" "C")
 ;; This is needed to make helm-grep working with ansi.
-;; foreground red:
+;; foreground red for matches (original) :
 ;;(setenv "GREP_COLORS" "ms=01;31:mc=01;31:sl=01;37:cx=:fn=35:ln=32:bn=32:se=36")
 ;; background yellow foreground black:
 (setenv "GREP_COLORS" "ms=30;43:mc=30;43:sl=01;37:cx=:fn=35:ln=32:bn=32:se=36")

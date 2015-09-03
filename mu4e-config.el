@@ -19,6 +19,7 @@
 
 (setq user-mail-address "thierry.volpiatto@gmail.com")
 (setq user-full-name "Thierry Volpiatto")
+(setq mu4e-user-mail-address-list `(,user-mail-address "tvolpiatto@yahoo.fr"))
 
 ;; [smtpmail-async] Experimental, use `smtpmail-send-it' otherwise. 
 (setq message-send-mail-function 'async-smtpmail-send-it
