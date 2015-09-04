@@ -282,13 +282,13 @@ If your system's ping continues until interrupted, you can try setting
 ;;;
 ;;
 ;;
-(defvar tv/use-gnus nil)
+(defvar tv/use-gnus t)
 (when tv/use-gnus
   (setq gnus-asynchronous t)
   ;; (setq mail-user-agent 'gnus-user-agent)
   ;; (setq read-mail-command 'gnus)
   ;; (setq send-mail-command 'gnus-msg-mail)
-  (setq gnus-init-file "~/.emacs.d/.gnus.el")
+  (setq gnus-init-file "~/.emacs.d/emacs-config/.gnus.el")
 
   (defvar tv-gnus-loaded-p nil)
   (defun tv-load-gnus-init-may-be ()

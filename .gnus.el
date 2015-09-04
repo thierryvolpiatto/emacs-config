@@ -34,13 +34,13 @@
                                       ;; Add as many gmail account as needed with a label.
                                       ;; Add then an entry in .authinfo:
                                       ;; machine label port xxx login xxx password xxx
-                                      (nnimap "gmail" ; Label for reference in .authinfo for machine name.
-                                       (nnimap-address "imap.gmail.com")
-                                       (nnimap-fetch-partial-articles "text/"))
+                                      ;; (nnimap "gmail" ; Label for reference in .authinfo for machine name.
+                                      ;;  (nnimap-address "imap.gmail.com")
+                                      ;;  (nnimap-fetch-partial-articles "text/"))
                                       ;; ;;[1]
-                                      (nnimap "yahoo"
-                                       (nnimap-address "imap.mail.yahoo.com")
-                                       (nnimap-fetch-partial-articles "text/"))
+                                      ;; (nnimap "yahoo"
+                                      ;;  (nnimap-address "imap.mail.yahoo.com")
+                                      ;;  (nnimap-fetch-partial-articles "text/"))
                                       ;; [1]
                                       ;(nntp "news.gwene.org")
                                       ))
