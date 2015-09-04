@@ -315,7 +315,7 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
           (if (or arg (not (quickping "imap.gmail.com")))
               (gnus-unplugged)
               (gnus)))))
-
+  (global-set-key (kbd "<f7> m") 'tv-gnus)
   ;; Borred C-g'ing all the time and hanging emacs
   ;; while in gnus (while tethering or not).
   ;; Kill all nnimap/nntpd processes when exiting summary.
