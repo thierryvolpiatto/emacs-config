@@ -1434,10 +1434,9 @@ With prefix arg always start and let me choose dictionary."
 
 ;;; Undo-tree
 ;;
-;; Set `undo-outer-limit' to high value to avoid messages on long output.
-;; (setq undo-outer-limit 20000000)
-;; undo-limit
-;; (setq undo-limit 100000)
+;;
+(setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree-history")))
+(setq undo-tree-auto-save-history t)
 (global-undo-tree-mode)
 
 
