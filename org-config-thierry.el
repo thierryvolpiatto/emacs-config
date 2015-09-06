@@ -35,7 +35,8 @@
 
 ;;; Code:
 
-;(require 'org)
+(setq org-directory "~/org")
+
 ;; auto-fill-mode 
 ;; (set to 78 in files)
 (add-hook 'org-mode-hook 'auto-fill-mode)
@@ -129,8 +130,10 @@
     (forward-line 1)
     (insert "\n#+end_src")))
 
-(define-key org-mode-map (kbd "<f11> o") 'helm-org-in-buffer-headings)
-(define-key org-mode-map (kbd "<f11> k") 'tv/insert-org-src-keyword)
+(add-hook 'org-mode-hook 
+	  (lambda ()
+	    (define-key org-mode-map (kbd "<f11> o") 'helm-org-in-buffer-headings)
+	    (define-key org-mode-map (kbd "<f11> k") 'tv/insert-org-src-keyword)))
                                              
 ;; Colorize-Diary's-entries-in-agenda 
 (defvar tv-diary-regexp "^ *[Dd]iary")
@@ -167,7 +170,8 @@
 (add-hook 'org-finalize-agenda-hook 'tv-org-propertize-note-entry)
 
 
-(set-face-attribute 'org-agenda-date-weekend nil :foreground "red")
+(add-hook 'org-agenda-mode-hook
+	  (lambda () (set-face-attribute 'org-agenda-date-weekend nil :foreground "red")))
 
 ;; org-crypt 
 (require 'org-crypt)

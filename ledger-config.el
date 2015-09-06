@@ -18,6 +18,7 @@
       (goto-char (cdr where)))))
 
 ;; «Align-euro-device» (to ".Align-euro-device")
+;;;###autoload
 (defun ledger-align-device (&optional column)
   (interactive "p")
   (when (= column 1) (setq column 48))
@@ -44,6 +45,7 @@
         (forward-line)))))
 
 ;; «ledger-position-at-point» (to ".ledger-position-at-point")
+;;;###autoload
 (defun ledger-position (arg)
   "Show ledger balance, with prefix-arg insert it at point."
   (interactive "P")
@@ -74,16 +76,19 @@
         (delete-region (point-at-bol) (point))
         (insert new-dt)))))
 
+;;;###autoload
 (defun ledger-reverse-date-to-us ()
   (interactive)
   (ledger-reverse-date-from-regexp
    "^[0-9]\\{2\\}/[0-9]\\{2\\}/[0-9]\\{4\\}"))
 
+;;;###autoload
 (defun ledger-reverse-date-to-fr ()
   (interactive)
   (ledger-reverse-date-from-regexp
    "^[0-9]\\{4\\}/[0-9]\\{2\\}/[0-9]\\{2\\}"))
 
+;;;###autoload
 (defun ledger-add-expense (date payee categorie type amount)
   (interactive
    (list (read-string "Date: " (format-time-string "%Y/%m/%d"))
@@ -112,6 +117,7 @@
       (save-buffer)
       (pop-to-buffer ledger-file))))
 
+;;;###autoload
 (defun ledger-add-income (date payee categorie account amount)
   (interactive
    (list (read-string "Date: " (format-time-string "%Y/%m/%d"))
@@ -154,6 +160,7 @@
             (push result categories))))
       categories)))
 
+;;;###autoload
 (defun ledger-point-entries-in-buffer ()
   "Point entries from point to end of buffer.
 Like C-c C-e but on all entries.
@@ -164,6 +171,7 @@ If entries are already pointed, skip."
 
 (defvar csv2ledger-default-input-dir "~/Téléchargements/")
 (defvar csv2ledger-default-output-dir "~/finance")
+;;;###autoload
 (defun csv2ledger (account infile ofile)
   (interactive (list (completing-read "Account: " '("Socgen" "Paypal" "livretA"))
                      (read-file-name "Input cvs file: "
@@ -210,6 +218,7 @@ If entries are already pointed, skip."
       (overlay-put ov 'face '((:background "DarkSlateGray"))))
     (switch-to-buffer obuf)))
 
+;;;###autoload
 (defun ledger-exchange-point-an-mark-or-overlay ()
   (interactive)
   (if (region-active-p)
