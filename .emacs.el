@@ -164,11 +164,11 @@ If your system's ping continues until interrupted, you can try setting
 ;;; load-paths
 ;; For Info paths see:
 ;; [EVAL] (getenv "INFOPATH")
-(tv-require 'info)
-(add-to-list 'Info-directory-list "/usr/local/share/info")
-(add-to-list 'Info-directory-list "/usr/share/info")
-(add-to-list 'Info-directory-list "~/elisp/info")
-(add-to-list 'Info-directory-list "~/elisp/info/eshell-doc")
+(with-eval-after-load "info"
+  (add-to-list 'Info-directory-list "/usr/local/share/info")
+  (add-to-list 'Info-directory-list "/usr/share/info")
+  (add-to-list 'Info-directory-list "~/elisp/info")
+  (add-to-list 'Info-directory-list "~/elisp/info/eshell-doc"))
 
 (dolist (i '("/usr/local/share/emacs/site-lisp"
              "/usr/local/share/emacs/site-lisp/mu4e"
@@ -232,8 +232,6 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Require's
 ;;
 ;;
-(tv-require 'auth-source)
-(tv-require 'epa-file)
 (tv-require 'init-helm-thierry)
 (autoload 'firefox-protocol-installer-install "firefox-protocol" nil t)
 (autoload 'addressbook-turn-on-mail-completion "addressbook-bookmark")
@@ -250,11 +248,6 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'htmlize-file "htmlize" nil t)
 (autoload 'htmlize-many-files "htmlize" nil t)
 (autoload 'htmlize-many-files-dired "htmlize" nil t)
-(tv-require 'no-word)
-(tv-require 'flymake)
-(tv-require 'esh-toggle)
-(autoload 'eshell-toggle "esh-toggle" nil t)
-(autoload 'eshell-toggle-cd "esh-toggle" nil t)
 (autoload 'cl-info "cl-info" nil t)
 (autoload 'ioccur "ioccur" nil t)
 (tv-require 'tv-utils)
@@ -356,7 +349,8 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
   (= 0 (call-process "ping" nil nil nil "-c1" "-W10" "-q" host)))
 
 ;; Auth-source
-(setq auth-sources '((:source "~/.authinfo.gpg" :host t :protocol t)))
+(with-eval-after-load "auth-source"
+  (setq auth-sources '((:source "~/.authinfo.gpg" :host t :protocol t))))
 
 
 ;; Use helm-occur as default but fallback to ioccur when helm is broken
@@ -736,7 +730,7 @@ With a prefix arg decrease transparency."
 (setq select-active-regions t)
 
 ;; Whitespace-mode
-(when (tv-require 'whitespace)
+(with-eval-after-load "whitespace"
   (add-to-list 'whitespace-style 'lines-tail)
   (setq whitespace-line-column 80))
 
@@ -1046,7 +1040,7 @@ from IPython.core.completerlib import module_completion"
 
 ;; Eshell-visual
 (setq eshell-term-name "eterm-color")
-(when (tv-require 'em-term)
+(with-eval-after-load "em-term"
   (dolist (i '("tmux" "htop" "ipython" "alsamixer" "git-log"))
     (add-to-list 'eshell-visual-commands i)))
 
