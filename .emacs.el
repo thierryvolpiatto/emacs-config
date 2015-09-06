@@ -462,6 +462,8 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 (global-set-key (kbd "C-§")                        'iedit-narrow-to-end)
 (global-set-key (kbd "C-²")                        'iedit-narrow-to-defun)
 (global-set-key [C-return]                         'iedit-rectangle-mode)
+(global-set-key (kbd "C-;")                        'iedit-mode)
+
 (defun goto-scratch () (interactive) (switch-to-buffer "*scratch*"))
 (global-set-key (kbd "<f11> s c")                  'goto-scratch)
 
