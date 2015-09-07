@@ -758,127 +758,128 @@ With a prefix arg decrease transparency."
 (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'eshell-mode-hook 'turn-on-eldoc-mode)
 
-(when (and (tv-require 'eldoc)
-           ;; Don't load this on emacs-25
-           (fboundp 'eldoc-highlight-function-argument))
-  (defun eldoc-highlight-function-argument (sym args index)
-    "Highlight argument INDEX in ARGS list for function SYM.
+(use-package eldoc
+    :config
+  (when ;; Don't load this on emacs-25
+      (fboundp 'eldoc-highlight-function-argument)
+    (defun eldoc-highlight-function-argument (sym args index)
+      "Highlight argument INDEX in ARGS list for function SYM.
 In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
-    (let ((start          nil)
-          (end            0)
-          (argument-face  'eldoc-highlight-function-argument)
-          (args-lst (mapcar (lambda (x)
-                              (replace-regexp-in-string
-                               "\\`[(]\\|[)]\\'" "" x))
-                            (split-string args))))
-      ;; Find the current argument in the argument string.  We need to
-      ;; handle `&rest' and informal `...' properly.
-      ;;
-      ;; FIXME: What to do with optional arguments, like in
-      ;;        (defun NAME ARGLIST [DOCSTRING] BODY...) case?
-      ;;        The problem is there is no robust way to determine if
-      ;;        the current argument is indeed a docstring.
+      (let ((start          nil)
+            (end            0)
+            (argument-face  'eldoc-highlight-function-argument)
+            (args-lst (mapcar (lambda (x)
+                                (replace-regexp-in-string
+                                 "\\`[(]\\|[)]\\'" "" x))
+                              (split-string args))))
+        ;; Find the current argument in the argument string.  We need to
+        ;; handle `&rest' and informal `...' properly.
+        ;;
+        ;; FIXME: What to do with optional arguments, like in
+        ;;        (defun NAME ARGLIST [DOCSTRING] BODY...) case?
+        ;;        The problem is there is no robust way to determine if
+        ;;        the current argument is indeed a docstring.
 
-      ;; When `&key' is used finding position based on `index'
-      ;; would be wrong, so find the arg at point and determine
-      ;; position in ARGS based on this current arg.
-      (when (string-match "&key" args)
-        (let* (case-fold-search
-               key-have-value
-               (sym-name (symbol-name sym))
-               (cur-w (current-word))
-               (args-lst-ak (cdr (member "&key" args-lst)))
-               (limit (save-excursion
-                        (when (re-search-backward sym-name nil t)
-                          (match-end 0))))
-               (cur-a (if (and cur-w (string-match ":\\([^ ()]*\\)" cur-w))
-                          (substring cur-w 1)
-                          (save-excursion
-                            (let (split)
-                              (when (re-search-backward ":\\([^()\n]*\\)" limit t)
-                                (setq split (split-string (match-string 1) " " t))
-                                (prog1 (car split)
-                                  (when (cdr split)
-                                    (setq key-have-value t))))))))
-               ;; If `cur-a' is not one of `args-lst-ak'
-               ;; assume user is entering an unknow key
-               ;; referenced in last position in signature.
-               (other-key-arg (and (stringp cur-a)
-                                   args-lst-ak
-                                   (not (member (upcase cur-a) args-lst-ak))
-                                   (upcase (car (last args-lst-ak))))))
-          (unless (string= cur-w sym-name)
-            ;; The last keyword have already a value
-            ;; i.e :foo a b and cursor is at b.
-            ;; If signature have also `&rest'
-            ;; (assume it is after the `&key' section)
-            ;; go to the arg after `&rest'.
-            (if (and key-have-value
-                     (save-excursion
-                       (not (re-search-forward ":.*" (point-at-eol) t)))
-                     (string-match "&rest \\([^ ()]*\\)" args))
-                (setq index nil ; Skip next block based on positional args.
-                      start (match-beginning 1)
-                      end   (match-end 1))
-                ;; If `cur-a' is nil probably cursor is on a positional arg
-                ;; before `&key', in this case, exit this block and determine
-                ;; position with `index'.
-                (when (and cur-a ; A keyword arg (dot removed) or nil.
-                           (or (string-match
-                                (concat "\\_<" (upcase cur-a) "\\_>") args)
-                               (string-match
-                                (concat "\\_<" other-key-arg "\\_>") args)))
+        ;; When `&key' is used finding position based on `index'
+        ;; would be wrong, so find the arg at point and determine
+        ;; position in ARGS based on this current arg.
+        (when (string-match "&key" args)
+          (let* (case-fold-search
+                 key-have-value
+                 (sym-name (symbol-name sym))
+                 (cur-w (current-word))
+                 (args-lst-ak (cdr (member "&key" args-lst)))
+                 (limit (save-excursion
+                          (when (re-search-backward sym-name nil t)
+                            (match-end 0))))
+                 (cur-a (if (and cur-w (string-match ":\\([^ ()]*\\)" cur-w))
+                            (substring cur-w 1)
+                            (save-excursion
+                              (let (split)
+                                (when (re-search-backward ":\\([^()\n]*\\)" limit t)
+                                  (setq split (split-string (match-string 1) " " t))
+                                  (prog1 (car split)
+                                    (when (cdr split)
+                                      (setq key-have-value t))))))))
+                 ;; If `cur-a' is not one of `args-lst-ak'
+                 ;; assume user is entering an unknow key
+                 ;; referenced in last position in signature.
+                 (other-key-arg (and (stringp cur-a)
+                                     args-lst-ak
+                                     (not (member (upcase cur-a) args-lst-ak))
+                                     (upcase (car (last args-lst-ak))))))
+            (unless (string= cur-w sym-name)
+              ;; The last keyword have already a value
+              ;; i.e :foo a b and cursor is at b.
+              ;; If signature have also `&rest'
+              ;; (assume it is after the `&key' section)
+              ;; go to the arg after `&rest'.
+              (if (and key-have-value
+                       (save-excursion
+                         (not (re-search-forward ":.*" (point-at-eol) t)))
+                       (string-match "&rest \\([^ ()]*\\)" args))
                   (setq index nil ; Skip next block based on positional args.
-                        start (match-beginning 0)
-                        end   (match-end 0)))))))
-      ;; Handle now positional arguments.
-      (while (and index (>= index 1))
-        (if (string-match "[^ ()]+" args end)
-            (progn
-              (setq start (match-beginning 0)
-                    end   (match-end 0))
-              (let ((argument (match-string 0 args)))
-                (cond ((string= argument "&rest")
-                       ;; All the rest arguments are the same.
-                       (setq index 1))
-                      ((string= argument "&optional")) ; Skip.
-                      ((string= argument "&allow-other-keys")) ; Skip.
-                      ;; Back to index 0 in ARG1 ARG2 ARG2 ARG3 etc...
-                      ;; like in `setq'.
-                      ((or (and (string-match-p "\\.\\.\\.$" argument)
-                                (string= argument (car (last args-lst))))
-                           (and (string-match-p "\\.\\.\\.$"
-                                                (substring args 1 (1- (length args))))
-                                (= (length (remove "..." args-lst)) 2)
-                                (> index 1) (oddp index)))
-                       (setq index 0))
-                      (t
-                       (setq index (1- index))))))
-            (setq end           (length args)
-                  start         (1- end)
-                  argument-face 'font-lock-warning-face
-                  index         0)))
-      (let ((doc args))
-        (when start
-          (setq doc (copy-sequence args))
-          (add-text-properties start end (list 'face argument-face) doc))
-        (setq doc (eldoc-docstring-format-sym-doc
-                   sym doc (if (functionp sym) 'font-lock-function-name-face
-                               'font-lock-keyword-face)))
-        doc)))
+                        start (match-beginning 1)
+                        end   (match-end 1))
+                  ;; If `cur-a' is nil probably cursor is on a positional arg
+                  ;; before `&key', in this case, exit this block and determine
+                  ;; position with `index'.
+                  (when (and cur-a ; A keyword arg (dot removed) or nil.
+                             (or (string-match
+                                  (concat "\\_<" (upcase cur-a) "\\_>") args)
+                                 (string-match
+                                  (concat "\\_<" other-key-arg "\\_>") args)))
+                    (setq index nil ; Skip next block based on positional args.
+                          start (match-beginning 0)
+                          end   (match-end 0)))))))
+        ;; Handle now positional arguments.
+        (while (and index (>= index 1))
+          (if (string-match "[^ ()]+" args end)
+              (progn
+                (setq start (match-beginning 0)
+                      end   (match-end 0))
+                (let ((argument (match-string 0 args)))
+                  (cond ((string= argument "&rest")
+                         ;; All the rest arguments are the same.
+                         (setq index 1))
+                        ((string= argument "&optional"))       ; Skip.
+                        ((string= argument "&allow-other-keys")) ; Skip.
+                        ;; Back to index 0 in ARG1 ARG2 ARG2 ARG3 etc...
+                        ;; like in `setq'.
+                        ((or (and (string-match-p "\\.\\.\\.$" argument)
+                                  (string= argument (car (last args-lst))))
+                             (and (string-match-p "\\.\\.\\.$"
+                                                  (substring args 1 (1- (length args))))
+                                  (= (length (remove "..." args-lst)) 2)
+                                  (> index 1) (oddp index)))
+                         (setq index 0))
+                        (t
+                         (setq index (1- index))))))
+              (setq end           (length args)
+                    start         (1- end)
+                    argument-face 'font-lock-warning-face
+                    index         0)))
+        (let ((doc args))
+          (when start
+            (setq doc (copy-sequence args))
+            (add-text-properties start end (list 'face argument-face) doc))
+          (setq doc (eldoc-docstring-format-sym-doc
+                     sym doc (if (functionp sym) 'font-lock-function-name-face
+                                 'font-lock-keyword-face)))
+          doc)))
 
-  (when (fboundp 'eldoc-function-argstring-format)
-    (defun eldoc-function-argstring-format (argstring)
-      "Apply `eldoc-argument-case' to each word in ARGSTRING.
+    (when (fboundp 'eldoc-function-argstring-format)
+      (defun eldoc-function-argstring-format (argstring)
+        "Apply `eldoc-argument-case' to each word in ARGSTRING.
 The words \"&rest\", \"&optional\", \"&key\" and \"&allow-other-keys\"
 are returned unchanged."
-      (mapconcat
-       (lambda (s)
-         (if (string-match-p
-              "\\`(?&\\(?:optional\\|rest\\|key\\|allow-other-keys\\))?\\'" s)
-             s
-             (funcall eldoc-argument-case s)))
-       (split-string argstring) " "))))
+        (mapconcat
+         (lambda (s)
+           (if (string-match-p
+                "\\`(?&\\(?:optional\\|rest\\|key\\|allow-other-keys\\))?\\'" s)
+               s
+               (funcall eldoc-argument-case s)))
+         (split-string argstring) " ")))))
 
 ;; Tooltip face
 (set-face-attribute 'tooltip nil
@@ -1152,7 +1153,7 @@ With prefix arg always start and let me choose dictionary."
 ;;
 (load "auctex.el" nil t t)
 (load "preview-latex.el" nil t t)
-(tv-require 'xdvi-search)
+(use-package xdvi-search)
 
 ;; To turn on RefTeX Minor Mode for all LaTeX files,
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex) ; with AUCTeX LaTeX mode
@@ -1252,39 +1253,41 @@ With prefix arg always start and let me choose dictionary."
 ;;; Tramp-config
 ;;
 ;;
-(tv-require 'tramp)
-;; scp is better for copying large files.
-(setq tramp-default-method "scp")
-;; (setq tramp-verbose 6) ; See `helm-tramp-verbose' in init-helm.
+(use-package tramp
+    :config
+  (progn
+    ;; scp is better for copying large files.
+    (setq tramp-default-method "scp")
+    ;; (setq tramp-verbose 6) ; See `helm-tramp-verbose' in init-helm.
+    
+    ;; Android settings (Only available on trunk)
+    ;;
+    (when (boundp 'tramp-connection-properties)
+      (add-to-list 'tramp-connection-properties
+                   (list (regexp-quote "192.168.0.24") "remote-shell" "sh"))
+      (add-to-list 'tramp-connection-properties
+                   (list (regexp-quote "zte") "remote-shell" "sh"))
+      (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+      (pushnew "/system/xbin" tramp-remote-path :test 'equal)
+      (add-to-list 'tramp-remote-process-environment "TMPDIR=$HOME/tmp"))
 
-;; Android settings (Only available on trunk)
-;;
-(when (boundp 'tramp-connection-properties)
-  (add-to-list 'tramp-connection-properties
-               (list (regexp-quote "192.168.0.24") "remote-shell" "sh"))
-  (add-to-list 'tramp-connection-properties
-               (list (regexp-quote "zte") "remote-shell" "sh"))
-  (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
-  (pushnew "/system/xbin" tramp-remote-path :test 'equal)
-  (add-to-list 'tramp-remote-process-environment "TMPDIR=$HOME/tmp"))
+    ;; No messages
+    (setq tramp-message-show-message nil)
 
-;; No messages
-(setq tramp-message-show-message nil)
-
-;; Allow connecting as root on all remote Linux machines except this one.
-;; Use e.g /sudo:host:/path
-(add-to-list 'tramp-default-proxies-alist
-             '("\\`thievol\\'" "\\`root\\'" "/ssh:%h:"))
-
-(add-to-list 'tramp-default-proxies-alist
-             '("\\`thievolrem\\'" "\\`root\\'" "/ssh:%h:"))
-
-(add-to-list 'tramp-default-proxies-alist
-             '((regexp-quote (system-name)) nil nil))
-
-;; Connect to my freebox as 'freebox' user.
-(add-to-list 'tramp-default-user-alist
-             '("ftp" "\\`mafreebox\\.freebox\\.fr\\'" "freebox"))
+    ;; Allow connecting as root on all remote Linux machines except this one.
+    ;; Use e.g /sudo:host:/path
+    (add-to-list 'tramp-default-proxies-alist
+                 '("\\`thievol\\'" "\\`root\\'" "/ssh:%h:"))
+    
+    (add-to-list 'tramp-default-proxies-alist
+                 '("\\`thievolrem\\'" "\\`root\\'" "/ssh:%h:"))
+    
+    (add-to-list 'tramp-default-proxies-alist
+                 '((regexp-quote (system-name)) nil nil))
+    
+    ;; Connect to my freebox as 'freebox' user.
+    (add-to-list 'tramp-default-user-alist
+                 '("ftp" "\\`mafreebox\\.freebox\\.fr\\'" "freebox"))))
 
 ;;; Ange-ftp
 ;;
