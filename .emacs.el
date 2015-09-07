@@ -24,8 +24,8 @@
   (load "package-24"))
 
 (package-initialize)
-(setq package-archives '(("melpa" . "http://melpa.org/packages/")
-                         ("gnu" . "http://elpa.gnu.org/packages/")))
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("gnu" . "https://elpa.gnu.org/packages/")))
 
 ;; Fix compatibility with emacs 24.3.
 ;; Avoid rebuilding all the autoloads just for this when switching to 24.3.
