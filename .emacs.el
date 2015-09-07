@@ -2,7 +2,6 @@
 
 ;;; Code:
 
-;;; Load cl-lib
 (require 'cl-lib)
 
 ;;; Emacs customize have it's own file
@@ -27,6 +26,7 @@
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                          ("gnu" . "https://elpa.gnu.org/packages/")))
 
+(require 'use-package)
 ;; Fix compatibility with emacs 24.3.
 ;; Avoid rebuilding all the autoloads just for this when switching to 24.3.
 (unless (fboundp 'function-put)
@@ -73,31 +73,33 @@ in cl-case that file does not provide any feature."
 
 ;;; Temporary Bugfixes until fixed in trunk.
 ;;
-(when (require 'net-utils)
-  (defun ping (host)
-    "Ping HOST.
+(use-package net-utils
+    :config
+  (progn
+    (defun ping (host)
+      "Ping HOST.
 If your system's ping continues until interrupted, you can try setting
 `ping-program-options'."
-    (interactive "sPing host: ")
-    (let ((options
-           (if ping-program-options
-               (append ping-program-options (list host))
-               (list host))))
-      (net-utils-run-simple
-       (concat "Ping" " " host)
-       ping-program
-       options)))
+      (interactive "sPing host: ")
+      (let ((options
+             (if ping-program-options
+                 (append ping-program-options (list host))
+                 (list host))))
+        (net-utils-run-simple
+         (concat "Ping" " " host)
+         ping-program
+         options)))
 
-  (defun run-dig (host)
-    "Run dig program."
-    (interactive "sLookup host: ")
-    (net-utils-run-simple
-     (concat "** "
-             (mapconcat 'identity
-                        (list "Dig" host dig-program)
-                        " ** "))
-     dig-program
-     (list host))))
+    (defun run-dig (host)
+      "Run dig program."
+      (interactive "sLookup host: ")
+      (net-utils-run-simple
+       (concat "** "
+               (mapconcat 'identity
+                          (list "Dig" host dig-program)
+                          " ** "))
+       dig-program
+       (list host)))))
 
 (defadvice term-command-hook (before decode-string)
   (setq string (decode-coding-string string locale-coding-system)))
@@ -232,7 +234,8 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Require's
 ;;
 ;;
-(tv-require 'init-helm-thierry)
+;(tv-require 'init-helm-thierry)
+(use-package helm :init (tv-require 'init-helm-thierry))
 (autoload 'firefox-protocol-installer-install "firefox-protocol" nil t)
 (autoload 'addressbook-turn-on-mail-completion "addressbook-bookmark")
 (autoload 'addressbook-bookmark-set "addressbook-bookmark" nil t)
@@ -240,8 +243,8 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'addressbook-mu4e-bookmark "addressbook-bookmark" nil t)
 (autoload 'addressbook-bmenu-edit "addressbook-bookmark" nil t)
 (autoload 'addressbook-bookmark-jump "addressbook-bookmark")
-(tv-require 'org-config-thierry)
-(tv-require 'emms-vlc-config)
+(use-package org :init (tv-require 'org-config-thierry))
+(use-package emms :init (tv-require 'emms-vlc-config))
 (with-eval-after-load "dired" (tv-require 'dired-extension))
 (autoload 'htmlize-buffer "htmlize" nil t)
 (autoload 'htmlize-region "htmlize" nil t)
@@ -250,7 +253,7 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'htmlize-many-files-dired "htmlize" nil t)
 (autoload 'cl-info "cl-info" nil t)
 (autoload 'ioccur "ioccur" nil t)
-(tv-require 'tv-utils)
+(use-package tv-utils)
 (autoload 'ledger-add-expense "ledger-config" nil t)
 (autoload 'ledger-reverse-date-to-fr "ledger-config" nil t)
 (autoload 'ledger-reverse-date-to-us "ledger-config" nil t)
@@ -274,21 +277,27 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'iedit-mode-toggle-on-function "iedit" nil t)
 (autoload 'iedit-rectangle-mode "iedit-rect" nil t)
 (autoload 'lacarte-get-overall-menu-item-alist "lacarte")
-(tv-require 'iterator)
+(use-package iterator)
 (autoload 'psession-mode "psession")
 (autoload 'golden-ratio-mode "golden-ratio" nil t)
-(tv-require 'config-w3m)
-(tv-require 'mu4e-config)
+(use-package w3m :init (tv-require 'config-w3m))
+(use-package mu4e :init (tv-require 'mu4e-config))
+(use-package pcomplete-extension)
+(use-package xmodmap)
 
 ;;; Emamux
 ;;
-(setq emamux:completing-read-type 'helm)
+(use-package emamux
+    :init (setq emamux:completing-read-type 'helm))
 
 ;;; Async
-(tv-require 'smtpmail-async)
-(dired-async-mode 1)
-;; `async-bytecomp-package-mode' is enabled by helm.
-(setq async-bytecomp-allowed-packages '(all))
+(use-package async
+    :init (tv-require 'smtpmail-async)
+    :config
+    (progn
+      (dired-async-mode 1)
+      ;; `async-bytecomp-package-mode' is enabled by helm.
+      (setq async-bytecomp-allowed-packages '(all))))
 
 
 ;;; Gnus-config
@@ -920,8 +929,8 @@ are returned unchanged."
 ;; (define-key python-mode-map (kbd "<M-tab>") 'helm-ipython-complete)
 ;; (define-key python-mode-map (kbd "C-c C-i") 'helm-ipython-import-modules-from-buffer)
 
-(when (require 'python)
-  (load "python-24"))
+(use-package python
+    :config (load "python-24"))
 
 (setq
  gud-pdb-command-name "ipdb"
@@ -1045,11 +1054,6 @@ from IPython.core.completerlib import module_completion"
 (with-eval-after-load "em-term"
   (dolist (i '("tmux" "htop" "ipython" "alsamixer" "git-log"))
     (add-to-list 'eshell-visual-commands i)))
-
-;;; pcomplete Completion functions on specific commands (Find, hg etc...)
-;;
-;;
-(tv-require 'pcomplete-extension)
 
 ;; Finally load eshell on startup.
 (add-hook 'emacs-startup-hook #'(lambda ()
@@ -1418,9 +1422,6 @@ With prefix arg always start and let me choose dictionary."
   (interactive)
   (scroll-other-window -1))
 (define-key org-mode-map (kbd "<C-M-up>") 'tv-scroll-other-up)
-
-;; xmodmap
-(load "xmodmap")
 
 ;; sql-mode
 (setq sql-sqlite-program "sqlite3")
