@@ -24,10 +24,10 @@
 
 (package-initialize)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("melpa-stable" . "https://stable.melpa.org/packages/")
+                         ;;("melpa-stable" . "https://stable.melpa.org/packages/")
                          ("gnu" . "https://elpa.gnu.org/packages/")))
 
-(setq package-pinned-packages '((magit . "melpa-stable")))
+;;(setq package-pinned-packages '((magit . "melpa-stable")))
 
 (require 'use-package)
 ;; Fix compatibility with emacs 24.3.
@@ -1725,6 +1725,7 @@ With prefix arg always start and let me choose dictionary."
 (setq auto-revert-verbose nil)
 (with-eval-after-load "magit.el"
   (define-key magit-diff-mode-map (kbd "C") 'magit-commit-add-log))
+(setq magit-revision-show-gravatars nil)
 
 ;;; Report bug
 ;;
