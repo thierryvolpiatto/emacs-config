@@ -1732,6 +1732,7 @@ With prefix arg always start and let me choose dictionary."
 (setq report-emacs-bug-no-explanations t)
 
 (defun tv-find-or-kill-gnu-bug-number (bug-number arg)
+  "Browse url corresponding to emacs gnu bug number or kill it."
   (interactive (list (read-number "Bug number: " (thing-at-point 'number))
                      current-prefix-arg))
   (let ((url (format "http://debbugs.gnu.org/cgi/bugreport.cgi?bug=%s" bug-number)))
@@ -1742,6 +1743,7 @@ With prefix arg always start and let me choose dictionary."
         (browse-url url))))
 
 (defun tv-find-or-kill-helm-bug-number (bug-number arg)
+  "Browse url corresponding to helm bug number or kill it."
   (interactive (list (read-number "Bug number: " (thing-at-point 'number))
                      current-prefix-arg))
   (let ((url (format "https://github.com/emacs-helm/helm/issues/%s" bug-number)))
