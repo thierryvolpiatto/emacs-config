@@ -477,7 +477,24 @@ START and END are buffer positions indicating what to append."
     (delete-other-windows)
     (pop-to-buffer (get-buffer-create "*Messages*") t)
     (View-scroll-to-buffer-end)
-    (sit-for 10)))
+    (while (let ((key (read-key
+                       (propertize
+                        "Up/down/C-n/p: Scroll, Any other key: Quit"
+                        'face 'minibuffer-prompt))))
+             (cl-case key
+               ((up ?\C-p)
+                (condition-case _err
+                    (scroll-down 1)
+                  (beginning-of-buffer nil)
+                  (end-of-buffer nil))
+                t)
+               ((down ?\C-n)
+                (condition-case _err
+                    (scroll-up 1)
+                  (beginning-of-buffer nil)
+                  (end-of-buffer nil))
+                t)
+               (t nil))))))
 
 ;;; Align-for-sections-in-loop
 ;;;###autoload
