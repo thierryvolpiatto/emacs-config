@@ -237,7 +237,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Require's
 ;;
 ;;
-(use-package helm :config (tv-require 'init-helm-thierry))
+(use-package helm :config (use-package init-helm-thierry))
 (autoload 'firefox-protocol-installer-install "firefox-protocol" nil t)
 (autoload 'addressbook-turn-on-mail-completion "addressbook-bookmark")
 (autoload 'addressbook-bookmark-set "addressbook-bookmark" nil t)
@@ -245,9 +245,9 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'addressbook-mu4e-bookmark "addressbook-bookmark" nil t)
 (autoload 'addressbook-bmenu-edit "addressbook-bookmark" nil t)
 (autoload 'addressbook-bookmark-jump "addressbook-bookmark")
-(use-package org :config (tv-require 'org-config-thierry))
-(use-package emms :config (tv-require 'emms-vlc-config) :defer t)
-(use-package dired :config (tv-require 'dired-extension) :defer t)
+(use-package org :config (use-package org-config-thierry))
+(use-package emms :config (use-package emms-vlc-config) :defer t)
+(use-package dired :config (use-package dired-extension) :defer t)
 (autoload 'htmlize-buffer "htmlize" nil t)
 (autoload 'htmlize-region "htmlize" nil t)
 (autoload 'htmlize-file "htmlize" nil t)
@@ -283,10 +283,10 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'psession-mode "psession")
 (autoload 'golden-ratio-mode "golden-ratio" nil t)
 (use-package w3m
-    :config (tv-require 'config-w3m)
+    :config (use-package config-w3m)
     :bind ("<f7> h" . w3m))
 (use-package mu4e
-    :config (tv-require 'mu4e-config)
+    :config (use-package mu4e-config)
     :commands 'mu4e)
 (use-package pcomplete-extension)
 (use-package xmodmap)
@@ -298,12 +298,12 @@ If your system's ping continues until interrupted, you can try setting
 
 ;;; Async
 (use-package async
-    :init (tv-require 'smtpmail-async)
     :config
     (progn
       (dired-async-mode 1)
       ;; `async-bytecomp-package-mode' is enabled by helm.
-      (setq async-bytecomp-allowed-packages '(all))))
+      (setq async-bytecomp-allowed-packages '(all))
+      (use-package smtpmail-async)))
 
 
 ;;; Gnus-config
