@@ -246,8 +246,8 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'addressbook-bmenu-edit "addressbook-bookmark" nil t)
 (autoload 'addressbook-bookmark-jump "addressbook-bookmark")
 (use-package org :config (tv-require 'org-config-thierry))
-(use-package emms :config (tv-require 'emms-vlc-config))
-(use-package dired :config (tv-require 'dired-extension))
+(use-package emms :config (tv-require 'emms-vlc-config) :defer t)
+(use-package dired :config (tv-require 'dired-extension) :defer t)
 (autoload 'htmlize-buffer "htmlize" nil t)
 (autoload 'htmlize-region "htmlize" nil t)
 (autoload 'htmlize-file "htmlize" nil t)
@@ -282,8 +282,12 @@ If your system's ping continues until interrupted, you can try setting
 (use-package iterator)
 (autoload 'psession-mode "psession")
 (autoload 'golden-ratio-mode "golden-ratio" nil t)
-(use-package w3m :config (tv-require 'config-w3m))
-(use-package mu4e :config (tv-require 'mu4e-config))
+(use-package w3m
+    :config (tv-require 'config-w3m)
+    :bind ("<f7> h" . w3m))
+(use-package mu4e
+    :config (tv-require 'mu4e-config)
+    :commands 'mu4e)
 (use-package pcomplete-extension)
 (use-package xmodmap)
 
@@ -512,11 +516,16 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 ;;; Recentf
 ;;
 ;;
-(setq recentf-save-file "~/.emacs.d/recentf")
-;; `recentf-mode' will be started by helm when needed,
-;; so no need to start it here
-(setq recentf-max-saved-items 100)
-(recentf-mode 1)
+(use-package recentf
+    :init
+  (progn
+    (setq recentf-save-file "~/.emacs.d/recentf")
+    ;; `recentf-mode' will be started by helm when needed,
+    ;; so no need to start it here
+    (setq recentf-max-saved-items 100))
+  :config
+  (recentf-mode 1)
+  :defer t)
 
 
 ;;; Frame and window config.
@@ -1270,7 +1279,7 @@ With prefix arg always start and let me choose dictionary."
       (add-to-list 'tramp-connection-properties
                    (list (regexp-quote "zte") "remote-shell" "sh"))
       (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
-      (pushnew "/system/xbin" tramp-remote-path :test 'equal)
+      (cl-pushnew "/system/xbin" tramp-remote-path :test 'equal)
       (add-to-list 'tramp-remote-process-environment "TMPDIR=$HOME/tmp"))
 
     ;; No messages

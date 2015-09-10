@@ -54,9 +54,7 @@
               (let ((buffer-read-only nil))
                 (delete-trailing-whitespace))))
 
-(global-set-key (kbd "<f7> h") 'w3m)
 
-;; Provide
 (provide 'config-w3m)
 
 ;;; .emacs-config-w3m.el ends here
