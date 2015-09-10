@@ -228,7 +228,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;
 (autoload 'wget "wget" "wget interface for Emacs." t)
 (autoload 'wget-web-page "wget" "wget interface to download whole web page." t)
-(tv-require 'w3m-wget)
+(use-package w3m-wget)
 ;; Use wget in eshell.
 (defun eshell/wget (url)
   (wget url))
