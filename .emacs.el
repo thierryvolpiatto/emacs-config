@@ -237,8 +237,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Require's
 ;;
 ;;
-;(tv-require 'init-helm-thierry)
-(use-package helm :init (tv-require 'init-helm-thierry))
+(use-package helm :config (tv-require 'init-helm-thierry))
 (autoload 'firefox-protocol-installer-install "firefox-protocol" nil t)
 (autoload 'addressbook-turn-on-mail-completion "addressbook-bookmark")
 (autoload 'addressbook-bookmark-set "addressbook-bookmark" nil t)
@@ -246,9 +245,9 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'addressbook-mu4e-bookmark "addressbook-bookmark" nil t)
 (autoload 'addressbook-bmenu-edit "addressbook-bookmark" nil t)
 (autoload 'addressbook-bookmark-jump "addressbook-bookmark")
-(use-package org :init (tv-require 'org-config-thierry))
-(use-package emms :init (tv-require 'emms-vlc-config))
-(with-eval-after-load "dired" (tv-require 'dired-extension))
+(use-package org :config (tv-require 'org-config-thierry))
+(use-package emms :config (tv-require 'emms-vlc-config))
+(use-package dired :config (tv-require 'dired-extension))
 (autoload 'htmlize-buffer "htmlize" nil t)
 (autoload 'htmlize-region "htmlize" nil t)
 (autoload 'htmlize-file "htmlize" nil t)
@@ -283,8 +282,8 @@ If your system's ping continues until interrupted, you can try setting
 (use-package iterator)
 (autoload 'psession-mode "psession")
 (autoload 'golden-ratio-mode "golden-ratio" nil t)
-(use-package w3m :init (tv-require 'config-w3m))
-(use-package mu4e :init (tv-require 'mu4e-config))
+(use-package w3m :config (tv-require 'config-w3m))
+(use-package mu4e :config (tv-require 'mu4e-config))
 (use-package pcomplete-extension)
 (use-package xmodmap)
 
@@ -934,31 +933,31 @@ are returned unchanged."
 ;; (define-key python-mode-map (kbd "C-c C-i") 'helm-ipython-import-modules-from-buffer)
 
 (use-package python
-    :config (load "python-24"))
-
-(setq
- gud-pdb-command-name "ipdb"
- python-shell-interpreter "ipython"
- python-shell-interpreter-args "-i --autoindent"
- python-shell-prompt-regexp "In \\[[0-9]+\\]: "
- python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
- python-shell-completion-setup-code
- "import rlcompleter2
+    :init
+  (progn
+    (setq
+     gud-pdb-command-name "ipdb"
+     python-shell-interpreter "ipython"
+     python-shell-interpreter-args "-i --autoindent"
+     python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+     python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+     python-shell-completion-setup-code
+     "import rlcompleter2
 rlcompleter2.setup()
 from IPython.core.completerlib import module_completion"
- python-shell-completion-module-string-code
- "';'.join(module_completion('''%s'''))\n"
- python-shell-completion-string-code
- "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
+     python-shell-completion-module-string-code
+     "';'.join(module_completion('''%s'''))\n"
+     python-shell-completion-string-code
+     "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
 
-(add-hook 'python-mode-hook
-          #'(lambda ()
-              (define-key python-mode-map (kbd "C-m") 'newline-and-indent)))
+    (add-hook 'python-mode-hook
+              #'(lambda ()
+                  (define-key python-mode-map (kbd "C-m") 'newline-and-indent)))
 
-(when (fboundp 'jedi:setup)
-  (add-hook 'python-mode-hook 'jedi:setup))
+    (when (fboundp 'jedi:setup)
+      (add-hook 'python-mode-hook 'jedi:setup))
 
-(add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
+    (add-hook 'python-mode-hook 'flymake-python-pyflakes-load)))
 
 ;; Entete-py
 (defun tv-insert-python-header ()
@@ -1460,9 +1459,13 @@ With prefix arg always start and let me choose dictionary."
 ;;; Undo-tree
 ;;
 ;;
-(setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree-history")))
-(setq undo-tree-auto-save-history t)
-(global-undo-tree-mode)
+(use-package undo-tree
+    :init
+  (progn
+    (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree-history")))
+    (setq undo-tree-auto-save-history t))
+  :config
+  (global-undo-tree-mode 1))
 
 
 ;;; Calendar and diary

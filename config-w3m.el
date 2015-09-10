@@ -1,7 +1,7 @@
 ;;; .emacs-config-w3m.el -- config w3m for thievol
 
 ;; Code:
-(load "w3m-autoloads.el");(require 'w3m-load)
+;; (load "w3m-autoloads.el")
 (setq w3m-bookmark-file "~/.w3m/bookmark.html")
 ;; Icons are not provided with MELPA
 ;; (setq w3m-icon-directory "~/share/w3m-icons")
