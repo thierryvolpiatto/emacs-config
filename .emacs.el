@@ -29,7 +29,10 @@
 
 ;;(setq package-pinned-packages '((magit . "melpa-stable")))
 
+;; Load now use-package.
 (require 'use-package)
+(setq use-package-verbose t)
+
 ;; Fix compatibility with emacs 24.3.
 ;; Avoid rebuilding all the autoloads just for this when switching to 24.3.
 (unless (fboundp 'function-put)
@@ -297,13 +300,12 @@ If your system's ping continues until interrupted, you can try setting
     :init (setq emamux:completing-read-type 'helm))
 
 ;;; Async
-(use-package async
-    :config
-    (progn
-      (dired-async-mode 1)
-      ;; `async-bytecomp-package-mode' is enabled by helm.
-      (setq async-bytecomp-allowed-packages '(all))
-      (use-package smtpmail-async)))
+;;
+(use-package dired-async :config (dired-async-mode 1))
+(use-package smtpmail-async
+    :commands 'async-smtpmail-send-it)
+(use-package async-bytecomp
+    :config (setq async-bytecomp-allowed-packages '(all)))
 
 
 ;;; Gnus-config
