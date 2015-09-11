@@ -237,7 +237,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Require's
 ;;
 ;;
-(use-package helm :config (use-package init-helm-thierry))
+(use-package init-helm-thierry)
 (autoload 'firefox-protocol-installer-install "firefox-protocol" nil t)
 (autoload 'addressbook-turn-on-mail-completion "addressbook-bookmark")
 (autoload 'addressbook-bookmark-set "addressbook-bookmark" nil t)
@@ -892,22 +892,24 @@ are returned unchanged."
                (funcall eldoc-argument-case s)))
          (split-string argstring) " ")))))
 
+(use-package eldoc-eval
+    :config
+  (progn
+    (eldoc-in-minibuffer-mode 1)
+    (defadvice edebug-eval-expression (around with-eldoc activate)
+      "This advice enable eldoc support."
+      (interactive (list (with-eldoc-in-minibuffer
+                           (read-from-minibuffer
+                            "Eval: " nil read-expression-map t
+                            'read-expression-history))))
+      ad-do-it)))
+
 ;; Tooltip face
 (set-face-attribute 'tooltip nil
                     :foreground "black"
                     :background "NavajoWhite"
                     :family "unknown-DejaVu Sans Mono-bold-normal-normal"
                     :underline t)
-
-(autoload 'eldoc-in-minibuffer-mode "eldoc-eval")
-(eldoc-in-minibuffer-mode 1)
-(defadvice edebug-eval-expression (around with-eldoc activate)
-  "This advice enable eldoc support."
-  (interactive (list (with-eldoc-in-minibuffer
-                       (read-from-minibuffer
-                        "Eval: " nil read-expression-map t
-                        'read-expression-history))))
-  ad-do-it)
 
 ;; Indent-when-newline (RET) in all elisp modes
 (define-key lisp-interaction-mode-map (kbd "RET") 'newline-and-indent)
@@ -1480,86 +1482,90 @@ With prefix arg always start and let me choose dictionary."
 ;;; Calendar and diary
 ;;
 ;;
-(setq diary-file "~/.emacs.d/diary")
-(unless (fboundp 'fancy-diary-display) ; Fix emacs-25.
-  (defalias 'fancy-diary-display 'diary-fancy-display))
-(setq calendar-date-style 'european)
-(setq calendar-mark-diary-entries-flag t)
-(setq calendar-mark-holidays-flag t)
-(setq holiday-bahai-holidays nil)
-(setq holiday-hebrew-holidays nil)
-(setq holiday-islamic-holidays nil)
-(setq holiday-oriental-holidays nil)
+(use-package calendar
+    :config
+  (progn
+    (setq diary-file "~/.emacs.d/diary")
+    (unless (fboundp 'fancy-diary-display) ; Fix emacs-25.
+      (defalias 'fancy-diary-display 'diary-fancy-display))
+    (setq calendar-date-style 'european)
+    (setq calendar-mark-diary-entries-flag t)
+    (setq calendar-mark-holidays-flag t)
+    (setq holiday-bahai-holidays nil)
+    (setq holiday-hebrew-holidays nil)
+    (setq holiday-islamic-holidays nil)
+    (setq holiday-oriental-holidays nil)
 
-(setq diary-display-function 'diary-fancy-display)
-(add-hook 'diary-list-entries-hook 'diary-sort-entries t)
-(add-hook 'calendar-today-visible-hook 'calendar-mark-today)
-(add-hook 'initial-calendar-window-hook 'mark-diary-entries)
-(setq mark-holidays-in-calendar t)
-(setq diary-number-of-entries 4)
+    (setq diary-display-function 'diary-fancy-display)
+    (add-hook 'diary-list-entries-hook 'diary-sort-entries t)
+    (add-hook 'calendar-today-visible-hook 'calendar-mark-today)
+    (add-hook 'initial-calendar-window-hook 'mark-diary-entries)
+    (setq mark-holidays-in-calendar t)
+    (setq diary-number-of-entries 4)
 
-;; calendar-date-style is set [HERE]:
-(setq calendar-week-start-day 1
-      calendar-day-name-array
-      ["Dimanche" "Lundi" "Mardi"
-                  "Mercredi" "Jeudi" "Vendredi" "Samedi"]
-      calendar-month-name-array
-      ["Janvier" "Février" "Mars" "Avril"
-                 "Mai" "Juin" "Juillet" "Août" "Septembre"
-                 "Octobre" "Novembre" "Décembre"])
+    ;; calendar-date-style is set [HERE]:
+    (setq calendar-week-start-day 1
+          calendar-day-name-array
+          ["Dimanche" "Lundi" "Mardi"
+                      "Mercredi" "Jeudi" "Vendredi" "Samedi"]
+          calendar-month-name-array
+          ["Janvier" "Février" "Mars" "Avril"
+                     "Mai" "Juin" "Juillet" "Août" "Septembre"
+                     "Octobre" "Novembre" "Décembre"])
 
-(defvar holiday-french-holidays nil
-  "French holidays")
+    (defvar holiday-french-holidays nil
+      "French holidays")
 
-(setq holiday-french-holidays
-      `((holiday-fixed 1 1 "Jour de l'an")
-        (holiday-fixed 2 14 "Fête des amoureux")
-        (holiday-fixed 5 1 "Fête du travail")
-        (holiday-fixed 5 8 "Victoire")
-        (holiday-float 5 0 -1 "Fête des Mères")
-        (holiday-float 6 0 3 "Fête des Pères")
-        (holiday-fixed 7 14 "Fête nationale")
-        (holiday-fixed 8 15 "Assomption")
-        (holiday-fixed 10 31 "Halloween")
-        (holiday-easter-etc -47 "Mardi Gras")
-        (holiday-fixed 11 11 "Armistice")
-        (holiday-fixed 11 1 "Toussaint")
-        (holiday-fixed 12 25 "Noël")
-        (holiday-easter-etc 0 "Pâques")
-        (holiday-easter-etc 1 "Pâques")
-        (holiday-easter-etc 39 "Ascension")
-        (holiday-easter-etc 49 "Pentecôte")
-        (holiday-easter-etc 50 "Pentecôte")
-        (holiday-float 3 0 -1 "Heure d'été")
-        (holiday-float 10 0 -1 "Heure d'hiver")))
+    (setq holiday-french-holidays
+          `((holiday-fixed 1 1 "Jour de l'an")
+            (holiday-fixed 2 14 "Fête des amoureux")
+            (holiday-fixed 5 1 "Fête du travail")
+            (holiday-fixed 5 8 "Victoire")
+            (holiday-float 5 0 -1 "Fête des Mères")
+            (holiday-float 6 0 3 "Fête des Pères")
+            (holiday-fixed 7 14 "Fête nationale")
+            (holiday-fixed 8 15 "Assomption")
+            (holiday-fixed 10 31 "Halloween")
+            (holiday-easter-etc -47 "Mardi Gras")
+            (holiday-fixed 11 11 "Armistice")
+            (holiday-fixed 11 1 "Toussaint")
+            (holiday-fixed 12 25 "Noël")
+            (holiday-easter-etc 0 "Pâques")
+            (holiday-easter-etc 1 "Pâques")
+            (holiday-easter-etc 39 "Ascension")
+            (holiday-easter-etc 49 "Pentecôte")
+            (holiday-easter-etc 50 "Pentecôte")
+            (holiday-float 3 0 -1 "Heure d'été")
+            (holiday-float 10 0 -1 "Heure d'hiver")))
 
-(setq calendar-holidays `(,@holiday-solar-holidays
-                          ,@holiday-french-holidays))
+    (setq calendar-holidays `(,@holiday-solar-holidays
+                              ,@holiday-french-holidays))
 
-(defun tv/calendar-diary-or-holiday (arg)
-  "A single command for diary and holiday entries."
-  ;; Assume diary and holidays are shown in calendar.
-  (interactive "p")
-  (let* ((ovs (overlays-at (point)))
-         (props (cl-loop for ov in ovs
-                         for prop = (cadr (overlay-properties ov))
-                         when (or (and (eq prop 'diary)
-                                       'diary)
-                                  (and (eq prop 'holiday)
-                                       'holiday))
-                         collect prop)))
-    (cond ((and (memq 'diary props) (memq 'holiday props))
-           (diary-view-entries arg)
-           (calendar-cursor-holidays))
-          ((memq 'diary props)
-           (diary-view-entries arg))
-          ((memq 'holiday props)
-           (calendar-cursor-holidays))
-          (t (message "Nothing special on this date")))))
+    (defun tv/calendar-diary-or-holiday (arg)
+      "A single command for diary and holiday entries."
+      ;; Assume diary and holidays are shown in calendar.
+      (interactive "p")
+      (let* ((ovs (overlays-at (point)))
+             (props (cl-loop for ov in ovs
+                             for prop = (cadr (overlay-properties ov))
+                             when (or (and (eq prop 'diary)
+                                           'diary)
+                                      (and (eq prop 'holiday)
+                                           'holiday))
+                             collect prop)))
+        (cond ((and (memq 'diary props) (memq 'holiday props))
+               (diary-view-entries arg)
+               (calendar-cursor-holidays))
+              ((memq 'diary props)
+               (diary-view-entries arg))
+              ((memq 'holiday props)
+               (calendar-cursor-holidays))
+              (t (message "Nothing special on this date")))))
 
-(define-key calendar-mode-map (kbd "C-<right>") 'calendar-forward-month)
-(define-key calendar-mode-map (kbd "C-<left>")  'calendar-backward-month)
-(define-key calendar-mode-map (kbd "RET") 'tv/calendar-diary-or-holiday)
+    (define-key calendar-mode-map (kbd "C-<right>") 'calendar-forward-month)
+    (define-key calendar-mode-map (kbd "C-<left>")  'calendar-backward-month)
+    (define-key calendar-mode-map (kbd "RET") 'tv/calendar-diary-or-holiday))
+  :defer t)
 
 
 ;; Checkdoc

@@ -93,21 +93,22 @@
 (global-set-key (kbd "C-c r") 'org-capture)
 
 ;; org-annotation-helper 
-(require 'org-annotation-helper)
+(use-package org-annotation-helper)
 
 ;; Diary-integration-in-org 
 (setq org-agenda-include-diary t) ; show also content of regular diary file.
 
 ;; Insinuate-appt 
-(require 'appt)
-
-;; When use 'r' (rebuild agenda) reload appt
-(add-hook 'org-agenda-mode-hook #'(lambda ()
-                                    (setq appt-time-msg-list nil)
-                                    (define-key org-agenda-mode-map (kbd "C-c M") 'org-agenda-month-view)))
-
-(setq appt-display-format 'window) ; Values: 'echo, 'window or nil.
-(appt-activate 1)
+(use-package appt
+    :config
+  (progn
+    ;; When use 'r' (rebuild agenda) reload appt
+    (add-hook 'org-agenda-mode-hook #'(lambda ()
+                                        (setq appt-time-msg-list nil)
+                                        (define-key org-agenda-mode-map (kbd "C-c M") 'org-agenda-month-view)))
+    (setq appt-display-format 'window) ; Values: 'echo, 'window or nil.
+    (appt-activate 1))
+  :defer t)
 
 ;; Subtasks 
 (defun org-summary-todo (n-done n-not-done)
@@ -174,12 +175,14 @@
 	  (lambda () (set-face-attribute 'org-agenda-date-weekend nil :foreground "red")))
 
 ;; org-crypt 
-(require 'org-crypt)
-(org-crypt-use-before-save-magic)
-(setq org-crypt-key "59F29997")
-(setq org-crypt-disable-auto-save t) ;'encrypt)
-(define-key org-mode-map (kbd "C-c e") 'org-encrypt-entry)
-(define-key org-mode-map (kbd "C-c d") 'org-decrypt-entry)
+(use-package org-crypt
+    :config
+  (progn
+    (org-crypt-use-before-save-magic)
+    (setq org-crypt-key "59F29997")
+    (setq org-crypt-disable-auto-save t) ;'encrypt)
+    (define-key org-mode-map (kbd "C-c e") 'org-encrypt-entry)
+    (define-key org-mode-map (kbd "C-c d") 'org-decrypt-entry)))
 
 ;; fontify source code
 (setq org-src-fontify-natively t)
@@ -188,8 +191,8 @@
 (setq org-link-file-path-type 'absolute)
 
 ;; Org babel
-(require 'ob-sh)
-(require 'ob-emacs-lisp)
+(use-package ob-sh)
+(use-package ob-emacs-lisp)
 
 
 (provide 'org-config-thierry)

@@ -1,13 +1,16 @@
 ;;; init-helm-thierry.el --- My startup file for helm. -*- lexical-binding: t -*- 
 ;;; Code:
 
-(tv-require 'helm-config)
+
 
 ;;; Enable Modes (This is loading nearly everything).
 ;;
-(helm-mode 1)
-(helm-adaptative-mode 1)
-(helm-push-mark-mode 1)
+(use-package helm-config
+    :config
+  (progn
+    (helm-mode 1)
+    (helm-adaptive-mode 1)
+    (helm-push-mark-mode 1)))
 
 
 ;;;; Extensions
