@@ -218,9 +218,6 @@ If your system's ping continues until interrupted, you can try setting
              '("\\.desktop\\(\\.in\\)?$" . desktop-entry-mode))
 (add-hook 'desktop-entry-mode-hook 'turn-on-font-lock)
 
-;;; app-office/ledger site-lisp configuration
-(autoload 'ledger-mode "ledger" "A mode for editing ledger data files." t)
-
 ;;; lua-mode site-lisp configuration
 (autoload 'lua-mode "lua-mode" "Mode for editing Lua scripts" t)
 (add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-mode))
@@ -259,15 +256,11 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'cl-info "cl-info" nil t)
 (autoload 'ioccur "ioccur" nil t)
 (use-package tv-utils)
-(autoload 'ledger-add-expense "ledger-config" nil t)
-(autoload 'ledger-reverse-date-to-fr "ledger-config" nil t)
-(autoload 'ledger-reverse-date-to-us "ledger-config" nil t)
-(autoload 'ledger-position "ledger-config" nil t)
-(autoload 'ledger-align-device "ledger-config" nil t)
-(autoload 'ledger-exchange-point-an-mark-or-overlay "ledger-config" nil t)
-(autoload 'csv2ledger "ledger-config" nil t)
-(autoload 'ledger-point-entries-in-buffer "ledger-config" nil t)
-(autoload 'ledger-add-income "ledger-config" nil t)
+;;; Ledger
+(use-package ledger
+    :init (setenv "LEDGER_PAGER" "cat")
+    :commands 'ledger-mode
+    :config (use-package ledger-config))
 (autoload 'rectangle-menu            "rectangle-utils" nil t)
 (autoload 'copy-rectangle            "rectangle-utils" nil t)
 (autoload 'rectangle-insert-at-right "rectangle-utils" nil t)
@@ -685,7 +678,7 @@ With a prefix arg decrease transparency."
 ;;; Browse url
 ;;
 ;;
-(setq browse-url-browser-function 'browse-url-firefox)
+(setq browse-url-browser-function 'helm-browse-url-firefox)
 ;;(setq browse-url-browser-function 'w3m-browse-url)
 
 
