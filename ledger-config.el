@@ -2,12 +2,8 @@
 
 ;; Code:
 
-(require 'ledger)
-
 (define-key ledger-mode-map (kbd "C-c a l") 'ledger-align-device)
 (defvar ledger-default-device "€")
-
-(setenv "LEDGER_PAGER" "cat")
 
 ;; «Redefine-ledger-reconcile-visit» (to ".Redefine-ledger-reconcile-visit")
 (defun ledger-reconcile-visit ()
