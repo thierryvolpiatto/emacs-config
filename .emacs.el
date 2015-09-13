@@ -305,7 +305,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;;
 ;;
 ;;
-(defvar tv/use-gnus t)
+(defvar tv/use-gnus nil)
 (when tv/use-gnus
   (setq gnus-asynchronous t)
   ;; (setq mail-user-agent 'gnus-user-agent)
