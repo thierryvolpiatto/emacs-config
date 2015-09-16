@@ -321,7 +321,7 @@ If your system's ping continues until interrupted, you can try setting
 
   (add-hook 'message-mode-hook 'tv-load-gnus-init-may-be)
   (add-hook 'gnus-before-startup-hook 'tv-load-gnus-init-may-be)
-
+;;
   (defun quickping (host)
     "Return non--nil when host is reachable."
     (= 0 (call-process "ping" nil nil nil "-c1" "-W10" "-q" host)))
@@ -548,7 +548,7 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 
     (setq default-frame-alist `((foreground-color . "Wheat")
                                 (background-color . "#436D6D")
-                                (alpha . 80)
+                                (alpha . 90)
                                 ;; New frames go in right corner.
                                 (left . ,(- (* (window-width) 8) 160)) ; Chars are 8 bits long.
                                 (vertical-scroll-bars . nil)
