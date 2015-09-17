@@ -547,7 +547,7 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
                                 (cursor-color . "red")))
 
     (setq default-frame-alist `((foreground-color . "Wheat")
-                                (background-color . "#436D6D")
+                                (background-color . "black")
                                 (alpha . 90)
                                 ;; New frames go in right corner.
                                 (left . ,(- (* (window-width) 8) 160)) ; Chars are 8 bits long.
@@ -624,7 +624,7 @@ With a prefix arg decrease transparency."
                                  (unsplittable . t)
                                  (top . 24)
                                  (left . 450)
-                                 (background-color . "Palevioletred1")
+                                 (background-color . "Brown4")
                                  (foreground-color . "black")
                                  (alpha . nil)
                                  (fullscreen . nil))
