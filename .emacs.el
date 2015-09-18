@@ -286,6 +286,16 @@ If your system's ping continues until interrupted, you can try setting
     :commands 'mu4e)
 (use-package pcomplete-extension)
 (use-package xmodmap)
+(use-package migemo
+    :init
+  (progn
+    (setq migemo-command "cmigemo")
+    (setq migemo-options '("-q" "-e"))
+    ;; Set your installed path
+    (setq migemo-dictionary "/usr/share/cmigemo/utf-8/migemo-dict")
+    (setq migemo-user-dictionary nil)
+    (setq migemo-regex-dictionary nil)
+    (setq migemo-coding-system 'utf-8-unix)))
 
 ;;; Emamux
 ;;
