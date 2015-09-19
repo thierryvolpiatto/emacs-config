@@ -234,58 +234,156 @@ If your system's ping continues until interrupted, you can try setting
   (wget url))
 
 
-;;; Require's
-;;
+;;; Helm
 ;;
 (use-package init-helm-thierry)
+
+;;; Firefox protocol
+;;
 (autoload 'firefox-protocol-installer-install "firefox-protocol" nil t)
+
+;;; Addressbook
+;;
 (autoload 'addressbook-turn-on-mail-completion "addressbook-bookmark")
 (autoload 'addressbook-bookmark-set "addressbook-bookmark" nil t)
 (autoload 'addressbook-gnus-sum-bookmark "addressbook-bookmark" nil t)
 (autoload 'addressbook-mu4e-bookmark "addressbook-bookmark" nil t)
 (autoload 'addressbook-bmenu-edit "addressbook-bookmark" nil t)
 (autoload 'addressbook-bookmark-jump "addressbook-bookmark")
+
+;;; Org
+;;
 (use-package org :config (use-package org-config-thierry))
+
+;;; Emms
+;;
 (use-package emms :config (use-package emms-vlc-config) :defer t)
-(use-package dired :config (use-package dired-extension) :defer t)
+
+;;; Dired
+;;
+(use-package dired
+    :init (progn
+            (setq dired-dwim-target t)
+            (setq dired-auto-revert-buffer t)
+            (setq dired-backup-overwrite nil) ; nil, always, ask.
+            (setq dired-isearch-filenames 'dwim)
+            (setq dired-listing-switches (purecopy "-alh")))
+    :config (use-package dired-extension)
+    :defer t)
+
+;;; htmlize
+;;
 (autoload 'htmlize-buffer "htmlize" nil t)
 (autoload 'htmlize-region "htmlize" nil t)
 (autoload 'htmlize-file "htmlize" nil t)
 (autoload 'htmlize-many-files "htmlize" nil t)
 (autoload 'htmlize-many-files-dired "htmlize" nil t)
+
+;;; Cl-info
+;;
 (autoload 'cl-info "cl-info" nil t)
+
+;;; Ioccur
+;;
 (autoload 'ioccur "ioccur" nil t)
+
+;;; tv-utils fns
+;;
 (use-package tv-utils)
 ;;; Ledger
+;;
 (use-package ledger
     :init (setenv "LEDGER_PAGER" "cat")
     :commands 'ledger-mode
     :config (use-package ledger-config))
+
+;;; Rectangle
+;;
 (autoload 'rectangle-menu            "rectangle-utils" nil t)
 (autoload 'copy-rectangle            "rectangle-utils" nil t)
 (autoload 'rectangle-insert-at-right "rectangle-utils" nil t)
 (autoload 'extend-rectangle-to-end   "rectangle-utils" nil t)
+
+;;; Smallurl
+;;
 (autoload 'smallurl "smallurl" nil t)
 (autoload 'smallurl-replace-at-point "smallurl" nil t)
+
+;;; Zop-to-char
+;;
 (autoload 'zop-to-char    "zop-to-char" nil t)
 (autoload 'zop-up-to-char "zop-to-char" nil t)
 (setq zop-to-char-prec-keys '(left ?\C-b ?\M-a)
       zop-to-char-next-keys '(right ?\C-f ?\M-e))
+
+;;; Iedit
+;;
 (autoload 'iedit-mode "iedit" nil t)
 (autoload 'iedit-mode-toggle-on-function "iedit" nil t)
 (autoload 'iedit-rectangle-mode "iedit-rect" nil t)
+
+(defun iedit-narrow-to-end (arg)
+  (interactive "P")
+  (require 'iedit)
+  (save-restriction
+    (narrow-to-region (point-at-bol) (point-max))
+    (iedit-mode arg)))
+
+(defun iedit-narrow-to-defun (arg)
+  (interactive "P")
+  (require 'iedit)
+  (save-restriction
+    (narrow-to-defun)
+    (iedit-mode arg)))
+
+;;; Lacarte
+;;
 (autoload 'lacarte-get-overall-menu-item-alist "lacarte")
+
+;;; Iterator
+;;
 (use-package iterator)
+
+;;; psession
+;;
 (autoload 'psession-mode "psession")
+
+;;; Golden-ratio
+;;
 (autoload 'golden-ratio-mode "golden-ratio" nil t)
+(defun helm-running-p () helm-alive-p)
+(setq golden-ratio-inhibit-functions '(helm-running-p))
+(setq golden-ratio-exclude-buffer-regexp '("\\`\\*[Hh]elm.*\\*\\'"))
+(setq golden-ratio-exclude-modes '(ediff-mode calendar-mode wget-mode
+                                   gnus-summary-mode gnus-article-mode))
+(setq golden-ratio-recenter t)
+(add-hook 'ediff-before-setup-windows-hook #'(lambda () (golden-ratio-mode -1)))
+(add-hook 'ediff-quit-hook #'(lambda () (golden-ratio-mode 1)))
+(golden-ratio-mode 1)
+
+;;; W3m
+;;
 (use-package w3m
     :config (use-package config-w3m)
-    :bind ("<f7> h" . w3m))
+    :bind ("<f7> h" . w3m)
+    :defer t)
+
+;;; Mu4e
+;;
 (use-package mu4e
     :config (use-package mu4e-config)
     :commands 'mu4e)
+
+;;; pcomplete
+;;
 (use-package pcomplete-extension)
+
+;;; Xmodmap
+;;
 (use-package xmodmap)
+
+;;; Migemo
+;;
 (use-package migemo
     :init
   (progn
@@ -295,7 +393,23 @@ If your system's ping continues until interrupted, you can try setting
     (setq migemo-dictionary "/usr/share/cmigemo/utf-8/migemo-dict")
     (setq migemo-user-dictionary nil)
     (setq migemo-regex-dictionary nil)
-    (setq migemo-coding-system 'utf-8-unix)))
+    (setq migemo-coding-system 'utf-8-unix))
+  :defer t)
+
+;;; Magit
+;;
+(use-package magit
+    :init
+  (progn
+    (setq magit-status-buffer-name-format "*magit status: %a*")
+    (setq magit-restore-window-configuration t)
+    (setq git-commit-fill-column 120)
+    (setq git-commit-summary-max-length 80)
+    (setq auto-revert-verbose nil)
+    (setq magit-revision-show-gravatars nil))
+  :config
+  (bind-key "C" 'magit-commit-add-log magit-diff-mode-map)
+  :defer t)
 
 ;;; Emamux
 ;;
@@ -381,23 +495,6 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
       (condition-case nil
           (helm-occur)
         (error (ioccur)))))
-
-;;; iedit
-;;
-;;
-(defun iedit-narrow-to-end (arg)
-  (interactive "P")
-  (require 'iedit)
-  (save-restriction
-    (narrow-to-region (point-at-bol) (point-max))
-    (iedit-mode arg)))
-
-(defun iedit-narrow-to-defun (arg)
-  (interactive "P")
-  (require 'iedit)
-  (save-restriction
-    (narrow-to-defun)
-    (iedit-mode arg)))
 
 ;;; Run or hide shell
 (defun tv-shell ()
@@ -701,15 +798,6 @@ With a prefix arg decrease transparency."
 ;; Ediff-config
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 (setq ediff-split-window-function 'split-window-horizontally)
-
-;;; Dired
-;;
-;;
-(setq dired-dwim-target t)
-(setq dired-auto-revert-buffer t)
-(setq dired-backup-overwrite nil) ; nil, always, ask.
-(setq dired-isearch-filenames 'dwim)
-(setq dired-listing-switches (purecopy "-alh"))
 
 ;; y-or-n-p
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -1727,37 +1815,6 @@ With prefix arg always start and let me choose dictionary."
 ;;; Diff
 ;;
 (customize-set-variable 'diff-switches "-w")
-
-;;; Golden ratio
-;;
-(defun helm-running-p () helm-alive-p)
-(setq golden-ratio-inhibit-functions '(helm-running-p))
-(setq golden-ratio-exclude-buffer-regexp '("\\`\\*[Hh]elm.*\\*\\'"))
-(setq golden-ratio-exclude-modes '(ediff-mode calendar-mode wget-mode
-                                   gnus-summary-mode gnus-article-mode))
-(setq golden-ratio-recenter t)
-(add-hook 'ediff-before-setup-windows-hook #'(lambda () (golden-ratio-mode -1)))
-(add-hook 'ediff-quit-hook #'(lambda () (golden-ratio-mode 1)))
-(golden-ratio-mode 1)
-
-;;; Magit
-;;
-(use-package magit
-    :init
-  (progn
-    (setq magit-status-buffer-name-format "*magit status: %a*")
-    (setq magit-restore-window-configuration t)
-    (setq git-commit-fill-column 120)
-    (setq git-commit-summary-max-length 80)
-    (setq auto-revert-verbose nil)
-    (setq magit-revision-show-gravatars nil))
-  :config
-  (bind-key "C" 'magit-commit-add-log magit-diff-mode-map)
-  :defer t)
-  
-  
-;; (with-eval-after-load "magit.el"
-;;   (define-key magit-diff-mode-map (kbd "C") 'magit-commit-add-log))
 
 ;;; Report bug
 ;;
