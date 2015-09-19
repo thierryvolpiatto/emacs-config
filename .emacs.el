@@ -1752,7 +1752,8 @@ With prefix arg always start and let me choose dictionary."
     (setq auto-revert-verbose nil)
     (setq magit-revision-show-gravatars nil))
   :config
-  (bind-key "C" 'magit-commit-add-log magit-diff-mode-map))
+  (bind-key "C" 'magit-commit-add-log magit-diff-mode-map)
+  :defer t)
   
   
 ;; (with-eval-after-load "magit.el"
