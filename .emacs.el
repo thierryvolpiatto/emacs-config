@@ -389,12 +389,10 @@ If your system's ping continues until interrupted, you can try setting
   (progn
     (setq migemo-command "cmigemo")
     (setq migemo-options '("-q" "-e"))
-    ;; Set your installed path
     (setq migemo-dictionary "/usr/share/cmigemo/utf-8/migemo-dict")
     (setq migemo-user-dictionary nil)
     (setq migemo-regex-dictionary nil)
-    (setq migemo-coding-system 'utf-8-unix))
-  :defer t)
+    (setq migemo-coding-system 'utf-8-unix)))
 
 ;;; Magit
 ;;
