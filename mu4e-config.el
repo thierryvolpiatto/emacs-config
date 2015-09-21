@@ -145,7 +145,8 @@ This will run in `message-send-hook'."
 ;; the 'All Mail' folder by pressing ``ma''.
 
 (setq mu4e-maildir-shortcuts
-      '(("/Gmail/INBOX"               . ?i)
+      '(("/drafts"                    . ?d)
+        ("/Gmail/INBOX"               . ?i)
         ("/Gmail/github-emacs-helm"   . ?h)
         ("/Gmail/emacs-helm"          . ?e)
         ("/Gmail/Emacs development"   . ?E)
