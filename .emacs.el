@@ -1893,9 +1893,6 @@ With prefix arg always start and let me choose dictionary."
 (global-set-key (kbd "C-x C-z") 'zoom-window-zoom)
 (setq zoom-window-mode-line-color "DarkGreen")
 
-;;; js2-mode
-(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-
 ;;; Be sure to reenable touchpad when quitting emacs
 (add-hook 'kill-emacs-hook #'(lambda ()
                                (and (executable-find "reenable_touchpad.sh")
