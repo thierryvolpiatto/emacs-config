@@ -626,6 +626,7 @@ are returned unchanged."
 ;; (define-key python-mode-map (kbd "C-c C-i") 'helm-ipython-import-modules-from-buffer)
 
 (use-package python
+    :no-require t
     :init
   (progn
     (setq
@@ -670,6 +671,7 @@ from IPython.core.completerlib import module_completion"
 ;;; Tramp-config
 ;;
 (use-package tramp
+    :no-require t
     :config
   (progn
     ;; scp is better for copying large files.
@@ -712,7 +714,7 @@ from IPython.core.completerlib import module_completion"
   (progn
     (setq ange-ftp-try-passive-mode t)
     (setq ange-ftp-passive-host-alist '(("mafreebox.freebox.fr" . "on"))))
-  :defer t)
+  :no-require t)
 
 ;;; Calendar and diary
 ;;
@@ -804,6 +806,7 @@ from IPython.core.completerlib import module_completion"
 ;;; Bookmarks
 ;;
 (use-package bookmark
+    :no-require t
     :init
   (progn
     (add-hook 'bookmark-bmenu-mode-hook 'hl-line-mode)
@@ -1898,7 +1901,7 @@ With prefix arg always start and let me choose dictionary."
 ;;
 ;;
 ;;; Persistent-scratch
-;;;###autoload
+;;
 (defun tv-restore-scratch-buffer ()
   (unless (buffer-file-name (get-buffer "*scratch*"))
     (and (get-buffer "*scratch*") (kill-buffer "*scratch*")))
@@ -1912,6 +1915,6 @@ With prefix arg always start and let me choose dictionary."
             (<= (buffer-size) 2))
     (insert ";;; -*- coding: utf-8; mode: lisp-interaction; lexical-binding: t -*-\n;;\n;; SCRATCH BUFFER\n;; ==============\n\n")))
 
-(add-hook 'emacs-startup-hook 'tv-restore-scratch-buffer)
+(tv-restore-scratch-buffer)
 
 ;;; .emacs.el ends here
