@@ -331,24 +331,7 @@ If your system's ping continues until interrupted, you can try setting
     :init
   (progn
     (bind-key "C-;" 'iedit-mode)
-    (bind-key "C-§" 'iedit-narrow-to-end)
-    (bind-key "C-²" 'iedit-narrow-to-defun))
-  :commands (iedit-mode-toggle-on-function)
-  :config
-  (progn
-    (defun iedit-narrow-to-end (arg)
-      (interactive "P")
-      (require 'iedit)
-      (save-restriction
-        (narrow-to-region (point-at-bol) (point-max))
-        (iedit-mode arg)))
-
-    (defun iedit-narrow-to-defun (arg)
-      (interactive "P")
-      (require 'iedit)
-      (save-restriction
-        (narrow-to-defun)
-        (iedit-mode arg)))))
+    (bind-key "C-²" 'iedit-mode-toggle-on-function)))
 
 (use-package iedit-rect
     :init (bind-key [C-return] 'iedit-rectangle-mode)
