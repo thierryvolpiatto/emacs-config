@@ -250,7 +250,8 @@ If your system's ping continues until interrupted, you can try setting
                addressbook-gnus-sum-bookmark
                addressbook-mu4e-bookmark
                addressbook-bmenu-edit
-               addressbook-bookmark-jump))
+               addressbook-bookmark-jump)
+    :config (addressbook-turn-on-mail-completion))
 
 ;;; Org
 ;;
@@ -800,6 +801,48 @@ from IPython.core.completerlib import module_completion"
     (define-key calendar-mode-map (kbd "RET") 'tv/calendar-diary-or-holiday))
   :defer t)
 
+;;; Bookmarks
+;;
+(use-package bookmark
+    :init
+  (progn
+    (add-hook 'bookmark-bmenu-mode-hook 'hl-line-mode)
+    (setq bookmark-bmenu-toggle-filenames nil)
+    (setq bookmark-default-file "~/.emacs.d/.emacs.bmk")
+    (setq bookmark-automatically-show-annotations nil))
+  :config
+  (progn
+    (and (boundp 'bookmark-bmenu-use-header-line)
+         (setq bookmark-bmenu-use-header-line nil))
+
+    (defun tv-pp-bookmark-alist ()
+      "Quickly print `bookmark-alist'."
+      (interactive)
+      (switch-to-buffer (get-buffer-create "*pp-bookmark-alist*"))
+      (erase-buffer)
+      (dolist (i bookmark-alist)
+        (pp i (current-buffer))))))
+
+;;; git-gutter-mode
+;;
+(use-package git-gutter
+    :init
+  (progn
+    (customize-set-variable 'git-gutter:update-interval 2) ; Activate live update timer.
+    (setq git-gutter:hide-gutter t) ; Always a 0 width margin when no changes.
+    (bind-key [remap vc-dir] 'git-gutter:popup-hunk)
+    ;; Stage current hunk
+    (bind-key [remap vc-create-tag] 'git-gutter:stage-hunk)
+    ;; Revert current hunk
+    (bind-key (kbd "C-x v r") 'git-gutter:revert-hunk))
+  :config
+  (progn
+    (global-git-gutter-mode) ; Enable live update.
+    (helm-define-key-with-subkeys
+        global-map (kbd "C-x v n") ?n 'git-gutter:next-hunk '((?p . git-gutter:previous-hunk)))
+    (helm-define-key-with-subkeys
+        global-map (kbd "C-x v p") ?p 'git-gutter:previous-hunk '((?n . git-gutter:next-hunk)))))
+
 
 ;;; Gnus-config
 ;;;
@@ -1108,30 +1151,6 @@ With a prefix arg decrease transparency."
 
 ;; Pas-de-dialog-gtk
 (setq use-file-dialog nil)
-
-
-;;; Bookmarks
-;;
-;;
-(setq bookmark-bmenu-toggle-filenames nil)
-(add-hook 'bookmark-bmenu-mode-hook 'hl-line-mode)
-(setq bookmark-default-file "~/.emacs.d/.emacs.bmk")
-(setq bookmark-automatically-show-annotations nil)
-(eval-after-load "bookmark.el"
-  (and (boundp 'bookmark-bmenu-use-header-line)
-       (setq bookmark-bmenu-use-header-line nil)))
-(setq bmkext-external-browse-url-function 'browse-url-firefox)
-;; (setq bmkext-jump-w3m-defaut-method 'external) ; Set to 'external to use external browser, w3m for w3m.
-(eval-after-load "addressbook-bookmark.el"
-  (addressbook-turn-on-mail-completion))
-
-(defun tv-pp-bookmark-alist ()
-  "Quickly print `bookmark-alist'."
-  (interactive)
-  (switch-to-buffer (get-buffer-create "*pp-bookmark-alist*"))
-  (erase-buffer)
-  (dolist (i bookmark-alist)
-    (pp i (current-buffer))))
 
 ;;; Browse url
 ;;
@@ -1793,36 +1812,6 @@ With prefix arg always start and let me choose dictionary."
 ;;
 ;; Tramp/ange behave badly in 99.9% of the time for ftp, disable.
 (setq ffap-url-unwrap-remote (remove "ftp" ffap-url-unwrap-remote))
-
-;;; Deactivate mouse scrolling
-;;
-;; (mouse-wheel-mode -1)
-
-;;; Printing variables
-;;
-;;
-;; (setq print-gensym t
-;;       print-length nil
-;;       print-level nil
-;;       print-circle t
-;;       eval-expression-print-level nil)
-
-;;; git-gutter-mode
-;;
-(customize-set-variable 'git-gutter:update-interval 2) ; Activate live update timer.
-(setq git-gutter:hide-gutter t) ; Always a 0 width margin when no changes.
-(global-git-gutter-mode) ; Enable live update.
-;; (add-hook 'emacs-lisp-mode-hook 'git-gutter-mode)
-(helm-define-key-with-subkeys
-    global-map (kbd "C-x v n") ?n 'git-gutter:next-hunk '((?p . git-gutter:previous-hunk)))
-(helm-define-key-with-subkeys
-    global-map (kbd "C-x v p") ?p 'git-gutter:previous-hunk '((?n . git-gutter:next-hunk)))
-
-(global-set-key [remap vc-dir] 'git-gutter:popup-hunk)
-;; Stage current hunk
-(global-set-key [remap vc-create-tag] 'git-gutter:stage-hunk)
-;; Revert current hunk
-(global-set-key (kbd "C-x v r") 'git-gutter:revert-hunk)
 
 ;;; Diff
 ;;
