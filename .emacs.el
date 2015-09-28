@@ -244,12 +244,13 @@ If your system's ping continues until interrupted, you can try setting
 
 ;;; Addressbook
 ;;
-(autoload 'addressbook-turn-on-mail-completion "addressbook-bookmark")
-(autoload 'addressbook-bookmark-set "addressbook-bookmark" nil t)
-(autoload 'addressbook-gnus-sum-bookmark "addressbook-bookmark" nil t)
-(autoload 'addressbook-mu4e-bookmark "addressbook-bookmark" nil t)
-(autoload 'addressbook-bmenu-edit "addressbook-bookmark" nil t)
-(autoload 'addressbook-bookmark-jump "addressbook-bookmark")
+(use-package addressbook-bookmark
+    :commands (addressbook-turn-on-mail-completion
+               addressbook-bookmark-set
+               addressbook-gnus-sum-bookmark
+               addressbook-mu4e-bookmark
+               addressbook-bmenu-edit
+               addressbook-bookmark-jump))
 
 ;;; Org
 ;;
