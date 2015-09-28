@@ -285,11 +285,15 @@ If your system's ping continues until interrupted, you can try setting
 
 ;;; Ioccur
 ;;
-(autoload 'ioccur "ioccur" nil t)
+(use-package ioccur
+    :commands (ioccur)
+    :init
+  (add-hook 'ioccur-save-pos-before-jump-hook 'ioccur-save-current-pos-to-mark-ring))
 
 ;;; tv-utils fns
 ;;
 (use-package tv-utils)
+
 ;;; Ledger
 ;;
 (use-package ledger
@@ -299,42 +303,54 @@ If your system's ping continues until interrupted, you can try setting
 
 ;;; Rectangle
 ;;
-(autoload 'rectangle-menu            "rectangle-utils" nil t)
-(autoload 'copy-rectangle            "rectangle-utils" nil t)
-(autoload 'rectangle-insert-at-right "rectangle-utils" nil t)
-(autoload 'extend-rectangle-to-end   "rectangle-utils" nil t)
+(use-package rectangle-utils
+    :commands (rectangle-menu
+               copy-rectangle
+               rectangle-insert-at-right
+               extend-rectangle-to-end))
 
 ;;; Smallurl
 ;;
-(autoload 'smallurl "smallurl" nil t)
-(autoload 'smallurl-replace-at-point "smallurl" nil t)
+(use-package smallurl
+    :commands (smallurl smallurl-replace-at-point))
 
 ;;; Zop-to-char
 ;;
-(autoload 'zop-to-char    "zop-to-char" nil t)
-(autoload 'zop-up-to-char "zop-to-char" nil t)
-(setq zop-to-char-prec-keys '(left ?\C-b ?\M-a)
-      zop-to-char-next-keys '(right ?\C-f ?\M-e))
+(use-package zop-to-char
+    :commands (zop-to-char zop-up-to-char)
+    :init
+    (progn
+      (setq zop-to-char-prec-keys '(left ?\C-b ?\M-a)
+            zop-to-char-next-keys '(right ?\C-f ?\M-e))))
 
 ;;; Iedit
 ;;
-(autoload 'iedit-mode "iedit" nil t)
-(autoload 'iedit-mode-toggle-on-function "iedit" nil t)
-(autoload 'iedit-rectangle-mode "iedit-rect" nil t)
+(use-package iedit
+    :init
+  (progn
+    (bind-key "C-;" 'iedit-mode)
+    (bind-key "C-§" 'iedit-narrow-to-end)
+    (bind-key "C-²" 'iedit-narrow-to-defun))
+  :commands (iedit-mode-toggle-on-function)
+  :config
+  (progn
+    (defun iedit-narrow-to-end (arg)
+      (interactive "P")
+      (require 'iedit)
+      (save-restriction
+        (narrow-to-region (point-at-bol) (point-max))
+        (iedit-mode arg)))
 
-(defun iedit-narrow-to-end (arg)
-  (interactive "P")
-  (require 'iedit)
-  (save-restriction
-    (narrow-to-region (point-at-bol) (point-max))
-    (iedit-mode arg)))
+    (defun iedit-narrow-to-defun (arg)
+      (interactive "P")
+      (require 'iedit)
+      (save-restriction
+        (narrow-to-defun)
+        (iedit-mode arg)))))
 
-(defun iedit-narrow-to-defun (arg)
-  (interactive "P")
-  (require 'iedit)
-  (save-restriction
-    (narrow-to-defun)
-    (iedit-mode arg)))
+(use-package iedit-rect
+    :init (bind-key [C-return] 'iedit-rectangle-mode)
+    :commands (iedit-rectangle-mode))
 
 ;;; Lacarte
 ;;
@@ -346,20 +362,25 @@ If your system's ping continues until interrupted, you can try setting
 
 ;;; psession
 ;;
-(autoload 'psession-mode "psession")
+(use-package psession
+    :config (psession-mode 1))
 
 ;;; Golden-ratio
 ;;
-(autoload 'golden-ratio-mode "golden-ratio" nil t)
-(defun helm-running-p () helm-alive-p)
-(setq golden-ratio-inhibit-functions '(helm-running-p))
-(setq golden-ratio-exclude-buffer-regexp '("\\`\\*[Hh]elm.*\\*\\'"))
-(setq golden-ratio-exclude-modes '(ediff-mode calendar-mode wget-mode
-                                   gnus-summary-mode gnus-article-mode))
-(setq golden-ratio-recenter t)
-(add-hook 'ediff-before-setup-windows-hook #'(lambda () (golden-ratio-mode -1)))
-(add-hook 'ediff-quit-hook #'(lambda () (golden-ratio-mode 1)))
-(golden-ratio-mode 1)
+(use-package golden-ratio
+    :init
+  (progn
+    (add-hook 'ediff-before-setup-windows-hook #'(lambda () (golden-ratio-mode -1)))
+    (add-hook 'ediff-quit-hook #'(lambda () (golden-ratio-mode 1))))
+  :config
+  (progn
+    (defun helm-running-p () helm-alive-p)
+    (setq golden-ratio-inhibit-functions '(helm-running-p))
+    (setq golden-ratio-exclude-buffer-regexp '("\\`\\*[Hh]elm.*\\*\\'"))
+    (setq golden-ratio-exclude-modes '(ediff-mode calendar-mode wget-mode
+                                       gnus-summary-mode gnus-article-mode))
+    (setq golden-ratio-recenter t)
+    (golden-ratio-mode 1)))
 
 ;;; W3m
 ;;
@@ -422,6 +443,16 @@ If your system's ping continues until interrupted, you can try setting
     :commands 'async-smtpmail-send-it)
 (use-package async-bytecomp
     :config (setq async-bytecomp-allowed-packages '(all)))
+
+;;; Undo-tree
+;;
+(use-package undo-tree
+    :init
+  (progn
+    (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree-history")))
+    (setq undo-tree-auto-save-history t))
+  :config
+  (global-undo-tree-mode 1))
 
 
 ;;; Gnus-config
@@ -486,15 +517,6 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
   (setq auth-sources '((:source "~/.authinfo.gpg" :host t :protocol t))))
 
 
-;; Use helm-occur as default but fallback to ioccur when helm is broken
-(defun tv-helm-or-ioccur (force)
-  (interactive "P")
-  (if force
-      (ioccur)
-      (condition-case nil
-          (helm-occur)
-        (error (ioccur)))))
-
 ;;; Run or hide shell
 (defun tv-shell ()
   (interactive)
@@ -569,10 +591,6 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 (global-set-key (kbd "M-e")                        'tv-eval-last-sexp-at-eol)
 (global-set-key [remap delete-char]                'tv-delete-char)
 (global-set-key (kbd "C-x C-'")                    'tv/split-windows)
-(global-set-key (kbd "C-§")                        'iedit-narrow-to-end)
-(global-set-key (kbd "C-²")                        'iedit-narrow-to-defun)
-(global-set-key [C-return]                         'iedit-rectangle-mode)
-(global-set-key (kbd "C-;")                        'iedit-mode)
 
 (defun goto-scratch () (interactive) (switch-to-buffer "*scratch*"))
 (global-set-key (kbd "<f11> s c")                  'goto-scratch)
@@ -1364,7 +1382,7 @@ With prefix arg always start and let me choose dictionary."
     ;; scp is better for copying large files.
     (setq tramp-default-method "scp")
     ;; (setq tramp-verbose 6) ; See `helm-tramp-verbose' in init-helm.
-    
+
     ;; Android settings (Only available on trunk)
     ;;
     (when (boundp 'tramp-connection-properties)
@@ -1383,13 +1401,13 @@ With prefix arg always start and let me choose dictionary."
     ;; Use e.g /sudo:host:/path
     (add-to-list 'tramp-default-proxies-alist
                  '("\\`thievol\\'" "\\`root\\'" "/ssh:%h:"))
-    
+
     (add-to-list 'tramp-default-proxies-alist
                  '("\\`thievolrem\\'" "\\`root\\'" "/ssh:%h:"))
-    
+
     (add-to-list 'tramp-default-proxies-alist
                  '((regexp-quote (system-name)) nil nil))
-    
+
     ;; Connect to my freebox as 'freebox' user.
     (add-to-list 'tramp-default-user-alist
                  '("ftp" "\\`mafreebox\\.freebox\\.fr\\'" "freebox"))))
@@ -1492,10 +1510,6 @@ With prefix arg always start and let me choose dictionary."
 (setq slime-scratch-file "~/.emacs.d/slime-scratch.lisp")
 
 
-
-;; ioccur
-(add-hook 'ioccur-save-pos-before-jump-hook 'ioccur-save-current-pos-to-mark-ring)
-
 ;; Enable-commands-disabled-by-default
 (put 'narrow-to-region 'disabled nil) ; C-x n n
 (put 'narrow-to-page 'disabled nil)   ; C-x n p
@@ -1558,17 +1572,6 @@ With prefix arg always start and let me choose dictionary."
 ;;; Rst-mode
 ;;
 (add-hook 'rst-mode-hook 'auto-fill-mode)
-
-;;; Undo-tree
-;;
-;;
-(use-package undo-tree
-    :init
-  (progn
-    (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree-history")))
-    (setq undo-tree-auto-save-history t))
-  :config
-  (global-undo-tree-mode 1))
 
 
 ;;; Calendar and diary
@@ -1897,11 +1900,6 @@ With prefix arg always start and let me choose dictionary."
 (add-hook 'kill-emacs-hook #'(lambda ()
                                (and (executable-find "reenable_touchpad.sh")
                                     (shell-command "reenable_touchpad.sh"))))
-
-;;; Save/restore emacs-session
-;;
-;;
-(psession-mode 1)
 
 ;;; Link scratch buffer to file
 ;;
