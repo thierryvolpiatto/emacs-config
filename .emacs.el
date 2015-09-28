@@ -455,6 +455,213 @@ If your system's ping continues until interrupted, you can try setting
   :config
   (global-undo-tree-mode 1))
 
+;;; Zoom-window
+;;
+(use-package zoom-window
+    :init (setq zoom-window-mode-line-color "DarkGreen")
+    :bind ("C-x C-z" . zoom-window-zoom))
+
+;;; Recentf
+;;
+(use-package recentf
+    :init
+  (progn
+    (setq recentf-save-file "~/.emacs.d/recentf")
+    ;; `recentf-mode' will be started by helm when needed,
+    ;; so no need to start it here
+    (setq recentf-max-saved-items 100))
+  :config
+  (recentf-mode 1)
+  :defer t)
+
+;;; Eldoc
+;;
+(use-package eldoc
+    :init
+  (progn
+    (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+    (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
+    (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
+    (add-hook 'eshell-mode-hook 'turn-on-eldoc-mode))
+    :config
+  (when ;; Don't load this on emacs-25
+      (fboundp 'eldoc-highlight-function-argument)
+    (defun eldoc-highlight-function-argument (sym args index)
+      "Highlight argument INDEX in ARGS list for function SYM.
+In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
+      (let ((start          nil)
+            (end            0)
+            (argument-face  'eldoc-highlight-function-argument)
+            (args-lst (mapcar (lambda (x)
+                                (replace-regexp-in-string
+                                 "\\`[(]\\|[)]\\'" "" x))
+                              (split-string args))))
+        ;; Find the current argument in the argument string.  We need to
+        ;; handle `&rest' and informal `...' properly.
+        ;;
+        ;; FIXME: What to do with optional arguments, like in
+        ;;        (defun NAME ARGLIST [DOCSTRING] BODY...) case?
+        ;;        The problem is there is no robust way to determine if
+        ;;        the current argument is indeed a docstring.
+
+        ;; When `&key' is used finding position based on `index'
+        ;; would be wrong, so find the arg at point and determine
+        ;; position in ARGS based on this current arg.
+        (when (string-match "&key" args)
+          (let* (case-fold-search
+                 key-have-value
+                 (sym-name (symbol-name sym))
+                 (cur-w (current-word))
+                 (args-lst-ak (cdr (member "&key" args-lst)))
+                 (limit (save-excursion
+                          (when (re-search-backward sym-name nil t)
+                            (match-end 0))))
+                 (cur-a (if (and cur-w (string-match ":\\([^ ()]*\\)" cur-w))
+                            (substring cur-w 1)
+                            (save-excursion
+                              (let (split)
+                                (when (re-search-backward ":\\([^()\n]*\\)" limit t)
+                                  (setq split (split-string (match-string 1) " " t))
+                                  (prog1 (car split)
+                                    (when (cdr split)
+                                      (setq key-have-value t))))))))
+                 ;; If `cur-a' is not one of `args-lst-ak'
+                 ;; assume user is entering an unknow key
+                 ;; referenced in last position in signature.
+                 (other-key-arg (and (stringp cur-a)
+                                     args-lst-ak
+                                     (not (member (upcase cur-a) args-lst-ak))
+                                     (upcase (car (last args-lst-ak))))))
+            (unless (string= cur-w sym-name)
+              ;; The last keyword have already a value
+              ;; i.e :foo a b and cursor is at b.
+              ;; If signature have also `&rest'
+              ;; (assume it is after the `&key' section)
+              ;; go to the arg after `&rest'.
+              (if (and key-have-value
+                       (save-excursion
+                         (not (re-search-forward ":.*" (point-at-eol) t)))
+                       (string-match "&rest \\([^ ()]*\\)" args))
+                  (setq index nil ; Skip next block based on positional args.
+                        start (match-beginning 1)
+                        end   (match-end 1))
+                  ;; If `cur-a' is nil probably cursor is on a positional arg
+                  ;; before `&key', in this case, exit this block and determine
+                  ;; position with `index'.
+                  (when (and cur-a ; A keyword arg (dot removed) or nil.
+                             (or (string-match
+                                  (concat "\\_<" (upcase cur-a) "\\_>") args)
+                                 (string-match
+                                  (concat "\\_<" other-key-arg "\\_>") args)))
+                    (setq index nil ; Skip next block based on positional args.
+                          start (match-beginning 0)
+                          end   (match-end 0)))))))
+        ;; Handle now positional arguments.
+        (while (and index (>= index 1))
+          (if (string-match "[^ ()]+" args end)
+              (progn
+                (setq start (match-beginning 0)
+                      end   (match-end 0))
+                (let ((argument (match-string 0 args)))
+                  (cond ((string= argument "&rest")
+                         ;; All the rest arguments are the same.
+                         (setq index 1))
+                        ((string= argument "&optional"))       ; Skip.
+                        ((string= argument "&allow-other-keys")) ; Skip.
+                        ;; Back to index 0 in ARG1 ARG2 ARG2 ARG3 etc...
+                        ;; like in `setq'.
+                        ((or (and (string-match-p "\\.\\.\\.$" argument)
+                                  (string= argument (car (last args-lst))))
+                             (and (string-match-p "\\.\\.\\.$"
+                                                  (substring args 1 (1- (length args))))
+                                  (= (length (remove "..." args-lst)) 2)
+                                  (> index 1) (oddp index)))
+                         (setq index 0))
+                        (t
+                         (setq index (1- index))))))
+              (setq end           (length args)
+                    start         (1- end)
+                    argument-face 'font-lock-warning-face
+                    index         0)))
+        (let ((doc args))
+          (when start
+            (setq doc (copy-sequence args))
+            (add-text-properties start end (list 'face argument-face) doc))
+          (setq doc (eldoc-docstring-format-sym-doc
+                     sym doc (if (functionp sym) 'font-lock-function-name-face
+                                 'font-lock-keyword-face)))
+          doc)))
+
+    (when (fboundp 'eldoc-function-argstring-format)
+      (defun eldoc-function-argstring-format (argstring)
+        "Apply `eldoc-argument-case' to each word in ARGSTRING.
+The words \"&rest\", \"&optional\", \"&key\" and \"&allow-other-keys\"
+are returned unchanged."
+        (mapconcat
+         (lambda (s)
+           (if (string-match-p
+                "\\`(?&\\(?:optional\\|rest\\|key\\|allow-other-keys\\))?\\'" s)
+               s
+               (funcall eldoc-argument-case s)))
+         (split-string argstring) " ")))))
+
+(use-package eldoc-eval
+    :config
+  (progn
+    (eldoc-in-minibuffer-mode 1)
+    (defadvice edebug-eval-expression (around with-eldoc activate)
+      "This advice enable eldoc support."
+      (interactive (list (with-eldoc-in-minibuffer
+                           (read-from-minibuffer
+                            "Eval: " nil read-expression-map t
+                            'read-expression-history))))
+      ad-do-it)))
+
+;;; Python config
+;;
+;;
+;; (tv-require 'helm-ipython)
+;; (define-key python-mode-map (kbd "<M-tab>") 'helm-ipython-complete)
+;; (define-key python-mode-map (kbd "C-c C-i") 'helm-ipython-import-modules-from-buffer)
+
+(use-package python
+    :init
+  (progn
+    (setq
+     gud-pdb-command-name "ipdb"
+     python-shell-interpreter "ipython"
+     python-shell-interpreter-args "-i --autoindent"
+     python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+     python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+     python-shell-completion-setup-code
+     "import rlcompleter2
+rlcompleter2.setup()
+from IPython.core.completerlib import module_completion"
+     python-shell-completion-module-string-code
+     "';'.join(module_completion('''%s'''))\n"
+     python-shell-completion-string-code
+     "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
+
+    (add-hook 'python-mode-hook
+              #'(lambda ()
+                  (define-key python-mode-map (kbd "C-m") 'newline-and-indent)))
+
+    (when (fboundp 'jedi:setup)
+      (add-hook 'python-mode-hook 'jedi:setup))
+
+    (add-hook 'python-mode-hook 'flymake-python-pyflakes-load))
+  :config
+  (progn
+    (defun tv-insert-python-header ()
+      "insert python header at point"
+      (interactive)
+      (insert "#!/usr/bin/env python\n"
+              "# -*- coding: utf-8 -*-\n\n"
+              "## Title: \n"
+              "## Description: \n"
+              "## Author:Thierry Volpiatto<thierry dot volpiatto FROM gmail DOT com>\n"
+              "## Commentary:\n\n"))))
+
 
 ;;; Gnus-config
 ;;;
@@ -476,7 +683,7 @@ If your system's ping continues until interrupted, you can try setting
 
   (add-hook 'message-mode-hook 'tv-load-gnus-init-may-be)
   (add-hook 'gnus-before-startup-hook 'tv-load-gnus-init-may-be)
-;;
+
   (defun quickping (host)
     "Return non--nil when host is reachable."
     (= 0 (call-process "ping" nil nil nil "-c1" "-W10" "-q" host)))
@@ -593,7 +800,9 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 (global-set-key [remap delete-char]                'tv-delete-char)
 (global-set-key (kbd "C-x C-'")                    'tv/split-windows)
 
-(defun goto-scratch () (interactive) (switch-to-buffer "*scratch*"))
+(defun goto-scratch ()
+  (interactive)
+  (switch-to-buffer "*scratch*"))
 (global-set-key (kbd "<f11> s c")                  'goto-scratch)
 
 
@@ -632,20 +841,6 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
       history-delete-duplicates t)
 (setq history-length 100) ; default is 30.
 (savehist-mode 1)
-
-;;; Recentf
-;;
-;;
-(use-package recentf
-    :init
-  (progn
-    (setq recentf-save-file "~/.emacs.d/recentf")
-    ;; `recentf-mode' will be started by helm when needed,
-    ;; so no need to start it here
-    (setq recentf-max-saved-items 100))
-  :config
-  (recentf-mode 1)
-  :defer t)
 
 
 ;;; Frame and window config.
@@ -872,148 +1067,7 @@ With a prefix arg decrease transparency."
 (add-to-list 'auto-mode-alist '("\\.doc\\'" . no-word))
 
 
-;; Elisp
-
-;; Eldoc
-(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-(add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
-(add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
-(add-hook 'eshell-mode-hook 'turn-on-eldoc-mode)
-
-(use-package eldoc
-    :config
-  (when ;; Don't load this on emacs-25
-      (fboundp 'eldoc-highlight-function-argument)
-    (defun eldoc-highlight-function-argument (sym args index)
-      "Highlight argument INDEX in ARGS list for function SYM.
-In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
-      (let ((start          nil)
-            (end            0)
-            (argument-face  'eldoc-highlight-function-argument)
-            (args-lst (mapcar (lambda (x)
-                                (replace-regexp-in-string
-                                 "\\`[(]\\|[)]\\'" "" x))
-                              (split-string args))))
-        ;; Find the current argument in the argument string.  We need to
-        ;; handle `&rest' and informal `...' properly.
-        ;;
-        ;; FIXME: What to do with optional arguments, like in
-        ;;        (defun NAME ARGLIST [DOCSTRING] BODY...) case?
-        ;;        The problem is there is no robust way to determine if
-        ;;        the current argument is indeed a docstring.
-
-        ;; When `&key' is used finding position based on `index'
-        ;; would be wrong, so find the arg at point and determine
-        ;; position in ARGS based on this current arg.
-        (when (string-match "&key" args)
-          (let* (case-fold-search
-                 key-have-value
-                 (sym-name (symbol-name sym))
-                 (cur-w (current-word))
-                 (args-lst-ak (cdr (member "&key" args-lst)))
-                 (limit (save-excursion
-                          (when (re-search-backward sym-name nil t)
-                            (match-end 0))))
-                 (cur-a (if (and cur-w (string-match ":\\([^ ()]*\\)" cur-w))
-                            (substring cur-w 1)
-                            (save-excursion
-                              (let (split)
-                                (when (re-search-backward ":\\([^()\n]*\\)" limit t)
-                                  (setq split (split-string (match-string 1) " " t))
-                                  (prog1 (car split)
-                                    (when (cdr split)
-                                      (setq key-have-value t))))))))
-                 ;; If `cur-a' is not one of `args-lst-ak'
-                 ;; assume user is entering an unknow key
-                 ;; referenced in last position in signature.
-                 (other-key-arg (and (stringp cur-a)
-                                     args-lst-ak
-                                     (not (member (upcase cur-a) args-lst-ak))
-                                     (upcase (car (last args-lst-ak))))))
-            (unless (string= cur-w sym-name)
-              ;; The last keyword have already a value
-              ;; i.e :foo a b and cursor is at b.
-              ;; If signature have also `&rest'
-              ;; (assume it is after the `&key' section)
-              ;; go to the arg after `&rest'.
-              (if (and key-have-value
-                       (save-excursion
-                         (not (re-search-forward ":.*" (point-at-eol) t)))
-                       (string-match "&rest \\([^ ()]*\\)" args))
-                  (setq index nil ; Skip next block based on positional args.
-                        start (match-beginning 1)
-                        end   (match-end 1))
-                  ;; If `cur-a' is nil probably cursor is on a positional arg
-                  ;; before `&key', in this case, exit this block and determine
-                  ;; position with `index'.
-                  (when (and cur-a ; A keyword arg (dot removed) or nil.
-                             (or (string-match
-                                  (concat "\\_<" (upcase cur-a) "\\_>") args)
-                                 (string-match
-                                  (concat "\\_<" other-key-arg "\\_>") args)))
-                    (setq index nil ; Skip next block based on positional args.
-                          start (match-beginning 0)
-                          end   (match-end 0)))))))
-        ;; Handle now positional arguments.
-        (while (and index (>= index 1))
-          (if (string-match "[^ ()]+" args end)
-              (progn
-                (setq start (match-beginning 0)
-                      end   (match-end 0))
-                (let ((argument (match-string 0 args)))
-                  (cond ((string= argument "&rest")
-                         ;; All the rest arguments are the same.
-                         (setq index 1))
-                        ((string= argument "&optional"))       ; Skip.
-                        ((string= argument "&allow-other-keys")) ; Skip.
-                        ;; Back to index 0 in ARG1 ARG2 ARG2 ARG3 etc...
-                        ;; like in `setq'.
-                        ((or (and (string-match-p "\\.\\.\\.$" argument)
-                                  (string= argument (car (last args-lst))))
-                             (and (string-match-p "\\.\\.\\.$"
-                                                  (substring args 1 (1- (length args))))
-                                  (= (length (remove "..." args-lst)) 2)
-                                  (> index 1) (oddp index)))
-                         (setq index 0))
-                        (t
-                         (setq index (1- index))))))
-              (setq end           (length args)
-                    start         (1- end)
-                    argument-face 'font-lock-warning-face
-                    index         0)))
-        (let ((doc args))
-          (when start
-            (setq doc (copy-sequence args))
-            (add-text-properties start end (list 'face argument-face) doc))
-          (setq doc (eldoc-docstring-format-sym-doc
-                     sym doc (if (functionp sym) 'font-lock-function-name-face
-                                 'font-lock-keyword-face)))
-          doc)))
-
-    (when (fboundp 'eldoc-function-argstring-format)
-      (defun eldoc-function-argstring-format (argstring)
-        "Apply `eldoc-argument-case' to each word in ARGSTRING.
-The words \"&rest\", \"&optional\", \"&key\" and \"&allow-other-keys\"
-are returned unchanged."
-        (mapconcat
-         (lambda (s)
-           (if (string-match-p
-                "\\`(?&\\(?:optional\\|rest\\|key\\|allow-other-keys\\))?\\'" s)
-               s
-               (funcall eldoc-argument-case s)))
-         (split-string argstring) " ")))))
-
-(use-package eldoc-eval
-    :config
-  (progn
-    (eldoc-in-minibuffer-mode 1)
-    (defadvice edebug-eval-expression (around with-eldoc activate)
-      "This advice enable eldoc support."
-      (interactive (list (with-eldoc-in-minibuffer
-                           (read-from-minibuffer
-                            "Eval: " nil read-expression-map t
-                            'read-expression-history))))
-      ad-do-it)))
+;;; Elisp
 
 ;; Tooltip face
 (set-face-attribute 'tooltip nil
@@ -1045,52 +1099,6 @@ are returned unchanged."
 
 ;; Indent-only-with-spaces
 (setq-default indent-tabs-mode nil)
-
-
-;;; Python config
-;;
-;;
-;; (tv-require 'helm-ipython)
-;; (define-key python-mode-map (kbd "<M-tab>") 'helm-ipython-complete)
-;; (define-key python-mode-map (kbd "C-c C-i") 'helm-ipython-import-modules-from-buffer)
-
-(use-package python
-    :init
-  (progn
-    (setq
-     gud-pdb-command-name "ipdb"
-     python-shell-interpreter "ipython"
-     python-shell-interpreter-args "-i --autoindent"
-     python-shell-prompt-regexp "In \\[[0-9]+\\]: "
-     python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
-     python-shell-completion-setup-code
-     "import rlcompleter2
-rlcompleter2.setup()
-from IPython.core.completerlib import module_completion"
-     python-shell-completion-module-string-code
-     "';'.join(module_completion('''%s'''))\n"
-     python-shell-completion-string-code
-     "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
-
-    (add-hook 'python-mode-hook
-              #'(lambda ()
-                  (define-key python-mode-map (kbd "C-m") 'newline-and-indent)))
-
-    (when (fboundp 'jedi:setup)
-      (add-hook 'python-mode-hook 'jedi:setup))
-
-    (add-hook 'python-mode-hook 'flymake-python-pyflakes-load)))
-
-;; Entete-py
-(defun tv-insert-python-header ()
-  "insert python header at point"
-  (interactive)
-  (insert "#!/usr/bin/env python\n"
-          "# -*- coding: utf-8 -*-\n\n"
-          "## Title: \n"
-          "## Description: \n"
-          "## Author:Thierry Volpiatto<thierry dot volpiatto FROM gmail DOT com>\n"
-          "## Commentary:\n\n"))
 
 
 ;;; Shell config
@@ -1890,12 +1898,6 @@ With prefix arg always start and let me choose dictionary."
 (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-b")
                               ?b 'outline-backward-same-level
                               '((?f . outline-forward-same-level)))
-
-;;; emacs-zoom-window
-;;
-;; Installed from package.
-(global-set-key (kbd "C-x C-z") 'zoom-window-zoom)
-(setq zoom-window-mode-line-color "DarkGreen")
 
 ;;; Be sure to reenable touchpad when quitting emacs
 (add-hook 'kill-emacs-hook #'(lambda ()
