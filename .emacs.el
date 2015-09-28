@@ -662,6 +662,144 @@ from IPython.core.completerlib import module_completion"
               "## Author:Thierry Volpiatto<thierry dot volpiatto FROM gmail DOT com>\n"
               "## Commentary:\n\n"))))
 
+;;; xdvi (Needed in auctex)
+;;
+(use-package xdvi-search)
+
+;;; Tramp-config
+;;
+(use-package tramp
+    :config
+  (progn
+    ;; scp is better for copying large files.
+    (setq tramp-default-method "scp")
+    ;; (setq tramp-verbose 6) ; See `helm-tramp-verbose' in init-helm.
+
+    ;; Android settings (Only available on trunk)
+    ;;
+    (when (boundp 'tramp-connection-properties)
+      (add-to-list 'tramp-connection-properties
+                   (list (regexp-quote "192.168.0.24") "remote-shell" "sh"))
+      (add-to-list 'tramp-connection-properties
+                   (list (regexp-quote "zte") "remote-shell" "sh"))
+      (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+      (cl-pushnew "/system/xbin" tramp-remote-path :test 'equal)
+      (add-to-list 'tramp-remote-process-environment "TMPDIR=$HOME/tmp"))
+
+    ;; No messages
+    (setq tramp-message-show-message nil)
+
+    ;; Allow connecting as root on all remote Linux machines except this one.
+    ;; Use e.g /sudo:host:/path
+    (add-to-list 'tramp-default-proxies-alist
+                 '("\\`thievol\\'" "\\`root\\'" "/ssh:%h:"))
+
+    (add-to-list 'tramp-default-proxies-alist
+                 '("\\`thievolrem\\'" "\\`root\\'" "/ssh:%h:"))
+
+    (add-to-list 'tramp-default-proxies-alist
+                 '((regexp-quote (system-name)) nil nil))
+
+    ;; Connect to my freebox as 'freebox' user.
+    (add-to-list 'tramp-default-user-alist
+                 '("ftp" "\\`mafreebox\\.freebox\\.fr\\'" "freebox"))))
+
+;;; Ange-ftp
+;;
+(use-package ange-ftp
+    :init
+  (progn
+    (setq ange-ftp-try-passive-mode t)
+    (setq ange-ftp-passive-host-alist '(("mafreebox.freebox.fr" . "on"))))
+  :defer t)
+
+;;; Calendar and diary
+;;
+(use-package calendar
+    :config
+  (progn
+    (setq diary-file "~/.emacs.d/diary")
+    (unless (fboundp 'fancy-diary-display) ; Fix emacs-25.
+      (defalias 'fancy-diary-display 'diary-fancy-display))
+    (setq calendar-date-style 'european)
+    (setq calendar-mark-diary-entries-flag t)
+    (setq calendar-mark-holidays-flag t)
+    (setq holiday-bahai-holidays nil)
+    (setq holiday-hebrew-holidays nil)
+    (setq holiday-islamic-holidays nil)
+    (setq holiday-oriental-holidays nil)
+
+    (setq diary-display-function 'diary-fancy-display)
+    (add-hook 'diary-list-entries-hook 'diary-sort-entries t)
+    (add-hook 'calendar-today-visible-hook 'calendar-mark-today)
+    (add-hook 'initial-calendar-window-hook 'mark-diary-entries)
+    (setq mark-holidays-in-calendar t)
+    (setq diary-number-of-entries 4)
+
+    ;; calendar-date-style is set [HERE]:
+    (setq calendar-week-start-day 1
+          calendar-day-name-array
+          ["Dimanche" "Lundi" "Mardi"
+                      "Mercredi" "Jeudi" "Vendredi" "Samedi"]
+          calendar-month-name-array
+          ["Janvier" "Février" "Mars" "Avril"
+                     "Mai" "Juin" "Juillet" "Août" "Septembre"
+                     "Octobre" "Novembre" "Décembre"])
+
+    (defvar holiday-french-holidays nil
+      "French holidays")
+
+    (setq holiday-french-holidays
+          `((holiday-fixed 1 1 "Jour de l'an")
+            (holiday-fixed 2 14 "Fête des amoureux")
+            (holiday-fixed 5 1 "Fête du travail")
+            (holiday-fixed 5 8 "Victoire")
+            (holiday-float 5 0 -1 "Fête des Mères")
+            (holiday-float 6 0 3 "Fête des Pères")
+            (holiday-fixed 7 14 "Fête nationale")
+            (holiday-fixed 8 15 "Assomption")
+            (holiday-fixed 10 31 "Halloween")
+            (holiday-easter-etc -47 "Mardi Gras")
+            (holiday-fixed 11 11 "Armistice")
+            (holiday-fixed 11 1 "Toussaint")
+            (holiday-fixed 12 25 "Noël")
+            (holiday-easter-etc 0 "Pâques")
+            (holiday-easter-etc 1 "Pâques")
+            (holiday-easter-etc 39 "Ascension")
+            (holiday-easter-etc 49 "Pentecôte")
+            (holiday-easter-etc 50 "Pentecôte")
+            (holiday-float 3 0 -1 "Heure d'été")
+            (holiday-float 10 0 -1 "Heure d'hiver")))
+
+    (setq calendar-holidays `(,@holiday-solar-holidays
+                              ,@holiday-french-holidays))
+
+    (defun tv/calendar-diary-or-holiday (arg)
+      "A single command for diary and holiday entries."
+      ;; Assume diary and holidays are shown in calendar.
+      (interactive "p")
+      (let* ((ovs (overlays-at (point)))
+             (props (cl-loop for ov in ovs
+                             for prop = (cadr (overlay-properties ov))
+                             when (or (and (eq prop 'diary)
+                                           'diary)
+                                      (and (eq prop 'holiday)
+                                           'holiday))
+                             collect prop)))
+        (cond ((and (memq 'diary props) (memq 'holiday props))
+               (diary-view-entries arg)
+               (calendar-cursor-holidays))
+              ((memq 'diary props)
+               (diary-view-entries arg))
+              ((memq 'holiday props)
+               (calendar-cursor-holidays))
+              (t (message "Nothing special on this date")))))
+
+    (define-key calendar-mode-map (kbd "C-<right>") 'calendar-forward-month)
+    (define-key calendar-mode-map (kbd "C-<left>")  'calendar-backward-month)
+    (define-key calendar-mode-map (kbd "RET") 'tv/calendar-diary-or-holiday))
+  :defer t)
+
 
 ;;; Gnus-config
 ;;;
@@ -1285,7 +1423,6 @@ With prefix arg always start and let me choose dictionary."
 ;;
 (load "auctex.el" nil t t)
 (load "preview-latex.el" nil t t)
-(use-package xdvi-search)
 
 ;; To turn on RefTeX Minor Mode for all LaTeX files,
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex) ; with AUCTeX LaTeX mode
@@ -1380,53 +1517,6 @@ With prefix arg always start and let me choose dictionary."
       (re-search-forward "[\\]begin\{letter\}")
     (beginning-of-line)
     (forward-char 15)))
-
-
-;;; Tramp-config
-;;
-;;
-(use-package tramp
-    :config
-  (progn
-    ;; scp is better for copying large files.
-    (setq tramp-default-method "scp")
-    ;; (setq tramp-verbose 6) ; See `helm-tramp-verbose' in init-helm.
-
-    ;; Android settings (Only available on trunk)
-    ;;
-    (when (boundp 'tramp-connection-properties)
-      (add-to-list 'tramp-connection-properties
-                   (list (regexp-quote "192.168.0.24") "remote-shell" "sh"))
-      (add-to-list 'tramp-connection-properties
-                   (list (regexp-quote "zte") "remote-shell" "sh"))
-      (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
-      (cl-pushnew "/system/xbin" tramp-remote-path :test 'equal)
-      (add-to-list 'tramp-remote-process-environment "TMPDIR=$HOME/tmp"))
-
-    ;; No messages
-    (setq tramp-message-show-message nil)
-
-    ;; Allow connecting as root on all remote Linux machines except this one.
-    ;; Use e.g /sudo:host:/path
-    (add-to-list 'tramp-default-proxies-alist
-                 '("\\`thievol\\'" "\\`root\\'" "/ssh:%h:"))
-
-    (add-to-list 'tramp-default-proxies-alist
-                 '("\\`thievolrem\\'" "\\`root\\'" "/ssh:%h:"))
-
-    (add-to-list 'tramp-default-proxies-alist
-                 '((regexp-quote (system-name)) nil nil))
-
-    ;; Connect to my freebox as 'freebox' user.
-    (add-to-list 'tramp-default-user-alist
-                 '("ftp" "\\`mafreebox\\.freebox\\.fr\\'" "freebox"))))
-
-;;; Ange-ftp
-;;
-;;
-(setq ange-ftp-try-passive-mode t)
-(setq ange-ftp-passive-host-alist '(("mafreebox.freebox.fr" . "on")))
-
 
 ;; Mode-lecture-photo-auto
 (auto-image-file-mode 1)
@@ -1581,95 +1671,6 @@ With prefix arg always start and let me choose dictionary."
 ;;; Rst-mode
 ;;
 (add-hook 'rst-mode-hook 'auto-fill-mode)
-
-
-;;; Calendar and diary
-;;
-;;
-(use-package calendar
-    :config
-  (progn
-    (setq diary-file "~/.emacs.d/diary")
-    (unless (fboundp 'fancy-diary-display) ; Fix emacs-25.
-      (defalias 'fancy-diary-display 'diary-fancy-display))
-    (setq calendar-date-style 'european)
-    (setq calendar-mark-diary-entries-flag t)
-    (setq calendar-mark-holidays-flag t)
-    (setq holiday-bahai-holidays nil)
-    (setq holiday-hebrew-holidays nil)
-    (setq holiday-islamic-holidays nil)
-    (setq holiday-oriental-holidays nil)
-
-    (setq diary-display-function 'diary-fancy-display)
-    (add-hook 'diary-list-entries-hook 'diary-sort-entries t)
-    (add-hook 'calendar-today-visible-hook 'calendar-mark-today)
-    (add-hook 'initial-calendar-window-hook 'mark-diary-entries)
-    (setq mark-holidays-in-calendar t)
-    (setq diary-number-of-entries 4)
-
-    ;; calendar-date-style is set [HERE]:
-    (setq calendar-week-start-day 1
-          calendar-day-name-array
-          ["Dimanche" "Lundi" "Mardi"
-                      "Mercredi" "Jeudi" "Vendredi" "Samedi"]
-          calendar-month-name-array
-          ["Janvier" "Février" "Mars" "Avril"
-                     "Mai" "Juin" "Juillet" "Août" "Septembre"
-                     "Octobre" "Novembre" "Décembre"])
-
-    (defvar holiday-french-holidays nil
-      "French holidays")
-
-    (setq holiday-french-holidays
-          `((holiday-fixed 1 1 "Jour de l'an")
-            (holiday-fixed 2 14 "Fête des amoureux")
-            (holiday-fixed 5 1 "Fête du travail")
-            (holiday-fixed 5 8 "Victoire")
-            (holiday-float 5 0 -1 "Fête des Mères")
-            (holiday-float 6 0 3 "Fête des Pères")
-            (holiday-fixed 7 14 "Fête nationale")
-            (holiday-fixed 8 15 "Assomption")
-            (holiday-fixed 10 31 "Halloween")
-            (holiday-easter-etc -47 "Mardi Gras")
-            (holiday-fixed 11 11 "Armistice")
-            (holiday-fixed 11 1 "Toussaint")
-            (holiday-fixed 12 25 "Noël")
-            (holiday-easter-etc 0 "Pâques")
-            (holiday-easter-etc 1 "Pâques")
-            (holiday-easter-etc 39 "Ascension")
-            (holiday-easter-etc 49 "Pentecôte")
-            (holiday-easter-etc 50 "Pentecôte")
-            (holiday-float 3 0 -1 "Heure d'été")
-            (holiday-float 10 0 -1 "Heure d'hiver")))
-
-    (setq calendar-holidays `(,@holiday-solar-holidays
-                              ,@holiday-french-holidays))
-
-    (defun tv/calendar-diary-or-holiday (arg)
-      "A single command for diary and holiday entries."
-      ;; Assume diary and holidays are shown in calendar.
-      (interactive "p")
-      (let* ((ovs (overlays-at (point)))
-             (props (cl-loop for ov in ovs
-                             for prop = (cadr (overlay-properties ov))
-                             when (or (and (eq prop 'diary)
-                                           'diary)
-                                      (and (eq prop 'holiday)
-                                           'holiday))
-                             collect prop)))
-        (cond ((and (memq 'diary props) (memq 'holiday props))
-               (diary-view-entries arg)
-               (calendar-cursor-holidays))
-              ((memq 'diary props)
-               (diary-view-entries arg))
-              ((memq 'holiday props)
-               (calendar-cursor-holidays))
-              (t (message "Nothing special on this date")))))
-
-    (define-key calendar-mode-map (kbd "C-<right>") 'calendar-forward-month)
-    (define-key calendar-mode-map (kbd "C-<left>")  'calendar-backward-month)
-    (define-key calendar-mode-map (kbd "RET") 'tv/calendar-diary-or-holiday))
-  :defer t)
 
 
 ;; Checkdoc
