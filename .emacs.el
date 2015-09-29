@@ -851,10 +851,6 @@ from IPython.core.completerlib import module_completion"
   (add-hook 'message-mode-hook 'tv-load-gnus-init-may-be)
   (add-hook 'gnus-before-startup-hook 'tv-load-gnus-init-may-be)
 
-  (defun quickping (host)
-    "Return non--nil when host is reachable."
-    (= 0 (call-process "ping" nil nil nil "-c1" "-W10" "-q" host)))
-
   (defun tv-gnus (arg)
     "Start Gnus.
 If Gnus have been started and a *Group* buffer exists,
@@ -1549,7 +1545,7 @@ With prefix arg always start and let me choose dictionary."
 (setq lisp-loop-forms-indentation 6)
 
 ;; Fix indentation in cl-flet and cl-labels
-(eval-after-load "cl-indent.el"
+(with-eval-after-load "cl-indent.el"
   (let ((l '((flet ((&whole 4 &rest (&whole 1 &lambda &body)) &body))
              (cl-flet* . flet)
              (labels . flet)
