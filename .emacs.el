@@ -829,6 +829,52 @@ from IPython.core.completerlib import module_completion"
     (helm-define-key-with-subkeys
         global-map (kbd "C-x v p") ?p 'git-gutter:previous-hunk '((?n . git-gutter:next-hunk)))))
 
+;;; Slime
+;;
+;;
+(use-package slime
+    :init
+  (progn
+    (setq inferior-lisp-program "/usr/bin/sbcl")
+    (slime-setup '(slime-fancy
+                   slime-asdf
+                   slime-tramp
+                   slime-banner
+                   slime-autodoc
+                   slime-xref-browser))
+    (setq slime-net-coding-system 'utf-8-unix
+          slime-complete-symbol-function 'slime-fuzzy-complete-symbol)
+    ;; Save-slime-scratch-buffer
+    (setq slime-scratch-file "~/.emacs.d/slime-scratch.lisp")
+    ;; common-lisp-info
+    (add-to-list 'Info-additional-directory-list "~/elisp/info/gcl-info/")
+    (add-hook 'slime-load-hook #'(lambda () (tv-require 'slime-tramp)))
+    (bind-key "<f11> l r" 'tv-start-slime)
+    (bind-key "<f11> l e" 'slime-scratch)
+    (bind-key "<f11> l l" 'slime-list-connections)
+    (defun tv-slime-port (process)
+      (let ((slime-port (or (process-id process)
+                            (process-contact process))))
+        (setq slime-port (cadr slime-port))
+        slime-port))
+
+    (defun tv-get-slime-buffer-list ()
+      (let ((buf-list nil))
+        (dolist (b (buffer-list))
+          (when (string-match "*slime-repl sbcl*" (buffer-name b))
+            (push (buffer-name b) buf-list)))
+        buf-list))
+
+    (defun tv-start-slime ()
+      (interactive)
+      (require 'slime)
+      (if (slime-connected-p)
+          (if (< (length slime-net-processes) 2)
+              (slime)
+              (slime-list-connections))
+          (slime))))
+  :no-require t)
+
 
 ;;; Gnus-config
 ;;;
@@ -919,9 +965,6 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 (global-set-key (kbd "<f5> p b")                   'print-buffer)
 (global-set-key (kbd "<f5> p r")                   'print-region)
 (global-set-key (kbd "<f5> p i")                   'pr-interface)
-(global-set-key (kbd "<f11> l r")                  'tv-start-slime)
-(global-set-key (kbd "<f11> l e")                  'slime-scratch)
-(global-set-key (kbd "<f11> l l")                  'slime-list-connections)
 (global-set-key [remap occur]                      'ioccur) ; M-s o
 (global-set-key (kbd "C-s")                        'helm-occur)
 (global-set-key (kbd "<M-down>")                   'tv-scroll-down)
@@ -1207,6 +1250,27 @@ With a prefix arg decrease transparency."
 
 
 ;;; Elisp
+
+;; Fix indentation in CL loop.
+(setq lisp-indent-function 'common-lisp-indent-function
+      lisp-simple-loop-indentation 1
+      lisp-loop-keyword-indentation 6
+      lisp-loop-forms-indentation 6)
+
+;; Fix indentation in cl-flet and cl-labels
+(with-eval-after-load "cl-indent.el"
+  (let ((l '((flet ((&whole 4 &rest (&whole 1 &lambda &body)) &body))
+             (cl-flet* . flet)
+             (labels . flet)
+             (cl-flet . flet)
+             (cl-labels . flet)
+             (cl-macrolet . flet)
+             )))
+    (dolist (el l)
+      (put (car el) 'common-lisp-indent-function
+           (if (symbolp (cdr el))
+               (get (cdr el) 'common-lisp-indent-function)
+               (car (cdr el)))))))
 
 ;; Tooltip face
 (set-face-attribute 'tooltip nil
@@ -1524,40 +1588,6 @@ With prefix arg always start and let me choose dictionary."
 ;; Allow scrolling horizontally in large images
 (add-hook 'image-mode-hook #'(lambda () (set (make-variable-buffer-local 'auto-hscroll-mode) nil)))
 
-
-;;; Slime config
-;;
-;;
-(setq inferior-lisp-program "/usr/bin/sbcl")
-(slime-setup '(slime-fancy
-               slime-asdf
-               slime-tramp
-               slime-banner
-               slime-autodoc
-               slime-xref-browser))
-(setq slime-net-coding-system 'utf-8-unix
-      lisp-indent-function 'common-lisp-indent-function
-      slime-complete-symbol-function 'slime-fuzzy-complete-symbol)
-
-;; Fix indentation in CL loop.
-(setq lisp-simple-loop-indentation 1)
-(setq lisp-loop-keyword-indentation 6)
-(setq lisp-loop-forms-indentation 6)
-
-;; Fix indentation in cl-flet and cl-labels
-(with-eval-after-load "cl-indent.el"
-  (let ((l '((flet ((&whole 4 &rest (&whole 1 &lambda &body)) &body))
-             (cl-flet* . flet)
-             (labels . flet)
-             (cl-flet . flet)
-             (cl-labels . flet)
-             (cl-macrolet . flet)
-             )))
-    (dolist (el l)
-      (put (car el) 'common-lisp-indent-function
-           (if (symbolp (cdr el))
-               (get (cdr el) 'common-lisp-indent-function)
-               (car (cdr el)))))))
 
 ;; cl- prefixed symbols are not font-locked in emacs-24.3 and also many in 24.4.
 ;; (dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
@@ -1578,36 +1608,6 @@ With prefix arg always start and let me choose dictionary."
 ;;      ("(\\<\\(defun[*]?\\|defmacro[*]?\\|defsubst[*]?\\|defstruct\\)\\_>" 1 font-lock-keyword-face)
 ;;      ("(\\<\\(defun[*]?\\|defmacro[*]?\\|defsubst[*]?\\)\\_>\\s-+\\<\\([^ ]*\\)\\>" 2 font-lock-function-name-face)
 ;;      ("(\\<\\(defstruct\\)\\_>\\s-+\\<\\([^ ]*\\)\\>" 2 font-lock-type-face))))
-
-(add-hook 'slime-load-hook #'(lambda () (tv-require 'slime-tramp)))
-
-(defun tv-slime-port (process)
-  (let ((slime-port (or (process-id process)
-                        (process-contact process))))
-    (setq slime-port (cadr slime-port))
-    slime-port))
-
-(defun tv-get-slime-buffer-list ()
-  (let ((buf-list nil))
-    (dolist (b (buffer-list))
-      (when (string-match "*slime-repl sbcl*" (buffer-name b))
-        (push (buffer-name b) buf-list)))
-    buf-list))
-
-(defun tv-start-slime ()
-  (interactive)
-  (require 'slime)
-  (if (slime-connected-p)
-      (if (< (length slime-net-processes) 2)
-          (slime)
-          (slime-list-connections))
-      (slime)))
-
-;; common-lisp-info
-(add-to-list 'Info-additional-directory-list "~/elisp/info/gcl-info/")
-
-;; Save-slime-scratch-buffer
-(setq slime-scratch-file "~/.emacs.d/slime-scratch.lisp")
 
 
 ;; Enable-commands-disabled-by-default
