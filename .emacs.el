@@ -54,16 +54,6 @@ So far, F can only be a symbol, not a lambda expression."))
 ;; background yellow foreground black:
 (setenv "GREP_COLORS" "ms=30;43:mc=30;43:sl=01;37:cx=:fn=35:ln=32:bn=32:se=36")
 
-;; Fix loosing focus on window manager
-;; when quitting emacs.
-;; WM should be set accordingly.
-;; See WM configuration screenshot here:
-;; /home/thierry/Documents/configuration_screenshots_xubuntu/Screenshot - 30062014 - 17:09:56.png
-
-(setq focus-follows-mouse t)
-
-(setq x-select-enable-primary t)
-
 
 ;;; Compatibility
 ;;
