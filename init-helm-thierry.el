@@ -140,7 +140,8 @@ First call indent, second complete symbol, third complete fname."
 ;;; Helm-variables
 ;;
 ;;
-(setq helm-net-prefer-curl                       t
+(setq helm-quick-update                          nil
+      helm-net-prefer-curl                       t
       helm-kill-ring-threshold                   1
       helm-raise-command                         "wmctrl -xa %s"
       helm-scroll-amount                         4

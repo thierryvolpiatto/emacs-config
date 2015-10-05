@@ -67,35 +67,8 @@ in cl-case that file does not provide any feature."
     `(eval-after-load ,file (lambda () ,@body))))
 
 
-;;; Temporary Bugfixes until fixed in trunk.
+;;; Temporary Bugfixes until fixed upstream.
 ;;
-(use-package net-utils
-    :config
-  (progn
-    (defun ping (host)
-      "Ping HOST.
-If your system's ping continues until interrupted, you can try setting
-`ping-program-options'."
-      (interactive "sPing host: ")
-      (let ((options
-             (if ping-program-options
-                 (append ping-program-options (list host))
-                 (list host))))
-        (net-utils-run-simple
-         (concat "Ping" " " host)
-         ping-program
-         options)))
-
-    (defun run-dig (host)
-      "Run dig program."
-      (interactive "sLookup host: ")
-      (net-utils-run-simple
-       (concat "** "
-               (mapconcat 'identity
-                          (list "Dig" host dig-program)
-                          " ** "))
-       dig-program
-       (list host)))))
 
 (defadvice term-command-hook (before decode-string)
   (setq string (decode-coding-string string locale-coding-system)))
@@ -110,11 +83,6 @@ If your system's ping continues until interrupted, you can try setting
                                   (when (get-buffer "*Compile-Log*")
                                     (kill-buffer "*Compile-Log*")
                                     (delete-other-windows))))
-
-;; Annoyance number 1 is bidi
-;; Turn OFF bidi everywhere.
-(setq-default bidi-display-reordering nil)
-;; (setq-default cache-long-scans nil) ; Fix bug#15973 among others.
 
 ;; Disable uniquify enabled by default in 24.4.
 (setq uniquify-buffer-name-style nil)
@@ -224,6 +192,36 @@ If your system's ping continues until interrupted, you can try setting
   (wget url))
 
 
+;;; Use `net-utils-run-simple' in net-utils fns.
+;;
+(use-package net-utils
+    :config
+  (progn
+    (defun ping (host)
+      "Ping HOST.
+If your system's ping continues until interrupted, you can try setting
+`ping-program-options'."
+      (interactive "sPing host: ")
+      (let ((options
+             (if ping-program-options
+                 (append ping-program-options (list host))
+                 (list host))))
+        (net-utils-run-simple
+         (concat "Ping" " " host)
+         ping-program
+         options)))
+
+    (defun run-dig (host)
+      "Run dig program."
+      (interactive "sLookup host: ")
+      (net-utils-run-simple
+       (concat "** "
+               (mapconcat 'identity
+                          (list "Dig" host dig-program)
+                          " ** "))
+       dig-program
+       (list host)))))
+
 ;;; Helm
 ;;
 (use-package init-helm-thierry)
@@ -457,8 +455,9 @@ If your system's ping continues until interrupted, you can try setting
     (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
     (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
     (add-hook 'eshell-mode-hook 'turn-on-eldoc-mode))
-    :config
-  (when ;; Don't load this on emacs-25
+  :config
+  ;; Don't load this on emacs-25
+  (when
       (fboundp 'eldoc-highlight-function-argument)
     (defun eldoc-highlight-function-argument (sym args index)
       "Highlight argument INDEX in ARGS list for function SYM.
@@ -540,7 +539,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                   (cond ((string= argument "&rest")
                          ;; All the rest arguments are the same.
                          (setq index 1))
-                        ((string= argument "&optional"))       ; Skip.
+                        ((string= argument "&optional")) ; Skip.
                         ((string= argument "&allow-other-keys")) ; Skip.
                         ;; Back to index 0 in ARG1 ARG2 ARG2 ARG3 etc...
                         ;; like in `setq'.
@@ -870,7 +869,7 @@ from IPython.core.completerlib import module_completion"
 ;;;
 ;;
 ;;
-(defvar tv/use-gnus nil)
+(defvar tv/use-gnus t)
 (when tv/use-gnus
   (setq gnus-asynchronous t)
   ;; (setq mail-user-agent 'gnus-user-agent)
