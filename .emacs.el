@@ -29,54 +29,35 @@
 
 ;;(setq package-pinned-packages '((magit . "melpa-stable")))
 
-;; Load now use-package.
+;;; Use-package.
+;;
 (require 'use-package)
 (setq use-package-verbose t)
 
-;; Fix compatibility with emacs 24.3.
-;; Avoid rebuilding all the autoloads just for this when switching to 24.3.
-(unless (fboundp 'function-put)
-  (defalias 'function-put
-      ;; We don't want people to just use `put' because we can't conveniently
-      ;; hook into `put' to remap old properties to new ones.  But for now, there's
-      ;; no such remapping, so we just call `put'.
-      #'(lambda (f prop value) (put f prop value))
-    "Set function F's property PROP to VALUE.
-The namespace for PROP is shared with symbols.
-So far, F can only be a symbol, not a lambda expression."))
-
-;;; Environment variables
+;;; Global settings
 ;;
-;; (setenv "LANG" "C")
-;; This is needed to make helm-grep working with ansi.
-;; foreground red for matches (original) :
-;;(setenv "GREP_COLORS" "ms=01;31:mc=01;31:sl=01;37:cx=:fn=35:ln=32:bn=32:se=36")
-;; background yellow foreground black:
-(setenv "GREP_COLORS" "ms=30;43:mc=30;43:sl=01;37:cx=:fn=35:ln=32:bn=32:se=36")
+;; confirm-quit-emacs
+(setq confirm-kill-emacs 'y-or-n-p)
 
-
-;;; Compatibility
-;;
-;;
-(unless (fboundp 'with-eval-after-load)
-  (defmacro with-eval-after-load (file &rest body)
-    "Execute BODY after FILE is loaded.
-FILE is normally a feature name, but it can also be a file name,
-in cl-case that file does not provide any feature."
-    (declare (indent 1) (debug t))
-    `(eval-after-load ,file (lambda () ,@body))))
+(setq case-fold-search t)
 
-
-;;; Temporary Bugfixes until fixed upstream.
-;;
+;; Add-newline-at-end-of-files
+(setq require-final-newline t)
 
-(defadvice term-command-hook (before decode-string)
-  (setq string (decode-coding-string string locale-coding-system)))
+;; y-or-n-p
+(fset 'yes-or-no-p 'y-or-n-p)
 
-(when (version< emacs-version "24.3.50.1") (ad-activate 'term-command-hook))
+;; Affiche-l'heure-au-format-24h
+(setq display-time-24hr-format t)
+(setq display-time-day-and-date t)
+(display-time)
+(setq display-time-use-mail-icon t)
 
-
-;;; Annoyances section
+;; Limite-max-lisp
+(setq max-lisp-eval-depth 40000)
+(setq max-specpdl-size 100000)
+
+;; Annoyances section
 ;;
 (global-set-key (kbd "<f11>") nil)
 (add-hook 'emacs-startup-hook #'(lambda ()
@@ -92,16 +73,17 @@ in cl-case that file does not provide any feature."
 
 (setq register-preview-delay nil)
 
-;;; Environment
-;; For eshell env settings.
-(setenv "STARDICT_DATA_DIR" "~/.stardict/dic")
-(prefer-coding-system 'utf-8)
-
 ;; No-startup-screen
 (setq inhibit-startup-message t)
 
 ;; consequent-log-file
 (setq message-log-max 1000)
+
+;; kill-ring
+(setq kill-ring-max 60)
+
+;; mark ring
+(setq mark-ring-max 60)
 
 ;; Kill emacs
 (defun tv-stop-emacs ()
@@ -109,6 +91,347 @@ in cl-case that file does not provide any feature."
   (if (daemonp)
       (save-buffers-kill-emacs)
       (save-buffers-kill-terminal)))
+
+(global-font-lock-mode 1)
+(setq font-lock-maximum-decoration t)
+
+;; column-number in mode-line.
+(column-number-mode 1)
+
+;; Environment variables
+;;
+;; grep matches with background yellow and foreground black
+(setenv "GREP_COLORS" "ms=30;43:mc=30;43:sl=01;37:cx=:fn=35:ln=32:bn=32:se=36")
+
+;; For eshell env settings.
+(setenv "STARDICT_DATA_DIR" "~/.stardict/dic")
+(prefer-coding-system 'utf-8)
+
+;; Save-minibuffer-history
+(setq savehist-file "~/.emacs.d/history"
+      history-delete-duplicates t)
+(setq history-length 100) ; default is 30.
+(savehist-mode 1)
+
+;; Themes
+(defvar tv-theme-directory "~/.emacs.d/themes/")
+(unless (< emacs-major-version 24)
+  (setq custom-theme-directory tv-theme-directory))
+
+;; Load my favourite theme.
+(add-hook 'emacs-startup-hook #'(lambda () (load-theme 'naquadah)))
+
+;;; Frame and window config.
+;;
+;;
+;; My current-font: [EVAL]: (assoc-default 'font (frame-parameters))
+;; Choose a font:   [EVAL]: (progn (when (require 'helm-font) (helm 'helm-source-xfonts)))
+;; Choose a color:  [EVAL]: (progn (when (require 'helm-color) (helm 'helm-source-colors)))
+;; To reload .Xresources [EVAL]: (shell-command xrdb "~/.Xresources")
+
+(defvar tv-default-font (assoc-default 'font (frame-parameters)))
+(setq-default frame-background-mode 'dark)
+(setq initial-frame-alist '((fullscreen . maximized)))
+(setq frame-auto-hide-function 'delete-frame)
+
+(if (or (daemonp)
+        (not (window-system))
+        (< emacs-major-version 24))
+    (setq default-frame-alist `((vertical-scroll-bars . nil)
+                                (tool-bar-lines . 0)
+                                (menu-bar-lines . 0)
+                                (title . ,(format "Emacs-%s" emacs-version))
+                                (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
+                                (cursor-color . "red")))
+
+    (setq default-frame-alist `((foreground-color . "Wheat")
+                                (background-color . "black")
+                                (alpha . 90)
+                                ;; New frames go in right corner.
+                                (left . ,(- (* (window-width) 8) 160)) ; Chars are 8 bits long.
+                                (vertical-scroll-bars . nil)
+                                (title . ,(format "Emacs-%s" emacs-version))
+                                (tool-bar-lines . 0)
+                                (menu-bar-lines . 0)
+                                (font . ,tv-default-font)
+                                (cursor-color . "red")
+                                (fullscreen . nil)
+                                )))
+
+;; Speedbar
+(add-hook 'speedbar-load-hook
+          #'(lambda ()
+              (setq speedbar-frame-parameters
+                    `((minibuffer . nil)
+                      (font . ,tv-default-font)
+                      (width . 20)
+                      (fullscreen . nil) ; Not needed when fullscreen isn't set in .Xressources.
+                      (left . ,(- (* (window-width) 8)
+                                  (frame-width))) ; Speed-bar on right of screen.
+                      (border-width . 0)
+                      (menu-bar-lines . 0)
+                      (tool-bar-lines . 0)
+                      (unsplittable . t)
+                      (left-fringe . 0)))))
+
+;;; Special buffer display.
+;;
+;;
+(setq special-display-regexps `(("\\*Help"
+                                 (minibuffer . nil)
+                                 (width . 80)
+                                 (height . 24)
+                                 (left-fringe . 0)
+                                 (border-width . 0)
+                                 (menu-bar-lines . 0)
+                                 (tool-bar-lines . 0)
+                                 (unsplittable . t)
+                                 (top . 24)
+                                 (left . 450)
+                                 (background-color . "Lightsteelblue1")
+                                 (foreground-color . "black")
+                                 (alpha . nil)
+                                 (fullscreen . nil))
+                                ("\\*Compile-Log"
+                                 (minibuffer . nil)
+                                 (width . 85)
+                                 (height . 24)
+                                 (left-fringe . 0)
+                                 (border-width . 0)
+                                 (menu-bar-lines . 0)
+                                 (tool-bar-lines . 0)
+                                 (unsplittable . t)
+                                 (top . 24)
+                                 (left . 450)
+                                 (background-color . "Brown4")
+                                 (foreground-color . "black")
+                                 (alpha . nil)
+                                 (fullscreen . nil))
+                                ("\\*Dict"
+                                 (minibuffer . nil)
+                                 (width . 80)
+                                 (height . 24)
+                                 (left-fringe . 0)
+                                 (border-width . 0)
+                                 (menu-bar-lines . 0)
+                                 (tool-bar-lines . 0)
+                                 (unsplittable . t)
+                                 (top . 24)
+                                 (left . 450)
+                                 (background-color . "LightSteelBlue")
+                                 (foreground-color . "DarkGoldenrod")
+                                 (alpha . nil)
+                                 (fullscreen . nil))
+                                ))
+
+;; Don't split this windows horizontally
+(setq split-width-threshold nil)
+
+;; Pas-de-dialog-gtk
+(setq use-file-dialog nil)
+
+;; Browse url
+;;
+;;
+(setq browse-url-browser-function 'helm-browse-url-firefox)
+;;(setq browse-url-browser-function 'w3m-browse-url)
+
+;;; Ediff
+;;
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+(setq ediff-split-window-function 'split-window-horizontally)
+
+;;; emacs-backup-config
+;;
+(setq backup-directory-alist '(("" . "~/.emacs.d/emacs_backup"))
+      backup-by-copying t
+      version-control t
+      kept-old-versions 2
+      kept-new-versions 20
+      delete-old-versions t)
+(setq tramp-backup-directory-alist backup-directory-alist)
+
+;; show-paren-mode
+;;
+(show-paren-mode 1)
+(setq show-paren-ring-bell-on-mismatch t)
+
+;; Start-emacs-server
+;;
+(add-hook 'after-init-hook #'(lambda ()
+                               (unless (daemonp)
+                                 (server-start)
+                                 (setq server-raise-frame t))))
+
+
+;; Path-to-abbrev-file
+(setq abbrev-file-name "/home/thierry/.emacs.d/.abbrev_defs")
+
+;; Copy/paste
+(setq select-active-regions t)
+
+;; Enable-commands-disabled-by-default
+(put 'narrow-to-region 'disabled nil) ; C-x n n
+(put 'narrow-to-page 'disabled nil)   ; C-x n p
+(put 'scroll-left 'disabled nil)     ; C-x > or <
+(put 'downcase-region 'disabled nil) ; C-x C-l
+(put 'upcase-region 'disabled nil)   ; C-x C-u
+(put 'set-goal-column 'disabled nil) ; C-x C-n ==> disable with C-u
+(put 'dired-find-alternate-file 'disabled nil) ; a in dired
+
+;; setup-minibuffer
+(setq enable-recursive-minibuffers t)
+(minibuffer-depth-indicate-mode 1)
+
+;; Woman/man
+(setq woman-use-own-frame nil)
+(setq Man-notify-method 'pushy)
+(defface man-args-face '((t (:foreground "Magenta" :underline t)))
+  "*Face used in man page to show arguments and sections."
+  :group 'man)
+
+;; Printing
+(setq lpr-command "gtklp")
+(setq printer-name "EpsonStylus")
+(setq-default ps-print-header nil)
+(setq ps-font-size   '(10 . 11.5))
+(setq ps-font-family 'Courier)
+
+;; auto-compression-mode
+(auto-compression-mode 1)
+
+;; Mode-lecture-photo-auto
+(auto-image-file-mode 1)
+
+;; Allow scrolling horizontally in large images
+(add-hook 'image-mode-hook #'(lambda () (set (make-variable-buffer-local 'auto-hscroll-mode) nil)))
+
+;; line-move-visual.
+(setq line-move-visual nil)
+
+;; Rst-mode
+(add-hook 'rst-mode-hook 'auto-fill-mode)
+
+;; Trash
+;; (setq delete-by-moving-to-trash t)
+
+;; Minibuffers completion
+(setq completion-cycle-threshold t) ; always cycle, no completion buffers.
+
+;; Diff
+(customize-set-variable 'diff-switches "-w")
+
+;; Report bug
+(setq report-emacs-bug-no-explanations t)
+
+;; Indent-only-with-spaces
+(setq-default indent-tabs-mode nil)
+
+;; Prompt shell read only
+(setq comint-prompt-read-only t)
+
+;; Newline and indent in `sh-mode'.
+(add-hook 'sh-mode-hook #'(lambda ()
+                            (define-key sh-mode-map (kbd "RET") 'newline-and-indent)))
+
+;; winner-mode config
+(setq winner-boring-buffers '("*Completions*"
+                              "*Compile-Log*"
+                              "*inferior-lisp*"
+                              "*Fuzzy Completions*"
+                              "*Apropos*"
+                              "*Help*"
+                              "*cvs*"
+                              "*Buffer List*"
+                              "*Ibuffer*"
+                              ))
+
+(winner-mode 1)
+
+;; Display time in mode-line
+(setq display-time-string-forms
+      '( ;; date
+        (if (and (not display-time-format) display-time-day-and-date)
+            (format-time-string "[%a %e %b " now)
+            "")
+        ;; time
+        (concat
+         (propertize
+          (format-time-string (or display-time-format
+                                  (if display-time-24hr-format " %H:%M" " %-I:%M%p"))
+                              now)
+          'face '((:foreground "green"))
+          'help-echo (format-time-string " %a %b %e, %Y" now))
+         (and time-zone " (") time-zone (and time-zone ")")
+         "]")
+        ;; cpu load average
+        ;; (if (and load (not (string= load "")))
+        ;;     (format "cpu:%s" load) "")
+        ""
+        ;; mail
+        ""))
+
+;; Mode-line
+(set-face-attribute 'mode-line-emphasis nil :foreground "red")
+
+;; World-time
+(add-to-list 'display-time-world-list '("Greenwich" "Greenwich"))
+(add-to-list 'display-time-world-list '("Australia/Sydney" "Sydney"))
+(add-to-list 'display-time-world-list '("Australia/Melbourne" "Melbourne"))
+(add-to-list 'display-time-world-list '("Australia/Canberra" "Canberra"))
+(add-to-list 'display-time-world-list '("America/Chicago" "Chicago"))
+(add-to-list 'display-time-world-list '("America/Denver" "Denver"))
+(add-to-list 'display-time-world-list '("America/Los_Angeles" "Los_Angeles/Seattle"))
+(add-to-list 'display-time-world-list '("America/Denver" "Moab"))
+(add-to-list 'display-time-world-list '("America/Vancouver" "Vancouver"))
+(add-to-list 'display-time-world-list '("America/Montreal" "Montreal"))
+(add-to-list 'display-time-world-list '("America/New_York" "Ottawa"))
+(add-to-list 'display-time-world-list '("Europe/Moscow" "Moscow"))
+(add-to-list 'display-time-world-list '("Europe/Berlin" "Berlin"))
+(add-to-list 'display-time-world-list '("Europe/Oslo" "Oslo"))
+(add-to-list 'display-time-world-list '("Europe/Lisbon" "Lisbon"))
+(add-to-list 'display-time-world-list '("Asia/Dubai" "Dubai"))
+(add-to-list 'display-time-world-list '("Asia/Tokyo" "Tokyo"))
+(add-to-list 'display-time-world-list '("Hongkong" "Hongkong"))
+(add-to-list 'display-time-world-list '("Indian/Antananarivo" "Antananarivo"))
+(add-to-list 'display-time-world-list '("Indian/Reunion" "Reunion"))
+
+;; flyspell-aspell
+(setq-default ispell-program-name "aspell")
+(setq ispell-local-dictionary "francais")
+
+
+;;; Compatibility
+;;
+;;
+(unless (fboundp 'with-eval-after-load)
+  (defmacro with-eval-after-load (file &rest body)
+    "Execute BODY after FILE is loaded.
+FILE is normally a feature name, but it can also be a file name,
+in cl-case that file does not provide any feature."
+    (declare (indent 1) (debug t))
+    `(eval-after-load ,file (lambda () ,@body))))
+
+;; Fix compatibility with emacs 24.3.
+;; Avoid rebuilding all the autoloads just for this when switching to 24.3.
+(unless (fboundp 'function-put)
+  (defalias 'function-put
+      ;; We don't want people to just use `put' because we can't conveniently
+      ;; hook into `put' to remap old properties to new ones.  But for now, there's
+      ;; no such remapping, so we just call `put'.
+      #'(lambda (f prop value) (put f prop value))
+    "Set function F's property PROP to VALUE.
+The namespace for PROP is shared with symbols.
+So far, F can only be a symbol, not a lambda expression."))
+
+
+;;; Temporary Bugfixes until fixed upstream.
+;;
+
+(defadvice term-command-hook (before decode-string)
+  (setq string (decode-coding-string string locale-coding-system)))
+
+(when (version< emacs-version "24.3.50.1") (ad-activate 'term-command-hook))
 
 ;; Require with messages to debug more easily.
 (defun tv-require (feature &optional filename noerror)
@@ -119,12 +442,6 @@ in cl-case that file does not provide any feature."
           (message "Loading %s Failed" (symbol-name feature)))
     (error
      (signal 'error (list feature (car err) (cadr err))))))
-
-;; kill-ring
-(setq kill-ring-max 60)
-
-;; mark ring
-(setq mark-ring-max 60)
 
 
 ;;; load-paths
@@ -285,6 +602,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; google-maps
 ;;
 (use-package google-maps
+    :init (setq google-maps-static-default-zoom 10)
     :bind ("<f5> g m" . google-maps))
 
 ;;; tv-utils fns
@@ -939,6 +1257,11 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
     (add-hook 'gnus-group-catchup-group-hook 'tv-gnus-kill-all-procs))
   :defer t)
 
+;;; Auth-source
+;;
+(with-eval-after-load "auth-source"
+  (setq auth-sources '((:source "~/.authinfo.gpg" :host t :protocol t))))
+
 ;;; esh-toggle
 ;;
 (use-package esh-toggle
@@ -946,532 +1269,7 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
     :bind (("<f11> e c" . eshell-toggle-cd)
            ("<f11> e t" . eshell-toggle)))
 
-
-;; Utility for mail
-(defun quickping (host)
-  "Return non--nil when host is reachable."
-  (= 0 (call-process "ping" nil nil nil "-c1" "-W10" "-q" host)))
-
-;; Auth-source
-(with-eval-after-load "auth-source"
-  (setq auth-sources '((:source "~/.authinfo.gpg" :host t :protocol t))))
-
-
-;;; Run or hide shell
-(defun tv-shell ()
-  (interactive)
-  (if (eq major-mode 'shell-mode)
-      (bury-buffer) (shell)))
-
-
-;;; Global keys
-;;
-;;
-(global-set-key (kbd "C-z")                        nil) ; Disable `suspend-frame'.
-(global-set-key (kbd "C-!")                        'eshell-command)
-(global-set-key (kbd "C-c R")                      #'(lambda () (interactive) (revert-buffer t t)))
-(global-set-key (kbd "C-c W")                      'whitespace-mode)
-(global-set-key (kbd "C-M-j")                      #'(lambda () (interactive) (kill-sexp -1)))
-(global-set-key (kbd "<f7> j")                     'webjump)
-(global-set-key (kbd "<f11> s h")                  'tv-shell)
-(global-set-key (kbd "<f11> t")                    'tv-term)
-(global-set-key (kbd "<f11> i")                    'ielm)
-(global-set-key (kbd "C-c @")                      'tv-flyspell)
-(global-set-key (kbd "<M-down>")                   'tv-scroll-down)
-(global-set-key (kbd "<M-up>")                     'tv-scroll-up)
-(global-set-key (kbd "<C-M-down>")                 'tv-scroll-other-down)
-(global-set-key (kbd "<C-M-up>")                   'tv-scroll-other-up)
-(global-set-key (kbd "<C-prior>")                  'text-scale-decrease) ; font size.
-(global-set-key (kbd "<C-next>")                   'text-scale-increase)
-(global-set-key (kbd "C-x C-²")                    'delete-other-windows)
-(global-set-key (kbd "C-x C-&")                    'delete-window)
-(global-set-key (kbd "C-x C-é")                    'split-window-vertically)
-(global-set-key (kbd "C-x C-\"")                   'split-window-horizontally)
-(global-set-key (kbd "C-x r v")                    'string-insert-rectangle)
-(global-set-key (kbd "C-x r M-w")                  'copy-rectangle)
-(global-set-key [remap save-buffers-kill-terminal] 'tv-stop-emacs) ; C-x C-c
-(global-set-key [C-left]                           'screen-top)
-(global-set-key [C-right]                          'screen-bottom)
-
-(defun goto-scratch ()
-  (interactive)
-  (switch-to-buffer "*scratch*"))
-(global-set-key (kbd "<f11> s c")                  'goto-scratch)
-
-
-;;; Elscreen
-;;
-(when (locate-library "elscreen")
-  (autoload 'elscreen-start "elscreen.el")
-  (elscreen-start)
-  (global-set-key (kbd "C-z l") 'helm-elscreen))
-
-
-;;; Themes
-;;
-;;
-(defvar tv-theme-directory "~/.emacs.d/themes/")
-(unless (< emacs-major-version 24)
-  (setq custom-theme-directory tv-theme-directory))
-
-;; Load my favourite theme.
-(add-hook 'emacs-startup-hook #'(lambda () (load-theme 'naquadah)))
-
-;; column-number
-(column-number-mode 1)
-
-
-;;; Font lock
-;;
-;;
-(global-font-lock-mode 1)
-(setq font-lock-maximum-decoration t)
-
-;;; Save-minibuffer-history
-;;
-;;
-(setq savehist-file "~/.emacs.d/history"
-      history-delete-duplicates t)
-(setq history-length 100) ; default is 30.
-(savehist-mode 1)
-
-
-;;; Frame and window config.
-;;
-;;
-;; My current-font: [EVAL]: (assoc-default 'font (frame-parameters))
-;; Choose a font:   [EVAL]: (progn (when (require 'helm-font) (helm 'helm-source-xfonts)))
-;; Choose a color:  [EVAL]: (progn (when (require 'helm-color) (helm 'helm-source-colors)))
-;; To reload .Xresources [EVAL]: (shell-command xrdb "~/.Xresources")
-
-(defvar tv-default-font (assoc-default 'font (frame-parameters)))
-(setq-default frame-background-mode 'dark)
-(setq initial-frame-alist '((fullscreen . maximized)))
-(setq frame-auto-hide-function 'delete-frame)
-
-(if (or (daemonp)
-        (not (window-system))
-        (< emacs-major-version 24))
-    (setq default-frame-alist `((vertical-scroll-bars . nil)
-                                (tool-bar-lines . 0)
-                                (menu-bar-lines . 0)
-                                (title . ,(format "Emacs-%s" emacs-version))
-                                (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
-                                (cursor-color . "red")))
-
-    (setq default-frame-alist `((foreground-color . "Wheat")
-                                (background-color . "black")
-                                (alpha . 90)
-                                ;; New frames go in right corner.
-                                (left . ,(- (* (window-width) 8) 160)) ; Chars are 8 bits long.
-                                (vertical-scroll-bars . nil)
-                                (title . ,(format "Emacs-%s" emacs-version))
-                                (tool-bar-lines . 0)
-                                (menu-bar-lines . 0)
-                                (font . ,tv-default-font)
-                                (cursor-color . "red")
-                                (fullscreen . nil)
-                                )))
-
-;; Speedbar
-(add-hook 'speedbar-load-hook
-          #'(lambda ()
-              (setq speedbar-frame-parameters
-                    `((minibuffer . nil)
-                      (font . ,tv-default-font)
-                      (width . 20)
-                      (fullscreen . nil) ; Not needed when fullscreen isn't set in .Xressources.
-                      (left . ,(- (* (window-width) 8)
-                                  (frame-width))) ; Speed-bar on right of screen.
-                      (border-width . 0)
-                      (menu-bar-lines . 0)
-                      (tool-bar-lines . 0)
-                      (unsplittable . t)
-                      (left-fringe . 0)))))
-
-;;; Emacs transparency.
-;;
-;;
-
-(defun tv-transparency-modify (arg)
-  "Increase Emacs frame transparency.
-With a prefix arg decrease transparency."
-  (interactive "P")
-  (when (window-system)
-    (let* ((ini-alpha (frame-parameter nil 'alpha))
-           (def-alpha (or ini-alpha 80))
-           (mod-alpha (if arg
-                          (min (+ def-alpha 10) 100)
-                          (max (- def-alpha 10)
-                               frame-alpha-lower-limit)))) ; 20
-      (modify-frame-parameters nil (list (cons 'alpha mod-alpha)))
-      (message "Alpha[%s]" mod-alpha))))
-(global-set-key (kbd "C-8") 'tv-transparency-modify)
-
-;;; Special buffer display.
-;;
-;;
-(setq special-display-regexps `(("\\*Help"
-                                 (minibuffer . nil)
-                                 (width . 80)
-                                 (height . 24)
-                                 (left-fringe . 0)
-                                 (border-width . 0)
-                                 (menu-bar-lines . 0)
-                                 (tool-bar-lines . 0)
-                                 (unsplittable . t)
-                                 (top . 24)
-                                 (left . 450)
-                                 (background-color . "Lightsteelblue1")
-                                 (foreground-color . "black")
-                                 (alpha . nil)
-                                 (fullscreen . nil))
-                                ("\\*Compile-Log"
-                                 (minibuffer . nil)
-                                 (width . 85)
-                                 (height . 24)
-                                 (left-fringe . 0)
-                                 (border-width . 0)
-                                 (menu-bar-lines . 0)
-                                 (tool-bar-lines . 0)
-                                 (unsplittable . t)
-                                 (top . 24)
-                                 (left . 450)
-                                 (background-color . "Brown4")
-                                 (foreground-color . "black")
-                                 (alpha . nil)
-                                 (fullscreen . nil))
-                                ("\\*Dict"
-                                 (minibuffer . nil)
-                                 (width . 80)
-                                 (height . 24)
-                                 (left-fringe . 0)
-                                 (border-width . 0)
-                                 (menu-bar-lines . 0)
-                                 (tool-bar-lines . 0)
-                                 (unsplittable . t)
-                                 (top . 24)
-                                 (left . 450)
-                                 (background-color . "LightSteelBlue")
-                                 (foreground-color . "DarkGoldenrod")
-                                 (alpha . nil)
-                                 (fullscreen . nil))
-                                ))
-
-;; Don't split this windows horizontally
-(setq split-width-threshold nil)
-
-;; Pas-de-dialog-gtk
-(setq use-file-dialog nil)
-
-;;; Browse url
-;;
-;;
-(setq browse-url-browser-function 'helm-browse-url-firefox)
-;;(setq browse-url-browser-function 'w3m-browse-url)
-
-
-;; confirm-quit-emacs
-(setq confirm-kill-emacs 'y-or-n-p)
-
-;; Add-newline-at-end-of-files
-(setq require-final-newline t)
-
-;; Ediff-config
-(setq ediff-window-setup-function 'ediff-setup-windows-plain)
-(setq ediff-split-window-function 'split-window-horizontally)
-
-;; y-or-n-p
-(fset 'yes-or-no-p 'y-or-n-p)
-
-;; Affiche-l'heure-au-format-24h
-(setq display-time-24hr-format t)
-(setq display-time-day-and-date t)
-(display-time)
-(setq display-time-use-mail-icon t)
-
-;; Limite-max-lisp
-(setq max-lisp-eval-depth 40000)
-(setq max-specpdl-size 100000)
-
-
-;;; emacs-backup-config
-;;
-(setq backup-directory-alist '(("" . "~/.emacs.d/emacs_backup"))
-      backup-by-copying t
-      version-control t
-      kept-old-versions 2
-      kept-new-versions 20
-      delete-old-versions t)
-(setq tramp-backup-directory-alist backup-directory-alist)
-;;(setq auto-save-file-name-transforms nil)
-
-
-(setq case-fold-search t)
-
-;; show-paren-mode
-(show-paren-mode 1)
-(setq show-paren-ring-bell-on-mismatch t)
-
-;; Start-emacs-server
-(add-hook 'after-init-hook #'(lambda ()
-                               (unless (daemonp)
-                                 (server-start)
-                                 (setq server-raise-frame t))))
-
-
-;; Path-to-abbrev-file
-(setq abbrev-file-name "/home/thierry/.emacs.d/.abbrev_defs")
-
-;; Copy/paste
-(setq select-active-regions t)
-
-;; Whitespace-mode
-(with-eval-after-load "whitespace"
-  (add-to-list 'whitespace-style 'lines-tail)
-  (setq whitespace-line-column 80))
-
-;; antiword
-(autoload 'no-word "no-word" "word to txt")
-(add-to-list 'auto-mode-alist '("\\.doc\\'" . no-word))
-
-
-;;; Elisp
-
-;; Fix indentation in CL loop.
-(setq lisp-indent-function 'common-lisp-indent-function
-      lisp-simple-loop-indentation 1
-      lisp-loop-keyword-indentation 6
-      lisp-loop-forms-indentation 6)
-
-;; Fix indentation in cl-flet and cl-labels
-(with-eval-after-load "cl-indent.el"
-  (let ((l '((flet ((&whole 4 &rest (&whole 1 &lambda &body)) &body))
-             (cl-flet* . flet)
-             (labels . flet)
-             (cl-flet . flet)
-             (cl-labels . flet)
-             (cl-macrolet . flet)
-             )))
-    (dolist (el l)
-      (put (car el) 'common-lisp-indent-function
-           (if (symbolp (cdr el))
-               (get (cdr el) 'common-lisp-indent-function)
-               (car (cdr el)))))))
-
-;; Tooltip face
-(set-face-attribute 'tooltip nil
-                    :foreground "black"
-                    :background "NavajoWhite"
-                    :family "unknown-DejaVu Sans Mono-bold-normal-normal"
-                    :underline t)
-
-;; Indent-when-newline (RET) in all elisp modes
-(define-key lisp-interaction-mode-map (kbd "RET") 'newline-and-indent)
-(define-key emacs-lisp-mode-map (kbd "RET") 'newline-and-indent)
-(define-key lisp-mode-map (kbd "RET") 'newline-and-indent)
-
-;; eval-region
-(define-key lisp-interaction-mode-map (kbd "C-M-!") 'tv-eval-region)
-(define-key emacs-lisp-mode-map (kbd "C-M-!") 'tv-eval-region)
-
-;; byte-compile-file
-(define-key emacs-lisp-mode-map (kbd "C-c C-c b") 'byte-compile-file)
-
-;; Next page
-(define-key emacs-lisp-mode-map (kbd "<next>") 'forward-page)
-(define-key emacs-lisp-mode-map (kbd "<prior>") 'backward-page)
-
-;; Which function
-(autoload 'which-function "which-func.el")
-(define-key emacs-lisp-mode-map (kbd "C-c ?")
-  (lambda () (interactive) (message "[%s]" (which-function))))
-
-;; Indent-only-with-spaces
-(setq-default indent-tabs-mode nil)
-
-
-;;; Shell config
-;;;
-
-;; Prompt shell read only
-(setq comint-prompt-read-only t)
-
-;; Newline and indent in `sh-mode'.
-(add-hook 'sh-mode-hook #'(lambda ()
-                            (define-key sh-mode-map (kbd "RET") 'newline-and-indent)))
-
-
-;;; Eshell-config
-;;
-;;
-;; Eshell-prompt
-(setq eshell-prompt-function
-      #'(lambda nil
-          (concat
-           (getenv "USER")
-           "@"
-           (system-name)
-           ":"
-           (abbreviate-file-name (eshell/pwd))
-           (if (= (user-uid) 0) " # " " $ "))))
-
-;; Compatibility 24.2/24.3
-(unless (fboundp 'eshell-pcomplete)
-  (defalias 'eshell-pcomplete 'pcomplete))
-(unless (fboundp 'eshell-complete-lisp-symbol)
-  (defalias 'eshell-complete-lisp-symbol 'lisp-complete-symbol))
-
-(add-hook 'eshell-mode-hook #'(lambda ()
-                                (setq eshell-pwd-convert-function (lambda (f)
-                                                                    (if (file-equal-p (file-truename f) "/")
-                                                                        "/" f)))
-                                ;; Helm completion with pcomplete
-                                (setq eshell-cmpl-ignore-case t)
-                                (eshell-cmpl-initialize)
-                                (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
-                                ;; Helm lisp completion
-                                (define-key eshell-mode-map [remap eshell-complete-lisp-symbol] 'helm-lisp-completion-at-point)
-                                ;; Helm completion on eshell history.
-                                (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)
-                                ;; Eshell prompt
-                                (set-face-attribute 'eshell-prompt nil :foreground "DeepSkyBlue")
-                                ;; Allow yanking right now instead of returning "Mark set"
-                                (push-mark)))
-
-;; Eshell history size
-(setq eshell-history-size 1000) ; Same as env var HISTSIZE.
-
-;; Eshell-banner
-(setq eshell-banner-message (format "%s %s\nwith Emacs %s on %s"
-                                    (propertize
-                                     "Eshell session started on"
-                                     'face '((:foreground "Goldenrod")))
-                                    (propertize
-                                     (format-time-string "%c")
-                                     'face '((:foreground "magenta")))
-                                    (propertize emacs-version
-                                                'face '((:foreground "magenta")))
-                                    (propertize
-                                     (with-temp-buffer
-                                       (call-process "uname" nil t nil "-r")
-                                       (buffer-string))
-                                     'face '((:foreground "magenta")))))
-
-;; Eshell-et-ansi-color
-(ignore-errors
-  (dolist (i (list 'eshell-handle-ansi-color
-                   'eshell-handle-control-codes
-                   'eshell-watch-for-password-prompt))
-    (add-to-list 'eshell-output-filter-functions i)))
-
-;; Eshell-save-history-on-exit
-;; Possible values: t (always save), 'never, 'ask (default)
-(setq eshell-save-history-on-exit t)
-
-;; Eshell-directory
-(setq eshell-directory-name "/home/thierry/.emacs.d/eshell/")
-
-;; Eshell-visual
-(setq eshell-term-name "eterm-color")
-(with-eval-after-load "em-term"
-  (dolist (i '("tmux" "htop" "ipython" "alsamixer" "git-log"))
-    (add-to-list 'eshell-visual-commands i)))
-
-;; Finally load eshell on startup.
-(add-hook 'emacs-startup-hook #'(lambda ()
-                                  (let ((default-directory (getenv "HOME")))
-                                    (command-execute 'eshell)
-                                    (bury-buffer))))
-
-
-;; Term-et-ansi-term
-(defun tv-term ()
-  (interactive)
-  (ansi-term "/bin/bash"))
-
-;; Kill buffer after C-d in ansi-term.
-(defadvice term-sentinel (after kill-buffer activate)
-  (kill-buffer))
-
-(defun comint-delchar-or-maybe-eof (arg)
-  "Delete ARG characters forward or send an EOF to subprocess.
-Sends an EOF only if point is at the end of the buffer and there is no input."
-  (interactive "p")
-  (let ((proc (get-buffer-process (current-buffer))))
-    (if (and (eobp) proc (= (point) (marker-position (process-mark proc))))
-        (progn (comint-send-eof) (kill-buffer))
-        (delete-char arg))))
-
-;; Entete-Bash
-(defun tv-insert-bash-header ()
-  "insert bash header at point"
-  (interactive)
-  (insert "#!/bin/bash\n"
-          "## Title:\n"
-          "## Description: \n"
-          "## Author:Thierry Volpiatto<thierry dot volpiatto FROM gmail DOT com>\n"
-          "## Commentary:\n\n"))
-
-;;; flyspell-aspell
-;;
-;;
-(setq-default ispell-program-name "aspell")
-(setq ispell-local-dictionary "francais")
-
-(defun tv-flyspell (arg)
-  "Toggle `flyspell-mode'.
-With prefix arg always start and let me choose dictionary."
-  (interactive "P")
-  (if arg
-      (let ((dic (helm-comp-read
-                  "Dictionnaire: "
-                  '("francais" "english"))))
-        (unless flyspell-mode (flyspell-mode 1))
-        (ispell-change-dictionary dic)
-        (flyspell-delete-all-overlays))
-      (call-interactively 'flyspell-mode)))
-
-;;; Woman/man
-;;
-;;
-(setq woman-use-own-frame nil)
-(setq Man-notify-method 'pushy)
-(defface man-args-face '((t (:foreground "Magenta" :underline t)))
-  "*Face used in man page to show arguments and sections."
-  :group 'man)
-
-;;; Printing config
-;;
-(setq lpr-command "gtklp")
-(setq printer-name "EpsonStylus")
-(setq-default ps-print-header nil)
-(setq ps-font-size   '(10 . 11.5))
-(setq ps-font-family 'Courier)
-
-(defun tv-ps-print-buffer ()
-  (interactive)
-  (if current-prefix-arg
-      (ps-print-buffer-with-faces)
-      (ps-print-buffer)))
-
-(defun tv-ps-print-region (beg end)
-  (interactive "r")
-  (if current-prefix-arg
-      (ps-print-region-with-faces beg end)
-      (ps-print-region beg end)))
-
-;; (load "a2ps-print")
-;; (setq a2ps-switches '("-1Rf12" "-Z"))
-;; (global-set-key (kbd "<f5> p a b") 'a2ps-buffer)
-;; (global-set-key (kbd "<f5> p a r") 'a2ps-region)
-
-;; auto-compression-mode
-(auto-compression-mode 1)
-
-
 ;;; Auctex/Latex config
-;;
 ;;
 (load "auctex.el" nil t t)
 (load "preview-latex.el" nil t t)
@@ -1570,24 +1368,82 @@ With prefix arg always start and let me choose dictionary."
     (beginning-of-line)
     (forward-char 15)))
 
-;; Mode-lecture-photo-auto
-(auto-image-file-mode 1)
-;; Allow scrolling horizontally in large images
-(add-hook 'image-mode-hook #'(lambda () (set (make-variable-buffer-local 'auto-hscroll-mode) nil)))
+;;; Elscreen
+;;
+(when (locate-library "elscreen")
+  (autoload 'elscreen-start "elscreen.el")
+  (elscreen-start)
+  (global-set-key (kbd "C-z l") 'helm-elscreen))
+
+;;; Whitespace-mode
+;;
+(with-eval-after-load "whitespace"
+  (add-to-list 'whitespace-style 'lines-tail)
+  (setq whitespace-line-column 80))
+
+;;; antiword
+;;
+(autoload 'no-word "no-word" "word to txt")
+(add-to-list 'auto-mode-alist '("\\.doc\\'" . no-word))
+
+;;; align-let
+;;
+(autoload 'align-let-keybinding "align-let" nil t)
+(add-hook 'emacs-lisp-mode-hook 'align-let-keybinding)
+(add-hook 'lisp-interaction-mode-hook 'align-let-keybinding)
+(add-hook 'lisp-mode-hook 'align-let-keybinding)
+
+;;; sqlite-dump
+;;
+(autoload 'sqlite-dump "sqlite-dump" nil t)
+(modify-coding-system-alist 'file "\\.sqlite\\'" 'raw-text-unix)
+(add-to-list 'auto-mode-alist '("\\.sqlite\\'" . sqlite-dump))
+(setq sql-sqlite-program "sqlite3")
+
+;;; Checkdoc
+;;
+(autoload 'checkdoc-batch       "checkdoc-batch" nil t)
+(autoload 'checkdoc-batch-files "checkdoc-batch" nil t)
+
+;;; markdown-mode
+;;
+(use-package markdown-mode
+    :init
+  (progn
+    (add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
+    (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
+    (add-to-list 'auto-mode-alist '("\\.mdpp$" . markdown-mode))))
+
+(use-package ffap
+  :init 
+  ;; Tramp/ange behave badly in 99.9% of the time for ftp, disable.
+  (setq ffap-url-unwrap-remote (remove "ftp" ffap-url-unwrap-remote)))
 
 
-;; Enable-commands-disabled-by-default
-(put 'narrow-to-region 'disabled nil) ; C-x n n
-(put 'narrow-to-page 'disabled nil)   ; C-x n p
-(put 'scroll-left 'disabled nil)     ; C-x > or <
-(put 'downcase-region 'disabled nil) ; C-x C-l
-(put 'upcase-region 'disabled nil)   ; C-x C-u
-(put 'set-goal-column 'disabled nil) ; C-x C-n ==> disable with C-u
-(put 'dired-find-alternate-file 'disabled nil) ; a in dired
+;;; Various fns
+;;
 
-;; setup-minibuffer
-(setq enable-recursive-minibuffers t)
-(minibuffer-depth-indicate-mode 1)
+(defun quickping (host)
+  "Return non--nil when host is reachable."
+  (= 0 (call-process "ping" nil nil nil "-c1" "-W10" "-q" host)))
+
+(defun goto-scratch ()
+  (interactive)
+  (switch-to-buffer "*scratch*"))
+
+(defun tv-transparency-modify (arg)
+  "Increase Emacs frame transparency.
+With a prefix arg decrease transparency."
+  (interactive "P")
+  (when (window-system)
+    (let* ((ini-alpha (frame-parameter nil 'alpha))
+           (def-alpha (or ini-alpha 80))
+           (mod-alpha (if arg
+                          (min (+ def-alpha 10) 100)
+                          (max (- def-alpha 10)
+                               frame-alpha-lower-limit)))) ; 20
+      (modify-frame-parameters nil (list (cons 'alpha mod-alpha)))
+      (message "Alpha[%s]" mod-alpha))))
 
 ;; Scroll-down-Scroll-up
 (defun tv-scroll-down ()
@@ -1611,164 +1467,6 @@ With prefix arg always start and let me choose dictionary."
   (scroll-other-window -1))
 (define-key org-mode-map (kbd "<C-M-up>") 'tv-scroll-other-up)
 
-;; sql-mode
-(setq sql-sqlite-program "sqlite3")
-
-;; sqlite-dump
-(autoload 'sqlite-dump "sqlite-dump" nil t)
-(modify-coding-system-alist 'file "\\.sqlite\\'" 'raw-text-unix)
-(add-to-list 'auto-mode-alist '("\\.sqlite\\'" . sqlite-dump))
-
-
-;; align-let
-(autoload 'align-let-keybinding "align-let" nil t)
-(add-hook 'emacs-lisp-mode-hook 'align-let-keybinding)
-(add-hook 'lisp-interaction-mode-hook 'align-let-keybinding)
-(add-hook 'lisp-mode-hook 'align-let-keybinding)
-
-
-;;; line-move-visual.
-;;
-;; next-line go to real next line when set to nil.
-;; When nil scrolling performances are better in files with long lines.
-;; When non--nil move to next visual line. (slow)
-(setq line-move-visual nil)
-;; (add-hook 'html-mode-hook 'visual-line-mode)
-
-;;; Rst-mode
-;;
-(add-hook 'rst-mode-hook 'auto-fill-mode)
-
-
-;; Checkdoc
-(autoload 'checkdoc-batch       "checkdoc-batch" nil t)
-(autoload 'checkdoc-batch-files "checkdoc-batch" nil t)
-
-;; Mode-line
-(set-face-attribute 'mode-line-emphasis nil :foreground "red")
-
-;; Google-Apps
-(setq google-maps-static-default-zoom 10)
-
-;; Toggle-show-trailing-whitespace
-(defun toggle-show-trailing-whitespace ()
-  (interactive)
-  (setq show-trailing-whitespace (not show-trailing-whitespace)))
-
-;;; World-time
-;;
-;;
-(add-to-list 'display-time-world-list '("Greenwich" "Greenwich"))
-(add-to-list 'display-time-world-list '("Australia/Sydney" "Sydney"))
-(add-to-list 'display-time-world-list '("Australia/Melbourne" "Melbourne"))
-(add-to-list 'display-time-world-list '("Australia/Canberra" "Canberra"))
-(add-to-list 'display-time-world-list '("America/Chicago" "Chicago"))
-(add-to-list 'display-time-world-list '("America/Denver" "Denver"))
-(add-to-list 'display-time-world-list '("America/Los_Angeles" "Los_Angeles/Seattle"))
-(add-to-list 'display-time-world-list '("America/Denver" "Moab"))
-(add-to-list 'display-time-world-list '("America/Vancouver" "Vancouver"))
-(add-to-list 'display-time-world-list '("America/Montreal" "Montreal"))
-(add-to-list 'display-time-world-list '("America/New_York" "Ottawa"))
-(add-to-list 'display-time-world-list '("Europe/Moscow" "Moscow"))
-(add-to-list 'display-time-world-list '("Europe/Berlin" "Berlin"))
-(add-to-list 'display-time-world-list '("Europe/Oslo" "Oslo"))
-(add-to-list 'display-time-world-list '("Europe/Lisbon" "Lisbon"))
-(add-to-list 'display-time-world-list '("Asia/Dubai" "Dubai"))
-(add-to-list 'display-time-world-list '("Asia/Tokyo" "Tokyo"))
-(add-to-list 'display-time-world-list '("Hongkong" "Hongkong"))
-(add-to-list 'display-time-world-list '("Indian/Antananarivo" "Antananarivo"))
-(add-to-list 'display-time-world-list '("Indian/Reunion" "Reunion"))
-
-
-;;; Trash
-;;
-;; (setq delete-by-moving-to-trash t)
-
-;; Minibuffers completion
-(setq completion-cycle-threshold t) ; always cycle, no completion buffers.
-
-
-;;; winner-mode config
-;;
-;;
-(setq winner-boring-buffers '("*Completions*"
-                              "*Compile-Log*"
-                              "*inferior-lisp*"
-                              "*Fuzzy Completions*"
-                              "*Apropos*"
-                              "*Help*"
-                              "*cvs*"
-                              "*Buffer List*"
-                              "*Ibuffer*"
-                              ))
-
-(winner-mode 1)
-
-;;; Battery
-;;
-;;
-;; (ignore-errors
-;;   (setq battery-mode-line-format "[Bat:%b%p%%,%L]")
-;;   (display-battery-mode 1))
-
-;;; Display time in mode-line
-;;
-;;
-(setq display-time-string-forms
-      '( ;; date
-        (if (and (not display-time-format) display-time-day-and-date)
-            (format-time-string "[%a %e %b " now)
-            "")
-        ;; time
-        (concat
-         (propertize
-          (format-time-string (or display-time-format
-                                  (if display-time-24hr-format " %H:%M" " %-I:%M%p"))
-                              now)
-          'face '((:foreground "green"))
-          'help-echo (format-time-string " %a %b %e, %Y" now))
-         (and time-zone " (") time-zone (and time-zone ")")
-         "]")
-        ;; cpu load average
-        ;; (if (and load (not (string= load "")))
-        ;;     (format "cpu:%s" load) "")
-        ""
-        ;; mail
-        ""))
-
-
-;;; markdown-mode
-;;
-;;
-(add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.mdpp$" . markdown-mode))
-
-;;; Semantic
-;;
-;;
-;; (add-hook 'semantic-mode-hook
-;;           ;; With my fixes in lisp/cedet/semantic/bovine/el.el.
-;;           (lambda ()
-;;             (load-file "~/elisp/el.el")
-;;             (when (fboundp 'semantic-default-elisp-setup)
-;;               (semantic-default-elisp-setup))))
-;; (semantic-mode 1)
-
-;;; Ffap
-;;
-;;
-;; Tramp/ange behave badly in 99.9% of the time for ftp, disable.
-(setq ffap-url-unwrap-remote (remove "ftp" ffap-url-unwrap-remote))
-
-;;; Diff
-;;
-(customize-set-variable 'diff-switches "-w")
-
-;;; Report bug
-;;
-(setq report-emacs-bug-no-explanations t)
-
 (defun tv-find-or-kill-gnu-bug-number (bug-number arg)
   "Browse url corresponding to emacs gnu bug number or kill it."
   (interactive (list (read-number "Bug number: " (thing-at-point 'number))
@@ -1790,6 +1488,263 @@ With prefix arg always start and let me choose dictionary."
           (kill-new url)
           (message "Bug `#%d' url's copied to kill-ring" bug-number))
         (browse-url url))))
+
+;; Entete-Bash
+(defun tv-insert-bash-header ()
+  "insert bash header at point"
+  (interactive)
+  (insert "#!/bin/bash\n"
+          "## Title:\n"
+          "## Description: \n"
+          "## Author:Thierry Volpiatto<thierry dot volpiatto FROM gmail DOT com>\n"
+          "## Commentary:\n\n"))
+
+(defun tv-shell ()
+  (interactive)
+  (if (eq major-mode 'shell-mode)
+      (bury-buffer) (shell)))
+
+;; Toggle-show-trailing-whitespace
+(defun toggle-show-trailing-whitespace ()
+  (interactive)
+  (setq show-trailing-whitespace (not show-trailing-whitespace)))
+
+(defun tv-restore-scratch-buffer ()
+  (unless (buffer-file-name (get-buffer "*scratch*"))
+    (and (get-buffer "*scratch*") (kill-buffer "*scratch*")))
+  (with-current-buffer (find-file-noselect "~/.emacs.d/save-scratch.el")
+    (rename-buffer "*scratch*")
+    (lisp-interaction-mode)
+    (setq lexical-binding t)
+    (use-local-map lisp-interaction-mode-map))
+  (when (or (eq (point-min) (point-max))
+            ;; For some reason the scratch buffer have not a zero size.
+            (<= (buffer-size) 2))
+    (insert ";;; -*- coding: utf-8; mode: lisp-interaction; lexical-binding: t -*-\n;;\n;; SCRATCH BUFFER\n;; ==============\n\n")))
+
+(defun tv-flyspell (arg)
+  "Toggle `flyspell-mode'.
+With prefix arg always start and let me choose dictionary."
+  (interactive "P")
+  (if arg
+      (let ((dic (helm-comp-read
+                  "Dictionnaire: "
+                  '("francais" "english"))))
+        (unless flyspell-mode (flyspell-mode 1))
+        (ispell-change-dictionary dic)
+        (flyspell-delete-all-overlays))
+      (call-interactively 'flyspell-mode)))
+
+;;; Bindings
+;;
+;;
+(global-set-key (kbd "C-z")                        nil) ; Disable `suspend-frame'.
+(global-set-key (kbd "C-!")                        'eshell-command)
+(global-set-key (kbd "C-c R")                      #'(lambda () (interactive) (revert-buffer t t)))
+(global-set-key (kbd "C-c W")                      'whitespace-mode)
+(global-set-key (kbd "C-M-j")                      #'(lambda () (interactive) (kill-sexp -1)))
+(global-set-key (kbd "<f7> j")                     'webjump)
+(global-set-key (kbd "<f11> s h")                  'tv-shell)
+(global-set-key (kbd "<f11> t")                    'tv-term)
+(global-set-key (kbd "<f11> i")                    'ielm)
+(global-set-key (kbd "C-c @")                      'tv-flyspell)
+(global-set-key (kbd "<M-down>")                   'tv-scroll-down)
+(global-set-key (kbd "<M-up>")                     'tv-scroll-up)
+(global-set-key (kbd "<C-M-down>")                 'tv-scroll-other-down)
+(global-set-key (kbd "<C-M-up>")                   'tv-scroll-other-up)
+(global-set-key (kbd "<C-prior>")                  'text-scale-decrease) ; font size.
+(global-set-key (kbd "<C-next>")                   'text-scale-increase)
+(global-set-key (kbd "C-x C-²")                    'delete-other-windows)
+(global-set-key (kbd "C-x C-&")                    'delete-window)
+(global-set-key (kbd "C-x C-é")                    'split-window-vertically)
+(global-set-key (kbd "C-x C-\"")                   'split-window-horizontally)
+(global-set-key (kbd "C-x r v")                    'string-insert-rectangle)
+(global-set-key (kbd "C-x r M-w")                  'copy-rectangle)
+(global-set-key [remap save-buffers-kill-terminal] 'tv-stop-emacs) ; C-x C-c
+(global-set-key [C-left]                           'screen-top)
+(global-set-key [C-right]                          'screen-bottom)
+(global-set-key (kbd "<f11> s c")                  'goto-scratch)
+(global-set-key (kbd "C-8")                        'tv-transparency-modify)
+
+;; Outline-mode
+(helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-p")
+                              ?p 'outline-previous-visible-heading
+                              '((?n . outline-next-visible-heading)))
+(helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-n")
+                              ?n 'outline-next-visible-heading
+                              '((?p . outline-previous-visible-heading)))
+(helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-f")
+                              ?f 'outline-forward-same-level
+                              '((?b . outline-backward-same-level)))
+(helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-b")
+                              ?b 'outline-backward-same-level
+                              '((?f . outline-forward-same-level)))
+
+;;; Elisp
+;;
+;; Fix indentation in CL loop.
+(setq lisp-indent-function 'common-lisp-indent-function
+      lisp-simple-loop-indentation 1
+      lisp-loop-keyword-indentation 6
+      lisp-loop-forms-indentation 6)
+
+;; Fix indentation in cl-flet and cl-labels
+(with-eval-after-load "cl-indent.el"
+  (let ((l '((flet ((&whole 4 &rest (&whole 1 &lambda &body)) &body))
+             (cl-flet* . flet)
+             (labels . flet)
+             (cl-flet . flet)
+             (cl-labels . flet)
+             (cl-macrolet . flet)
+             )))
+    (dolist (el l)
+      (put (car el) 'common-lisp-indent-function
+           (if (symbolp (cdr el))
+               (get (cdr el) 'common-lisp-indent-function)
+               (car (cdr el)))))))
+
+;; Tooltip face
+(set-face-attribute 'tooltip nil
+                    :foreground "black"
+                    :background "NavajoWhite"
+                    :family "unknown-DejaVu Sans Mono-bold-normal-normal"
+                    :underline t)
+
+;; Indent-when-newline (RET) in all elisp modes
+(define-key lisp-interaction-mode-map (kbd "RET") 'newline-and-indent)
+(define-key emacs-lisp-mode-map (kbd "RET") 'newline-and-indent)
+(define-key lisp-mode-map (kbd "RET") 'newline-and-indent)
+
+;; eval-region
+(define-key lisp-interaction-mode-map (kbd "C-M-!") 'tv-eval-region)
+(define-key emacs-lisp-mode-map (kbd "C-M-!") 'tv-eval-region)
+
+;; byte-compile-file
+(define-key emacs-lisp-mode-map (kbd "C-c C-c b") 'byte-compile-file)
+
+;; Next page
+(define-key emacs-lisp-mode-map (kbd "<next>") 'forward-page)
+(define-key emacs-lisp-mode-map (kbd "<prior>") 'backward-page)
+
+;; Which function
+(autoload 'which-function "which-func.el")
+(define-key emacs-lisp-mode-map (kbd "C-c ?")
+  (lambda () (interactive) (message "[%s]" (which-function))))
+
+
+;;; Eshell-config
+;;
+
+;; Eshell-prompt
+(setq eshell-prompt-function
+      #'(lambda nil
+          (concat
+           (getenv "USER")
+           "@"
+           (system-name)
+           ":"
+           (abbreviate-file-name (eshell/pwd))
+           (if (= (user-uid) 0) " # " " $ "))))
+
+;; Compatibility 24.2/24.3
+(unless (fboundp 'eshell-pcomplete)
+  (defalias 'eshell-pcomplete 'pcomplete))
+(unless (fboundp 'eshell-complete-lisp-symbol)
+  (defalias 'eshell-complete-lisp-symbol 'lisp-complete-symbol))
+
+(add-hook 'eshell-mode-hook #'(lambda ()
+                                (setq eshell-pwd-convert-function (lambda (f)
+                                                                    (if (file-equal-p (file-truename f) "/")
+                                                                        "/" f)))
+                                ;; Helm completion with pcomplete
+                                (setq eshell-cmpl-ignore-case t)
+                                (eshell-cmpl-initialize)
+                                (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
+                                ;; Helm lisp completion
+                                (define-key eshell-mode-map [remap eshell-complete-lisp-symbol] 'helm-lisp-completion-at-point)
+                                ;; Helm completion on eshell history.
+                                (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)
+                                ;; Eshell prompt
+                                (set-face-attribute 'eshell-prompt nil :foreground "DeepSkyBlue")
+                                ;; Allow yanking right now instead of returning "Mark set"
+                                (push-mark)))
+
+;; Eshell history size
+(setq eshell-history-size 1000) ; Same as env var HISTSIZE.
+
+;; Eshell-banner
+(setq eshell-banner-message (format "%s %s\nwith Emacs %s on %s"
+                                    (propertize
+                                     "Eshell session started on"
+                                     'face '((:foreground "Goldenrod")))
+                                    (propertize
+                                     (format-time-string "%c")
+                                     'face '((:foreground "magenta")))
+                                    (propertize emacs-version
+                                                'face '((:foreground "magenta")))
+                                    (propertize
+                                     (with-temp-buffer
+                                       (call-process "uname" nil t nil "-r")
+                                       (buffer-string))
+                                     'face '((:foreground "magenta")))))
+
+;; Eshell-et-ansi-color
+(ignore-errors
+  (dolist (i (list 'eshell-handle-ansi-color
+                   'eshell-handle-control-codes
+                   'eshell-watch-for-password-prompt))
+    (add-to-list 'eshell-output-filter-functions i)))
+
+;; Eshell-save-history-on-exit
+;; Possible values: t (always save), 'never, 'ask (default)
+(setq eshell-save-history-on-exit t)
+
+;; Eshell-directory
+(setq eshell-directory-name "/home/thierry/.emacs.d/eshell/")
+
+;; Eshell-visual
+(setq eshell-term-name "eterm-color")
+(with-eval-after-load "em-term"
+  (dolist (i '("tmux" "htop" "ipython" "alsamixer" "git-log"))
+    (add-to-list 'eshell-visual-commands i)))
+
+;; Finally load eshell on startup.
+(add-hook 'emacs-startup-hook #'(lambda ()
+                                  (let ((default-directory (getenv "HOME")))
+                                    (command-execute 'eshell)
+                                    (bury-buffer))))
+
+
+;;; Term-et-ansi-term
+;;
+(defun tv-term ()
+  (interactive)
+  (ansi-term "/bin/bash"))
+
+;; Kill buffer after C-d in ansi-term.
+(defadvice term-sentinel (after kill-buffer activate)
+  (kill-buffer))
+
+(defun comint-delchar-or-maybe-eof (arg)
+  "Delete ARG characters forward or send an EOF to subprocess.
+Sends an EOF only if point is at the end of the buffer and there is no input."
+  (interactive "p")
+  (let ((proc (get-buffer-process (current-buffer))))
+    (if (and (eobp) proc (= (point) (marker-position (process-mark proc))))
+        (progn (comint-send-eof) (kill-buffer))
+        (delete-char arg))))
+
+;;; Semantic
+;;
+;;
+;; (add-hook 'semantic-mode-hook
+;;           ;; With my fixes in lisp/cedet/semantic/bovine/el.el.
+;;           (lambda ()
+;;             (load-file "~/elisp/el.el")
+;;             (when (fboundp 'semantic-default-elisp-setup)
+;;               (semantic-default-elisp-setup))))
+;; (semantic-mode 1)
+
 ;;; Info
 ;;
 (defface tv-info-ref-item
@@ -1822,44 +1777,12 @@ With prefix arg always start and let me choose dictionary."
 
 (add-hook 'Info-mode-hook 'tv-font-lock-doc-rules)
 
-;;; Outline-mode bindings
-;;
-(helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-p")
-                              ?p 'outline-previous-visible-heading
-                              '((?n . outline-next-visible-heading)))
-(helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-n")
-                              ?n 'outline-next-visible-heading
-                              '((?p . outline-previous-visible-heading)))
-(helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-f")
-                              ?f 'outline-forward-same-level
-                              '((?b . outline-backward-same-level)))
-(helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-b")
-                              ?b 'outline-backward-same-level
-                              '((?f . outline-forward-same-level)))
-
 ;;; Be sure to reenable touchpad when quitting emacs
 (add-hook 'kill-emacs-hook #'(lambda ()
                                (and (executable-find "reenable_touchpad.sh")
                                     (shell-command "reenable_touchpad.sh"))))
 
-;;; Link scratch buffer to file
-;;
-;;
-;;; Persistent-scratch
-;;
-(defun tv-restore-scratch-buffer ()
-  (unless (buffer-file-name (get-buffer "*scratch*"))
-    (and (get-buffer "*scratch*") (kill-buffer "*scratch*")))
-  (with-current-buffer (find-file-noselect "~/.emacs.d/save-scratch.el")
-    (rename-buffer "*scratch*")
-    (lisp-interaction-mode)
-    (setq lexical-binding t)
-    (use-local-map lisp-interaction-mode-map))
-  (when (or (eq (point-min) (point-max))
-            ;; For some reason the scratch buffer have not a zero size.
-            (<= (buffer-size) 2))
-    (insert ";;; -*- coding: utf-8; mode: lisp-interaction; lexical-binding: t -*-\n;;\n;; SCRATCH BUFFER\n;; ==============\n\n")))
-
+;; Link now scratch buffer to file
 (tv-restore-scratch-buffer)
 
 ;;; .emacs.el ends here
