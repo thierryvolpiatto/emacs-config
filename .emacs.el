@@ -278,11 +278,33 @@ If your system's ping continues until interrupted, you can try setting
 (use-package ioccur
     :commands (ioccur)
     :init
-  (add-hook 'ioccur-save-pos-before-jump-hook 'ioccur-save-current-pos-to-mark-ring))
+  (add-hook 'ioccur-save-pos-before-jump-hook 'ioccur-save-current-pos-to-mark-ring)
+  :bind ([remap occur] . ioccur)) ; M-s o
+
+;;; google-maps
+;;
+(use-package google-maps
+    :bind ("<f5> g m" . google-maps))
 
 ;;; tv-utils fns
 ;;
-(use-package tv-utils)
+(use-package tv-utils
+    :bind (("M-\"" . tv-insert-double-quote)
+           ("C-M-\`" . tv-insert-double-backquote)
+           ("C-M-(" . tv-move-pair-forward)
+           ("C-M-\"" . tv-insert-double-quote-and-close-forward)
+           ("C-M-)" . tv-insert-pair-and-close-forward)
+           ("<f5> r" . find-file-as-root)
+           ("C-x r a" . tv-append-to-register)
+           ("C-c t r" . translate-at-point)
+           ("<f5> c" . tv-toggle-calendar)
+           ("C-h C-e" . tv-tail-echo-area-messages)
+           ([remap kill-whole-line] . tv-kill-whole-line)
+           ("M-e" . tv-eval-last-sexp-at-eol)
+           ([remap delete-char] . tv-delete-char)
+           ("C-x C-'" . tv/split-windows)
+           ("C-<" . other-window-backward)
+           ("C->" . other-window-forward)))
 
 ;;; Ledger
 ;;
@@ -297,7 +319,10 @@ If your system's ping continues until interrupted, you can try setting
     :commands (rectangle-menu
                copy-rectangle
                rectangle-insert-at-right
-               extend-rectangle-to-end))
+               extend-rectangle-to-end)
+    :bind (("C-x r e" . extend-rectangle-to-end)
+           ("C-x r h" . rectangle-menu)
+           ("C-x r <right>" . rectangle-insert-at-right)))
 
 ;;; Smallurl
 ;;
@@ -311,7 +336,8 @@ If your system's ping continues until interrupted, you can try setting
     :init
     (progn
       (setq zop-to-char-prec-keys '(left ?\C-b ?\M-a)
-            zop-to-char-next-keys '(right ?\C-f ?\M-e))))
+            zop-to-char-next-keys '(right ?\C-f ?\M-e)))
+    :bind ([remap zap-to-char] . zop-to-char))
 
 ;;; Iedit
 ;;
@@ -366,7 +392,8 @@ If your system's ping continues until interrupted, you can try setting
 ;;
 (use-package mu4e
     :config (use-package mu4e-config)
-    :commands 'mu4e)
+    :commands 'mu4e
+    :bind ("<f8>" . mu4e))
 
 ;;; pcomplete
 ;;
@@ -407,7 +434,8 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Emamux
 ;;
 (use-package emamux
-    :init (setq emamux:completing-read-type 'helm))
+    :init (setq emamux:completing-read-type 'helm)
+    :bind ("C-c y" . emamux:yank-from-list-buffers))
 
 ;;; Async
 ;;
@@ -634,7 +662,8 @@ from IPython.core.completerlib import module_completion"
               "## Title: \n"
               "## Description: \n"
               "## Author:Thierry Volpiatto<thierry dot volpiatto FROM gmail DOT com>\n"
-              "## Commentary:\n\n"))))
+              "## Commentary:\n\n")))
+  :bind ("<f11> p" . python-shell-switch-to-shell))
 
 ;;; xdvi (Needed in auctex)
 ;;
@@ -864,55 +893,59 @@ from IPython.core.completerlib import module_completion"
           (slime))))
   :no-require t)
 
-
 ;;; Gnus-config
-;;;
 ;;
-;;
-(defvar tv/use-gnus t)
-(when tv/use-gnus
-  (setq gnus-asynchronous t)
-  ;; (setq mail-user-agent 'gnus-user-agent)
-  ;; (setq read-mail-command 'gnus)
-  ;; (setq send-mail-command 'gnus-msg-mail)
-  (setq gnus-init-file "~/.emacs.d/emacs-config/.gnus.el")
+(use-package gnus
+    :init
+  (progn
+    (setq gnus-asynchronous t)
+    ;; (setq mail-user-agent 'gnus-user-agent)
+    ;; (setq read-mail-command 'gnus)
+    ;; (setq send-mail-command 'gnus-msg-mail)
+    (setq gnus-init-file "~/.emacs.d/emacs-config/.gnus.el")
 
-  (defvar tv-gnus-loaded-p nil)
-  (defun tv-load-gnus-init-may-be ()
-    (unless tv-gnus-loaded-p
-      (load gnus-init-file)
-      (setq tv-gnus-loaded-p t)))
+    (defvar tv-gnus-loaded-p nil)
+    (defun tv-load-gnus-init-may-be ()
+      (unless tv-gnus-loaded-p
+        (load gnus-init-file)
+        (setq tv-gnus-loaded-p t)))
 
-  (add-hook 'message-mode-hook 'tv-load-gnus-init-may-be)
-  (add-hook 'gnus-before-startup-hook 'tv-load-gnus-init-may-be)
+    (add-hook 'message-mode-hook 'tv-load-gnus-init-may-be)
+    (add-hook 'gnus-before-startup-hook 'tv-load-gnus-init-may-be)
 
-  (defun tv-gnus (arg)
-    "Start Gnus.
+    (defun tv-gnus (arg)
+      "Start Gnus.
 If Gnus have been started and a *Group* buffer exists,
 switch to it, otherwise check if a connection is available and
 in this cl-case start Gnus plugged, otherwise start it unplugged."
-    (interactive "P")
-    (let ((buf (get-buffer "*Group*")))
-      (if (buffer-live-p buf)
-          (switch-to-buffer buf)
-          (if (or arg (not (quickping "imap.gmail.com")))
-              (gnus-unplugged)
-              (gnus)))))
-  (global-set-key (kbd "<f7> m") 'tv-gnus)
-  ;; Borred C-g'ing all the time and hanging emacs
-  ;; while in gnus (while tethering or not).
-  ;; Kill all nnimap/nntpd processes when exiting summary.
-  (defun tv-gnus-kill-all-procs ()
-    (cl-loop for proc in (process-list)
-             when (string-match "\\*?\\(nnimap\\|nntpd\\)" (process-name proc))
-             do (delete-process proc)))
-  (add-hook 'gnus-exit-group-hook 'tv-gnus-kill-all-procs)
-  (add-hook 'gnus-group-catchup-group-hook 'tv-gnus-kill-all-procs)
+      (interactive "P")
+      (let ((buf (get-buffer "*Group*")))
+        (if (buffer-live-p buf)
+            (switch-to-buffer buf)
+            (if (or arg (not (quickping "imap.gmail.com")))
+                (gnus-unplugged)
+                (gnus)))))
+    (global-set-key (kbd "<f7> m") 'tv-gnus)
+    
+    ;; Borred C-g'ing all the time and hanging emacs
+    ;; while in gnus (while tethering or not).
+    ;; Kill all nnimap/nntpd processes when exiting summary.
+    (defun tv-gnus-kill-all-procs ()
+      (cl-loop for proc in (process-list)
+               when (string-match "\\*?\\(nnimap\\|nntpd\\)" (process-name proc))
+               do (delete-process proc)))
+    (add-hook 'gnus-exit-group-hook 'tv-gnus-kill-all-procs)
+    (add-hook 'gnus-group-catchup-group-hook 'tv-gnus-kill-all-procs))
+  :defer t)
 
-  (autoload 'gnus-dired-attach "gnus-dired.el")
-  (declare-function 'gnus-dired-attach "gnus-dired.el" (files-to-attach))
-  (define-key dired-mode-map (kbd "C-c C-a") 'gnus-dired-attach))
+;;; esh-toggle
+;;
+(use-package esh-toggle
+    :commands (eshell-toggle-cd eshell-toggle)
+    :bind (("<f11> e c" . eshell-toggle-cd)
+           ("<f11> e t" . eshell-toggle)))
 
+
 ;; Utility for mail
 (defun quickping (host)
   "Return non--nil when host is reachable."
@@ -938,24 +971,11 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 (global-set-key (kbd "C-c R")                      #'(lambda () (interactive) (revert-buffer t t)))
 (global-set-key (kbd "C-c W")                      'whitespace-mode)
 (global-set-key (kbd "C-M-j")                      #'(lambda () (interactive) (kill-sexp -1)))
-(global-set-key (kbd "<f8>")                       'mu4e)
 (global-set-key (kbd "<f7> j")                     'webjump)
-(global-set-key (kbd "<f11> o")                    'helm-org-agenda-files-headings)
-(global-set-key (kbd "<f11> e c")                  'eshell-toggle-cd)
-(global-set-key (kbd "<f11> e t")                  'eshell-toggle)
 (global-set-key (kbd "<f11> s h")                  'tv-shell)
 (global-set-key (kbd "<f11> t")                    'tv-term)
 (global-set-key (kbd "<f11> i")                    'ielm)
-(global-set-key (kbd "<f11> p")                    'python-shell-switch-to-shell)
-(global-set-key (kbd "C-%")                        'calculator)
 (global-set-key (kbd "C-c @")                      'tv-flyspell)
-(global-set-key (kbd "<f5> p s b")                 'tv-ps-print-buffer)
-(global-set-key (kbd "<f5> p s r")                 'tv-ps-print-region)
-(global-set-key (kbd "<f5> p b")                   'print-buffer)
-(global-set-key (kbd "<f5> p r")                   'print-region)
-(global-set-key (kbd "<f5> p i")                   'pr-interface)
-(global-set-key [remap occur]                      'ioccur) ; M-s o
-(global-set-key (kbd "C-s")                        'helm-occur)
 (global-set-key (kbd "<M-down>")                   'tv-scroll-down)
 (global-set-key (kbd "<M-up>")                     'tv-scroll-up)
 (global-set-key (kbd "<C-M-down>")                 'tv-scroll-other-down)
@@ -967,33 +987,10 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 (global-set-key (kbd "C-x C-é")                    'split-window-vertically)
 (global-set-key (kbd "C-x C-\"")                   'split-window-horizontally)
 (global-set-key (kbd "C-x r v")                    'string-insert-rectangle)
-(global-set-key (kbd "C-x r e")                    'extend-rectangle-to-end)
-(global-set-key (kbd "C-x r h")                    'rectangle-menu)
-(global-set-key (kbd "C-x r <right>")              'rectangle-insert-at-right)
 (global-set-key (kbd "C-x r M-w")                  'copy-rectangle)
-(global-set-key [remap zap-to-char]                'zop-to-char) ; M-z
-(global-set-key (kbd "<f5> g m")                   'google-maps)
-(global-set-key (kbd "M-\"")                       'tv-insert-double-quote)
-(global-set-key (kbd "C-M-\`")                     'tv-insert-double-backquote)
-(global-set-key (kbd "C-M-(")                      'tv-move-pair-forward)
-(global-set-key (kbd "C-M-\"")                     'tv-insert-double-quote-and-close-forward)
-(global-set-key (kbd "C-M-)")                      'tv-insert-pair-and-close-forward)
 (global-set-key [remap save-buffers-kill-terminal] 'tv-stop-emacs) ; C-x C-c
-(global-set-key (kbd "<f5> r")                     'find-file-as-root)
-(global-set-key (kbd "C-c Y")                      'tv-yank-from-screen)
-(global-set-key (kbd "C-c C")                      'tv-copy-for-screen)
 (global-set-key [C-left]                           'screen-top)
 (global-set-key [C-right]                          'screen-bottom)
-(global-set-key (kbd "C-<")                        'other-window-backward)
-(global-set-key (kbd "C->")                        'other-window-forward)
-(global-set-key (kbd "C-x r a")                    'tv-append-to-register)
-(global-set-key (kbd "C-c t r")                    'translate-at-point)
-(global-set-key (kbd "<f5> c")                     'tv-toggle-calendar)
-(global-set-key (kbd "C-h C-e")                    'tv-tail-echo-area-messages)
-(global-set-key [remap kill-whole-line]            'tv-kill-whole-line)
-(global-set-key (kbd "M-e")                        'tv-eval-last-sexp-at-eol)
-(global-set-key [remap delete-char]                'tv-delete-char)
-(global-set-key (kbd "C-x C-'")                    'tv/split-windows)
 
 (defun goto-scratch ()
   (interactive)
