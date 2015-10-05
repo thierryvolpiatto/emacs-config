@@ -400,6 +400,10 @@
 (setq-default ispell-program-name "aspell")
 (setq ispell-local-dictionary "francais")
 
+;; Kill buffer after C-d in ansi-term.
+(defadvice term-sentinel (after kill-buffer activate)
+  (kill-buffer))
+
 
 ;;; Compatibility
 ;;
@@ -1534,6 +1538,21 @@ With prefix arg always start and let me choose dictionary."
         (ispell-change-dictionary dic)
         (flyspell-delete-all-overlays))
       (call-interactively 'flyspell-mode)))
+
+;; This is bounded to C-d in shell.
+(defun comint-delchar-or-maybe-eof (arg)
+  "Delete ARG characters forward or send an EOF to subprocess.
+Sends an EOF only if point is at the end of the buffer and there is no input."
+  (interactive "p")
+  (let ((proc (get-buffer-process (current-buffer))))
+    (if (and (eobp) proc (= (point) (marker-position (process-mark proc))))
+        (progn (comint-send-eof) (kill-buffer))
+        (delete-char arg))))
+
+(defun tv-term ()
+  (interactive)
+  (ansi-term "/bin/bash"))
+
 
 ;;; Bindings
 ;;
@@ -1715,25 +1734,6 @@ With prefix arg always start and let me choose dictionary."
                                     (bury-buffer))))
 
 
-;;; Term-et-ansi-term
-;;
-(defun tv-term ()
-  (interactive)
-  (ansi-term "/bin/bash"))
-
-;; Kill buffer after C-d in ansi-term.
-(defadvice term-sentinel (after kill-buffer activate)
-  (kill-buffer))
-
-(defun comint-delchar-or-maybe-eof (arg)
-  "Delete ARG characters forward or send an EOF to subprocess.
-Sends an EOF only if point is at the end of the buffer and there is no input."
-  (interactive "p")
-  (let ((proc (get-buffer-process (current-buffer))))
-    (if (and (eobp) proc (= (point) (marker-position (process-mark proc))))
-        (progn (comint-send-eof) (kill-buffer))
-        (delete-char arg))))
-
 ;;; Semantic
 ;;
 ;;
