@@ -752,6 +752,7 @@ If your system's ping continues until interrupted, you can try setting
     (setq magit-revision-show-gravatars nil))
   :config
   (bind-key "C" 'magit-commit-add-log magit-diff-mode-map)
+  (bind-key "C-]" 'magit-toggle-margin magit-log-mode-map)
   :defer t)
 
 ;;; Emamux
