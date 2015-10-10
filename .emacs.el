@@ -448,15 +448,8 @@ So far, F can only be a symbol, not a lambda expression."))
      (signal 'error (list feature (car err) (cadr err))))))
 
 
-;;; load-paths
-;; For Info paths see:
-;; [EVAL] (getenv "INFOPATH")
-(with-eval-after-load "info"
-  (add-to-list 'Info-directory-list "/usr/local/share/info")
-  (add-to-list 'Info-directory-list "/usr/share/info")
-  (add-to-list 'Info-directory-list "~/elisp/info")
-  (add-to-list 'Info-directory-list "~/elisp/info/eshell-doc"))
-
+;;; load-path
+;;
 (dolist (i '("/usr/local/share/emacs/site-lisp"
              "/usr/local/share/emacs/site-lisp/mu4e"
 	     "~/elisp/"
@@ -475,6 +468,47 @@ So far, F can only be a symbol, not a lambda expression."))
 	     "~/.emacs.d/emacs-config/"
 	     ))
   (add-to-list 'load-path i t)) ; Add all at end of `load-path' to avoid conflicts.
+
+;;; Info
+;;
+(use-package info
+    :init
+  (progn
+    ;; Additional info directories
+    (add-to-list 'Info-directory-list "/usr/local/share/info")
+    (add-to-list 'Info-directory-list "/usr/share/info")
+    (add-to-list 'Info-directory-list "~/elisp/info")
+    (add-to-list 'Info-directory-list "~/elisp/info/eshell-doc")
+    ;; Fancy faces in info.
+    (defface tv-info-ref-item
+        '((((background dark)) :background "DimGray" :foreground "Gold")
+          (((background light)) :background "firebrick" :foreground "LightGray"))
+      "Face for item stating with -- in info." :group 'Info :group 'faces)
+
+    (defvar tv-info-title-face 'tv-info-ref-item)
+    (defvar tv-info-underline 'underline)
+    (defvar info-unicode-quote-start (string 8216))
+    (defvar info-unicode-quote-end (string 8217))
+    (defvar info-unicode-quoted-regexp (format "[%s]\\([^%s%s]+\\)[%s]"
+                                               info-unicode-quote-start
+                                               info-unicode-quote-start
+                                               info-unicode-quote-end
+                                               info-unicode-quote-end
+                                               ))
+    (defun tv-font-lock-doc-rules ()
+      (font-lock-add-keywords
+       nil `(("[^\\s\][`]\\([^`']+\\)[`']?[^\\s\][']?" 1 font-lock-type-face)
+             (,info-unicode-quoted-regexp 1 font-lock-type-face)
+             ("^ --.*$" . tv-info-title-face)
+             ("[_]\\([^_]+\\)[_]" 1 tv-info-underline)
+             ("[\"]\\([^\"]*\\)[\"]" . font-lock-string-face)
+             ("\\*Warning:\\*" . font-lock-warning-face)
+             ("^ *\\([*•]\\) " 1 font-lock-variable-name-face)
+             ("^[[:upper:]]+ ?$" . font-lock-comment-face)
+             ("^[[:upper]][a-z- ]*:" . font-lock-variable-name-face)
+             )))
+
+    (add-hook 'Info-mode-hook 'tv-font-lock-doc-rules)))
 
 
 ;;; autoconf-mode site-lisp configuration
@@ -1424,6 +1458,90 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
   ;; Tramp/ange behave badly in 99.9% of the time for ftp, disable.
   (setq ffap-url-unwrap-remote (remove "ftp" ffap-url-unwrap-remote)))
 
+;;; Eshell-config
+;;
+(use-package eshell
+    :init
+  (progn
+    ;; Eshell-prompt
+    (setq eshell-prompt-function
+          #'(lambda nil
+              (concat
+               (getenv "USER")
+               "@"
+               (system-name)
+               ":"
+               (abbreviate-file-name (eshell/pwd))
+               (if (= (user-uid) 0) " # " " $ "))))
+
+    ;; Compatibility 24.2/24.3
+    (unless (fboundp 'eshell-pcomplete)
+      (defalias 'eshell-pcomplete 'pcomplete))
+    (unless (fboundp 'eshell-complete-lisp-symbol)
+      (defalias 'eshell-complete-lisp-symbol 'lisp-complete-symbol))
+
+    (add-hook 'eshell-mode-hook #'(lambda ()
+                                    (setq eshell-pwd-convert-function (lambda (f)
+                                                                        (if (file-equal-p (file-truename f) "/")
+                                                                            "/" f)))
+                                    ;; Helm completion with pcomplete
+                                    (setq eshell-cmpl-ignore-case t)
+                                    (eshell-cmpl-initialize)
+                                    (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
+                                    ;; Helm lisp completion
+                                    (define-key eshell-mode-map [remap eshell-complete-lisp-symbol] 'helm-lisp-completion-at-point)
+                                    ;; Helm completion on eshell history.
+                                    (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)
+                                    ;; Eshell prompt
+                                    (set-face-attribute 'eshell-prompt nil :foreground "DeepSkyBlue")
+                                    ;; Allow yanking right now instead of returning "Mark set"
+                                    (push-mark)))
+
+    ;; Eshell history size
+    (setq eshell-history-size 1000) ; Same as env var HISTSIZE.
+
+    ;; Eshell-banner
+    (setq eshell-banner-message (format "%s %s\nwith Emacs %s on %s"
+                                        (propertize
+                                         "Eshell session started on"
+                                         'face '((:foreground "Goldenrod")))
+                                        (propertize
+                                         (format-time-string "%c")
+                                         'face '((:foreground "magenta")))
+                                        (propertize emacs-version
+                                                    'face '((:foreground "magenta")))
+                                        (propertize
+                                         (with-temp-buffer
+                                           (call-process "uname" nil t nil "-r")
+                                           (buffer-string))
+                                         'face '((:foreground "magenta")))))
+
+    ;; Eshell-et-ansi-color
+    (ignore-errors
+      (dolist (i (list 'eshell-handle-ansi-color
+                       'eshell-handle-control-codes
+                       'eshell-watch-for-password-prompt))
+        (add-to-list 'eshell-output-filter-functions i)))
+
+    ;; Eshell-save-history-on-exit
+    ;; Possible values: t (always save), 'never, 'ask (default)
+    (setq eshell-save-history-on-exit t)
+
+    ;; Eshell-directory
+    (setq eshell-directory-name "/home/thierry/.emacs.d/eshell/")
+
+    ;; Eshell-visual
+    (setq eshell-term-name "eterm-color")
+    (with-eval-after-load "em-term"
+      (dolist (i '("tmux" "htop" "ipython" "alsamixer" "git-log"))
+        (add-to-list 'eshell-visual-commands i)))))
+
+;; Finally load eshell on startup.
+(add-hook 'emacs-startup-hook #'(lambda ()
+                                  (let ((default-directory (getenv "HOME")))
+                                    (command-execute 'eshell)
+                                    (bury-buffer))))
+
 
 ;;; Various fns
 ;;
@@ -1652,89 +1770,6 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
   (lambda () (interactive) (message "[%s]" (which-function))))
 
 
-;;; Eshell-config
-;;
-
-;; Eshell-prompt
-(setq eshell-prompt-function
-      #'(lambda nil
-          (concat
-           (getenv "USER")
-           "@"
-           (system-name)
-           ":"
-           (abbreviate-file-name (eshell/pwd))
-           (if (= (user-uid) 0) " # " " $ "))))
-
-;; Compatibility 24.2/24.3
-(unless (fboundp 'eshell-pcomplete)
-  (defalias 'eshell-pcomplete 'pcomplete))
-(unless (fboundp 'eshell-complete-lisp-symbol)
-  (defalias 'eshell-complete-lisp-symbol 'lisp-complete-symbol))
-
-(add-hook 'eshell-mode-hook #'(lambda ()
-                                (setq eshell-pwd-convert-function (lambda (f)
-                                                                    (if (file-equal-p (file-truename f) "/")
-                                                                        "/" f)))
-                                ;; Helm completion with pcomplete
-                                (setq eshell-cmpl-ignore-case t)
-                                (eshell-cmpl-initialize)
-                                (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
-                                ;; Helm lisp completion
-                                (define-key eshell-mode-map [remap eshell-complete-lisp-symbol] 'helm-lisp-completion-at-point)
-                                ;; Helm completion on eshell history.
-                                (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)
-                                ;; Eshell prompt
-                                (set-face-attribute 'eshell-prompt nil :foreground "DeepSkyBlue")
-                                ;; Allow yanking right now instead of returning "Mark set"
-                                (push-mark)))
-
-;; Eshell history size
-(setq eshell-history-size 1000) ; Same as env var HISTSIZE.
-
-;; Eshell-banner
-(setq eshell-banner-message (format "%s %s\nwith Emacs %s on %s"
-                                    (propertize
-                                     "Eshell session started on"
-                                     'face '((:foreground "Goldenrod")))
-                                    (propertize
-                                     (format-time-string "%c")
-                                     'face '((:foreground "magenta")))
-                                    (propertize emacs-version
-                                                'face '((:foreground "magenta")))
-                                    (propertize
-                                     (with-temp-buffer
-                                       (call-process "uname" nil t nil "-r")
-                                       (buffer-string))
-                                     'face '((:foreground "magenta")))))
-
-;; Eshell-et-ansi-color
-(ignore-errors
-  (dolist (i (list 'eshell-handle-ansi-color
-                   'eshell-handle-control-codes
-                   'eshell-watch-for-password-prompt))
-    (add-to-list 'eshell-output-filter-functions i)))
-
-;; Eshell-save-history-on-exit
-;; Possible values: t (always save), 'never, 'ask (default)
-(setq eshell-save-history-on-exit t)
-
-;; Eshell-directory
-(setq eshell-directory-name "/home/thierry/.emacs.d/eshell/")
-
-;; Eshell-visual
-(setq eshell-term-name "eterm-color")
-(with-eval-after-load "em-term"
-  (dolist (i '("tmux" "htop" "ipython" "alsamixer" "git-log"))
-    (add-to-list 'eshell-visual-commands i)))
-
-;; Finally load eshell on startup.
-(add-hook 'emacs-startup-hook #'(lambda ()
-                                  (let ((default-directory (getenv "HOME")))
-                                    (command-execute 'eshell)
-                                    (bury-buffer))))
-
-
 ;;; Semantic
 ;;
 ;;
@@ -1745,38 +1780,6 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 ;;             (when (fboundp 'semantic-default-elisp-setup)
 ;;               (semantic-default-elisp-setup))))
 ;; (semantic-mode 1)
-
-;;; Info
-;;
-(defface tv-info-ref-item
-    '((((background dark)) :background "DimGray" :foreground "Gold")
-      (((background light)) :background "firebrick" :foreground "LightGray"))
-  "Face for item stating with -- in info." :group 'Info :group 'faces)
-
-(defvar tv-info-title-face 'tv-info-ref-item)
-(defvar tv-info-underline 'underline)
-(defvar info-unicode-quote-start (string 8216))
-(defvar info-unicode-quote-end (string 8217))
-(defvar info-unicode-quoted-regexp (format "[%s]\\([^%s%s]+\\)[%s]"
-                                           info-unicode-quote-start
-                                           info-unicode-quote-start
-                                           info-unicode-quote-end
-                                           info-unicode-quote-end
-                                           ))
-(defun tv-font-lock-doc-rules ()
-  (font-lock-add-keywords
-   nil `(("[^\\s\][`]\\([^`']+\\)[`']?[^\\s\][']?" 1 font-lock-type-face)
-         (,info-unicode-quoted-regexp 1 font-lock-type-face)
-         ("^ --.*$" . tv-info-title-face)
-         ("[_]\\([^_]+\\)[_]" 1 tv-info-underline)
-         ("[\"]\\([^\"]*\\)[\"]" . font-lock-string-face)
-         ("\\*Warning:\\*" . font-lock-warning-face)
-         ("^ *\\([*•]\\) " 1 font-lock-variable-name-face)
-         ("^[[:upper:]]+ ?$" . font-lock-comment-face)
-         ("^[[:upper]][a-z- ]*:" . font-lock-variable-name-face)
-         )))
-
-(add-hook 'Info-mode-hook 'tv-font-lock-doc-rules)
 
 ;;; Be sure to reenable touchpad when quitting emacs
 (add-hook 'kill-emacs-hook #'(lambda ()
