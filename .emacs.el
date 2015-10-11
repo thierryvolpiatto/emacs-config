@@ -1534,18 +1534,37 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
     (setq eshell-term-name "eterm-color")
     (with-eval-after-load "em-term"
       (dolist (i '("tmux" "htop" "ipython" "alsamixer" "git-log"))
-        (add-to-list 'eshell-visual-commands i)))))
-
-;; Finally load eshell on startup.
-(add-hook 'emacs-startup-hook #'(lambda ()
-                                  (let ((default-directory (getenv "HOME")))
-                                    (command-execute 'eshell)
-                                    (bury-buffer))))
+        (add-to-list 'eshell-visual-commands i))))
+  :config
+  ;; Finally load eshell on startup.
+  (add-hook 'emacs-startup-hook #'(lambda ()
+                                    (let ((default-directory (getenv "HOME")))
+                                      (command-execute 'eshell)
+                                      (bury-buffer)))))
 
 ;;; linum-relative
 ;;
 (use-package linum-relative
     :commands (linum-relative-mode))
+
+;;; Outline-mode
+;;
+(use-package outline
+    :requires helm
+    :config
+  (progn
+    (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-p")
+                                  ?p 'outline-previous-visible-heading
+                                  '((?n . outline-next-visible-heading)))
+    (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-n")
+                                  ?n 'outline-next-visible-heading
+                                  '((?p . outline-previous-visible-heading)))
+    (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-f")
+                                  ?f 'outline-forward-same-level
+                                  '((?b . outline-backward-same-level)))
+    (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-b")
+                                  ?b 'outline-backward-same-level
+                                  '((?f . outline-forward-same-level)))))
 
 
 ;;; Various fns
@@ -1709,19 +1728,6 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 (global-set-key (kbd "<f11> s c")                  'goto-scratch)
 (global-set-key (kbd "C-8")                        'tv-transparency-modify)
 
-;; Outline-mode
-(helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-p")
-                              ?p 'outline-previous-visible-heading
-                              '((?n . outline-next-visible-heading)))
-(helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-n")
-                              ?n 'outline-next-visible-heading
-                              '((?p . outline-previous-visible-heading)))
-(helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-f")
-                              ?f 'outline-forward-same-level
-                              '((?b . outline-backward-same-level)))
-(helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-b")
-                              ?b 'outline-backward-same-level
-                              '((?f . outline-forward-same-level)))
 
 ;;; Elisp
 ;;
