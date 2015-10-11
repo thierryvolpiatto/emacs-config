@@ -1542,6 +1542,11 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
                                     (command-execute 'eshell)
                                     (bury-buffer))))
 
+;;; linum-relative
+;;
+(use-package linum-relative
+    :commands (linum-relative-mode))
+
 
 ;;; Various fns
 ;;
