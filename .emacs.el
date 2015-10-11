@@ -31,7 +31,7 @@
 
 ;;; Use-package.
 ;;
-(require 'use-package)
+(eval-when-compile (require 'use-package))
 (setq use-package-verbose t)
 
 ;;; Global settings
