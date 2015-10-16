@@ -89,6 +89,7 @@
 (define-key global-map [remap find-tag]              'helm-etags-select)
 (define-key global-map [remap xref-find-definitions] 'helm-etags-select)
 (define-key global-map (kbd "M-g a")                 'helm-do-grep-ag)
+(define-key global-map (kbd "M-g g")                 'helm-grep-do-git-grep)
 
 ;; Shell bindings
 (define-key shell-mode-map (kbd "M-p")               'helm-comint-input-ring) ; shell history.

@@ -748,7 +748,8 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Mu4e
 ;;
 (use-package mu4e
-    :config (use-package mu4e-config)
+    :config (progn (use-package mu4e-config)
+                   (use-package addressbook-bookmark))
     :commands 'mu4e
     :bind ("<f8>" . mu4e))
 
