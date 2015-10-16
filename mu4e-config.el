@@ -133,7 +133,7 @@ This will run in `message-send-hook'."
 (setq mu4e-headers-skip-duplicates t)
 
 ;;; Signature
-(setq mu4e-compose-signature t)
+(setq mu4e-compose-signature "Thierry\nhttps://emacs-helm.github.io/helm/")
 
 ;;; encryption
 (define-key mu4e-view-mode-map [remap mu4e-view-verify-msg-popup] 'epa-mail-verify)
