@@ -404,6 +404,16 @@
 (defadvice term-sentinel (after kill-buffer activate)
   (kill-buffer))
 
+;; Require with messages to debug more easily.
+(defun tv-require (feature &optional filename noerror)
+  (message "Loading %s..." (symbol-name feature))
+  (condition-case err
+      (if (require feature filename noerror)
+          (message "Loading %s done" (symbol-name feature))
+          (message "Loading %s Failed" (symbol-name feature)))
+    (error
+     (signal 'error (list feature (car err) (cadr err))))))
+
 
 ;;; Compatibility
 ;;
@@ -437,15 +447,18 @@ So far, F can only be a symbol, not a lambda expression."))
 
 (when (version< emacs-version "24.3.50.1") (ad-activate 'term-command-hook))
 
-;; Require with messages to debug more easily.
-(defun tv-require (feature &optional filename noerror)
-  (message "Loading %s..." (symbol-name feature))
-  (condition-case err
-      (if (require feature filename noerror)
-          (message "Loading %s done" (symbol-name feature))
-          (message "Loading %s Failed" (symbol-name feature)))
-    (error
-     (signal 'error (list feature (car err) (cadr err))))))
+(defun tv/describe-variable (old-fn &rest args)
+  (require 'cl)
+  (flet ((pp (object &optional stream)
+           (let ((fn (lambda (ob &optional stream)
+                       (princ (pp-to-string ob)
+                              (or stream standard-output))))
+                 (print-circle t))
+             (if (listp object)
+                 (progn (insert "(") (mapc fn object) (insert ")"))
+                 (funcall fn object stream)))))
+    (apply old-fn args)))
+(advice-add 'describe-variable :around #'tv/describe-variable)
 
 
 ;;; load-path
