@@ -410,7 +410,7 @@ START and END are buffer positions indicating what to append."
             (setq action (read-key "`)': Insert, (any key to exit)."))
             (cl-case action
               (?\)
-               (unless (looking-back "(")
+               (unless (looking-back "(" (1- (point)))
                  (delete-char -1))
                (skip-chars-forward " ")
                (forward-symbol 1)
