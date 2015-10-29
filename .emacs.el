@@ -18,7 +18,7 @@
 ;;
 (when (and (= emacs-major-version 24)
            (not (version< emacs-version "24.4.1")))
-  (add-to-list 'load-path "~/.emacs.d/emacs-config")
+  (add-to-list 'load-path "~/.emacs.d/emacs-config/")
   ;; Load the emacs-25 package.el version adapted to emacs-24.
   (load "package-24"))
 
@@ -484,7 +484,8 @@ So far, F can only be a symbol, not a lambda expression."))
              "~/.emacs.d/themes/"
 	     "~/.emacs.d/emacs-config/"
 	     ))
-  (add-to-list 'load-path i t)) ; Add all at end of `load-path' to avoid conflicts.
+  ;; Add all at end of `load-path' to avoid conflicts.
+  (add-to-list 'load-path (file-name-as-directory i) t))
 
 ;;; Info
 ;;
