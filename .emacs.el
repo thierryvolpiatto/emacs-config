@@ -664,6 +664,10 @@ If your system's ping continues until interrupted, you can try setting
 ;;; tv-utils fns
 ;;
 (use-package tv-utils
+    :commands (tv-eval-region)
+    :init (progn
+            (bind-key "C-M-!" 'tv-eval-region lisp-interaction-mode-map) 
+            (bind-key "C-M-!" 'tv-eval-region emacs-lisp-mode-map))
     :bind (("M-\"" . tv-insert-double-quote)
            ("C-M-\`" . tv-insert-double-backquote)
            ("C-M-(" . tv-move-pair-forward)
@@ -1782,10 +1786,6 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 (define-key lisp-interaction-mode-map (kbd "RET") 'newline-and-indent)
 (define-key emacs-lisp-mode-map (kbd "RET") 'newline-and-indent)
 (define-key lisp-mode-map (kbd "RET") 'newline-and-indent)
-
-;; eval-region
-(define-key lisp-interaction-mode-map (kbd "C-M-!") 'tv-eval-region)
-(define-key emacs-lisp-mode-map (kbd "C-M-!") 'tv-eval-region)
 
 ;; byte-compile-file
 (define-key emacs-lisp-mode-map (kbd "C-c C-c b") 'byte-compile-file)
