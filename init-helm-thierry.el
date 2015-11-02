@@ -150,7 +150,6 @@ First call indent, second complete symbol, third complete fname."
       helm-scroll-amount                         4
       helm-idle-delay                            0.01
       helm-input-idle-delay                      0.01
-      helm-ff-search-library-in-sexp             t
       helm-default-external-file-browser         "thunar"
       helm-pdfgrep-default-read-command          "evince --page-label=%p '%f'"
       helm-ff-auto-update-initial-value          t
