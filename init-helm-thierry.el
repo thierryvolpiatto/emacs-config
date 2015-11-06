@@ -65,6 +65,18 @@
     (define-key helm-map (kbd key) fn)
     (define-key helm-map (kbd key-) fn-)))
 
+(defun helm-occur-which-func ()
+  (interactive)
+  (with-current-buffer
+      (or (helm-aif (with-helm-buffer
+                      (window-buffer helm-persistent-action-display-window))
+              (and (null (minibufferp it)) it))
+          helm-current-buffer)
+    (when (eq major-mode 'emacs-lisp-mode)
+      (message "[%s]" (which-function)))))
+
+(define-key helm-moccur-map (kbd "C-c ?") 'helm-occur-which-func)
+
 
 ;;; Helm-command-map
 ;;
