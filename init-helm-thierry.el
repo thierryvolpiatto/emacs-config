@@ -48,6 +48,23 @@
   (setq helm-split-window-in-side-p nil)
   (remove-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)
   )
+
+(defun helm-execute-selection-action-at-nth (linum)
+  (let ((prefarg current-prefix-arg))
+    (if (>= linum 0)
+        (helm-next-line linum)
+        (helm-previous-line (lognot (1- linum))))
+    (setq current-prefix-arg prefarg)
+    (helm-exit-minibuffer)))
+
+(dotimes (n 9)
+  (let* ((key (format "C-c %d" n))
+         (key- (format "C-x %d" n))
+         (fn (lambda () (interactive) (helm-execute-selection-action-at-nth n)))
+         (fn- (lambda () (interactive) (helm-execute-selection-action-at-nth (- n)))))
+    (define-key helm-map (kbd key) fn)
+    (define-key helm-map (kbd key-) fn-)))
+
 
 ;;; Helm-command-map
 ;;
@@ -184,6 +201,7 @@ First call indent, second complete symbol, third complete fname."
                                                    "*helm gid*" "*helm semantic/imenu*")
       fit-window-to-buffer-horizontally          1
       helm-open-github-closed-issue-since        7
+      helm-highlight-number-lines-around-point   30
       helm-search-suggest-action-wikipedia-url
       "https://fr.wikipedia.org/wiki/Special:Search?search=%s"
       helm-wikipedia-suggest-url
