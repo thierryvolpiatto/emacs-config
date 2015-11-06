@@ -76,6 +76,7 @@
       (message "[%s]" (which-function)))))
 
 (define-key helm-moccur-map (kbd "C-c ?") 'helm-occur-which-func)
+(define-key helm-grep-map (kbd "C-c ?") 'helm-occur-which-func)
 
 
 ;;; Helm-command-map
