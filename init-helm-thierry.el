@@ -58,10 +58,15 @@
     (helm-exit-minibuffer)))
 
 (dotimes (n 9)
+  (cl-incf n)
   (let* ((key (format "C-c %d" n))
          (key- (format "C-x %d" n))
-         (fn (lambda () (interactive) (helm-execute-selection-action-at-nth n)))
-         (fn- (lambda () (interactive) (helm-execute-selection-action-at-nth (- n)))))
+         (fn (lambda ()
+               (interactive)
+               (helm-execute-selection-action-at-nth n)))
+         (fn- (lambda ()
+                (interactive)
+                (helm-execute-selection-action-at-nth (- n)))))
     (define-key helm-map (kbd key) fn)
     (define-key helm-map (kbd key-) fn-)))
 
