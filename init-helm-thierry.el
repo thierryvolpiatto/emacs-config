@@ -76,7 +76,7 @@ Allow to execute default action on nth candidate.
 Commands prefixed with C-x will use nth candidate before selection
 the ones prefixed with C-c will use nth candidate after selection."
   :group 'helm
-  (when (fboundp 'linum-relative-mode)
+  (when (require 'linum-relative nil t)
     (and (boundp 'linum-relative-with-helm)
                  (setq linum-relative-with-helm t))
     (if helm-linum-relative-mode
