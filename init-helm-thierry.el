@@ -71,7 +71,10 @@
               (define-key helm-map (kbd key-) fn-)))
 
 (define-minor-mode helm-linum-relative-mode
-    "Turn on linum-relative in helm."
+    "Turn on linum-relative in helm.
+Allow to execute default action on nth candidate.
+Commands prefixed with C-x will use nth candidate before selection
+the ones prefixed with C-c will use nth candidate after selection."
   :group 'helm
   (when (fboundp 'linum-relative-mode)
     (and (boundp 'linum-relative-with-helm)
