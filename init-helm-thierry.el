@@ -70,6 +70,21 @@
               (define-key helm-map (kbd key) fn)
               (define-key helm-map (kbd key-) fn-)))
 
+(define-minor-mode helm-linum-relative-mode
+    "Turn on linum-relative in helm."
+  :group 'helm
+  (when (fboundp 'linum-relative-mode)
+    (and (boundp 'linum-relative-with-helm)
+                 (setq linum-relative-with-helm t))
+    (if helm-linum-relative-mode
+        (progn
+          (add-hook 'helm-after-initialize-hook
+                    (lambda () (with-helm-buffer (linum-relative-mode 1))))
+          (add-hook 'helm-after-preselection-hook 'linum-relative-for-helm))
+        (remove-hook 'helm-after-initialize-hook
+                     (lambda () (with-helm-buffer (linum-relative-mode 1))))
+        (remove-hook 'helm-after-preselection-hook 'linum-relative-for-helm))))
+
 (defun helm-occur-which-func ()
   (interactive)
   (with-current-buffer
