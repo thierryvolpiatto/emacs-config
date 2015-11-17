@@ -50,6 +50,7 @@
   )
 
 (defun helm-execute-selection-action-at-nth (linum)
+  "Allow to execute default action on candidate at LINUM."
   (let ((prefarg current-prefix-arg))
     (if (>= linum 0)
         (helm-next-line linum)
