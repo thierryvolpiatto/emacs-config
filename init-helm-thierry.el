@@ -81,14 +81,12 @@ Allow to execute default action on nth candidate.
 Commands prefixed with C-x will use nth candidate before selection
 the ones prefixed with C-c will use nth candidate after selection."
   :group 'helm
-  (when (fboundp 'linum-relative-mode)
+  (when (require 'linum-relative nil t)
     (if helm-linum-relative-mode
         (progn
-          (add-hook 'helm-after-initialize-hook
-                    'helm--turn-on-linum-relative)
+          (add-hook 'helm-after-initialize-hook 'helm--turn-on-linum-relative)
           (add-hook 'helm-after-preselection-hook 'linum-relative-for-helm))
-        (remove-hook 'helm-after-initialize-hook
-                     'helm--turn-on-linum-relative)
+        (remove-hook 'helm-after-initialize-hook 'helm--turn-on-linum-relative)
         (remove-hook 'helm-after-preselection-hook 'linum-relative-for-helm))))
 
 (defun helm-occur-which-func ()
