@@ -50,9 +50,7 @@
   )
 
 (defun helm--turn-on-linum-relative ()
-  (with-helm-buffer (linum-relative-mode 1))
-  (and (boundp 'linum-relative-with-helm)
-       (setq linum-relative-with-helm t)))
+  (with-helm-buffer (linum-relative-mode 1)))
 
 (define-minor-mode helm-linum-relative-mode
     "Turn on linum-relative in helm.
