@@ -522,7 +522,7 @@ So far, F can only be a symbol, not a lambda expression."))
              ("[\"]\\([^\"]*\\)[\"]" . font-lock-string-face)
              ("\\*Warning:\\*" . font-lock-warning-face)
              ("^ *\\([*•]\\) " 1 font-lock-variable-name-face)
-             ("^[[:upper:]]+ ?$" . font-lock-comment-face)
+             ("^[[:upper:],]\\{2,\\}.*$" . font-lock-comment-face)
              ("^[[:upper]][a-z- ]*:" . font-lock-variable-name-face)
              )))
 
