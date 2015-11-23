@@ -12,7 +12,7 @@
 ;;; VC
 ;;
 ;; Possible values for vc backends: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
-(setq vc-handled-backends '(RCS Hg))
+(setq vc-handled-backends '(RCS Hg Git))
 
 ;;; Melpa marmalade
 ;;
