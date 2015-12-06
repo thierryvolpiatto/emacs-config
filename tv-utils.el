@@ -364,7 +364,9 @@ START and END are buffer positions indicating what to append."
 ;;;###autoload
 (defun tv-insert-double-backquote (&optional arg)
   (interactive "P")
-  (insert-pair arg ?\` ?\'))
+  (insert-pair arg ?\` (if (or (eq major-mode 'emacs-lisp-mode)
+                               (eq major-mode 'lisp-interaction-mode))
+                           ?\' ?\`)))
 
 ;;;###autoload
 (defun tv-insert-vector (&optional arg)

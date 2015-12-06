@@ -53,10 +53,7 @@
   (with-helm-buffer (linum-relative-mode 1)))
 
 (define-minor-mode helm-linum-relative-mode
-    "Turn on linum-relative in helm.
-Allow to execute default action on nth candidate.
-Commands prefixed with C-x will use nth candidate before selection
-the ones prefixed with C-c will use nth candidate after selection."
+    "Turn on `linum-relative-mode' in helm."
   :group 'helm
   (if helm-linum-relative-mode
       (progn
