@@ -1031,6 +1031,31 @@ Arg `host' is machine in auth-info file."
          (secret (plist-get (car token) :secret)))
     (if (functionp secret) (funcall secret) secret)))
 
+(defvar tv/freesms-default-url
+  "https://smsapi.free-mobile.fr/sendmsg?user=12333316&pass=%s&msg=%s")
+(defun tv/freesms-notify (msg)
+  (interactive (list (read-string "Message: ")))
+  (setq msg (url-hexify-string msg))
+  (let ((pwd (tv/get-passwd-from-auth-sources
+              "freesms" :user "thierry.volpiatto@gmail.com")))
+    (with-current-buffer (url-retrieve-synchronously
+                          (format tv/freesms-default-url
+                                  pwd
+                                  msg))
+      (goto-char (point-min))
+      (let* ((rcode (nth 1 (split-string (buffer-substring-no-properties
+                                          (point-at-bol) (point-at-eol)))))
+             (rcode-msg
+              (cond ((string= "200" rcode) "Le SMS a été envoyé sur votre mobile.")
+                    ((string= "400" rcode) "Un des paramètres obligatoires est manquant.")
+                    ((string= "402" rcode) "Trop de SMS ont été envoyés en trop peu de temps.")
+                    ((string= "403" rcode) "Le service n'est pas activé sur l'espace abonné, ou login / clé incorrect.")
+                    ((string= "500" rcode) "Erreur côté serveur. Veuillez réessayer ultérieurement.")
+                    (t "Unknow error"))))
+        (if (string= rcode-msg "200")
+            (message rcode-msg)
+            (error rcode-msg))))))
+
 (provide 'tv-utils)
 
 ;; Local Variables:
