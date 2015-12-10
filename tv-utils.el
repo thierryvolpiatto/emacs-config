@@ -1024,6 +1024,13 @@ With a prefix arg remove new lines."
       (kill-buffer))))
 
 
+(cl-defun tv/get-passwd-from-auth-sources (host &key user port)
+  "Retrieve a password for auth-info file.
+Arg `host' is machine in auth-info file."
+  (let* ((token (auth-source-search :host host :port port :user user))
+         (secret (plist-get (car token) :secret)))
+    (if (functionp secret) (funcall secret) secret)))
+
 (provide 'tv-utils)
 
 ;; Local Variables:

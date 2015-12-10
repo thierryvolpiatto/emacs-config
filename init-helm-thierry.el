@@ -94,6 +94,10 @@
                (helm-aif (get-text-property (point-at-bol) 'help-echo)
                    (popup-tip (concat " " it) :around nil :point (point-at-eol)))))))))
 (add-hook 'helm-move-selection-after-hook 'helm--show-help-echo)
+(add-hook 'helm-cleanup-hook (lambda ()
+                               (when helm--show-help-echo-timer
+                                 (cancel-timer helm--show-help-echo-timer)
+                                 (setq helm--show-help-echo-timer nil))))
 
 
 ;;; Helm-command-map
