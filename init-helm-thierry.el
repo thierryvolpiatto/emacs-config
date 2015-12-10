@@ -77,6 +77,24 @@
 (define-key helm-moccur-map (kbd "C-c ?") 'helm-occur-which-func)
 (define-key helm-grep-map (kbd "C-c ?") 'helm-occur-which-func)
 
+(defvar helm--show-help-echo-timer nil)
+(defvar helm-sources-using-help-echo-popup '("Moccur" "Imenu in all buffers"
+                                             "Ack-grep" "AG" "Gid" "Git-Grep"))
+(defun helm--show-help-echo ()
+  (when helm--show-help-echo-timer
+    (cancel-timer helm--show-help-echo-timer)
+    (setq helm--show-help-echo-timer nil))
+  (when (and helm-alive-p (member (assoc-default 'name (helm-get-current-source))
+                                  helm-sources-using-help-echo-popup))
+    (setq helm--show-help-echo-timer
+          (run-with-idle-timer
+           1 nil
+           (lambda ()
+             (with-helm-window
+               (helm-aif (get-text-property (point-at-bol) 'help-echo)
+                   (popup-tip (concat " " it) :around nil :point (point-at-eol)))))))))
+(add-hook 'helm-move-selection-after-hook 'helm--show-help-echo)
+
 
 ;;; Helm-command-map
 ;;
@@ -106,6 +124,7 @@
 (global-set-key (kbd "C-x C-d")                      'helm-browse-project)
 (global-set-key (kbd "<f1>")                         'helm-resume)
 (global-set-key (kbd "C-h C-f")                      'helm-apropos)
+(global-set-key (kbd "C-h a")                        'helm-apropos)
 (global-set-key (kbd "<f5> s")                       'helm-find)
 (global-set-key (kbd "<f2>")                         'helm-execute-kmacro)
 (global-set-key (kbd "C-c g")                        'helm-gid)

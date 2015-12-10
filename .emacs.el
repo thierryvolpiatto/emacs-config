@@ -866,8 +866,7 @@ If your system's ping continues until interrupted, you can try setting
     (add-hook 'eshell-mode-hook 'turn-on-eldoc-mode))
   :config
   ;; Don't load this on emacs-25
-  (when
-      (fboundp 'eldoc-highlight-function-argument)
+  (when (fboundp 'eldoc-highlight-function-argument)
     (defun eldoc-highlight-function-argument (sym args index)
       "Highlight argument INDEX in ARGS list for function SYM.
 In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
