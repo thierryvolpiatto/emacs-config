@@ -24,10 +24,10 @@
 
 (package-initialize)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("melpa-stable" . "https://stable.melpa.org/packages/")
+                         ;("melpa-stable" . "https://stable.melpa.org/packages/")
                          ("gnu" . "https://elpa.gnu.org/packages/")))
 
-(setq package-pinned-packages '((magit . "melpa-stable")))
+;(setq package-pinned-packages '((magit . "melpa-stable")))
 
 ;;; Use-package.
 ;;
@@ -1029,9 +1029,7 @@ from IPython.core.completerlib import module_completion"
                   (define-key python-mode-map (kbd "C-m") 'newline-and-indent)))
 
     (when (fboundp 'jedi:setup)
-      (add-hook 'python-mode-hook 'jedi:setup))
-
-    (add-hook 'python-mode-hook 'flymake-python-pyflakes-load))
+      (add-hook 'python-mode-hook 'jedi:setup)))
   :config
   (progn
     (defun tv-insert-python-header ()

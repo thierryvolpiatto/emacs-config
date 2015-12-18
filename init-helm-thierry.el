@@ -209,6 +209,7 @@ First call indent, second complete symbol, third complete fname."
       helm-grep-default-recurse-command          "ack-grep -H --smart-case --no-group %e %p %f"
       helm-reuse-last-window-split-state         t
       helm-always-two-windows                    t
+      helm-split-window-in-side-p                nil
       helm-buffers-favorite-modes                (append helm-buffers-favorite-modes
                                                          '(picture-mode artist-mode))
       helm-ls-git-status-command                 'magit-status-internal
@@ -226,7 +227,7 @@ First call indent, second complete symbol, third complete fname."
       helm-tramp-verbose                         6
       helm-buffers-fuzzy-matching                t
       helm-locate-command                        "locate %s -e -A --regex %s"
-      helm-org-headings-fontify                  t
+      helm-org-headings-fontify                  nil
       helm-autoresize-max-height                 80 ; it is %.
       helm-autoresize-min-height                 20 ; it is %.
       helm-buffers-to-resize-on-pa               '("*helm apropos*" "*helm ack-grep*"
