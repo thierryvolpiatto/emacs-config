@@ -227,7 +227,7 @@ First call indent, second complete symbol, third complete fname."
       helm-tramp-verbose                         6
       helm-buffers-fuzzy-matching                t
       helm-locate-command                        "locate %s -e -A --regex %s"
-      helm-org-headings-fontify                  nil
+      helm-org-headings-fontify                  t
       helm-autoresize-max-height                 80 ; it is %.
       helm-autoresize-min-height                 20 ; it is %.
       helm-buffers-to-resize-on-pa               '("*helm apropos*" "*helm ack-grep*"
