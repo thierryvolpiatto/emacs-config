@@ -109,9 +109,8 @@
                                   collect b into bl
                                   finally return bl)))
     (setq ido-temp-list (append visible-buffers
-                                (subseq ido-temp-list 0
-                                        (- (length ido-temp-list)
-                                           (length visible-buffers)))))))
+                                (butlast ido-temp-list
+                                         (length visible-buffers))))))
 ;; (add-hook 'ido-make-buffer-list-hook 'helm/modify-ido-temp-list)
 
 
