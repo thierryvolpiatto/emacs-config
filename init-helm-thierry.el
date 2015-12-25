@@ -99,6 +99,21 @@
                                  (cancel-timer helm--show-help-echo-timer)
                                  (setq helm--show-help-echo-timer nil))))
 
+;; Show the visibles buffers on top of list (issue #1301)
+
+(defun helm/modify-ido-temp-list ()
+  (let ((visible-buffers (cl-loop with bl
+                                  for w in (window-list)
+                                  for b = (buffer-name (window-buffer w))
+                                  unless (member b bl)
+                                  collect b into bl
+                                  finally return bl)))
+    (setq ido-temp-list (append visible-buffers
+                                (subseq ido-temp-list 0
+                                        (- (length ido-temp-list)
+                                           (length visible-buffers)))))))
+;; (add-hook 'ido-make-buffer-list-hook 'helm/modify-ido-temp-list)
+
 
 ;;; Helm-command-map
 ;;
