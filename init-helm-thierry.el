@@ -102,15 +102,8 @@
 ;; Show the visibles buffers on top of list (issue #1301)
 
 (defun helm/modify-ido-temp-list ()
-  (let ((visible-buffers (cl-loop with bl
-                                  for w in (window-list)
-                                  for b = (buffer-name (window-buffer w))
-                                  unless (member b bl)
-                                  collect b into bl
-                                  finally return bl)))
-    (setq ido-temp-list (append visible-buffers
-                                (butlast ido-temp-list
-                                         (length visible-buffers))))))
+  (let ((bl (mapcar #'buffer-name (buffer-list (selected-frame)))))
+    (setq ido-temp-list (append (cdr bl) (list (car bl))))))
 ;; (add-hook 'ido-make-buffer-list-hook 'helm/modify-ido-temp-list)
 
 
