@@ -92,7 +92,8 @@
            (lambda ()
              (with-helm-window
                (helm-aif (get-text-property (point-at-bol) 'help-echo)
-                   (popup-tip (concat " " it) :around nil :point (point-at-eol)))))))))
+                   (popup-tip (concat " " (abbreviate-file-name it))
+                              :around nil :point (point-at-eol)))))))))
 (add-hook 'helm-move-selection-after-hook 'helm--show-help-echo)
 (add-hook 'helm-cleanup-hook (lambda ()
                                (when helm--show-help-echo-timer
