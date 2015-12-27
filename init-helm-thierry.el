@@ -21,7 +21,7 @@
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
 
-(defun helm-version ()
+(defun helm/version ()
   (with-temp-buffer
     (insert-file-contents (find-library-name "helm-pkg"))
     (goto-char (point-min))
@@ -29,7 +29,7 @@
            "\\([0-9]+?\\)\\.\\([0-9]+?\\)\\.\\([0-9]+?\\)\\.?[0-9]*" nil t)
       (match-string-no-properties 0))))
 
-(defun helm-git-version ()
+(defun helm/git-version ()
   (shell-command-to-string
    "git log --pretty='format:%H' -1"))
 
@@ -49,22 +49,22 @@
   (remove-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)
   )
 
-(defun helm--turn-on-linum-relative ()
+(defun helm/turn-on-linum-relative ()
   (with-helm-buffer (linum-relative-mode 1)))
 
-(define-minor-mode helm-linum-relative-mode
+(define-minor-mode helm/linum-relative-mode
     "Turn on `linum-relative-mode' in helm."
   :group 'helm
-  (if helm-linum-relative-mode
+  (if helm/linum-relative-mode
       (progn
         (add-hook 'helm-move-selection-after-hook 'linum-relative-for-helm)
-        (add-hook 'helm-after-initialize-hook 'helm--turn-on-linum-relative)
+        (add-hook 'helm-after-initialize-hook 'helm/turn-on-linum-relative)
         (add-hook 'helm-after-preselection-hook 'linum-relative-for-helm))
       (remove-hook 'helm-move-selection-after-hook 'linum-relative-for-helm)
-      (remove-hook 'helm-after-initialize-hook 'helm--turn-on-linum-relative)
+      (remove-hook 'helm-after-initialize-hook 'helm/turn-on-linum-relative)
       (remove-hook 'helm-after-preselection-hook 'linum-relative-for-helm)))
 
-(defun helm-occur-which-func ()
+(defun helm/occur-which-func ()
   (interactive)
   (with-current-buffer
       (or (helm-aif (with-helm-buffer
@@ -74,19 +74,19 @@
     (when (eq major-mode 'emacs-lisp-mode)
       (message "[%s]" (which-function)))))
 
-(define-key helm-moccur-map (kbd "C-c ?") 'helm-occur-which-func)
-(define-key helm-grep-map (kbd "C-c ?") 'helm-occur-which-func)
+(define-key helm-moccur-map (kbd "C-c ?") 'helm/occur-which-func)
+(define-key helm-grep-map (kbd "C-c ?") 'helm/occur-which-func)
 
-(defvar helm--show-help-echo-timer nil)
-(defvar helm-sources-using-help-echo-popup '("Moccur" "Imenu in all buffers"
+(defvar helm/show-help-echo-timer nil)
+(defvar helm/sources-using-help-echo-popup '("Moccur" "Imenu in all buffers"
                                              "Ack-grep" "AG" "Gid" "Git-Grep"))
-(defun helm--show-help-echo ()
-  (when helm--show-help-echo-timer
-    (cancel-timer helm--show-help-echo-timer)
-    (setq helm--show-help-echo-timer nil))
+(defun helm/show-help-echo ()
+  (when helm/show-help-echo-timer
+    (cancel-timer helm/show-help-echo-timer)
+    (setq helm/show-help-echo-timer nil))
   (when (and helm-alive-p (member (assoc-default 'name (helm-get-current-source))
-                                  helm-sources-using-help-echo-popup))
-    (setq helm--show-help-echo-timer
+                                  helm/sources-using-help-echo-popup))
+    (setq helm/show-help-echo-timer
           (run-with-idle-timer
            1 nil
            (lambda ()
@@ -94,11 +94,11 @@
                (helm-aif (get-text-property (point-at-bol) 'help-echo)
                    (popup-tip (concat " " (abbreviate-file-name it))
                               :around nil :point (point-at-eol)))))))))
-(add-hook 'helm-move-selection-after-hook 'helm--show-help-echo)
+(add-hook 'helm-move-selection-after-hook 'helm/show-help-echo)
 (add-hook 'helm-cleanup-hook (lambda ()
-                               (when helm--show-help-echo-timer
-                                 (cancel-timer helm--show-help-echo-timer)
-                                 (setq helm--show-help-echo-timer nil))))
+                               (when helm/show-help-echo-timer
+                                 (cancel-timer helm/show-help-echo-timer)
+                                 (setq helm/show-help-echo-timer nil))))
 
 ;; Show the visibles buffers on top of list (issue #1301)
 
@@ -260,7 +260,7 @@ First call indent, second complete symbol, third complete fname."
 ;;; Toggle grep program
 ;;
 ;;
-(defun eselect-grep ()
+(defun helm/eselect-grep ()
   (interactive)
   (when (y-or-n-p (format "Current grep program is %s, switching? "
                           (helm-grep-command)))
@@ -278,13 +278,13 @@ First call indent, second complete symbol, third complete fname."
 ;;; Debugging
 ;;
 ;;
-(defun helm-debug-toggle ()
+(defun helm/debug-toggle ()
   (interactive)
   (setq helm-debug (not helm-debug))
   (message "Helm Debug is now %s"
            (if helm-debug "Enabled" "Disabled")))
 
-(defun helm-ff-candidates-lisp-p (candidate)
+(defun helm/ff-candidates-lisp-p (candidate)
   (cl-loop for cand in (helm-marked-candidates)
            always (string-match "\.el$" cand)))
 
@@ -298,7 +298,7 @@ First call indent, second complete symbol, third complete fname."
    "Byte compile file(s) async"
    'async-byte-compile-file
    source
-   'helm-ff-candidates-lisp-p))
+   'helm/ff-candidates-lisp-p))
 
 (defmethod helm-setup-user-source ((source helm-source-buffers))
   (set-slot-value source 'candidate-number-limit 200))
@@ -306,7 +306,7 @@ First call indent, second complete symbol, third complete fname."
 
 ;;; Psession windows
 ;;
-(defun helm-psession-windows ()
+(defun helm/psession-windows ()
   (interactive)
   (helm :sources (helm-build-sync-source "Psession windows"
                    :candidates (lambda ()
