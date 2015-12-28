@@ -610,14 +610,11 @@ If your system's ping continues until interrupted, you can try setting
                  ,(async-inject-variables "\\`load-path\\'")
                  (let ((default-directory ,(file-name-directory file)))
                    (add-to-list 'load-path default-directory)
-                   (ignore-errors
-                     (load ,file))
-                   ;; returns nil if there were any errors
                    (byte-compile-file ,file))))))
 
         (unless (condition-case err
                     (async-get proc)
-                  (error (message "Error: %s" (car err))))
+                  (error (ignore (message "Error: %s" (car err)))))
           (message "Recompiling %s...FAILED" file))))))
 
 (use-package dired-async :config (dired-async-mode 1))
