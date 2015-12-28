@@ -296,7 +296,7 @@ First call indent, second complete symbol, third complete fname."
 (defmethod helm-setup-user-source ((source helm-source-ffiles))
   (helm-source-add-action-to-source-if
    "Byte compile file(s) async"
-   'async-byte-compile-file
+   'tv/async-byte-compile-file
    source
    'helm/ff-candidates-lisp-p))
 

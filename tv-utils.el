@@ -830,29 +830,6 @@ In this case, sexps are searched before point."
                  (goto-char pos-err))
         (message "No paren error found"))))
 
-(when (require 'async)
-  (defun async-byte-compile-file (file)
-    (interactive "fFile: ")
-    (let ((proc
-           (async-start
-            `(lambda ()
-               (require 'bytecomp)
-               ,(async-inject-variables "\\`load-path\\'")
-               (let ((default-directory ,(file-name-directory file)))
-                 (add-to-list 'load-path default-directory)
-                 (ignore-errors
-                   (load ,file))
-                 ;; returns nil if there were any errors
-                 (prog1
-                     (byte-compile-file ,file)
-                   (load ,file)))))))
-
-      (unless (condition-case err
-                  (async-get proc)
-                (error
-                 (ignore (message "Error: %s" (car err)))))
-        (ignore (message "Recompiling %s...FAILED" file))))))
-
 ;;; Generate strong passwords.
 ;;
 ;;;###autoload
@@ -938,6 +915,7 @@ With a prefix arg remove new lines."
   (interactive "kGenerate and kill `kbd' form for key: ")
   (kill-new (message "(kbd \"%s\")" (help-key-description key nil))))
 
+;;;###autoload
 (defun tv/insert-key-name-at-point (key)
   (interactive "kGenerate and kill `kbd' form for key: ")
   (insert (format "(kbd \"%s\")" (help-key-description key nil))))
@@ -972,6 +950,7 @@ With a prefix arg remove new lines."
                          percent-size
                          output-file)))
 
+;;;###autoload
 (defun tv/split-freeboxvpn-config (file dir)
   (interactive (list (helm-read-file-name
                       "ConfigFile: "
@@ -1033,6 +1012,7 @@ Arg `host' is machine in auth-info file."
 
 (defvar tv/freesms-default-url
   "https://smsapi.free-mobile.fr/sendmsg?user=12333316&pass=%s&msg=%s")
+;;;###autoload
 (defun tv/freesms-notify (msg)
   (interactive (list (read-string "Message: ")))
   (setq msg (url-hexify-string msg))

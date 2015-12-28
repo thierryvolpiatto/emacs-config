@@ -596,6 +596,36 @@ If your system's ping continues until interrupted, you can try setting
        dig-program
        (list host)))))
 
+;;; Async
+;;
+(use-package async
+    :config
+  (progn
+    (defun tv/async-byte-compile-file (file)
+      (interactive "fFile: ")
+      (let ((proc
+             (async-start
+              `(lambda ()
+                 (require 'bytecomp)
+                 ,(async-inject-variables "\\`load-path\\'")
+                 (let ((default-directory ,(file-name-directory file)))
+                   (add-to-list 'load-path default-directory)
+                   (ignore-errors
+                     (load ,file))
+                   ;; returns nil if there were any errors
+                   (byte-compile-file ,file))))))
+
+        (unless (condition-case err
+                    (async-get proc)
+                  (error (message "Error: %s" (car err))))
+          (message "Recompiling %s...FAILED" file))))))
+
+(use-package dired-async :config (dired-async-mode 1))
+(use-package smtpmail-async
+    :commands 'async-smtpmail-send-it)
+(use-package async-bytecomp
+    :config (setq async-bytecomp-allowed-packages '(all)))
+
 ;;; Helm
 ;;
 (use-package init-helm-thierry)
@@ -664,7 +694,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; tv-utils fns
 ;;
 (use-package tv-utils
-    :commands (tv-eval-region)
+    :commands (tv-eval-region tv/async-byte-compile-file)
     :init (progn
             (bind-key "C-M-!" 'tv-eval-region lisp-interaction-mode-map) 
             (bind-key "C-M-!" 'tv-eval-region emacs-lisp-mode-map))
@@ -817,14 +847,6 @@ If your system's ping continues until interrupted, you can try setting
 (use-package emamux
     :init (setq emamux:completing-read-type 'helm)
     :bind ("C-c y" . emamux:yank-from-list-buffers))
-
-;;; Async
-;;
-(use-package dired-async :config (dired-async-mode 1))
-(use-package smtpmail-async
-    :commands 'async-smtpmail-send-it)
-(use-package async-bytecomp
-    :config (setq async-bytecomp-allowed-packages '(all)))
 
 ;;; Undo-tree
 ;;
