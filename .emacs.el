@@ -448,19 +448,23 @@ So far, F can only be a symbol, not a lambda expression."))
 (when (version< emacs-version "24.3.50.1") (ad-activate 'term-command-hook))
 
 (defun tv/describe-variable (old-fn &rest args)
-  (require 'cl)
-  (flet ((pp (object &optional stream)
-           (let ((fn (lambda (ob &optional stream)
-                       (princ (pp-to-string ob)
-                              (or stream standard-output))))
-                 (print-circle t))
-             (if (listp object)
-                 (progn
-                   (insert "(")
-                   (mapc fn object)
-                   (cl-letf (((point) (1- (point))))
-                     (insert ")")))
-                 (funcall fn object stream)))))
+  ;; `cl-flet' can't be used here because `pp' should
+  ;; appear lexically in its body, which is not the case.
+  ;; Using `flet' is an option, but even better is binding
+  ;; (symbol-function 'pp) with `cl-letf'.
+  (cl-letf (((symbol-function 'pp)
+             (lambda (object &optional stream)
+               (let ((fn (lambda (ob &optional stream)
+                           (princ (pp-to-string ob)
+                                  (or stream standard-output))))
+                     (print-circle t))
+                 (if (listp object)
+                     (progn
+                       (insert "(")
+                       (mapc fn object)
+                       (cl-letf (((point) (1- (point))))
+                         (insert ")")))
+                     (funcall fn object stream))))))
     (apply old-fn args)))
 (advice-add 'describe-variable :around #'tv/describe-variable)
 
