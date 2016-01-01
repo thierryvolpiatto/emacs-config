@@ -251,7 +251,8 @@ First call indent, second complete symbol, third complete fname."
       helm-wikipedia-suggest-url
       "https://fr.wikipedia.org/w/api.php?action=opensearch&search="
       helm-wikipedia-summary-url
-      "https://fr.wikipedia.org/w/api.php?action=parse&format=json&prop=text&section=0&page=")
+      "https://fr.wikipedia.org/w/api.php?action=parse&format=json&prop=text&section=0&page="
+      helm-firefox-show-structure nil)
 
 ;; Avoid hitting forbidden directory .gvfs when using find.
 (add-to-list 'completion-ignored-extensions ".gvfs/")
