@@ -19,7 +19,6 @@
 
 (setq user-mail-address "thierry.volpiatto@gmail.com")
 (setq user-full-name "Thierry Volpiatto")
-(setq mu4e-user-mail-address-list `(,user-mail-address "tvolpiatto@yahoo.fr"))
 
 ;; [smtpmail-async] Experimental, use `smtpmail-send-it' otherwise. 
 (setq message-send-mail-function 'async-smtpmail-send-it
@@ -45,56 +44,36 @@
   (epa-mail-mode 1))
 (add-hook 'message-mode-hook 'tv/message-mode-setup)
 
-(defvar tv-smtp-accounts
-  '(("thierry.volpiatto@gmail.com"
-     (:server "smtp.gmail.com"
-      :port 587
-      :name "Thierry Volpiatto"))
-    ("tvolpiatto@yahoo.fr"
-     (:server "smtp.mail.yahoo.com"
-      :port 587
-      :name "Thierry Volpiatto"))))
+(setq mu4e-contexts
+       `( ,(make-mu4e-context
+     	:name "Gmail"
+     	:enter-func (lambda () (mu4e-message "Switch to Gmail"))
+        ;; leave-func not defined
+     	:match-func (lambda (msg)
+     		      (when msg (mu4e-message-contact-field-matches msg
+                           :to "thierry.volpiatto@gmail.com")))
+     	:vars '((mail-reply-to          . "thierry.volpiatto@gmail.com")
+                (user-mail-address      . "thierry.volpiatto@gmail.com")
+                (user-full-name         . "Thierry Volpiatto")
+                (mu4e-compose-signature . "Thierry")))
+          ,(make-mu4e-context
+     	:name "Yahoo"
+     	:enter-func (lambda () (mu4e-message "Switch to Yahoo"))
+        ;; leave-fun not defined
+     	:match-func (lambda (msg)
+     		      (when msg (mu4e-message-contact-field-matches msg
+                           :to "tvolpiatto@yahoo.fr")))
+     	:vars '((mail-reply-to          . "tvolpiatto@yahoo.fr")
+                (user-mail-address      . "tvolpiatto@yahoo.fr")
+                (user-full-name         . "Thierry Volpiatto")
+                (mu4e-compose-signature . "Thierry")))))
 
-(defun tv-change-smtp-server ()
-  "Use account found in `tv-smtp-accounts' according to from header.
-`from' is set in `gnus-posting-styles' according to `to' header.
-or manually with `tv-send-mail-with-account'.
-This will run in `message-send-hook'."
-  (save-excursion
-    (save-restriction
-      (message-narrow-to-headers)
-      (let* ((from         (message-fetch-field "from"))
-             (user-account (cl-loop for account in tv-smtp-accounts thereis
-                                    (and (string-match (car account) from)
-                                         account)))
-             (server (cl-getf (cadr user-account) :server))
-             (port (cl-getf (cadr user-account) :port))
-             (user (car user-account)))
-        (setq smtpmail-smtp-user            user
-              smtpmail-default-smtp-server  server
-              smtpmail-smtp-server          server
-              smtpmail-smtp-service         port)))))
-
-(add-hook 'message-send-hook 'tv-change-smtp-server)
-
-(defun tv-send-mail-with-account ()
-  "Change mail account to send this mail."
-  (interactive)
-  (save-excursion
-    (let* ((from (save-restriction
-                   (message-narrow-to-headers)
-                   (message-fetch-field "from")))
-           (mail (completing-read
-                  "Use account: "
-                  (mapcar 'car tv-smtp-accounts)))
-           (name (cl-getf (cadr (assoc mail tv-smtp-accounts)) :name))
-           (new-from (message-make-from name mail)))
-        (message-goto-from)
-        (forward-line 0)
-        (re-search-forward ": " (point-at-eol))
-        (delete-region (point) (point-at-eol))
-        (insert new-from))))
-(define-key message-mode-map (kbd "C-c p") 'tv-send-mail-with-account)
+(setq mu4e-user-mail-address-list
+      (delq nil
+            (mapcar (lambda (context)
+                      (when (mu4e-context-vars context)
+                        (cdr (assq 'user-mail-address (mu4e-context-vars context)))))
+                    mu4e-contexts)))
 
 ;; Ne pas demander si on splitte les pa 
 (setq message-send-mail-partially-limit nil)
