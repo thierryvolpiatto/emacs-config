@@ -243,57 +243,6 @@
   (epa-mail-mode 1))
 (add-hook 'message-mode-hook 'tv/message-mode-setup)
 
-(defvar tv-smtp-accounts
-  '(("thierry.volpiatto@gmail.com"
-     (:server "smtp.gmail.com"
-      :port 587
-      :name "Thierry Volpiatto"))
-    ("tvolpiatto@yahoo.fr"
-     (:server "smtp.mail.yahoo.com"
-      :port 587
-      :name "Thierry Volpiatto"))))
-
-(defun tv-change-smtp-server ()
-  "Use account found in `tv-smtp-accounts' according to from header.
-`from' is set in `gnus-posting-styles' according to `to' header.
-or manually with `tv-send-mail-with-account'.
-This will run in `message-send-hook'."
-  (save-excursion
-    (save-restriction
-      (message-narrow-to-headers)
-      (let* ((from         (message-fetch-field "from"))
-             (user-account (cl-loop for account in tv-smtp-accounts thereis
-                                    (and (string-match (car account) from)
-                                         account)))
-             (server (cl-getf (cadr user-account) :server))
-             (port (cl-getf (cadr user-account) :port))
-             (user (car user-account)))
-        (setq smtpmail-smtp-user            user
-              smtpmail-default-smtp-server  server
-              smtpmail-smtp-server          server
-              smtpmail-smtp-service         port)))))
-
-(add-hook 'message-send-hook 'tv-change-smtp-server)
-
-(defun tv-send-mail-with-account ()
-  "Change mail account to send this mail."
-  (interactive)
-  (save-excursion
-    (let* ((from (save-restriction
-                   (message-narrow-to-headers)
-                   (message-fetch-field "from")))
-           (mail (completing-read
-                  "Use account: "
-                  (mapcar 'car tv-smtp-accounts)))
-           (name (cl-getf (cadr (assoc mail tv-smtp-accounts)) :name))
-           (new-from (message-make-from name mail)))
-        (message-goto-from)
-        (forward-line 0)
-        (re-search-forward ": " (point-at-eol))
-        (delete-region (point) (point-at-eol))
-        (insert new-from))))
-(define-key message-mode-map (kbd "C-c p") 'tv-send-mail-with-account)
-
 ;; Ne pas demander si on splitte les pa 
 (setq message-send-mail-partially-limit nil)
 

@@ -44,6 +44,8 @@
   (epa-mail-mode 1))
 (add-hook 'message-mode-hook 'tv/message-mode-setup)
 
+;; Contexts
+;;
 (setq mu4e-contexts
        `( ,(make-mu4e-context
      	:name "Gmail"
