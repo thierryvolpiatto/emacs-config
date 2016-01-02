@@ -1307,7 +1307,8 @@ from IPython.core.completerlib import module_completion"
 
     (defvar tv-gnus-loaded-p nil)
     (defun tv-load-gnus-init-may-be ()
-      (unless tv-gnus-loaded-p
+      (unless (or tv-gnus-loaded-p
+                  (eq major-mode 'mu4e-compose-mode))
         (load gnus-init-file)
         (setq tv-gnus-loaded-p t)))
 
