@@ -46,9 +46,9 @@
 
 ;; Contexts
 ;;
-(setq mu4e-compose-context-policy 'pick-first)
-(setq mu4e-context-policy 'pick-first)
-(setq mu4e-contexts
+(setq mu4e-compose-context-policy 'pick-first
+      mu4e-context-policy 'pick-first
+      mu4e-contexts
       `( ,(make-mu4e-context
            :name "Gmail"
            :enter-func (lambda () (mu4e-message "Switch to Gmail"))
