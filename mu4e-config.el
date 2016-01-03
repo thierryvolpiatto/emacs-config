@@ -46,6 +46,8 @@
 
 ;; Contexts
 ;;
+(setq mu4e-compose-context-policy 'pick-first)
+(setq mu4e-context-policy 'pick-first)
 (setq mu4e-contexts
       `( ,(make-mu4e-context
            :name "Gmail"
@@ -54,7 +56,7 @@
            :match-func (lambda (msg)
                          (when msg (mu4e-message-contact-field-matches
                                     msg
-                                    :to '("thierry.volpiatto@gmail.com" "github"))))
+                                    :to "thierry.volpiatto@gmail\\.com")))
            :vars '((smtpmail-smtp-user           . "thierry.volpiatto@gmail.com")
                    (smtpmail-default-smtp-server . "smtp.gmail.com")
                    (smtpmail-smtp-server         . "smtp.gmail.com")
@@ -69,7 +71,7 @@
             :match-func (lambda (msg)
                           (when msg (mu4e-message-contact-field-matches
                                      msg
-                                     :to "tvolpiatto@yahoo.fr")))
+                                     :to "tvolpiatto@yahoo\\.fr")))
             :vars '((smtpmail-smtp-user           . "tvolpiatto@yahoo.fr")
                     (smtpmail-default-smtp-server . "smtp.mail.yahoo.com")
                     (smtpmail-smtp-server         . "smtp.mail.yahoo.com")
