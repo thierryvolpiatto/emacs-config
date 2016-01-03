@@ -97,32 +97,6 @@
                                 "^X-Mailer:"
                                 "^X-Newsreader:"))
 
-;; Posting-styles - must be set correctly for
-;;  following smtp settings.
-;;
-;; [EVAL] (info "(gnus) Posting Styles")
-;; [EVAL] (info "(gnus) X-Face")
-;; [EVAL] (info "(gnus) Face")
-(setq gnus-posting-styles
-      '((".*"
-         (name "Thierry Volpiatto")
-         (address "thierry.volpiatto@gmail.com")
-         (organization "Emacs Helm")
-         (signature-file "~/.signature"))
-        ;; Reply to message sent to gmail with my gmail account.
-        ((header "to" "thierry.volpiatto@gmail.com")
-         (from "Thierry Volpiatto <thierry.volpiatto@gmail.com>")
-         (organization "Emacs Helm")
-         (signature-file "~/.signature"))
-        ;; Reply to message sent to yahoo with my yahoo account.
-        ((header "to" "tvolpiatto@yahoo.fr")
-         (from "Thierry Volpiatto <tvolpiatto@yahoo.fr>")
-         (signature-file "~/.signature"))
-        ;; Don't use a borring signature for Friends.
-        (".*Friends"
-         (from "Thierry Volpiatto <thierry.volpiatto@gmail.com>")
-         (signature-file "~/.signature-friends"))))
-
 (setq gnus-buttonized-mime-types
       '("multipart/alternative"
         ".*/signed"
@@ -176,14 +150,6 @@
         (gnus-read-mark (from 2) (subject 1))
         (gnus-killed-mark (from 0) (subject -3))))
 
-;; Original value
-;; '((gnus-kill-file-mark)
-;;   (gnus-unread-mark)
-;;   (gnus-read-mark (from 3) (subject 28))
-;;   (gnus-catchup-mark (subject -8))
-;;   (gnus-killed-mark (from -2) (subject -18))
-;;   (gnus-del-mark (from -2) (subject -13)))
-
 (setq gnus-score-decay-constant 1)      ;default = 3
 (setq gnus-score-decay-scale 0.03)      ;default = 0.05
 
@@ -197,15 +163,6 @@
 ;; (("xref"
 ;;  ("gmane.spam.detected" -1000 nil s)))
 (setq gnus-summary-expunge-below -999)
-
-;; Scroll-other-window 
-(define-key gnus-summary-mode-map (kbd "<C-M-down>") #'(lambda ()
-                                                         (interactive)
-                                                         (scroll-other-window 1)))
-
-(define-key gnus-summary-mode-map (kbd "<C-M-up>") #'(lambda ()
-                                                       (interactive)
-                                                       (scroll-other-window -1)))
 
 
 ;;; Message and smtp settings

@@ -47,36 +47,37 @@
 ;; Contexts
 ;;
 (setq mu4e-contexts
-       `( ,(make-mu4e-context
-     	:name "Gmail"
-     	:enter-func (lambda () (mu4e-message "Switch to Gmail") (sit-for 1))
-        ;; leave-func not defined
-     	:match-func (lambda (msg)
-     		      (when msg (mu4e-message-contact-field-matches msg
-                           :to "thierry.volpiatto@gmail.com")))
-     	:vars '((smtpmail-smtp-user           . "thierry.volpiatto@gmail.com")
-                (smtpmail-default-smtp-server . "smtp.gmail.com")
-                (smtpmail-smtp-server         . "smtp.gmail.com")
-                (smtpmail-smtp-service        . 587)
-                (mail-reply-to                . "thierry.volpiatto@gmail.com")
-                (user-mail-address            . "thierry.volpiatto@gmail.com")
-                (user-full-name               . "Thierry Volpiatto")
-                (mu4e-compose-signature       . "Thierry")))
+      `( ,(make-mu4e-context
+           :name "Gmail"
+           :enter-func (lambda () (mu4e-message "Switch to Gmail"))
+           ;; leave-func not defined
+           :match-func (lambda (msg)
+                         (when msg (mu4e-message-contact-field-matches
+                                    msg
+                                    :to '("thierry.volpiatto@gmail.com" "github"))))
+           :vars '((smtpmail-smtp-user           . "thierry.volpiatto@gmail.com")
+                   (smtpmail-default-smtp-server . "smtp.gmail.com")
+                   (smtpmail-smtp-server         . "smtp.gmail.com")
+                   (smtpmail-smtp-service        . 587)
+                   (mail-reply-to                . "thierry.volpiatto@gmail.com")
+                   (user-mail-address            . "thierry.volpiatto@gmail.com")
+                   (user-full-name               . "Thierry Volpiatto")
+                   (mu4e-compose-signature       . "Thierry")))
           ,(make-mu4e-context
-     	:name "Yahoo"
-     	:enter-func (lambda () (mu4e-message "Switch to Yahoo") (sit-for 1))
-        ;; leave-fun not defined
-     	:match-func (lambda (msg)
-     		      (when msg (mu4e-message-contact-field-matches msg
-                           :to "tvolpiatto@yahoo.fr")))
-     	:vars '((smtpmail-smtp-user           . "tvolpiatto@yahoo.fr")
-                (smtpmail-default-smtp-server . "smtp.mail.yahoo.com")
-                (smtpmail-smtp-server         . "smtp.mail.yahoo.com")
-                (smtpmail-smtp-service        . 587)
-                (mail-reply-to                . "tvolpiatto@yahoo.fr")
-                (user-mail-address            . "tvolpiatto@yahoo.fr")
-                (user-full-name               . "Thierry Volpiatto")
-                (mu4e-compose-signature       . "Thierry")))))
+            :name "Yahoo"
+            :enter-func (lambda () (mu4e-message "Switch to Yahoo"))
+            :match-func (lambda (msg)
+                          (when msg (mu4e-message-contact-field-matches
+                                     msg
+                                     :to "tvolpiatto@yahoo.fr")))
+            :vars '((smtpmail-smtp-user           . "tvolpiatto@yahoo.fr")
+                    (smtpmail-default-smtp-server . "smtp.mail.yahoo.com")
+                    (smtpmail-smtp-server         . "smtp.mail.yahoo.com")
+                    (smtpmail-smtp-service        . 587)
+                    (mail-reply-to                . "tvolpiatto@yahoo.fr")
+                    (user-mail-address            . "tvolpiatto@yahoo.fr")
+                    (user-full-name               . "Thierry Volpiatto")
+                    (mu4e-compose-signature       . "Thierry")))))
 
 (setq mu4e-user-mail-address-list
       (delq nil
