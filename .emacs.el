@@ -448,6 +448,7 @@ So far, F can only be a symbol, not a lambda expression."))
 
 (when (version< emacs-version "24.3.50.1") (ad-activate 'term-command-hook))
 
+;; Speedup `describe-variable' for variables with huge value description.
 (defun tv/describe-variable (old-fn &rest args)
   ;; `cl-flet' can't be used here because `pp' should
   ;; appear lexically in its body, which is not the case.
