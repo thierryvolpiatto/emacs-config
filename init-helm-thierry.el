@@ -105,7 +105,7 @@
 (defun helm/modify-ido-temp-list ()
   (let ((bl (mapcar #'buffer-name (buffer-list (selected-frame)))))
     (setq ido-temp-list (nconc (cdr bl) (list (car bl))))))
-(add-hook 'ido-make-buffer-list-hook 'helm/modify-ido-temp-list)
+;;(add-hook 'ido-make-buffer-list-hook 'helm/modify-ido-temp-list)
 
 
 ;;; Helm-command-map

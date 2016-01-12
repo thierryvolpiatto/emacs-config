@@ -1614,6 +1614,18 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 ;;; Various fns
 ;;
 
+(defun tv/update-helm-only-symbol (dir)
+  (cl-loop for f in (directory-files dir t "\\.el\\'")
+           do (with-current-buffer (find-file-noselect f)
+                (save-excursion
+                  (goto-char (point-min))
+                  (let (fun)
+                    (while (re-search-forward "(with-helm-alive-p" nil t)
+                      (when (setq fun (which-function))
+                        (end-of-defun)
+                        (unless (looking-at "(put")
+                          (insert (format "(put '%s 'helm-only t)\n" fun))))))))))
+
 (defun quickping (host)
   "Return non--nil when host is reachable."
   (= 0 (call-process "ping" nil nil nil "-c1" "-W10" "-q" host)))
