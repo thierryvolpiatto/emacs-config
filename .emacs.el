@@ -25,9 +25,10 @@
 (package-initialize)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                          ;("melpa-stable" . "https://stable.melpa.org/packages/")
-                         ("gnu" . "https://elpa.gnu.org/packages/")))
+                         ("gnu" . "https://elpa.gnu.org/packages/")
+                         ))
 
-;(setq package-pinned-packages '((magit . "melpa-stable")))
+(setq package-pinned-packages '((async . "melpa")))
 
 ;;; Use-package.
 ;;
