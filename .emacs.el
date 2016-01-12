@@ -630,7 +630,8 @@ If your system's ping continues until interrupted, you can try setting
 
 ;;; Helm
 ;;
-(use-package init-helm-thierry)
+(use-package helm
+    :init (load "init-helm-thierry.el"))
 
 ;;; Firefox protocol
 ;;
