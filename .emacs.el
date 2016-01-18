@@ -458,11 +458,12 @@ So far, F can only be a symbol, not a lambda expression."))
              (lambda (object &optional stream)
                (let ((fn (lambda (ob &optional stream)
                            (princ (pp-to-string ob)
-                                  (or stream standard-output))))
+                                  (or stream standard-output))
+                           (terpri)))
                      (print-circle t))
                  (if (listp object)
                      (progn
-                       (insert "(")
+                       (insert "\n(")
                        (mapc fn object)
                        (cl-letf (((point) (1- (point))))
                          (insert ")")))
@@ -1592,7 +1593,8 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 ;;; linum-relative
 ;;
 (use-package linum-relative
-    :commands (linum-relative-mode))
+    :commands (linum-relative-mode
+               helm-linum-relative-mode))
 
 ;;; Outline-mode
 ;;
