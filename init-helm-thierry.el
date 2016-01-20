@@ -69,8 +69,9 @@
   (when helm/show-help-echo-timer
     (cancel-timer helm/show-help-echo-timer)
     (setq helm/show-help-echo-timer nil))
-  (when (and helm-alive-p (member (assoc-default 'name (helm-get-current-source))
-                                  helm/sources-using-help-echo-popup))
+  (when (and helm-alive-p
+             (member (assoc-default 'name (helm-get-current-source))
+                     helm/sources-using-help-echo-popup))
     (setq helm/show-help-echo-timer
           (run-with-idle-timer
            1 nil
@@ -78,7 +79,9 @@
              (with-helm-window
                (helm-aif (get-text-property (point-at-bol) 'help-echo)
                    (popup-tip (concat " " (abbreviate-file-name it))
-                              :around nil :point (point-at-eol)))))))))
+                              :around nil
+                              :point (save-excursion
+                                       (end-of-visual-line) (point))))))))))
 (add-hook 'helm-move-selection-after-hook 'helm/show-help-echo)
 (add-hook 'helm-cleanup-hook (lambda ()
                                (when helm/show-help-echo-timer
