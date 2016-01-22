@@ -65,6 +65,12 @@
 (defvar helm/show-help-echo-timer nil)
 (defvar helm/sources-using-help-echo-popup '("Moccur" "Imenu in all buffers"
                                              "Ack-Grep" "AG" "Gid" "Git-Grep"))
+
+(defun helm/cancel-help-echo-timer ()
+  (when helm/show-help-echo-timer
+    (cancel-timer helm/show-help-echo-timer)
+    (setq helm/show-help-echo-timer nil)))
+
 (defun helm/show-help-echo ()
   (when helm/show-help-echo-timer
     (cancel-timer helm/show-help-echo-timer)
@@ -82,12 +88,20 @@
                               :around nil
                               :point (save-excursion
                                        (end-of-visual-line) (point))))))))))
-(add-hook 'helm-update-hook 'helm/show-help-echo) ; Needed for async sources.
-(add-hook 'helm-move-selection-after-hook 'helm/show-help-echo)
-(add-hook 'helm-cleanup-hook (lambda ()
-                               (when helm/show-help-echo-timer
-                                 (cancel-timer helm/show-help-echo-timer)
-                                 (setq helm/show-help-echo-timer nil))))
+
+(define-minor-mode helm/popup-tip-mode
+    "Show help-echo informations in a popup tip at end of line."
+  :global t
+  (if helm/popup-tip-mode
+      (progn
+        (add-hook 'helm-update-hook 'helm/show-help-echo) ; Needed for async sources.
+        (add-hook 'helm-move-selection-after-hook 'helm/show-help-echo)
+        (add-hook 'helm-cleanup-hook 'helm/cancel-help-echo-timer))
+      (remove-hook 'helm-update-hook 'helm/show-help-echo)
+      (remove-hook 'helm-move-selection-after-hook 'helm/show-help-echo)
+      (remove-hook 'helm-cleanup-hook 'helm/cancel-help-echo-timer)))
+
+(helm/popup-tip-mode 1)
 
 ;; Show the visibles buffers on top of list (issue #1301)
 
