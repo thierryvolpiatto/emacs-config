@@ -62,6 +62,8 @@
 (define-key helm-moccur-map (kbd "C-c ?") 'helm/occur-which-func)
 (define-key helm-grep-map (kbd "C-c ?") 'helm/occur-which-func)
 
+;;; Popup buffer-name or filename in grep/moccur/imenu-all.
+;;
 (defvar helm/show-help-echo-timer nil)
 (defvar helm/sources-using-help-echo-popup '("Moccur" "Imenu in all buffers"
                                              "Ack-Grep" "AG" "Gid" "Git-Grep"))
