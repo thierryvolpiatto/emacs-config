@@ -64,7 +64,7 @@
 
 (defvar helm/show-help-echo-timer nil)
 (defvar helm/sources-using-help-echo-popup '("Moccur" "Imenu in all buffers"
-                                             "Ack-grep" "AG" "Gid" "Git-Grep"))
+                                             "Ack-Grep" "AG" "Gid" "Git-Grep"))
 (defun helm/show-help-echo ()
   (when helm/show-help-echo-timer
     (cancel-timer helm/show-help-echo-timer)
