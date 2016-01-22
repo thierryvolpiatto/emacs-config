@@ -92,6 +92,7 @@
 (define-minor-mode helm/popup-tip-mode
     "Show help-echo informations in a popup tip at end of line."
   :global t
+  (cl-assert (featurep 'popup) nil "Popup package is not installed")
   (if helm/popup-tip-mode
       (progn
         (add-hook 'helm-update-hook 'helm/show-help-echo) ; Needed for async sources.
