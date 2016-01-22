@@ -145,7 +145,6 @@
 (global-set-key (kbd "C-h a")                        'helm-apropos)
 (global-set-key (kbd "<f5> s")                       'helm-find)
 (global-set-key (kbd "<f2>")                         'helm-execute-kmacro)
-(global-set-key (kbd "C-c g")                        'helm-gid)
 (global-set-key (kbd "C-c i")                        'helm-imenu-in-all-buffers)
 (global-set-key (kbd "<f11> o")                      'helm-org-agenda-files-headings)
 (global-set-key (kbd "C-s")                          'helm-occur)
@@ -156,6 +155,7 @@
 (define-key global-map [remap xref-find-definitions] 'helm-etags-select)
 (define-key global-map (kbd "M-g a")                 'helm-do-grep-ag)
 (define-key global-map (kbd "M-g g")                 'helm-grep-do-git-grep)
+(define-key global-map (kbd "M-g i")                 'helm-gid)
 
 ;; Shell bindings
 (define-key shell-mode-map (kbd "M-p")               'helm-comint-input-ring) ; shell history.
