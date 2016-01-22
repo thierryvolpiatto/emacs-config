@@ -82,6 +82,7 @@
                               :around nil
                               :point (save-excursion
                                        (end-of-visual-line) (point))))))))))
+(add-hook 'helm-update-hook 'helm/show-help-echo) ; Needed for async sources.
 (add-hook 'helm-move-selection-after-hook 'helm/show-help-echo)
 (add-hook 'helm-cleanup-hook (lambda ()
                                (when helm/show-help-echo-timer
