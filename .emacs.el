@@ -844,7 +844,8 @@ If your system's ping continues until interrupted, you can try setting
     (setq git-commit-fill-column 120)
     (setq git-commit-summary-max-length 80)
     (setq auto-revert-verbose nil)
-    (setq magit-revision-show-gravatars nil))
+    (setq magit-revision-show-gravatars nil)
+    (setq magit-uniquify-buffer-names nil))
   :config
   (bind-key "C" 'magit-commit-add-log magit-diff-mode-map)
   (bind-key "C-]" 'magit-toggle-margin magit-log-mode-map)
