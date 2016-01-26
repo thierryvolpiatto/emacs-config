@@ -633,10 +633,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Helm
 ;;
 (use-package helm
-    :init
-  (progn
-    (use-package popup)
-    (load "init-helm-thierry.el")))
+    :init (load "init-helm-thierry.el"))
 
 ;;; Firefox protocol
 ;;
