@@ -1618,7 +1618,7 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 
 ;;; Charmap
 ;;
-(use-package charmap)
+(use-package charmap :ensure t)
 
 
 ;;; Various fns
