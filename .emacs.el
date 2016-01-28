@@ -1616,6 +1616,10 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
                                   ?b 'outline-backward-same-level
                                   '((?f . outline-forward-same-level)))))
 
+;;; Charmap
+;;
+(use-package charmap :ensure t)
+
 
 ;;; Various fns
 ;;
