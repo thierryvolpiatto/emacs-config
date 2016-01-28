@@ -231,6 +231,7 @@
 
 (define-key mu4e-view-mode-map (kbd "C-i") 'w3m-next-anchor)
 (define-key mu4e-view-mode-map (kbd "M-<tab>") 'w3m-previous-anchor)
+(define-key mu4e-view-mode-map (kbd "X") 'mu4e-view-save-attachment-multi)
 
 ;;; A simplified and more efficient version of `article-translate-strings'.
 ;;
