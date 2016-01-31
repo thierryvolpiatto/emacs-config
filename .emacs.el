@@ -718,7 +718,9 @@ If your system's ping continues until interrupted, you can try setting
            ([remap delete-char] . tv-delete-char)
            ("C-x C-'" . tv/split-windows)
            ("C-<" . other-window-backward)
-           ("C->" . other-window-forward)))
+           ("C->" . other-window-forward)
+           ([C-left] . screen-top)
+           ([C-right] . screen-bottom)))
 
 ;;; Ledger
 ;;
@@ -1789,8 +1791,6 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 (global-set-key (kbd "C-x r v")                    'string-insert-rectangle)
 (global-set-key (kbd "C-x r M-w")                  'copy-rectangle)
 (global-set-key [remap save-buffers-kill-terminal] 'tv-stop-emacs) ; C-x C-c
-(global-set-key [C-left]                           'screen-top)
-(global-set-key [C-right]                          'screen-bottom)
 (global-set-key (kbd "<f11> s c")                  'goto-scratch)
 (global-set-key (kbd "C-8")                        'tv-transparency-modify)
 

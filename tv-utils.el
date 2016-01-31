@@ -107,7 +107,7 @@
                        when (string= network i)
                        return (network-interface-info i))))
     (when info
-      (destructuring-bind (address broadcast netmask mac state)
+      (cl-destructuring-bind (address broadcast netmask mac state)
           info
         (list :address address :broadcast broadcast
               :netmask netmask :mac (cdr mac) :state state)))))
@@ -309,7 +309,7 @@ START and END are buffer positions indicating what to append."
 ;;;###autoload
 (defun tv-htmlize-buffer-to-browser ()
   (interactive)
-  (let* ((fname           (concat "/tmp/" (symbol-name (gensym "emacs2browser"))))
+  (let* ((fname           (concat "/tmp/" (symbol-name (cl-gensym "emacs2browser"))))
          (html-fname      (concat fname ".html"))
          (buffer-contents (buffer-substring (point-min) (point-max))))
     (with-current-buffer (find-file-noselect fname)
@@ -865,7 +865,7 @@ the password will be of length (floor LIMIT)."
 (defun rotate-windows ()
   (interactive)
   (require 'iterator)
-  (assert (> (length (window-list)) 1)
+  (cl-assert (> (length (window-list)) 1)
           nil "Error: Can't rotate with a single window")
   (unless helm-alive-p
     (cl-loop with wlist1 = (iterator:circular (window-list))
