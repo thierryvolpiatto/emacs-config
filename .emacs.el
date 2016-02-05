@@ -639,17 +639,6 @@ If your system's ping continues until interrupted, you can try setting
 ;;
 (autoload 'firefox-protocol-installer-install "firefox-protocol" nil t)
 
-;;; Addressbook
-;;
-(use-package addressbook-bookmark
-    :commands (addressbook-turn-on-mail-completion
-               addressbook-bookmark-set
-               addressbook-gnus-sum-bookmark
-               addressbook-mu4e-bookmark
-               addressbook-bmenu-edit
-               addressbook-bookmark-jump)
-    :config (addressbook-turn-on-mail-completion))
-
 ;;; Org
 ;;
 (use-package org :config (use-package org-config-thierry))
@@ -796,21 +785,6 @@ If your system's ping continues until interrupted, you can try setting
                                        gnus-summary-mode gnus-article-mode))
     (setq golden-ratio-recenter t)
     (golden-ratio-mode 1)))
-
-;;; W3m
-;;
-(use-package w3m
-    :config (use-package config-w3m)
-    :bind ("<f7> h" . w3m)
-    :defer t)
-
-;;; Mu4e
-;;
-(use-package mu4e
-    :config (progn (use-package mu4e-config)
-                   (use-package addressbook-bookmark))
-    :commands 'mu4e
-    :bind ("<f8>" . mu4e))
 
 ;;; pcomplete
 ;;
@@ -1345,7 +1319,39 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
                do (delete-process proc)))
     (add-hook 'gnus-exit-group-hook 'tv-gnus-kill-all-procs)
     (add-hook 'gnus-group-catchup-group-hook 'tv-gnus-kill-all-procs))
-  :defer t)
+  :defer t
+  :disabled t)
+
+;;; Addressbook
+;;
+(use-package addressbook-bookmark
+    :commands (addressbook-turn-on-mail-completion
+               addressbook-bookmark-set
+               addressbook-gnus-sum-bookmark
+               addressbook-mu4e-bookmark
+               addressbook-bmenu-edit
+               addressbook-bookmark-jump))
+
+;;; W3m
+;;
+(use-package w3m
+    :config (use-package config-w3m)
+    :bind ("<f7> h" . w3m)
+    :defer t)
+
+;;; Mu4e
+;;
+(use-package mu4e
+    :config (progn (use-package mu4e-config)
+                   (addressbook-turn-on-mail-completion))
+    :commands 'mu4e
+    :bind ("<f8>" . mu4e))
+
+;;; Message
+;;
+(use-package message
+    :config (progn (use-package mu4e-config)
+                   (addressbook-turn-on-mail-completion)))
 
 ;;; Auth-source
 ;;

@@ -158,7 +158,7 @@
         ("date:7d..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam AND NOT maildir:/Gmail/[Gmail].All Mail" "Last 7 days"                  ?w)
         ("mime:image/* AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam AND NOT maildir:/Gmail/[Gmail].All Mail" "Messages with images"         ?p)))
 
-(add-hook 'mu4e-compose-mode-hook 'tv/message-mode-setup) ; loaded from .gnus.el
+(add-hook 'mu4e-compose-mode-hook 'tv/message-mode-setup)
 
 ;;; Use 'fancy' non-ascii characters in various places in mu4e
 (setq mu4e-use-fancy-chars t)
