@@ -1337,23 +1337,24 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 ;;; W3m
 ;;
 (use-package w3m
-    :config (use-package config-w3m)
+    :config (load "config-w3m")
     :bind ("<f7> h" . w3m)
     :defer t)
 
 ;;; Mu4e
 ;;
 (use-package mu4e
-    :config (progn (use-package mu4e-config)
-                   (addressbook-turn-on-mail-completion))
+    :init (progn (require 'mu4e-config)
+                 (addressbook-turn-on-mail-completion))
     :commands 'mu4e
     :bind ("<f8>" . mu4e))
 
 ;;; Message
 ;;
 (use-package message
-    :config (progn (use-package mu4e-config)
-                   (addressbook-turn-on-mail-completion)))
+    :no-require t
+    :init (progn (require 'mu4e-config)
+                 (addressbook-turn-on-mail-completion)))
 
 ;;; Auth-source
 ;;
