@@ -1337,7 +1337,7 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 ;;; W3m
 ;;
 (use-package w3m
-    :init (load "config-w3m")
+    :init (require 'config-w3m)
     :bind ("<f7> h" . w3m)
     :defer t)
 
