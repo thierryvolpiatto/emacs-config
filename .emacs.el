@@ -1356,7 +1356,7 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 ;;; Auth-source
 ;;
 (with-eval-after-load "auth-source"
-  (setq auth-sources '((:source "~/.authinfo.gpg" :host t :protocol t))))
+  (setq auth-sources '("~/.authinfo.gpg" "~/.netrc")))
 
 ;;; esh-toggle
 ;;
