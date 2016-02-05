@@ -645,7 +645,9 @@ If your system's ping continues until interrupted, you can try setting
 
 ;;; Emms
 ;;
-(use-package emms :config (use-package emms-vlc-config) :defer t)
+(use-package emms
+    :config (use-package emms-vlc-config)
+    :commands (emms-stream-init))
 
 ;;; Dired
 ;;
