@@ -66,6 +66,9 @@
                                     (kill-buffer "*Compile-Log*")
                                     (delete-other-windows))))
 
+;; bidi
+(setq-default bidi-display-reordering nil)
+
 ;; Disable uniquify enabled by default in 24.4.
 (setq uniquify-buffer-name-style nil)
 
@@ -461,7 +464,7 @@ So far, F can only be a symbol, not a lambda expression."))
                                   (or stream standard-output))
                            (terpri)))
                      (print-circle t))
-                 (if (listp object)
+                 (if (consp object)
                      (progn
                        (insert "\n(")
                        (mapc fn object)
@@ -857,8 +860,6 @@ If your system's ping continues until interrupted, you can try setting
     ;; `recentf-mode' will be started by helm when needed,
     ;; so no need to start it here
     (setq recentf-max-saved-items 100))
-  :config
-  (recentf-mode 1)
   :defer t)
 
 ;;; Eldoc
