@@ -73,6 +73,8 @@
     (setq ido-temp-list (nconc (cdr bl) (list (car bl))))))
 ;;(add-hook 'ido-make-buffer-list-hook 'helm/modify-ido-temp-list)
 
+(setq helm-source-in-each-line-flag t)
+
 
 ;;; Helm-command-map
 ;;
@@ -91,7 +93,6 @@
 (global-set-key (kbd "M-x")                          'undefined)
 (global-set-key (kbd "M-x")                          'helm-M-x)
 (global-set-key (kbd "M-y")                          'helm-show-kill-ring)
-(global-set-key (kbd "C-c f")                        'helm-recentf)
 (global-set-key (kbd "C-x C-f")                      'helm-find-files)
 (global-set-key (kbd "C-c <SPC>")                    'helm-all-mark-rings)
 (global-set-key (kbd "C-x r b")                      'helm-filtered-bookmarks)

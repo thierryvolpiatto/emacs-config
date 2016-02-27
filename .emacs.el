@@ -851,17 +851,6 @@ If your system's ping continues until interrupted, you can try setting
     :init (setq zoom-window-mode-line-color "DarkGreen")
     :bind ("C-x C-z" . zoom-window-zoom))
 
-;;; Recentf
-;;
-(use-package recentf
-    :init
-  (progn
-    (setq recentf-save-file "~/.emacs.d/recentf")
-    ;; `recentf-mode' will be started by helm when needed,
-    ;; so no need to start it here
-    (setq recentf-max-saved-items 100))
-  :defer t)
-
 ;;; Eldoc
 ;;
 (use-package eldoc
