@@ -28,7 +28,9 @@
                          ("gnu" . "https://elpa.gnu.org/packages/")
                          ))
 
-(setq package-pinned-packages '((async . "melpa")))
+(setq package-pinned-packages '((async . "melpa")
+                                (magit . "melpa-stable")
+                                (magit-popup . "melpa-stable")))
 
 ;;; Use-package.
 ;;
@@ -827,7 +829,8 @@ If your system's ping continues until interrupted, you can try setting
   :config
   (bind-key "C" 'magit-commit-add-log magit-diff-mode-map)
   (bind-key "C-]" 'magit-toggle-margin magit-log-mode-map)
-  :no-require t)
+  :no-require t
+  :ensure t)
 
 ;;; Emamux
 ;;
