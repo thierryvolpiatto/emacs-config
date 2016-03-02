@@ -1767,11 +1767,14 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
   (let* ((espeak-src-dir "/home/thierry/elisp/emacspeak")
          (espeak-lisp-src-dir (expand-file-name "lisp" espeak-src-dir))
          (espeak-server "/home/thierry/elisp/emacspeak/servers/espeak"))
-    (add-to-list 'load-path espeak-lisp-src-dir)
-    (setenv "EMACSPEAK_DIR" espeak-src-dir)
-    (setenv "DTK_PROGRAM" espeak-server)
-    (setq dtk-program espeak-server)
-    (load-file (expand-file-name "emacspeak-setup.el" espeak-lisp-src-dir))))
+    (if (file-directory-p espeak-src-dir)
+        (progn
+          (add-to-list 'load-path espeak-lisp-src-dir)
+          (setenv "EMACSPEAK_DIR" espeak-src-dir)
+          (setenv "DTK_PROGRAM" espeak-server)
+          (setq dtk-program espeak-server)
+          (load-file (expand-file-name "emacspeak-setup.el" espeak-lisp-src-dir)))
+        (error "No directory named `%s'" espeak-src-dir))))
 
 ;;; Bindings
 ;;
