@@ -338,20 +338,6 @@ START and END are buffer positions indicating what to append."
     (set-window-configuration tv-calendar-alive)
     (setq tv-calendar-alive nil)))
 
-;; Cvs-update-current-directory-and-compile-it 
-;; <2009-04-17 Ven. 16:15>
-(require 'pcvs)
-;;;###autoload
-(defun update-cvs-dir-and-compile ()
-  "Cvs update current dir and compile it."
-  (interactive)
-  (let ((dir default-directory))
-    (cvs-update dir nil)
-    (while (not (equal cvs-mode-line-process "exit"))
-      (sit-for 1))
-    (message "Wait compiling %s..." dir)
-    (shell-command "make")))
-
 ;;; Insert-pairs 
 ;;
 (setq parens-require-spaces t)
