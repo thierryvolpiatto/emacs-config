@@ -73,8 +73,6 @@
     (setq ido-temp-list (nconc (cdr bl) (list (car bl))))))
 ;;(add-hook 'ido-make-buffer-list-hook 'helm/modify-ido-temp-list)
 
-(setq helm-source-in-each-line-flag t)
-
 
 ;;; Helm-command-map
 ;;
