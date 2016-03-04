@@ -108,7 +108,7 @@
 (global-set-key (kbd "<f11> o")                      'helm-org-agenda-files-headings)
 (global-set-key (kbd "C-s")                          'helm-occur)
 (define-key global-map [remap jump-to-register]      'helm-register)
-(define-key global-map [remap list-buffers]          'helm-buffers-list)
+(define-key global-map [remap list-buffers]          'helm-mini)
 (define-key global-map [remap dabbrev-expand]        'helm-dabbrev)
 (define-key global-map [remap find-tag]              'helm-etags-select)
 (define-key global-map [remap xref-find-definitions] 'helm-etags-select)
@@ -221,7 +221,8 @@ First call indent, second complete symbol, third complete fname."
       "https://fr.wikipedia.org/w/api.php?action=parse&format=json&prop=text&section=0&page="
       helm-firefox-show-structure nil
       helm-turn-on-recentf nil
-      helm-top-command "env COLUMNS=%s ps -axo pid,user,pri,nice,ucomm,tty,start,vsz,%%cpu,%%mem,etime,command")
+      helm-top-command "env COLUMNS=%s ps -axo pid,user,pri,nice,ucomm,tty,start,vsz,%%cpu,%%mem,etime,command"
+      helm-mini-default-sources '(helm-source-buffers-list helm-source-buffer-not-found))
 
 ;; Avoid hitting forbidden directory .gvfs when using find.
 (add-to-list 'completion-ignored-extensions ".gvfs/")
