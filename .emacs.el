@@ -1194,15 +1194,7 @@ from IPython.core.completerlib import module_completion"
   :config
   (progn
     (and (boundp 'bookmark-bmenu-use-header-line)
-         (setq bookmark-bmenu-use-header-line nil))
-
-    (defun tv-pp-bookmark-alist ()
-      "Quickly print `bookmark-alist'."
-      (interactive)
-      (switch-to-buffer (get-buffer-create "*pp-bookmark-alist*"))
-      (erase-buffer)
-      (dolist (i bookmark-alist)
-        (pp i (current-buffer))))))
+         (setq bookmark-bmenu-use-header-line nil))))
 
 ;;; git-gutter-mode
 ;;
