@@ -1615,17 +1615,6 @@ in this cl-case start Gnus plugged, otherwise start it unplugged."
 ;;; Charmap
 ;;
 (use-package charmap :ensure t)
- 
-;;; Recentf
-;;
-(use-package recentf
-    :config
-  ;; Try to disable completely the fucking thing.
-  (progn
-    (cl-loop for (hook fn) in recentf-used-hooks
-           do (remove-hook hook fn))
-    (when (file-exists-p recentf-save-file)
-      (delete-file recentf-save-file))))
 
 
 ;;; Various fns
