@@ -704,8 +704,6 @@ If your system's ping continues until interrupted, you can try setting
            ("C-M-(" . tv-move-pair-forward)
            ("C-M-\"" . tv-insert-double-quote-and-close-forward)
            ("C-M-)" . tv-insert-pair-and-close-forward)
-           ("<f5> r" . find-file-as-root)
-           ("C-x r a" . tv-append-to-register)
            ("C-c t r" . translate-at-point)
            ("<f5> c" . tv-toggle-calendar)
            ("C-h C-e" . tv-tail-echo-area-messages)

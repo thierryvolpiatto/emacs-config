@@ -84,12 +84,6 @@
   (interactive)
   (umount-sshfs "~/sshfs"))
 
-;; find-file-as-root 
-;;;###autoload
-(defun find-file-as-root (file)
-  (interactive "fFindFileAsRoot: ")
-  (find-file (concat "/su::" (expand-file-name file))))
-
 ;; get-ip 
 ;; get my external ip
 ;;;###autoload
@@ -195,24 +189,6 @@ depending the value of N is positive or negative."
   (interactive "p")
   (other-window n t)
   (select-frame-set-input-focus (selected-frame)))
-
-;;; registers-config 
-;; Redefine append-to-register with a "\n"
-
-;;;###autoload
-(defun tv-append-to-register (register start end &optional delete-flag)
-  "Append region to text in register REGISTER.
-With prefix arg, delete as well.
-Called from program, takes four args: REGISTER, START, END and DELETE-FLAG.
-START and END are buffer positions indicating what to append."
-  (interactive "cAppend to register: \nr\nP")
-  (let ((reg  (get-register register))
-        (text (filter-buffer-substring start end)))
-    (set-register
-     register (cond ((not reg) text)
-                    ((stringp reg) (concat reg "\n" text))
-                    (t (error "Register does not contain text")))))
-  (if delete-flag (delete-region start end)))
 
 ;;; Stardict
 ;;
