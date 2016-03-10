@@ -786,8 +786,7 @@ If your system's ping continues until interrupted, you can try setting
     (defun helm-running-p () helm-alive-p)
     (setq golden-ratio-inhibit-functions '(helm-running-p))
     (setq golden-ratio-exclude-buffer-regexp '("\\`\\*[Hh]elm.*\\*\\'"))
-    (setq golden-ratio-exclude-modes '(ediff-mode calendar-mode wget-mode
-                                       gnus-summary-mode gnus-article-mode))
+    (setq golden-ratio-exclude-modes '(ediff-mode calendar-mode wget-mode))
     (setq golden-ratio-recenter t)
     (golden-ratio-mode 1)))
 
@@ -1265,7 +1264,6 @@ from IPython.core.completerlib import module_completion"
 (use-package addressbook-bookmark
     :commands (addressbook-turn-on-mail-completion
                addressbook-bookmark-set
-               addressbook-gnus-sum-bookmark
                addressbook-mu4e-bookmark
                addressbook-bmenu-edit
                addressbook-bookmark-jump))

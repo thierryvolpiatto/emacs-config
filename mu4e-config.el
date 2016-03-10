@@ -28,9 +28,6 @@
       mail-envelope-from 'header)  ; otherwise `user-mail-address' is used. 
 
 ;; Default settings.
-;; This are default setting, they could be modified
-;; by `tv-change-smtp-server' according to `tv-smtp-accounts'
-;; and `gnus-posting-styles'.
 (setq smtpmail-default-smtp-server "smtp.gmail.com"
       smtpmail-smtp-user user-mail-address
       smtpmail-smtp-server "smtp.gmail.com"
@@ -44,7 +41,7 @@
   (epa-mail-mode 1))
 (add-hook 'message-mode-hook 'tv/message-mode-setup)
 
-;; Contexts
+;; Contexts (setup smtp servers)
 ;;
 (setq mu4e-compose-context-policy 'pick-first
       mu4e-context-policy 'pick-first
