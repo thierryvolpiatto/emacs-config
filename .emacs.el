@@ -1260,53 +1260,6 @@ from IPython.core.completerlib import module_completion"
           (slime))))
   :no-require t)
 
-;;; Gnus-config
-;;
-(use-package gnus
-    :init
-  (progn
-    (setq gnus-asynchronous t)
-    ;; (setq mail-user-agent 'gnus-user-agent)
-    ;; (setq read-mail-command 'gnus)
-    ;; (setq send-mail-command 'gnus-msg-mail)
-    (setq gnus-init-file "~/.emacs.d/emacs-config/.gnus.el")
-
-    (defvar tv-gnus-loaded-p nil)
-    (defun tv-load-gnus-init-may-be ()
-      (unless (or tv-gnus-loaded-p
-                  (eq major-mode 'mu4e-compose-mode))
-        (load gnus-init-file)
-        (setq tv-gnus-loaded-p t)))
-
-    (add-hook 'message-mode-hook 'tv-load-gnus-init-may-be)
-    (add-hook 'gnus-before-startup-hook 'tv-load-gnus-init-may-be)
-
-    (defun tv-gnus (arg)
-      "Start Gnus.
-If Gnus have been started and a *Group* buffer exists,
-switch to it, otherwise check if a connection is available and
-in this cl-case start Gnus plugged, otherwise start it unplugged."
-      (interactive "P")
-      (let ((buf (get-buffer "*Group*")))
-        (if (buffer-live-p buf)
-            (switch-to-buffer buf)
-            (if (or arg (not (quickping "imap.gmail.com")))
-                (gnus-unplugged)
-                (gnus)))))
-    (global-set-key (kbd "<f7> m") 'tv-gnus)
-    
-    ;; Borred C-g'ing all the time and hanging emacs
-    ;; while in gnus (while tethering or not).
-    ;; Kill all nnimap/nntpd processes when exiting summary.
-    (defun tv-gnus-kill-all-procs ()
-      (cl-loop for proc in (process-list)
-               when (string-match "\\*?\\(nnimap\\|nntpd\\)" (process-name proc))
-               do (delete-process proc)))
-    (add-hook 'gnus-exit-group-hook 'tv-gnus-kill-all-procs)
-    (add-hook 'gnus-group-catchup-group-hook 'tv-gnus-kill-all-procs))
-  :defer t
-  :disabled t)
-
 ;;; Addressbook
 ;;
 (use-package addressbook-bookmark
