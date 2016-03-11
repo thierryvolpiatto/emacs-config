@@ -274,7 +274,8 @@
 (setq abbrev-file-name "/home/thierry/.emacs.d/.abbrev_defs")
 
 ;; Copy/paste
-(setq select-active-regions 'only)
+(setq select-active-regions t)
+(setq x-select-enable-clipboard-manager nil)
 
 ;; Enable-commands-disabled-by-default
 (put 'narrow-to-region 'disabled nil) ; C-x n n
