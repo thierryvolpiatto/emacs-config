@@ -178,8 +178,8 @@ First call indent, second complete symbol, third complete fname."
       helm-default-external-file-browser              "thunar"
       helm-pdfgrep-default-read-command               "evince --page-label=%p '%f'"
       helm-ff-auto-update-initial-value               t
-      helm-grep-default-command                       "ack-grep -Hn --smart-case --no-group %e %p %f"
-      helm-grep-default-recurse-command               "ack-grep -H --smart-case --no-group %e %p %f"
+      helm-grep-default-command                       "ack-grep -Hn --color --smart-case --no-group %e %p %f"
+      helm-grep-default-recurse-command               "ack-grep -H --color --smart-case --no-group %e %p %f"
       helm-reuse-last-window-split-state              t
       helm-always-two-windows                         t
       helm-split-window-in-side-p                     nil
@@ -241,9 +241,9 @@ First call indent, second complete symbol, third complete fname."
               helm-grep-default-recurse-command
               "grep --color=always -d recurse %e -n%cH -e %p %f")
         (setq helm-grep-default-command
-              "ack-grep -Hn --smart-case --no-group %e %p %f"
+              "ack-grep -Hn --color --smart-case --no-group %e %p %f"
               helm-grep-default-recurse-command
-              "ack-grep -H --smart-case --no-group %e %p %f"))
+              "ack-grep -H --color --smart-case --no-group %e %p %f"))
     (message "Switched to %s" (helm-grep-command))))
 
 ;;; Debugging
