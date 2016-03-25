@@ -69,24 +69,27 @@
 
 ;; Tags-setting 
 ;; (info "(org)Setting tags")
-(setq org-tag-alist '(("@entrainement" . ?E)
-                      ("@climbing" . ?c)
-                      ("Equipement" . ?e)
-                      ("@github" . ?d)
-                      ("Helm" . ?h)
-                      ("crypt" . ?C)
-                      ("@travel" . ?t)))
+
+(setq org-tag-alist '(("@entrainement")
+                      ("climbing")
+                      ("equipement")
+                      ("@github")
+                      ("helm")
+                      ("async")
+                      ("crypt")
+                      ("@home")
+                      ("@travel")))
 
 ;; org-capture
 (setq org-default-notes-file (expand-file-name "notes.org" org-directory))
 (setq org-capture-templates
       '(("t" "Todo" entry         (file+headline  "~/org/agenda.org" "Tasks")       "** TODO %?\n  %i\n  %a"  :prepend t)
         ("n" "Notes" entry        (file+headline  "~/org/notes.org" "General")      "* %T %?\n\n  %i\n"       :prepend t)
-        ("E" "Entrainement" entry  (file+headline "~/org/notes.org" "Entrainement") "* %T %?\n\n  %i\n"       :prepend t)
+        ("E" "Entrainement" entry (file+headline "~/org/notes.org" "Entrainement")  "* %T %?\n\n  %i\n"       :prepend t)
         ("H" "Helm" entry         (file+headline  "~/org/notes.org" "Notes helm")   "* %^{Title}\n  %i\n  %a" :prepend t)
         ("l" "Lisp" entry         (file+headline  "~/org/notes.org" "Notes elisp")  "* %^{Title}\n  %i\n  %a" :prepend t)
         ("p" "Python" entry       (file+headline  "~/org/notes.org" "Notes python") "* %^{Title}\n  %i\n  %a" :prepend t)
-        ("b" "Bash" entry       (file+headline    "~/org/notes.org" "Notes bash")   "* %^{Title}\n  %i\n  %a" :prepend t)
+        ("b" "Bash" entry         (file+headline    "~/org/notes.org" "Notes bash") "* %^{Title}\n  %i\n  %a" :prepend t)
         ("L" "Linux" entry        (file+headline  "~/org/notes.org" "Memo Linux")   "* %^{Title}\n  %i\n  %a" :prepend t)
         ))
 
