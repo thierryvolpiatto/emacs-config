@@ -60,6 +60,9 @@
 (setq max-lisp-eval-depth 40000)
 (setq max-specpdl-size 100000)
 
+;; Increase GC
+(setq gc-cons-threshold 20000000)
+
 ;; Annoyances section
 ;;
 (global-set-key (kbd "<f11>") nil)
