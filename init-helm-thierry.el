@@ -26,11 +26,11 @@
     (insert-file-contents (find-library-name "helm-core-pkg"))
     (goto-char (point-min))
     (when (re-search-forward
-           "\\([0-9]+?\\)\\.\\([0-9]+?\\)\\.\\([0-9]+?\\)\\.?[0-9]*" nil t)
+           "\\([0-9]+?\\)\\.?\\([0-9]*\\)\\.?\\([0-9]*\\)\\.?[0-9]*" nil t)
       (match-string-no-properties 0))))
 
 ;; Helm version: 1.9.3
-(defun helm/org-version (arg)
+(defun helm/version (arg)
   (interactive "P")
   (let ((version-str (format "Helm version: %s" (helm/version-1))))
     (if arg (insert version-str) (message version-str))))
