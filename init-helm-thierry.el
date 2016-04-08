@@ -279,7 +279,7 @@ First call indent, second complete symbol, third complete fname."
    'helm/ff-candidates-lisp-p))
 
 (defmethod helm-setup-user-source ((source helm-source-buffers))
-  (set-slot-value source 'candidate-number-limit 200))
+  (setf (slot-value source 'candidate-number-limit) 300))
 
 
 ;;; Psession windows
