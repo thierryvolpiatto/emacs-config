@@ -32,6 +32,9 @@
                                 (magit . "melpa-stable")
                                 (magit-popup . "melpa-stable")))
 
+(when (boundp 'package-menu-async)
+  (setq package-menu-async nil))
+
 ;;; Use-package.
 ;;
 (eval-when-compile (require 'use-package))
