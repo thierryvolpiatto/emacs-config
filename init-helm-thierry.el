@@ -160,6 +160,7 @@ First call indent, second complete symbol, third complete fname."
 ;;
 (define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
 (define-key helm-buffer-map (kbd "C-d")     'helm-buffer-run-kill-persistent)
+(define-key helm-find-files-map (kbd "C-/") 'helm-ff-run-find-sh-command)
 
 ;; Use default-as-input in grep
 (add-to-list 'helm-sources-using-default-as-input 'helm-source-grep)
@@ -278,7 +279,7 @@ First call indent, second complete symbol, third complete fname."
    'helm/ff-candidates-lisp-p))
 
 (defmethod helm-setup-user-source ((source helm-source-buffers))
-  (set-slot-value source 'candidate-number-limit 200))
+  (setf (slot-value source 'candidate-number-limit) 300))
 
 
 ;;; Psession windows
