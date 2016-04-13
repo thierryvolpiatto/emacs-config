@@ -1482,6 +1482,8 @@ from IPython.core.completerlib import module_completion"
                                     (setq eshell-pwd-convert-function (lambda (f)
                                                                         (if (file-equal-p (file-truename f) "/")
                                                                             "/" f)))
+                                    ;; This is needed for eshell-command (otherwise initial history is empty).
+                                    (eshell-read-history eshell-history-file-name)
                                     ;; Helm completion with pcomplete
                                     (setq eshell-cmpl-ignore-case t)
                                     (eshell-cmpl-initialize)
@@ -1491,9 +1493,7 @@ from IPython.core.completerlib import module_completion"
                                     ;; Helm completion on eshell history.
                                     (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)
                                     ;; Eshell prompt
-                                    (set-face-attribute 'eshell-prompt nil :foreground "DeepSkyBlue")
-                                    ;; Allow yanking right now instead of returning "Mark set"
-                                    (push-mark)))
+                                    (set-face-attribute 'eshell-prompt nil :foreground "DeepSkyBlue")))
 
     ;; Eshell history size
     (setq eshell-history-size 1000) ; Same as env var HISTSIZE.
