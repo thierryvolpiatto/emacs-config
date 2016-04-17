@@ -730,13 +730,13 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Rectangle
 ;;
 (use-package rectangle-utils
-    :commands (rectangle-menu
-               copy-rectangle
-               rectangle-insert-at-right
-               extend-rectangle-to-end)
-    :bind (("C-x r e" . extend-rectangle-to-end)
-           ("C-x r h" . rectangle-menu)
-           ("C-x r <right>" . rectangle-insert-at-right)))
+    :commands (rectangle-utils-menu
+               rectangle-utils-copy-rectangle
+               rectangle-utils-insert-at-right
+               rectangle-utils-extend-rectangle-to-end)
+    :bind (("C-x r e" . rectangle-utils-extend-rectangle-to-end)
+           ("C-x r h" . rectangle-utils-menu)
+           ("C-x r <right>" . rectangle-utils-insert-at-right)))
 
 ;;; Smallurl
 ;;
@@ -1425,10 +1425,18 @@ from IPython.core.completerlib import module_completion"
 
 ;;; align-let
 ;;
-(autoload 'align-let-keybinding "align-let" nil t)
-(add-hook 'emacs-lisp-mode-hook 'align-let-keybinding)
-(add-hook 'lisp-interaction-mode-hook 'align-let-keybinding)
-(add-hook 'lisp-mode-hook 'align-let-keybinding)
+(use-package align-let
+    :commands 'align-let-keybinding
+    :init
+    (progn
+      (add-hook 'emacs-lisp-mode-hook 'align-let-keybinding)
+      (add-hook 'lisp-interaction-mode-hook 'align-let-keybinding)
+      (add-hook 'lisp-mode-hook 'align-let-keybinding))
+    :config
+    (progn
+      (put 'setq-local 'align-let 'setq)
+      (put 'cl-psetq 'align-let 'setq)
+      (put 'helm-set-local-variable 'align-let 'setq)))
 
 ;;; sqlite-dump
 ;;
