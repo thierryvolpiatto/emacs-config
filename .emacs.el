@@ -810,6 +810,8 @@ If your system's ping continues until interrupted, you can try setting
   (interactive "r")
   (let ((tv/extend-region-to-space-separator " \\|("))
     (tv/extend-rectangle-to-space beg end)))
+(define-key emacs-lisp-mode-map       (kbd "C-x r a") 'tv/extend-rectangle-to-space-or-paren)
+(define-key lisp-interaction-mode-map (kbd "C-x r a") 'tv/extend-rectangle-to-space-or-paren)
 
 ;;; Smallurl
 ;;
