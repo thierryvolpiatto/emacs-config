@@ -738,6 +738,79 @@ If your system's ping continues until interrupted, you can try setting
            ("C-x r h" . rectangle-utils-menu)
            ("C-x r <right>" . rectangle-utils-insert-at-right)))
 
+(defvar tv/extend-region-to-space-separator " ")
+(cl-defun tv/num-char-to-space (&optional (space " "))
+  (let ((count 0))
+    (catch 'eol
+      (unless (looking-at " \\|\n\\|\t")
+        (save-excursion
+          (while (not (looking-at space))
+            (and (eolp) (throw 'eol count))
+            (forward-char 1)
+            (cl-incf count))))
+      count)))
+
+(defun tv/longest-length-until-space-in-region (beg end)
+  (let ((num-lines (count-lines beg end))
+        longest)
+    (save-excursion
+      (goto-char (region-beginning))
+      (setq longest (tv/num-char-to-space))
+      (let ((col (current-column)))
+        (cl-loop repeat (1- num-lines) do
+                 (progn
+                   (forward-line 1)
+                   (forward-char col)
+                   (pcase (tv/num-char-to-space)
+                     ((and it (pred (< longest)))
+                      (setq longest it)))))))
+    longest))
+
+(defun tv/count-spaces ()
+  (let ((count 0))
+    (catch 'eol
+      (save-excursion
+        (while (looking-at " ")
+          (and (eolp) (throw 'eol count))
+          (forward-char 1)
+          (cl-incf count))
+        count))))
+
+(defun tv/extend-rectangle-to-space (beg end)
+  (interactive "r")
+  (let ((lgst (tv/longest-length-until-space-in-region beg end))
+        (num-lines (count-lines beg end)))
+    (save-excursion
+      (goto-char beg)
+      (cl-loop with col = (current-column)
+               repeat num-lines do
+               (progn
+                 (pcase (tv/num-char-to-space
+                         tv/extend-region-to-space-separator)
+                   ((and it (guard (> lgst it)))
+                    (forward-char it)
+                    (if (>= (tv/count-spaces) (- lgst it))
+                        (forward-char (- lgst it))
+                        (insert (make-string (- lgst it) ? )))
+                    (setq new-end (point)))
+                   ((pred zerop)
+                    (forward-whitespace 1)
+                    (if (>= (tv/count-spaces) lgst)
+                        (forward-char lgst)
+                        (insert (make-string lgst ? )))
+                    (setq new-end (point)))
+                   (_ (forward-char lgst) (setq new-end (point))))
+               (forward-line 1)
+               (move-to-column col))))
+    (goto-char beg)
+    (push-mark new-end 'nomsg 'activate)
+    (setq deactivate-mark nil)))
+
+(defun tv/extend-rectangle-to-space-or-paren (beg end)
+  (interactive "r")
+  (let ((tv/extend-region-to-space-separator " \\|("))
+    (tv/extend-rectangle-to-space beg end)))
+
 ;;; Smallurl
 ;;
 (use-package smallurl
