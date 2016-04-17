@@ -1493,7 +1493,8 @@ from IPython.core.completerlib import module_completion"
                                     ;; This is needed for eshell-command (otherwise initial history is empty).
                                     (eshell-read-history eshell-history-file-name)
                                     ;; Helm completion with pcomplete
-                                    (setq eshell-cmpl-ignore-case t)
+                                    (setq eshell-cmpl-ignore-case t
+                                          eshell-hist-ignoredups t)
                                     (eshell-cmpl-initialize)
                                     (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
                                     ;; Helm lisp completion
