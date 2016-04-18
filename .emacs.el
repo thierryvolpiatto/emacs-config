@@ -796,7 +796,7 @@ If your system's ping continues until interrupted, you can try setting
                             tv/extend-region-to-space-separator)
                       ((and it (guard (> lgst it)))
                        (forward-char it)
-                       (if (>= (tv/count-spaces) (- lgst it))
+                       (if (> (tv/count-spaces) (- lgst it))
                            (forward-char (- lgst it))
                          (insert (make-string (- lgst it) ? )))
                        (setq new-end (point)))
