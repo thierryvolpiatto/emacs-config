@@ -778,7 +778,7 @@ If your system's ping continues until interrupted, you can try setting
 
 (defun tv/extend-rectangle-to-space (beg end)
   (interactive "r")
-  (let ((lgst (tv/longest-length-until-space-in-region beg end))
+  (let ((lgst      (tv/longest-length-until-space-in-region beg end))
         (num-lines (count-lines beg end))
         column-beg column-end)
     (goto-char beg)
