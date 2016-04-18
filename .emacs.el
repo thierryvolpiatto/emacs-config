@@ -733,93 +733,15 @@ If your system's ping continues until interrupted, you can try setting
     :commands (rectangle-utils-menu
                rectangle-utils-copy-rectangle
                rectangle-utils-insert-at-right
-               rectangle-utils-extend-rectangle-to-end)
+               rectangle-utils-extend-rectangle-to-end
+               rectangle-utils-extend-rectangle-to-space-or-paren)
     :bind (("C-x r e" . rectangle-utils-extend-rectangle-to-end)
            ("C-x r h" . rectangle-utils-menu)
-           ("C-x r <right>" . rectangle-utils-insert-at-right)))
-
-(defvar tv/extend-region-to-space-separator " ")
-(cl-defun tv/num-char-to-space (&optional (space " "))
-  (let ((count 0))
-    (catch 'eol
-      (unless (looking-at " \\|\n\\|\t")
-        (save-excursion
-          (while (not (looking-at space))
-            (and (eolp) (throw 'eol count))
-            (forward-char 1)
-            (cl-incf count))))
-      count)))
-
-(defun tv/longest-length-until-space-in-region (beg end)
-  (let ((num-lines (count-lines beg end))
-        longest)
-    (save-excursion
-      (goto-char (region-beginning))
-      (setq longest (tv/num-char-to-space))
-      (let ((col (current-column)))
-        (cl-loop repeat (1- num-lines) do
-                 (progn
-                   (forward-line 1)
-                   (forward-char col)
-                   (pcase (tv/num-char-to-space)
-                     ((and it (pred (< longest)))
-                      (setq longest it)))))))
-    longest))
-
-(defun tv/count-spaces ()
-  (let ((count 0))
-    (catch 'eol
-      (save-excursion
-        (while (looking-at " ")
-          (and (eolp) (throw 'eol count))
-          (forward-char 1)
-          (cl-incf count))
-        count))))
-
-(defun tv/extend-rectangle-to-space (beg end)
-  (interactive "r")
-  (let ((lgst      (tv/longest-length-until-space-in-region beg end))
-        (num-lines (count-lines beg end))
-        column-beg column-end)
-    (goto-char beg)
-    (setq column-beg (current-column))
-    (save-excursion
-      (goto-char end)
-      (setq column-end (current-column)))
-    (if (not (eq column-beg column-end))
-        (progn
-          (save-excursion
-            (cl-loop with col = (current-column)
-                  repeat num-lines do
-                  (progn
-                    (pcase (tv/num-char-to-space
-                            tv/extend-region-to-space-separator)
-                      ((and it (guard (> lgst it)))
-                       (forward-char it)
-                       (if (> (tv/count-spaces) (- lgst it))
-                           (forward-char (- lgst it))
-                         (insert (make-string (- lgst it) ? )))
-                       (setq new-end (point)))
-                      ((pred zerop)
-                       (forward-whitespace 1)
-                       (if (>= (tv/count-spaces) lgst)
-                           (forward-char lgst)
-                         (insert (make-string lgst ? )))
-                       (setq new-end (point)))
-                      (_ (forward-char lgst) (setq new-end (point))))
-                    (forward-line 1)
-                    (move-to-column col))))
-          (push-mark new-end 'nomsg 'activate)
-          (setq deactivate-mark nil))
-      (deactivate-mark 'force)
-      (error "Error: not in a rectangular region."))))
-
-(defun tv/extend-rectangle-to-space-or-paren (beg end)
-  (interactive "r")
-  (let ((tv/extend-region-to-space-separator " \\|("))
-    (tv/extend-rectangle-to-space beg end)))
-(define-key emacs-lisp-mode-map       (kbd "C-x r a") 'tv/extend-rectangle-to-space-or-paren)
-(define-key lisp-interaction-mode-map (kbd "C-x r a") 'tv/extend-rectangle-to-space-or-paren)
+           ("C-x r <right>" . rectangle-utils-insert-at-right)
+           :map emacs-lisp-mode-map
+           ("C-x r a" . rectangle-utils-extend-rectangle-to-space-or-paren)
+           :map lisp-interaction-mode-map
+           ("C-x r a" . rectangle-utils-extend-rectangle-to-space-or-paren)))
 
 ;;; Smallurl
 ;;
