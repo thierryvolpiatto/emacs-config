@@ -204,10 +204,10 @@ First call indent, second complete symbol, third complete fname."
       helm-M-x-fuzzy-match                            t
       helm-lisp-fuzzy-completion                      t
       helm-completion-in-region-fuzzy-match           t
+      helm-buffers-fuzzy-matching                     t
       helm-move-to-line-cycle-in-source               t
       ido-use-virtual-buffers                         t             ; Needed in helm-buffers-list
       helm-tramp-verbose                              6
-      helm-buffers-fuzzy-matching                     t
       helm-locate-command                             "locate %s -e -A --regex %s"
       helm-org-headings-fontify                       t
       helm-autoresize-max-height                      80 ; it is %.
