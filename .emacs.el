@@ -1379,32 +1379,44 @@ from IPython.core.completerlib import module_completion"
     (forward-char 7)))
 
 ;; Insertion-d'un-squelette-latex-de-lettre
-
+;; This template needs the letter package
+;; included in texlive-latex-extra package.
 (defun tv-insert-skel-latex-letter ()
   "Insert a latex skeleton letter in an empty file"
   (interactive)
-  (insert "\\documentclass[a4paper,11pt]{letter}\n"
-          "\\usepackage[french]{babel}\n"
-          "\\usepackage[utf8]{inputenc}\n"
-          "\\usepackage{textcomp}% Allow to use euro sign\n"
-          "\\begin{document}\n"
-          "%\\name{}% Nom de l'expéditeur\n"
-          "\\address{Thierry Volpiatto \\\\ 430 Chemin des Amandiers \\\\ 83330 Le Beausset}% Adresse de l'expéditeur\n"
-          "\\signature{Thierry Volpiatto}% Signature de l'expéditeur\n"
-          "\\date{\\today}\n"
-          "\n"
-          "\n"
-          "\\begin{letter}{}% Nom du destinataire\n"
-          "\\opening{}% Formule de salutation : cher monsieur, etc.\n"
-          "\n"
-          "% Corps de la lettre\n"
-          "\n"
-          "\\closing{}% Formule de politesse : veuillez agréer, etc.\n"
-          "\\ps{PS:}{}% Post-scriptum\n"
-          "\\cc{}% Autres destinataires de la lettre\n"
-          "\\encl{}% Pièces jointes\n"
-          "\\end{letter}\n"
-          "\\end{document}\n")
+  (insert
+   "\documentclass[12pt]{lettre}\n"
+   "\n"
+   "\n"
+   "\usepackage[T1]{fontenc}\n"
+   "\usepackage{lmodern}\n"
+   "\usepackage{eurosym}\n"
+   "\usepackage[francais]{babel}\n"
+   "\usepackage[utf8]{inputenc}\n"
+   "\begin{document}\n"
+   "\n"
+   "\begin{letter}{destinataire\\adresse1\\adresse2}% nom et addresse destinataire\n"
+   "\name{expéditeur}\n"
+   "\signature{Thierry Volpiatto}\n"
+   "\address{expéditeur\\adresse1\\adresse2}% nom expéditeur\n"
+   "\lieu{ville}\n"
+   "\telephone{01~02~03~04~05}\n"
+   "\email{maxime@fai.fr}\n"
+   "\nofax\n"
+   "\n"
+   "\def\concname{Objet :~}\n"
+   "\conc{objet de la lettre}\n"
+   "\opening{Madame, Monsieur,}\n"
+   "\n"
+   "% Contenu de la lettre\n"
+   "\n"
+   "\closing{Je vous prie d'agréer, Madame, Monsieur, mes salutations distinguées.}\n"
+   "\n"
+   "\encl{Pièces jointes}\n"
+   "%\ps{Post Scriptum} % this is not working with letter\n"
+   "\end{letter}\n"
+   " \n"
+   "\end{document}\n")
   (goto-char (point-min))
   (when
       (re-search-forward "[\\]begin\{letter\}")
