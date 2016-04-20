@@ -1415,7 +1415,7 @@ from IPython.core.completerlib import module_completion"
    "\\encl{Pièces jointes}\n"
    "%\ps{Post Scriptum} % this is not working with letter\n"
    "\\end{letter}\n"
-   " \n"
+   "\n"
    "\\end{document}\n")
   (goto-char (point-min))
   (when
