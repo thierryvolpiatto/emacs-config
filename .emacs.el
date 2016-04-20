@@ -1379,7 +1379,7 @@ from IPython.core.completerlib import module_completion"
     (forward-char 7)))
 
 ;; Insertion-d'un-squelette-latex-de-lettre
-
+;; Install package 'texlive-lang-french'
 (defun tv-insert-skel-latex-letter ()
   "Insert a latex skeleton letter in an empty file"
   (interactive)
@@ -1389,12 +1389,12 @@ from IPython.core.completerlib import module_completion"
           "\\usepackage{textcomp}% Allow to use euro sign\n"
           "\\begin{document}\n"
           "%\\name{}% Nom de l'expéditeur\n"
-          "\\address{Thierry Volpiatto \\\\ 430 Chemin des Amandiers \\\\ 83330 Le Beausset}% Adresse de l'expéditeur\n"
+          "\\address{}% Adresse du destinataire\n"
           "\\signature{Thierry Volpiatto}% Signature de l'expéditeur\n"
           "\\date{\\today}\n"
           "\n"
           "\n"
-          "\\begin{letter}{}% Nom du destinataire\n"
+          "\\begin{letter}{}% Nom et addresse de l'expéditeur\n"
           "\\opening{}% Formule de salutation : cher monsieur, etc.\n"
           "\n"
           "% Corps de la lettre\n"
