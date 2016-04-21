@@ -1709,18 +1709,24 @@ With a prefix arg decrease transparency."
             (<= (buffer-size) 2))
     (insert ";;; -*- coding: utf-8; mode: lisp-interaction; lexical-binding: t -*-\n;;\n;; SCRATCH BUFFER\n;; ==============\n\n")))
 
-(defun tv-flyspell (arg)
-  "Toggle `flyspell-mode'.
-With prefix arg always start and let me choose dictionary."
-  (interactive "P")
-  (if arg
-      (let ((dic (helm-comp-read
-                  "Dictionnaire: "
-                  '("francais" "english"))))
-        (unless flyspell-mode (flyspell-mode 1))
-        (ispell-change-dictionary dic)
-        (flyspell-delete-all-overlays))
-      (call-interactively 'flyspell-mode)))
+(defun tv-flyspell ()
+  "Toggle `flyspell-mode'." 
+  (interactive)
+  (if flyspell-mode
+      (progn
+        (flyspell-mode -1)
+        (message "Flyspell Mode disabled"))
+      (flyspell-mode 1)
+      (unwind-protect
+           (progn
+             (when (fboundp 'helm-autoresize-mode)
+               (helm-autoresize-mode 1))
+             (let ((dic (completing-read "Dictionary: " '("english" "francais"))))
+               (ispell-change-dictionary dic)
+               (flyspell-delete-all-overlays)
+               (message "Starting new Ispell process aspell with %s dictionary..." dic)))
+        (when (fboundp 'helm-autoresize-mode)
+          (helm-autoresize-mode -1)))))
 
 ;; This is bounded to C-d in shell.
 (defun comint-delchar-or-maybe-eof (arg)
