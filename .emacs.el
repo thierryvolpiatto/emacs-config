@@ -793,11 +793,13 @@ If your system's ping continues until interrupted, you can try setting
     (add-hook 'ediff-quit-hook #'(lambda () (golden-ratio-mode 1))))
   :config
   (progn
-    (defun helm-running-p () helm-alive-p)
-    (setq golden-ratio-inhibit-functions '(helm-running-p))
+    (defun helm/running-p () helm-alive-p)
+    (defun tv/ispell-running-p () (get-buffer ispell-choices-buffer))
+    (setq golden-ratio-inhibit-functions     '(helm/running-p tv/ispell-running-p))
     (setq golden-ratio-exclude-buffer-regexp '("\\`\\*[Hh]elm.*\\*\\'"))
-    (setq golden-ratio-exclude-modes '(ediff-mode calendar-mode wget-mode))
-    (setq golden-ratio-recenter t)
+    (setq golden-ratio-exclude-buffer-names  '("*Org Select*"))
+    (setq golden-ratio-exclude-modes         '(ediff-mode calendar-mode wget-mode))
+    (setq golden-ratio-recenter              t)
     (golden-ratio-mode 1)))
 
 ;;; pcomplete
