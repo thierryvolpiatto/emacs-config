@@ -406,10 +406,6 @@
 (add-to-list 'display-time-world-list '("Indian/Antananarivo" "Antananarivo"))
 (add-to-list 'display-time-world-list '("Indian/Reunion" "Reunion"))
 
-;; flyspell-aspell
-(setq-default ispell-program-name "aspell")
-(setq ispell-local-dictionary "francais")
-
 ;; Kill buffer after C-d in ansi-term.
 (defadvice term-sentinel (after kill-buffer activate)
   (kill-buffer))
@@ -1596,6 +1592,35 @@ from IPython.core.completerlib import module_completion"
                                   ?b 'outline-backward-same-level
                                   '((?f . outline-forward-same-level)))))
 
+;;; Flyspell
+;;
+(use-package ispell
+    :init
+  (progn
+    (setq-default ispell-program-name "aspell")
+    (setq ispell-local-dictionary "francais"))
+  :config
+  (progn
+    (defun tv/toggle-flyspell (arg)
+      "Toggle `flyspell-mode'." 
+      (interactive "P")
+      (if (and flyspell-mode (null arg))
+	  (progn
+	    (flyspell-mode -1)
+	    (message "Flyspell Mode disabled"))
+	(flyspell-mode 1)
+	(unwind-protect
+	    (progn
+	      (when (fboundp 'helm-autoresize-mode)
+		(helm-autoresize-mode 1))
+	      (let ((dic (completing-read "Dictionary: " '("english" "francais"))))
+		(ispell-change-dictionary dic)
+		(flyspell-delete-all-overlays)
+		(message "Starting new Ispell process aspell with %s dictionary..." dic)))
+	  (when (fboundp 'helm-autoresize-mode)
+	    (helm-autoresize-mode -1))))))
+  :bind ("C-c @" . tv/toggle-flyspell))
+
 
 ;;; Various fns
 ;;
@@ -1711,25 +1736,6 @@ With a prefix arg decrease transparency."
             (<= (buffer-size) 2))
     (insert ";;; -*- coding: utf-8; mode: lisp-interaction; lexical-binding: t -*-\n;;\n;; SCRATCH BUFFER\n;; ==============\n\n")))
 
-(defun tv-flyspell ()
-  "Toggle `flyspell-mode'." 
-  (interactive)
-  (if flyspell-mode
-      (progn
-        (flyspell-mode -1)
-        (message "Flyspell Mode disabled"))
-      (flyspell-mode 1)
-      (unwind-protect
-           (progn
-             (when (fboundp 'helm-autoresize-mode)
-               (helm-autoresize-mode 1))
-             (let ((dic (completing-read "Dictionary: " '("english" "francais"))))
-               (ispell-change-dictionary dic)
-               (flyspell-delete-all-overlays)
-               (message "Starting new Ispell process aspell with %s dictionary..." dic)))
-        (when (fboundp 'helm-autoresize-mode)
-          (helm-autoresize-mode -1)))))
-
 ;; This is bounded to C-d in shell.
 (defun comint-delchar-or-maybe-eof (arg)
   "Delete ARG characters forward or send an EOF to subprocess.
@@ -1769,7 +1775,6 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 (global-set-key (kbd "<f11> s h")                  'tv-shell)
 (global-set-key (kbd "<f11> t")                    'tv-term)
 (global-set-key (kbd "<f11> i")                    'ielm)
-(global-set-key (kbd "C-c @")                      'tv-flyspell)
 (global-set-key (kbd "<M-down>")                   'tv-scroll-down)
 (global-set-key (kbd "<M-up>")                     'tv-scroll-up)
 (global-set-key (kbd "<C-M-down>")                 'tv-scroll-other-down)
