@@ -794,7 +794,9 @@ If your system's ping continues until interrupted, you can try setting
   :config
   (progn
     (defun helm/running-p () helm-alive-p)
-    (defun tv/ispell-running-p () (get-buffer ispell-choices-buffer))
+    (defun tv/ispell-running-p ()
+      (and (boundp 'ispell-choices-buffer)
+           (get-buffer ispell-choices-buffer)))
     (setq golden-ratio-inhibit-functions     '(helm/running-p tv/ispell-running-p))
     (setq golden-ratio-exclude-buffer-regexp '("\\`\\*[Hh]elm.*\\*\\'"))
     (setq golden-ratio-exclude-buffer-names  '("*Org Select*"))
