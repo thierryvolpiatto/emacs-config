@@ -731,7 +731,8 @@ If your system's ping continues until interrupted, you can try setting
                rectangle-utils-insert-at-right
                rectangle-utils-extend-rectangle-to-end
                rectangle-utils-extend-rectangle-to-space-or-paren
-               rectangle-utils-extend-rectangle-to-space-or-dot)
+               rectangle-utils-extend-rectangle-to-space-or-dot
+               rectangle-utils-extend-rectangle-to-regexp)
     :bind (("C-x r e" . rectangle-utils-extend-rectangle-to-end)
            ("C-x r h" . rectangle-utils-menu)
            ("C-x r <right>" . rectangle-utils-insert-at-right)
