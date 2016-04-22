@@ -460,17 +460,6 @@ depending the value of N is positive or negative."
                 t)
                (t nil))))))
 
-;;; Align-for-sections-in-loop
-;;;###autoload
-(defun tv/align-loop-region-for (beg end)
-  (interactive "r")
-  (align-regexp beg end "\\(\\s-*\\) = " 1 1 nil)
-  (indent-region beg end))
-
-(define-key lisp-interaction-mode-map (kbd "C-M-&") 'tv/align-loop-region-for)
-(define-key lisp-mode-map (kbd "C-M-&") 'tv/align-loop-region-for)
-(define-key emacs-lisp-mode-map (kbd "C-M-&") 'tv/align-loop-region-for)
-
 ;; Kill-backward
 ;;;###autoload
 (defun tv-kill-whole-line ()
