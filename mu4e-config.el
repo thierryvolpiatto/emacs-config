@@ -110,8 +110,9 @@
                                               shr-width)
                                           (shr-render-region (point-min) (point-max)))))))
 
-(setq mail-user-agent 'mu4e-user-agent)
-(setq read-mail-command 'mu4e)
+(setq mail-user-agent      'mu4e-user-agent
+      read-mail-command    'mu4e
+      gnus-dired-mail-mode 'mu4e-user-agent)
 
 (define-key mu4e-main-mode-map "q" 'quit-window)
 (define-key mu4e-main-mode-map "Q" 'mu4e-quit)
