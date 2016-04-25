@@ -51,12 +51,6 @@
 ;; y-or-n-p
 (fset 'yes-or-no-p 'y-or-n-p)
 
-;; Affiche-l'heure-au-format-24h
-(setq display-time-24hr-format t)
-(setq display-time-day-and-date t)
-(display-time)
-(setq display-time-use-mail-icon t)
-
 ;; Limite-max-lisp
 (setq max-lisp-eval-depth 40000)
 (setq max-specpdl-size 100000)
@@ -195,105 +189,14 @@
   "*Face used in man page to show arguments and sections."
   :group 'man)
 
-;; Printing
-(setq lpr-command "gtklp")
-(setq printer-name "EpsonStylus")
-(setq-default ps-print-header nil)
-(setq ps-font-size   '(10 . 11.5))
-(setq ps-font-family 'Courier)
-
-;; auto-compression-mode
-(auto-compression-mode 1)
-
-;; Mode-lecture-photo-auto
-(auto-image-file-mode 1)
-
 ;; line-move-visual.
-(setq line-move-visual nil)
+(setq line-move-visual                 nil
+      completion-cycle-threshold       t ; always cycle, no completion buffers.
+      report-emacs-bug-no-explanations t
+      comint-prompt-read-only          t)
 
-;; Rst-mode
-(add-hook 'rst-mode-hook 'auto-fill-mode)
-
-;; Minibuffers completion
-(setq completion-cycle-threshold t) ; always cycle, no completion buffers.
-
-;; Diff
-(customize-set-variable 'diff-switches "-w")
-
-;; Report bug
-(setq report-emacs-bug-no-explanations t)
-
-;; Indent-only-with-spaces
+;; Disable indent-tabs-mode
 (setq-default indent-tabs-mode nil)
-
-;; Prompt shell read only
-(setq comint-prompt-read-only t)
-
-;; Newline and indent in `sh-mode'.
-(add-hook 'sh-mode-hook (lambda ()
-                          (define-key sh-mode-map (kbd "RET") 'newline-and-indent)))
-
-;; winner-mode config
-(setq winner-boring-buffers '("*Completions*"
-                              "*Compile-Log*"
-                              "*inferior-lisp*"
-                              "*Fuzzy Completions*"
-                              "*Apropos*"
-                              "*Help*"
-                              "*cvs*"
-                              "*Buffer List*"
-                              "*Ibuffer*"
-                              ))
-
-(winner-mode 1)
-
-;; Display time in mode-line
-(setq display-time-string-forms
-      '( ;; date
-        (if (and (not display-time-format) display-time-day-and-date)
-            (format-time-string "[%a %e %b " now)
-            "")
-        ;; time
-        (concat
-         (propertize
-          (format-time-string (or display-time-format
-                                  (if display-time-24hr-format " %H:%M" " %-I:%M%p"))
-                              now)
-          'face '((:foreground "green"))
-          'help-echo (format-time-string " %a %b %e, %Y" now))
-         (and time-zone " (") time-zone (and time-zone ")")
-         "]")
-        ;; cpu load average
-        ;; (if (and load (not (string= load "")))
-        ;;     (format "cpu:%s" load) "")
-        ""
-        ;; mail
-        ""))
-
-;; Mode-line
-(set-face-attribute 'mode-line-emphasis nil :foreground "red")
-
-;; World-time
-(add-to-list 'display-time-world-list '("Greenwich" "Greenwich"))
-(add-to-list 'display-time-world-list '("Australia/Sydney" "Sydney"))
-(add-to-list 'display-time-world-list '("Australia/Melbourne" "Melbourne"))
-(add-to-list 'display-time-world-list '("Australia/Canberra" "Canberra"))
-(add-to-list 'display-time-world-list '("America/Chicago" "Chicago"))
-(add-to-list 'display-time-world-list '("America/Denver" "Denver"))
-(add-to-list 'display-time-world-list '("America/Los_Angeles" "Los_Angeles/Seattle"))
-(add-to-list 'display-time-world-list '("America/Denver" "Moab"))
-(add-to-list 'display-time-world-list '("America/Vancouver" "Vancouver"))
-(add-to-list 'display-time-world-list '("America/Montreal" "Montreal"))
-(add-to-list 'display-time-world-list '("America/New_York" "Ottawa"))
-(add-to-list 'display-time-world-list '("Europe/Moscow" "Moscow"))
-(add-to-list 'display-time-world-list '("Europe/Berlin" "Berlin"))
-(add-to-list 'display-time-world-list '("Europe/Oslo" "Oslo"))
-(add-to-list 'display-time-world-list '("Europe/Lisbon" "Lisbon"))
-(add-to-list 'display-time-world-list '("Asia/Dubai" "Dubai"))
-(add-to-list 'display-time-world-list '("Asia/Tokyo" "Tokyo"))
-(add-to-list 'display-time-world-list '("Hongkong" "Hongkong"))
-(add-to-list 'display-time-world-list '("Indian/Antananarivo" "Antananarivo"))
-(add-to-list 'display-time-world-list '("Indian/Reunion" "Reunion"))
 
 ;; Kill buffer after C-d in ansi-term.
 (defadvice term-sentinel (after kill-buffer activate)
@@ -388,6 +291,46 @@ So far, F can only be a symbol, not a lambda expression."))
   ;; Add all at end of `load-path' to avoid conflicts.
   (add-to-list 'load-path (file-name-as-directory i) t))
 
+
+
+;;; Use package declarations
+
+
+;;; auto-compression-mode
+;;
+(use-package jka-cmpr-hook
+    :config (auto-compression-mode 1))
+
+;;; Image file
+;;
+(use-package image-file
+    :config (auto-image-file-mode 1))
+
+;;; Rst-mode
+;;
+(use-package rst
+    :config
+  (add-hook 'rst-mode-hook 'auto-fill-mode))
+
+;;; Printing
+;;
+(use-package lpr
+    :config
+  (setq lpr-command "gtklp")
+  (use-package ps-print
+      :config
+    (setq printer-name "EpsonStylus")
+    (setq-default ps-print-header nil)
+    (setq ps-font-size   '(10 . 11.5))
+    (setq ps-font-family 'Courier)))
+
+;;; Shell script
+;;
+(use-package sh-script
+    :init
+  (add-hook 'sh-mode-hook (lambda ()
+                            (define-key sh-mode-map (kbd "RET") 'newline-and-indent))))
+
 ;;; Info
 ;;
 (use-package info
@@ -429,44 +372,121 @@ So far, F can only be a symbol, not a lambda expression."))
 
     (add-hook 'Info-mode-hook 'tv-font-lock-doc-rules)))
 
-
-;;; autoconf-mode site-lisp configuration
-(autoload 'autoconf-mode "autoconf-mode"
-  "Major mode for editing autoconf files." t)
-(autoload 'autotest-mode "autotest-mode"
-  "Major mode for editing autotest files." t)
-(add-to-list 'auto-mode-alist
-	     '("\\.ac\\'\\|configure\\.in\\'" . autoconf-mode))
-(add-to-list 'auto-mode-alist
-	     '("\\.at\\'" . autotest-mode))
+;;; Auto-conf
+;;
+(use-package autoconf-mode
+    :config
+  (add-to-list 'auto-mode-alist
+               '("\\.ac\\'\\|configure\\.in\\'" . autoconf-mode)))
 
-;;; cmake site-lisp configuration
-(add-to-list 'auto-mode-alist '("CMakeLists\\.txt\\'" . cmake-mode))
-(add-to-list 'auto-mode-alist '("\\.cmake\\'" . cmake-mode))
+(use-package autotest-mode
+    :config
+  (add-to-list 'auto-mode-alist
+               '("\\.at\\'" . autotest-mode)))
 
-;;; desktop-file-utils site-lisp configuration
-(add-to-list 'load-path "~/elisp/desktop-file-utils/")
-(autoload 'desktop-entry-mode "desktop-entry-mode" "Desktop Entry mode" t)
-(add-to-list 'auto-mode-alist
-             '("\\.desktop\\(\\.in\\)?$" . desktop-entry-mode))
-(add-hook 'desktop-entry-mode-hook 'turn-on-font-lock)
+;;; Desktop-entry-mode
+;;
+(use-package desktop-entry-mode
+    :load-path "~/elisp/desktop-file-utils/"
+    :commands 'desktop-entry-mode
+    :config
+    (add-to-list 'auto-mode-alist
+                 '("\\.desktop\\(\\.in\\)?$" . desktop-entry-mode)))
 
-;;; lua-mode site-lisp configuration
-(autoload 'lua-mode "lua-mode" "Mode for editing Lua scripts" t)
-(add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-mode))
-(setq lua-default-application "/usr/bin/lua")
+;;; Lua-mode
+;;
+(use-package lua-mode
+    :commands 'lua-mode
+    :config
+  (add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-mode))
+  (setq lua-default-application "/usr/bin/lua"))
 
-;;; emacs-wget site-lisp configuration
+;;; Cmake
+;;
+(use-package cmake-mode
+    :config
+  (add-to-list 'auto-mode-alist '("CMakeLists\\.txt\\'" . cmake-mode))
+  (add-to-list 'auto-mode-alist '("\\.cmake\\'" . cmake-mode)))
+
+;;; Wget
 ;;
 ;;
-(autoload 'wget "wget" "wget interface for Emacs." t)
-(autoload 'wget-web-page "wget" "wget interface to download whole web page." t)
-(use-package w3m-wget)
-;; Use wget in eshell.
-(defun eshell/wget (url)
-  (wget url))
+(use-package wget
+    :config
+    (progn
+      (use-package w3m-wget)
+      ;; Use wget in eshell.
+      (defun eshell/wget (url)
+        (wget url))))
 
-
+;;; Winner
+;;
+(use-package winner
+    :config
+  (setq winner-boring-buffers '("*Completions*"
+                                "*Compile-Log*"
+                                "*inferior-lisp*"
+                                "*Fuzzy Completions*"
+                                "*Apropos*"
+                                "*Help*"
+                                "*cvs*"
+                                "*Buffer List*"
+                                "*Ibuffer*"
+                                ))
+  (winner-mode 1))
+
+;;; Time
+;;
+(use-package time
+    :config
+  ;; World-time
+  (add-to-list 'display-time-world-list '("Greenwich" "Greenwich"))
+  (add-to-list 'display-time-world-list '("Australia/Sydney" "Sydney"))
+  (add-to-list 'display-time-world-list '("Australia/Melbourne" "Melbourne"))
+  (add-to-list 'display-time-world-list '("Australia/Canberra" "Canberra"))
+  (add-to-list 'display-time-world-list '("America/Chicago" "Chicago"))
+  (add-to-list 'display-time-world-list '("America/Denver" "Denver"))
+  (add-to-list 'display-time-world-list '("America/Los_Angeles" "Los_Angeles/Seattle"))
+  (add-to-list 'display-time-world-list '("America/Denver" "Moab"))
+  (add-to-list 'display-time-world-list '("America/Vancouver" "Vancouver"))
+  (add-to-list 'display-time-world-list '("America/Montreal" "Montreal"))
+  (add-to-list 'display-time-world-list '("America/New_York" "Ottawa"))
+  (add-to-list 'display-time-world-list '("Europe/Moscow" "Moscow"))
+  (add-to-list 'display-time-world-list '("Europe/Berlin" "Berlin"))
+  (add-to-list 'display-time-world-list '("Europe/Oslo" "Oslo"))
+  (add-to-list 'display-time-world-list '("Europe/Lisbon" "Lisbon"))
+  (add-to-list 'display-time-world-list '("Asia/Dubai" "Dubai"))
+  (add-to-list 'display-time-world-list '("Asia/Tokyo" "Tokyo"))
+  (add-to-list 'display-time-world-list '("Hongkong" "Hongkong"))
+  (add-to-list 'display-time-world-list '("Indian/Antananarivo" "Antananarivo"))
+  (add-to-list 'display-time-world-list '("Indian/Reunion" "Reunion"))
+
+    (setq display-time-24hr-format   t
+        display-time-day-and-date  t
+        display-time-use-mail-icon t
+        display-time-string-forms
+        '( ;; date
+          (if (and (not display-time-format) display-time-day-and-date)
+              (format-time-string "[%a %e %b " now)
+            "")
+          ;; time
+          (concat
+           (propertize
+            (format-time-string (or display-time-format
+                                    (if display-time-24hr-format " %H:%M" " %-I:%M%p"))
+                                now)
+            'face '((:foreground "green"))
+            'help-echo (format-time-string " %a %b %e, %Y" now))
+           (and time-zone " (") time-zone (and time-zone ")")
+           "]")
+          ;; cpu load average
+          ;; (if (and load (not (string= load "")))
+          ;;     (format "cpu:%s" load) "")
+          ""
+          ;; mail
+          ""))
+  (display-time))
+
 ;;; Frame and window config.
 ;;
 ;;
@@ -1221,7 +1241,7 @@ from IPython.core.completerlib import module_completion"
     (setq slime-scratch-file "~/.emacs.d/slime-scratch.lisp")
     ;; common-lisp-info
     (add-to-list 'Info-additional-directory-list "~/elisp/info/gcl-info/")
-    (add-hook 'slime-load-hook (lambda () (tv-require 'slime-tramp)))
+    (add-hook 'slime-load-hook (lambda () (require 'slime-tramp)))
     (bind-key "<f11> l r" 'tv-start-slime)
     (bind-key "<f11> l e" 'slime-scratch)
     (bind-key "<f11> l l" 'slime-list-connections)
