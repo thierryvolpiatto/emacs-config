@@ -8,6 +8,7 @@
 ;;
 (setq custom-file "~/.emacs.d/.emacs-custom.el")
 (load custom-file)
+(setq inhibit-startup-echo-area-message "thierry")
 
 ;;; VC
 ;;
@@ -35,7 +36,7 @@
 ;;; Use-package.
 ;;
 (eval-when-compile (require 'use-package))
-(setq use-package-verbose t)
+;;(setq use-package-verbose t)
 
 ;;; Global settings
 ;;
@@ -66,10 +67,6 @@
 ;; Annoyances section
 ;;
 (global-set-key (kbd "<f11>") nil)
-(add-hook 'emacs-startup-hook #'(lambda ()
-                                  (when (get-buffer "*Compile-Log*")
-                                    (kill-buffer "*Compile-Log*")
-                                    (delete-other-windows))))
 
 ;; bidi
 (setq-default bidi-display-reordering nil)
@@ -117,10 +114,12 @@
 (prefer-coding-system 'utf-8)
 
 ;; Save-minibuffer-history
-(setq savehist-file "~/.emacs.d/history"
-      history-delete-duplicates t)
-(setq history-length 100) ; default is 30.
-(savehist-mode 1)
+(use-package savehist
+    :config
+  (setq savehist-file "~/.emacs.d/history"
+        history-delete-duplicates t)
+  (setq history-length 100) ; default is 30.
+  (savehist-mode 1))
 
 ;; Themes
 (defvar tv-theme-directory "~/.emacs.d/themes/")
@@ -128,110 +127,7 @@
   (setq custom-theme-directory tv-theme-directory))
 
 ;; Load my favourite theme.
-(add-hook 'emacs-startup-hook #'(lambda () (load-theme 'naquadah)))
-
-;;; Frame and window config.
-;;
-;;
-;; My current-font: [EVAL]: (assoc-default 'font (frame-parameters))
-;; Choose a font:   [EVAL]: (progn (when (require 'helm-font) (helm 'helm-source-xfonts)))
-;; Choose a color:  [EVAL]: (progn (when (require 'helm-color) (helm 'helm-source-colors)))
-;; To reload .Xresources [EVAL]: (shell-command xrdb "~/.Xresources")
-
-(defvar tv-default-font (assoc-default 'font (frame-parameters)))
-(setq-default frame-background-mode 'dark)
-(setq initial-frame-alist '((fullscreen . maximized)))
-(setq frame-auto-hide-function 'delete-frame)
-
-(if (or (daemonp)
-        (not (window-system))
-        (< emacs-major-version 24))
-    (setq default-frame-alist `((vertical-scroll-bars . nil)
-                                (tool-bar-lines . 0)
-                                (menu-bar-lines . 0)
-                                (title . ,(format "Emacs-%s" emacs-version))
-                                (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
-                                (cursor-color . "red")))
-
-    (setq default-frame-alist `((foreground-color . "Wheat")
-                                (background-color . "black")
-                                (alpha . 90)
-                                ;; New frames go in right corner.
-                                (left . ,(- (* (window-width) 8) 160)) ; Chars are 8 bits long.
-                                (vertical-scroll-bars . nil)
-                                (title . ,(format "Emacs-%s" emacs-version))
-                                (tool-bar-lines . 0)
-                                (menu-bar-lines . 0)
-                                (font . ,tv-default-font)
-                                (cursor-color . "red")
-                                (fullscreen . nil)
-                                )))
-
-;; Speedbar
-(add-hook 'speedbar-load-hook
-          #'(lambda ()
-              (setq speedbar-frame-parameters
-                    `((minibuffer . nil)
-                      (font . ,tv-default-font)
-                      (width . 20)
-                      (fullscreen . nil) ; Not needed when fullscreen isn't set in .Xressources.
-                      (left . ,(- (* (window-width) 8)
-                                  (frame-width))) ; Speed-bar on right of screen.
-                      (border-width . 0)
-                      (menu-bar-lines . 0)
-                      (tool-bar-lines . 0)
-                      (unsplittable . t)
-                      (left-fringe . 0)))))
-
-;;; Special buffer display.
-;;
-;;
-(setq special-display-regexps `(("\\*Help"
-                                 (minibuffer . nil)
-                                 (width . 80)
-                                 (height . 24)
-                                 (left-fringe . 0)
-                                 (border-width . 0)
-                                 (menu-bar-lines . 0)
-                                 (tool-bar-lines . 0)
-                                 (unsplittable . t)
-                                 (top . 24)
-                                 (left . 450)
-                                 (background-color . "Lightsteelblue1")
-                                 (foreground-color . "black")
-                                 (alpha . nil)
-                                 (fullscreen . nil))
-                                ("\\*Compile-Log"
-                                 (minibuffer . nil)
-                                 (width . 85)
-                                 (height . 24)
-                                 (left-fringe . 0)
-                                 (border-width . 0)
-                                 (menu-bar-lines . 0)
-                                 (tool-bar-lines . 0)
-                                 (unsplittable . t)
-                                 (top . 24)
-                                 (left . 450)
-                                 (background-color . "Brown4")
-                                 (foreground-color . "black")
-                                 (alpha . nil)
-                                 (fullscreen . nil))
-                                ("\\*Dict"
-                                 (minibuffer . nil)
-                                 (width . 80)
-                                 (height . 24)
-                                 (left-fringe . 0)
-                                 (border-width . 0)
-                                 (menu-bar-lines . 0)
-                                 (tool-bar-lines . 0)
-                                 (unsplittable . t)
-                                 (top . 24)
-                                 (left . 450)
-                                 (background-color . "LightSteelBlue")
-                                 (foreground-color . "DarkGoldenrod")
-                                 (alpha . nil)
-                                 (fullscreen . nil))
-                                ))
+(add-hook 'emacs-startup-hook (lambda () (load-theme 'naquadah)))
 
 ;; Don't split this windows horizontally
 (setq split-width-threshold nil)
@@ -262,19 +158,18 @@
 
 ;; show-paren-mode
 ;;
-(show-paren-mode 1)
-(setq show-paren-ring-bell-on-mismatch t)
+(use-package paren
+    :config
+  (progn
+    (show-paren-mode 1)
+    (setq show-paren-ring-bell-on-mismatch t)))
 
 ;; Start-emacs-server
 ;;
-(add-hook 'after-init-hook #'(lambda ()
-                               (unless (daemonp)
-                                 (server-start)
-                                 (setq server-raise-frame t))))
-
-
-;; Path-to-abbrev-file
-(setq abbrev-file-name "/home/thierry/.emacs.d/.abbrev_defs")
+(add-hook 'after-init-hook (lambda ()
+                             (unless (daemonp)
+                               (server-start)
+                               (setq server-raise-frame t))))
 
 ;; Copy/paste
 (setq select-active-regions t)
@@ -313,17 +208,11 @@
 ;; Mode-lecture-photo-auto
 (auto-image-file-mode 1)
 
-;; Allow scrolling horizontally in large images
-(add-hook 'image-mode-hook #'(lambda () (set (make-variable-buffer-local 'auto-hscroll-mode) nil)))
-
 ;; line-move-visual.
 (setq line-move-visual nil)
 
 ;; Rst-mode
 (add-hook 'rst-mode-hook 'auto-fill-mode)
-
-;; Trash
-;; (setq delete-by-moving-to-trash t)
 
 ;; Minibuffers completion
 (setq completion-cycle-threshold t) ; always cycle, no completion buffers.
@@ -341,8 +230,8 @@
 (setq comint-prompt-read-only t)
 
 ;; Newline and indent in `sh-mode'.
-(add-hook 'sh-mode-hook #'(lambda ()
-                            (define-key sh-mode-map (kbd "RET") 'newline-and-indent)))
+(add-hook 'sh-mode-hook (lambda ()
+                          (define-key sh-mode-map (kbd "RET") 'newline-and-indent)))
 
 ;; winner-mode config
 (setq winner-boring-buffers '("*Completions*"
@@ -439,7 +328,7 @@ in cl-case that file does not provide any feature."
       ;; We don't want people to just use `put' because we can't conveniently
       ;; hook into `put' to remap old properties to new ones.  But for now, there's
       ;; no such remapping, so we just call `put'.
-      #'(lambda (f prop value) (put f prop value))
+      (lambda (f prop value) (put f prop value))
     "Set function F's property PROP to VALUE.
 The namespace for PROP is shared with symbols.
 So far, F can only be a symbol, not a lambda expression."))
@@ -578,6 +467,96 @@ So far, F can only be a symbol, not a lambda expression."))
   (wget url))
 
 
+;;; Frame and window config.
+;;
+;;
+;; My current-font:      [EVAL]: (assoc-default 'font (frame-parameters))
+;; Choose a font:        [EVAL]: (progn (when (require 'helm-font) (helm 'helm-source-xfonts)))
+;; Choose a color:       [EVAL]: (progn (when (require 'helm-color) (helm 'helm-source-colors)))
+;; To reload .Xresources [EVAL]: (shell-command xrdb "~/.Xresources")
+
+(use-package frame
+    :config
+  (progn
+    (defvar tv-default-font (assoc-default 'font (frame-parameters)))
+    (setq-default frame-background-mode 'dark)
+    (setq initial-frame-alist '((fullscreen . maximized)))
+    (setq frame-auto-hide-function 'delete-frame)
+
+    (if (or (daemonp)
+            (not (window-system))
+            (< emacs-major-version 24))
+        (setq default-frame-alist `((vertical-scroll-bars . nil)
+                                    (tool-bar-lines . 0)
+                                    (menu-bar-lines . 0)
+                                    (title . ,(format "Emacs-%s" emacs-version))
+                                    (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
+                                    (cursor-color . "red")))
+
+      (setq default-frame-alist `((foreground-color . "Wheat")
+                                  (background-color . "black")
+                                  (alpha . 90)
+                                  ;; New frames go in right corner.
+                                  (left . ,(- (* (window-width) 8) 160)) ; Chars are 8 bits long.
+                                  (vertical-scroll-bars . nil)
+                                  (title . ,(format "Emacs-%s" emacs-version))
+                                  (tool-bar-lines . 0)
+                                  (menu-bar-lines . 0)
+                                  (font . ,tv-default-font)
+                                  (cursor-color . "red")
+                                  (fullscreen . nil)
+                                  )))
+
+    ;; Special buffer display.
+    (add-hook 'window-setup-hook
+              (lambda ()
+                (setq special-display-regexps `(("\\*Help"
+                                                 (minibuffer . nil)
+                                                 (width . 80)
+                                                 (height . 24)
+                                                 (left-fringe . 0)
+                                                 (border-width . 0)
+                                                 (menu-bar-lines . 0)
+                                                 (tool-bar-lines . 0)
+                                                 (unsplittable . t)
+                                                 (top . 24)
+                                                 (left . 450)
+                                                 (background-color . "Lightsteelblue1")
+                                                 (foreground-color . "black")
+                                                 (alpha . nil)
+                                                 (fullscreen . nil))
+                                                ("\\*Compile-Log"
+                                                 (minibuffer . nil)
+                                                 (width . 85)
+                                                 (height . 24)
+                                                 (left-fringe . 0)
+                                                 (border-width . 0)
+                                                 (menu-bar-lines . 0)
+                                                 (tool-bar-lines . 0)
+                                                 (unsplittable . t)
+                                                 (top . 24)
+                                                 (left . 450)
+                                                 (background-color . "Brown4")
+                                                 (foreground-color . "black")
+                                                 (alpha . nil)
+                                                 (fullscreen . nil))
+                                                ("\\*Dict"
+                                                 (minibuffer . nil)
+                                                 (width . 80)
+                                                 (height . 24)
+                                                 (left-fringe . 0)
+                                                 (border-width . 0)
+                                                 (menu-bar-lines . 0)
+                                                 (tool-bar-lines . 0)
+                                                 (unsplittable . t)
+                                                 (top . 24)
+                                                 (left . 450)
+                                                 (background-color . "LightSteelBlue")
+                                                 (foreground-color . "DarkGoldenrod")
+                                                 (alpha . nil)
+                                                 (fullscreen . nil))
+                                                ))))))
+
 ;;; Use `net-utils-run-simple' in net-utils fns.
 ;;
 (use-package net-utils
@@ -786,8 +765,8 @@ If your system's ping continues until interrupted, you can try setting
 (use-package golden-ratio
     :init
   (progn
-    (add-hook 'ediff-before-setup-windows-hook #'(lambda () (golden-ratio-mode -1)))
-    (add-hook 'ediff-quit-hook #'(lambda () (golden-ratio-mode 1))))
+    (add-hook 'ediff-before-setup-windows-hook (lambda () (golden-ratio-mode -1)))
+    (add-hook 'ediff-quit-hook (lambda () (golden-ratio-mode 1))))
   :config
   (progn
     (defun helm/running-p () helm-alive-p)
@@ -813,32 +792,34 @@ If your system's ping continues until interrupted, you can try setting
 ;;
 (use-package migemo
     :init
-  (progn
-    (setq migemo-command "cmigemo")
-    (setq migemo-options '("-q" "-e"))
-    (setq migemo-dictionary "/usr/share/cmigemo/utf-8/migemo-dict")
-    (setq migemo-user-dictionary nil)
-    (setq migemo-regex-dictionary nil)
-    (setq migemo-coding-system 'utf-8-unix)
-    (setq migemo-isearch-enable-p nil)))
+  (setq migemo-command          "cmigemo"
+        migemo-options          '("-q" "-e")
+        migemo-dictionary       "/usr/share/cmigemo/utf-8/migemo-dict"
+        migemo-user-dictionary  nil
+        migemo-regex-dictionary nil
+        migemo-coding-system    'utf-8-unix
+        migemo-isearch-enable-p nil)
+  :disabled t)
 
 ;;; Magit
 ;;
 (use-package magit
     :init
-  (progn
-    (setq magit-status-buffer-name-format "*magit status: %a*")
-    (setq magit-restore-window-configuration t)
-    (setq git-commit-fill-column 120)
-    (setq git-commit-summary-max-length 80)
-    (setq auto-revert-verbose nil)
-    (setq magit-revision-show-gravatars nil)
-    (setq magit-uniquify-buffer-names nil))
-  :config
-  (bind-key "C" 'magit-commit-add-log magit-diff-mode-map)
-  (bind-key "C-]" 'magit-toggle-margin magit-log-mode-map)
-  :no-require t
-  :ensure t)
+    (setq magit-status-buffer-name-format    "*magit status: %a*"
+          magit-restore-window-configuration t
+          git-commit-fill-column             120
+          git-commit-summary-max-length      80
+          auto-revert-verbose                nil
+          magit-auto-revert-immediately
+          (null (and (boundp 'auto-revert-use-notify)
+                     auto-revert-use-notify))
+          magit-revision-show-gravatars nil
+          magit-uniquify-buffer-names   nil)
+    :config
+    (bind-key "C" 'magit-commit-add-log magit-diff-mode-map)
+    (bind-key "C-]" 'magit-toggle-margin magit-log-mode-map)
+    :no-require t
+    :ensure t)
 
 ;;; Emamux
 ;;
@@ -849,12 +830,8 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Undo-tree
 ;;
 (use-package undo-tree
-    :init
-  (progn
-    (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree-history")))
-    (setq undo-tree-auto-save-history t))
-  :config
-  (global-undo-tree-mode 1))
+    :config
+    (global-undo-tree-mode 1))
 
 ;;; Zoom-window
 ;;
@@ -994,6 +971,7 @@ are returned unchanged."
          (split-string argstring) " ")))))
 
 (use-package eldoc-eval
+    :no-require t
     :config
   (progn
     (eldoc-in-minibuffer-mode 1)
@@ -1032,7 +1010,7 @@ from IPython.core.completerlib import module_completion"
      "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
 
     (add-hook 'python-mode-hook
-              #'(lambda ()
+              (lambda ()
                   (define-key python-mode-map (kbd "C-m") 'newline-and-indent)))
 
     (when (fboundp 'jedi:setup)
@@ -1243,7 +1221,7 @@ from IPython.core.completerlib import module_completion"
     (setq slime-scratch-file "~/.emacs.d/slime-scratch.lisp")
     ;; common-lisp-info
     (add-to-list 'Info-additional-directory-list "~/elisp/info/gcl-info/")
-    (add-hook 'slime-load-hook #'(lambda () (tv-require 'slime-tramp)))
+    (add-hook 'slime-load-hook (lambda () (tv-require 'slime-tramp)))
     (bind-key "<f11> l r" 'tv-start-slime)
     (bind-key "<f11> l e" 'slime-scratch)
     (bind-key "<f11> l l" 'slime-list-connections)
@@ -1332,7 +1310,7 @@ from IPython.core.completerlib import module_completion"
 (setq TeX-parse-self t)
 (setq-default TeX-master nil)
 (add-hook 'TeX-language-fr-hook
-          #'(lambda () (ispell-change-dictionary "french")))
+          (lambda () (ispell-change-dictionary "french")))
 (add-hook 'LaTeX-mode-hook 'visual-line-mode)
 (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
 (setq TeX-PDF-mode t)
@@ -1491,7 +1469,7 @@ from IPython.core.completerlib import module_completion"
   (progn
     ;; Eshell-prompt
     (setq eshell-prompt-function
-          #'(lambda nil
+          (lambda nil
               (concat
                (getenv "USER")
                "@"
@@ -1506,7 +1484,7 @@ from IPython.core.completerlib import module_completion"
     (unless (fboundp 'eshell-complete-lisp-symbol)
       (defalias 'eshell-complete-lisp-symbol 'lisp-complete-symbol))
 
-    (add-hook 'eshell-mode-hook #'(lambda ()
+    (add-hook 'eshell-mode-hook (lambda ()
                                     (setq eshell-pwd-convert-function (lambda (f)
                                                                         (if (file-equal-p (file-truename f) "/")
                                                                             "/" f)))
@@ -1564,7 +1542,7 @@ from IPython.core.completerlib import module_completion"
         (add-to-list 'eshell-visual-commands i))))
   :config
   ;; Finally load eshell on startup.
-  (add-hook 'emacs-startup-hook #'(lambda ()
+  (add-hook 'emacs-startup-hook (lambda ()
                                     (let ((default-directory (getenv "HOME")))
                                       (command-execute 'eshell)
                                       (bury-buffer)))))
@@ -1770,9 +1748,9 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 ;;
 (global-set-key (kbd "C-z")                        nil) ; Disable `suspend-frame'.
 (global-set-key (kbd "C-!")                        'eshell-command)
-(global-set-key (kbd "C-c R")                      #'(lambda () (interactive) (revert-buffer t t)))
+(global-set-key (kbd "C-c R")                      (lambda () (interactive) (revert-buffer t t)))
 (global-set-key (kbd "C-c W")                      'whitespace-mode)
-(global-set-key (kbd "C-M-j")                      #'(lambda () (interactive) (kill-sexp -1)))
+(global-set-key (kbd "C-M-j")                      (lambda () (interactive) (kill-sexp -1)))
 (global-set-key (kbd "<f7> j")                     'webjump)
 (global-set-key (kbd "<f11> s h")                  'tv-shell)
 (global-set-key (kbd "<f11> t")                    'tv-term)
@@ -1854,7 +1832,7 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 ;; (semantic-mode 1)
 
 ;;; Be sure to reenable touchpad when quitting emacs
-(add-hook 'kill-emacs-hook #'(lambda ()
+(add-hook 'kill-emacs-hook (lambda ()
                                (and (executable-find "reenable_touchpad.sh")
                                     (shell-command "reenable_touchpad.sh"))))
 
