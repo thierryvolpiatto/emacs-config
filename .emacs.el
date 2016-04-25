@@ -8,7 +8,6 @@
 ;;
 (setq custom-file "~/.emacs.d/.emacs-custom.el")
 (load custom-file)
-(setq inhibit-startup-echo-area-message "thierry")
 
 ;;; VC
 ;;
@@ -61,29 +60,7 @@
 ;; Annoyances section
 ;;
 (global-set-key (kbd "<f11>") nil)
-
-;; bidi
 (setq-default bidi-display-reordering nil)
-
-;; Disable uniquify enabled by default in 24.4.
-(setq uniquify-buffer-name-style nil)
-
-;; electric-indent-mode
-(electric-indent-mode -1)
-
-(setq register-preview-delay nil)
-
-;; No-startup-screen
-(setq inhibit-startup-message t)
-
-;; consequent-log-file
-(setq message-log-max 1000)
-
-;; kill-ring
-(setq kill-ring-max 60)
-
-;; mark ring
-(setq mark-ring-max 60)
 
 ;; Kill emacs
 (defun tv-stop-emacs ()
@@ -106,14 +83,6 @@
 ;; For eshell env settings.
 (setenv "STARDICT_DATA_DIR" "~/.stardict/dic")
 (prefer-coding-system 'utf-8)
-
-;; Save-minibuffer-history
-(use-package savehist
-    :config
-  (setq savehist-file "~/.emacs.d/history"
-        history-delete-duplicates t)
-  (setq history-length 100) ; default is 30.
-  (savehist-mode 1))
 
 ;; Themes
 (defvar tv-theme-directory "~/.emacs.d/themes/")
@@ -150,14 +119,6 @@
       delete-old-versions t)
 (setq tramp-backup-directory-alist backup-directory-alist)
 
-;; show-paren-mode
-;;
-(use-package paren
-    :config
-  (progn
-    (show-paren-mode 1)
-    (setq show-paren-ring-bell-on-mismatch t)))
-
 ;; Start-emacs-server
 ;;
 (add-hook 'after-init-hook (lambda ()
@@ -170,30 +131,28 @@
 (setq x-select-enable-clipboard-manager nil)
 
 ;; Enable-commands-disabled-by-default
-(put 'narrow-to-region 'disabled nil) ; C-x n n
-(put 'narrow-to-page 'disabled nil)   ; C-x n p
-(put 'scroll-left 'disabled nil)     ; C-x > or <
-(put 'downcase-region 'disabled nil) ; C-x C-l
-(put 'upcase-region 'disabled nil)   ; C-x C-u
-(put 'set-goal-column 'disabled nil) ; C-x C-n ==> disable with C-u
+(put 'narrow-to-region 'disabled nil)          ; C-x n n
+(put 'narrow-to-page 'disabled nil)            ; C-x n p
+(put 'scroll-left 'disabled nil)               ; C-x > or <
+(put 'downcase-region 'disabled nil)           ; C-x C-l
+(put 'upcase-region 'disabled nil)             ; C-x C-u
+(put 'set-goal-column 'disabled nil)           ; C-x C-n ==> disable with C-u
 (put 'dired-find-alternate-file 'disabled nil) ; a in dired
 
 ;; setup-minibuffer
 (setq enable-recursive-minibuffers t)
 (minibuffer-depth-indicate-mode 1)
 
-;; Woman/man
-(setq woman-use-own-frame nil)
-(setq Man-notify-method 'pushy)
-(defface man-args-face '((t (:foreground "Magenta" :underline t)))
-  "*Face used in man page to show arguments and sections."
-  :group 'man)
-
-;; line-move-visual.
 (setq line-move-visual                 nil
       completion-cycle-threshold       t ; always cycle, no completion buffers.
       report-emacs-bug-no-explanations t
-      comint-prompt-read-only          t)
+      comint-prompt-read-only          t
+      uniquify-buffer-name-style       nil
+      register-preview-delay           nil
+      inhibit-startup-message          t
+      message-log-max                  1000
+      kill-ring-max                    60
+      mark-ring-max                    60)
 
 ;; Disable indent-tabs-mode
 (setq-default indent-tabs-mode nil)
@@ -295,6 +254,36 @@ So far, F can only be a symbol, not a lambda expression."))
 
 ;;; Use package declarations
 
+
+;;; Woman/man
+;;
+(use-package woman
+    :config
+  (setq woman-use-own-frame nil))
+
+(use-package man
+    :config
+  (setq Man-notify-method 'pushy))
+
+;; show-paren-mode
+;;
+(use-package paren
+    :config
+  (progn
+    (show-paren-mode 1)
+    (setq show-paren-ring-bell-on-mismatch t)))
+
+;;; Save-minibuffer-history
+;;
+(use-package savehist
+    :config
+  (setq savehist-file "~/.emacs.d/history"
+        history-delete-duplicates t)
+  (setq history-length 100) ; default is 30.
+  (savehist-mode 1))
+
+(use-package electric
+    :config (electric-indent-mode -1))
 
 ;;; auto-compression-mode
 ;;
