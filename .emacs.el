@@ -32,12 +32,14 @@
 
 (setq package-pinned-packages '((async . "melpa")
                                 (magit . "melpa-stable")
-                                (magit-popup . "melpa-stable")))
+                                (magit-popup . "melpa-stable")
+                                (git-commit . "melpa-stable")
+                                (with-editor . "melpa-stable")))
 
 ;;; Use-package.
 ;;
 (eval-when-compile (require 'use-package))
-;;(setq use-package-verbose t)
+(setq use-package-verbose t)
 
 ;;; Global settings
 ;;
