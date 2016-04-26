@@ -1759,7 +1759,7 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 (global-set-key (kbd "C-!")                        'eshell-command)
 (global-set-key (kbd "C-c R")                      (lambda () (interactive) (revert-buffer t t)))
 (global-set-key (kbd "C-c W")                      'whitespace-mode)
-(global-set-key (kbd "C-M-j")                      (lambda () (interactive) (kill-sexp -1)))
+(global-set-key (kbd "C-M-j")                      'backward-kill-sexp)
 (global-set-key (kbd "<f7> j")                     'webjump)
 (global-set-key (kbd "<f11> s h")                  'tv-shell)
 (global-set-key (kbd "<f11> t")                    'tv-term)
@@ -1768,7 +1768,7 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 (global-set-key (kbd "<M-up>")                     'tv-scroll-up)
 (global-set-key (kbd "<C-M-down>")                 'tv-scroll-other-down)
 (global-set-key (kbd "<C-M-up>")                   'tv-scroll-other-up)
-(global-set-key (kbd "<C-prior>")                  'text-scale-decrease) ; font size.
+(global-set-key (kbd "<C-prior>")                  'text-scale-decrease) ; font size (<C-fn-up/down>).
 (global-set-key (kbd "<C-next>")                   'text-scale-increase)
 (global-set-key (kbd "C-x C-²")                    'delete-other-windows)
 (global-set-key (kbd "C-x C-&")                    'delete-window)
