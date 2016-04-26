@@ -4,6 +4,8 @@
 
 (require 'cl-lib)
 
+(setq inhibit-startup-echo-area-message (getenv "USER"))
+
 ;;; Emacs customize have it's own file
 ;;
 (setq custom-file "~/.emacs.d/.emacs-custom.el")
@@ -980,6 +982,7 @@ are returned unchanged."
          (split-string argstring) " ")))))
 
 (use-package eldoc-eval
+    :preface (defvar eldoc-in-minibuffer-mode nil)
     :no-require t
     :config
   (progn
