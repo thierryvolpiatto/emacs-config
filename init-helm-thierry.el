@@ -66,7 +66,7 @@
       (message "[%s]" (which-function)))))
 
 (define-key helm-moccur-map (kbd "C-c ?") 'helm/occur-which-func)
-(define-key helm-grep-map (kbd "C-c ?") 'helm/occur-which-func)
+(define-key helm-grep-map   (kbd "C-c ?") 'helm/occur-which-func)
 
 ;; Popup buffer-name or filename in grep/moccur/imenu-all etc...
 
@@ -83,13 +83,13 @@
 ;;; Helm-command-map
 ;;
 ;;
-(define-key helm-command-map (kbd "g")   'helm-apt)
-(define-key helm-command-map (kbd "w")   'helm-psession)
-(define-key helm-command-map (kbd "z")   'helm-complex-command-history)
-(define-key helm-command-map (kbd "w")   'helm-w3m-bookmarks)
-(define-key helm-command-map (kbd "x")   'helm-firefox-bookmarks)
-(define-key helm-command-map (kbd "#")   'helm-emms)
-(define-key helm-command-map (kbd "I")   'helm-imenu-in-all-buffers)
+(define-key helm-command-map (kbd "g") 'helm-apt)
+(define-key helm-command-map (kbd "w") 'helm-psession)
+(define-key helm-command-map (kbd "z") 'helm-complex-command-history)
+(define-key helm-command-map (kbd "w") 'helm-w3m-bookmarks)
+(define-key helm-command-map (kbd "x") 'helm-firefox-bookmarks)
+(define-key helm-command-map (kbd "#") 'helm-emms)
+(define-key helm-command-map (kbd "I") 'helm-imenu-in-all-buffers)
 
 ;;; Global-map
 ;;
@@ -123,7 +123,7 @@
 (define-key global-map (kbd "M-g i")                 'helm-gid)
 
 ;; Shell bindings
-(define-key shell-mode-map (kbd "M-p")               'helm-comint-input-ring) ; shell history.
+(define-key shell-mode-map (kbd "M-p") 'helm-comint-input-ring) ; shell history.
 
 (helm-multi-key-defun helm-multi-lisp-complete-at-point
     "Multi key function for completion in emacs lisp buffers.
@@ -138,14 +138,14 @@ First call indent, second complete symbol, third complete fname."
          (boundp 'completion-in-region-function))
     (progn
       (define-key lisp-interaction-mode-map [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
-      (define-key emacs-lisp-mode-map [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
+      (define-key emacs-lisp-mode-map       [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
       
       ;; lisp complete. (Rebind M-<tab>)
       (define-key lisp-interaction-mode-map [remap completion-at-point] 'helm-lisp-completion-at-point)
       (define-key emacs-lisp-mode-map       [remap completion-at-point] 'helm-lisp-completion-at-point))
     
     (define-key lisp-interaction-mode-map [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
-    (define-key emacs-lisp-mode-map [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
+    (define-key emacs-lisp-mode-map       [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
     
     ;; lisp complete. (Rebind M-<tab>)
     (define-key lisp-interaction-mode-map [remap completion-at-point] 'helm-lisp-completion-at-point)
@@ -154,7 +154,7 @@ First call indent, second complete symbol, third complete fname."
 (unless (boundp 'completion-in-region-function)
   (add-hook 'ielm-mode-hook
             #'(lambda ()
-                (define-key ielm-map    [remap completion-at-point] 'helm-lisp-completion-at-point))))
+                (define-key ielm-map [remap completion-at-point] 'helm-lisp-completion-at-point))))
 
 ;;; helm find files
 ;;
