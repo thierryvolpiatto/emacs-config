@@ -730,7 +730,9 @@ If your system's ping continues until interrupted, you can try setting
            ("C-x r <right>" . rectangle-utils-insert-at-right)
            :map emacs-lisp-mode-map
            ("C-x r a" . rectangle-utils-extend-rectangle-to-space-or-paren)
+           ("C-c C-a" . rectangle-utils-extend-rectangle-to-regexp)
            :map lisp-interaction-mode-map
+           ("C-c C-a" . rectangle-utils-extend-rectangle-to-regexp)
            ("C-x r a" . rectangle-utils-extend-rectangle-to-space-or-paren)))
 
 ;;; Smallurl
@@ -1448,7 +1450,8 @@ from IPython.core.completerlib import module_completion"
     (progn
       (put 'setq-local 'align-let 'setq)
       (put 'cl-psetq 'align-let 'setq)
-      (put 'helm-set-local-variable 'align-let 'setq)))
+      (put 'helm-set-local-variable 'align-let 'setq))
+    :disabled t)
 
 ;;; sqlite-dump
 ;;
@@ -1779,8 +1782,6 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 (global-set-key (kbd "C-x C-&")                    'delete-window)
 (global-set-key (kbd "C-x C-é")                    'split-window-vertically)
 (global-set-key (kbd "C-x C-\"")                   'split-window-horizontally)
-(global-set-key (kbd "C-x r v")                    'string-insert-rectangle)
-(global-set-key (kbd "C-x r M-w")                  'copy-rectangle)
 (global-set-key [remap save-buffers-kill-terminal] 'tv-stop-emacs) ; C-x C-c
 (global-set-key (kbd "<f11> s c")                  'goto-scratch)
 (global-set-key (kbd "C-8")                        'tv-transparency-modify)
