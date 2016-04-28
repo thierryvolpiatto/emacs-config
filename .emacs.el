@@ -102,17 +102,6 @@
 ;; Pas-de-dialog-gtk
 (setq use-file-dialog nil)
 
-;; Browse url
-;;
-;;
-(setq browse-url-browser-function 'helm-browse-url-firefox)
-;;(setq browse-url-browser-function 'w3m-browse-url)
-
-;;; Ediff
-;;
-(setq ediff-window-setup-function 'ediff-setup-windows-plain)
-(setq ediff-split-window-function 'split-window-horizontally)
-
 ;;; emacs-backup-config
 ;;
 (setq backup-directory-alist '(("" . "~/.emacs.d/emacs_backup"))
@@ -161,10 +150,6 @@
 ;; Disable indent-tabs-mode
 (setq-default indent-tabs-mode nil)
 
-;; Kill buffer after C-d in ansi-term.
-(defadvice term-sentinel (after kill-buffer activate)
-  (kill-buffer))
-
 ;; Require with messages to debug more easily.
 (defun tv-require (feature &optional filename noerror)
   (message "Loading %s..." (symbol-name feature))
@@ -200,15 +185,6 @@ The namespace for PROP is shared with symbols.
 So far, F can only be a symbol, not a lambda expression."))
 
 
-;;; Temporary Bugfixes or improvements until fixed upstream.
-;;
-
-(defadvice term-command-hook (before decode-string)
-  (setq string (decode-coding-string string locale-coding-system)))
-
-(when (version< emacs-version "24.3.50.1") (ad-activate 'term-command-hook))
-
-
 ;;; load-path
 ;;
 (dolist (i '("/usr/local/share/emacs/site-lisp"
@@ -235,6 +211,38 @@ So far, F can only be a symbol, not a lambda expression."))
 
 ;;; Use package declarations
 
+
+;;; Term - ansi-term
+;;
+(use-package term
+    :config
+  (progn
+    ;; Kill buffer after C-d in ansi-term.
+    (defadvice term-sentinel (after kill-buffer activate)
+      (kill-buffer))
+    (defun tv-term ()
+      (interactive)
+      (ansi-term "/bin/bash"))
+    (defadvice term-command-hook (before decode-string)
+      (setq string (decode-coding-string string locale-coding-system)))
+    (when (version< emacs-version "24.3.50.1") (ad-activate 'term-command-hook)))
+  :bind ("<f11> t" . tv-term))
+
+;; Browse url
+;;
+;;
+(use-package browse-url
+    :config
+  (progn
+    (setq browse-url-browser-function 'helm-browse-url-firefox)))
+
+;;; Ediff
+;;
+(use-package ediff
+    :config
+  (progn
+    (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+    (setq ediff-split-window-function 'split-window-horizontally)))
 
 ;;; Help
 ;;
@@ -1654,6 +1662,41 @@ from IPython.core.completerlib import module_completion"
 	    (helm-autoresize-mode -1))))))
   :bind ("C-c @" . tv/toggle-flyspell))
 
+;;; White-space
+;;
+(use-package white-space
+    :bind ("C-c W" . whitespace-mode))
+
+;;; Webjump
+;;
+(use-package webjump
+    :bind ("<f7> j" . webjump))
+
+;;; Semantic
+;;
+(use-package semantic
+    :config
+  (progn
+    (add-hook 'semantic-mode-hook
+              ;; With my fixes in lisp/cedet/semantic/bovine/el.el.
+              (lambda ()
+                (load-file "~/elisp/el.el")
+                (when (fboundp 'semantic-default-elisp-setup)
+                  (semantic-default-elisp-setup))))
+    (semantic-mode 1))
+  :disabled t)
+
+;;; Which function
+;;
+(use-package which-func
+    :config
+  (progn
+    (defun tv/which-func ()
+      (interactive)
+      (message "[%s]" (which-function))))
+  :bind (:map emacs-lisp-mode-map
+              ("C-c ?" . tv/which-func)))
+
 
 ;;; Various fns
 ;;
@@ -1745,10 +1788,6 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
         (progn (comint-send-eof) (kill-buffer))
         (delete-char arg))))
 
-(defun tv-term ()
-  (interactive)
-  (ansi-term "/bin/bash"))
-
 (defun tv/emacspeak-startup ()
   (let* ((espeak-src-dir "/home/thierry/elisp/emacspeak")
          (espeak-lisp-src-dir (expand-file-name "lisp" espeak-src-dir))
@@ -1768,11 +1807,8 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 (global-set-key (kbd "C-z")                        nil) ; Disable `suspend-frame'.
 (global-set-key (kbd "C-!")                        'eshell-command)
 (global-set-key (kbd "C-c R")                      (lambda () (interactive) (revert-buffer t t)))
-(global-set-key (kbd "C-c W")                      'whitespace-mode)
 (global-set-key (kbd "C-M-j")                      'backward-kill-sexp)
-(global-set-key (kbd "<f7> j")                     'webjump)
 (global-set-key (kbd "<f11> s h")                  'tv-shell)
-(global-set-key (kbd "<f11> t")                    'tv-term)
 (global-set-key (kbd "<f11> i")                    'ielm)
 (global-set-key (kbd "<M-down>")                   'tv-scroll-down)
 (global-set-key (kbd "<M-up>")                     'tv-scroll-up)
@@ -1830,23 +1866,7 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 (define-key emacs-lisp-mode-map (kbd "<next>") 'forward-page)
 (define-key emacs-lisp-mode-map (kbd "<prior>") 'backward-page)
 
-;; Which function
-(autoload 'which-function "which-func.el")
-(define-key emacs-lisp-mode-map (kbd "C-c ?")
-  (lambda () (interactive) (message "[%s]" (which-function))))
-
 
-;;; Semantic
-;;
-;;
-;; (add-hook 'semantic-mode-hook
-;;           ;; With my fixes in lisp/cedet/semantic/bovine/el.el.
-;;           (lambda ()
-;;             (load-file "~/elisp/el.el")
-;;             (when (fboundp 'semantic-default-elisp-setup)
-;;               (semantic-default-elisp-setup))))
-;; (semantic-mode 1)
-
 ;;; Be sure to reenable touchpad when quitting emacs
 (add-hook 'kill-emacs-hook (lambda ()
                                (and (executable-find "reenable_touchpad.sh")
