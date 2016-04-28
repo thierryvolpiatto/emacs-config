@@ -200,36 +200,13 @@ The namespace for PROP is shared with symbols.
 So far, F can only be a symbol, not a lambda expression."))
 
 
-;;; Temporary Bugfixes until fixed upstream.
+;;; Temporary Bugfixes or improvements until fixed upstream.
 ;;
 
 (defadvice term-command-hook (before decode-string)
   (setq string (decode-coding-string string locale-coding-system)))
 
 (when (version< emacs-version "24.3.50.1") (ad-activate 'term-command-hook))
-
-;; Speedup `describe-variable' for variables with huge value description.
-(defun tv/describe-variable (old-fn &rest args)
-  ;; `cl-flet' can't be used here because `pp' should
-  ;; appear lexically in its body, which is not the case.
-  ;; Using `flet' is an option, but even better is binding
-  ;; (symbol-function 'pp) with `cl-letf'.
-  (cl-letf (((symbol-function 'pp)
-             (lambda (object &optional stream)
-               (let ((fn (lambda (ob &optional stream)
-                           (princ (pp-to-string ob)
-                                  (or stream standard-output))
-                           (terpri)))
-                     (print-circle t))
-                 (if (consp object)
-                     (progn
-                       (insert "\n(")
-                       (mapc fn object)
-                       (cl-letf (((point) (1- (point))))
-                         (insert ")")))
-                     (funcall fn object stream))))))
-    (apply old-fn args)))
-(advice-add 'describe-variable :around #'tv/describe-variable)
 
 
 ;;; load-path
@@ -258,6 +235,50 @@ So far, F can only be a symbol, not a lambda expression."))
 
 ;;; Use package declarations
 
+
+;;; Help
+;;
+(use-package help
+    :config
+  (progn
+    ;; Speedup `describe-variable' for variables with huge value description.
+    (defun tv/describe-variable (old-fn &rest args)
+      ;; `cl-flet' can't be used here because `pp' should
+      ;; appear lexically in its body, which is not the case.
+      ;; Using `flet' is an option, but even better is binding
+      ;; (symbol-function 'pp) with `cl-letf'.
+      (cl-letf (((symbol-function 'pp)
+                 (lambda (object &optional stream)
+                   (let ((fn (lambda (ob &optional stream)
+                               (princ (pp-to-string ob)
+                                      (or stream standard-output))
+                               (terpri)))
+                         (print-circle t))
+                     (if (consp object)
+                         (progn
+                           (insert "\n(")
+                           (mapc fn object)
+                           (cl-letf (((point) (1- (point))))
+                             (insert ")")))
+                         (funcall fn object stream))))))
+        (apply old-fn args)))
+    (advice-add 'describe-variable :around #'tv/describe-variable)))
+
+;;; comment
+;;
+(use-package newcomment
+    :config
+  (progn
+    (defun comment--advice-dwim (old--fn &rest args)
+      (if (region-active-p)
+          (apply old--fn args)
+          (save-excursion
+            (goto-char (point-at-bol))
+            (push-mark (point-at-eol) t t)
+            (apply old--fn args))
+          (indent-region (point-at-bol) (point-at-eol))
+          (forward-line 1)))
+    (advice-add 'comment-dwim :around 'comment--advice-dwim)))
 
 ;;; Woman/man
 ;;
