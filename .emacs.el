@@ -41,6 +41,7 @@
 (eval-when-compile (require 'use-package))
 (setq use-package-verbose t)
 
+
 ;;; Global settings
 ;;
 ;; confirm-quit-emacs
@@ -73,9 +74,6 @@
       (save-buffers-kill-emacs)
       (save-buffers-kill-terminal)))
 
-(global-font-lock-mode 1)
-(setq font-lock-maximum-decoration t)
-
 ;; column-number in mode-line.
 (column-number-mode 1)
 
@@ -86,6 +84,8 @@
 
 ;; For eshell env settings.
 (setenv "STARDICT_DATA_DIR" "~/.stardict/dic")
+
+;; Coding system.
 (prefer-coding-system 'utf-8)
 
 ;; Themes
@@ -149,16 +149,6 @@
 
 ;; Disable indent-tabs-mode
 (setq-default indent-tabs-mode nil)
-
-;; Require with messages to debug more easily.
-(defun tv-require (feature &optional filename noerror)
-  (message "Loading %s..." (symbol-name feature))
-  (condition-case err
-      (if (require feature filename noerror)
-          (message "Loading %s done" (symbol-name feature))
-          (message "Loading %s Failed" (symbol-name feature)))
-    (error
-     (signal 'error (list feature (car err) (cadr err))))))
 
 
 ;;; Compatibility
@@ -241,8 +231,8 @@ So far, F can only be a symbol, not a lambda expression."))
 (use-package ediff
     :config
   (progn
-    (setq ediff-window-setup-function 'ediff-setup-windows-plain)
-    (setq ediff-split-window-function 'split-window-horizontally)))
+    (setq ediff-window-setup-function 'ediff-setup-windows-plain
+          ediff-split-window-function 'split-window-horizontally)))
 
 ;;; Help
 ;;
@@ -312,9 +302,9 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;
 (use-package savehist
     :config
-  (setq savehist-file "~/.emacs.d/history"
-        history-delete-duplicates t)
-  (setq history-length 100) ; default is 30.
+  (setq savehist-file             "~/.emacs.d/history"
+        history-delete-duplicates t
+        history-length            100) ; default is 30.
   (savehist-mode 1))
 
 (use-package electric
@@ -1048,7 +1038,7 @@ are returned unchanged."
 ;;; Python config
 ;;
 ;;
-;; (tv-require 'helm-ipython)
+;; (require 'helm-ipython)
 ;; (define-key python-mode-map (kbd "<M-tab>") 'helm-ipython-complete)
 ;; (define-key python-mode-map (kbd "C-c C-i") 'helm-ipython-import-modules-from-buffer)
 

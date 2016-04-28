@@ -15,7 +15,7 @@
 (add-to-list 'load-path "~/.emacs.d/emacs-config")
 
 ;; Require with messages to debug more easily.
-(defun tv-require (feature &optional filename noerror)
+(defun require (feature &optional filename noerror)
   (message "Loading %s..." (symbol-name feature))
   (condition-case err
       (if (require feature filename noerror)
@@ -116,21 +116,21 @@
 (setq split-width-threshold nil)
 
 ;; Enable recursive buffers
-(tv-require 'mb-depth)
+(require 'mb-depth)
 (setq enable-recursive-minibuffers t)
 (minibuffer-depth-indicate-mode 1)
 
 (setq completion-cycle-threshold t)
 
 ;;; Helm minimal config
-(tv-require 'helm-config)
-(tv-require 'init-helm-thierry)
+(require 'helm-config)
+(require 'init-helm-thierry)
 
 (helm-mode 1)
-(tv-require 'helm-descbinds)
+(require 'helm-descbinds)
 (helm-descbinds-install)            ; C-h b, C-x C-h
 (fset 'yes-or-no-p 'y-or-n-p)
-(tv-require 'tv-utils)
+(require 'tv-utils)
 
 ;; Eldoc
 (require 'eldoc-eval)
