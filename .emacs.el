@@ -604,7 +604,7 @@ With a prefix arg decrease transparency."
                                                  (alpha . nil)
                                                  (fullscreen . nil))
                                                 )))))
-  :bind ("C-8" . 'tv-transparency-modify))
+  :bind ("C-8" . tv-transparency-modify))
 
 ;;; Use `net-utils-run-simple' in net-utils fns.
 ;;
