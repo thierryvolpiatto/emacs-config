@@ -517,6 +517,20 @@ So far, F can only be a symbol, not a lambda expression."))
     (setq initial-frame-alist '((fullscreen . maximized)))
     (setq frame-auto-hide-function 'delete-frame)
 
+    (defun tv-transparency-modify (arg)
+      "Increase Emacs frame transparency.
+With a prefix arg decrease transparency."
+      (interactive "P")
+      (when (window-system)
+        (let* ((ini-alpha (frame-parameter nil 'alpha))
+               (def-alpha (or ini-alpha 80))
+               (mod-alpha (if arg
+                              (min (+ def-alpha 10) 100)
+                              (max (- def-alpha 10)
+                                   frame-alpha-lower-limit)))) ; 20
+          (modify-frame-parameters nil (list (cons 'alpha mod-alpha)))
+          (message "Alpha[%s]" mod-alpha))))
+    
     (if (or (daemonp)
             (not (window-system))
             (< emacs-major-version 24))
@@ -589,7 +603,8 @@ So far, F can only be a symbol, not a lambda expression."))
                                                  (foreground-color . "DarkGoldenrod")
                                                  (alpha . nil)
                                                  (fullscreen . nil))
-                                                ))))))
+                                                )))))
+  :bind ("C-8" . 'tv-transparency-modify))
 
 ;;; Use `net-utils-run-simple' in net-utils fns.
 ;;
@@ -1642,7 +1657,6 @@ from IPython.core.completerlib import module_completion"
 
 ;;; Various fns
 ;;
-
 (defun tv/update-helm-only-symbol (dir)
   (cl-loop for f in (directory-files dir t "\\.el\\'")
            do (with-current-buffer (find-file-noselect f)
@@ -1655,27 +1669,9 @@ from IPython.core.completerlib import module_completion"
                         (unless (looking-at "(put")
                           (insert (format "(put '%s 'helm-only t)\n" fun))))))))))
 
-(defun quickping (host)
-  "Return non--nil when host is reachable."
-  (= 0 (call-process "ping" nil nil nil "-c1" "-W10" "-q" host)))
-
 (defun goto-scratch ()
   (interactive)
   (switch-to-buffer "*scratch*"))
-
-(defun tv-transparency-modify (arg)
-  "Increase Emacs frame transparency.
-With a prefix arg decrease transparency."
-  (interactive "P")
-  (when (window-system)
-    (let* ((ini-alpha (frame-parameter nil 'alpha))
-           (def-alpha (or ini-alpha 80))
-           (mod-alpha (if arg
-                          (min (+ def-alpha 10) 100)
-                          (max (- def-alpha 10)
-                               frame-alpha-lower-limit)))) ; 20
-      (modify-frame-parameters nil (list (cons 'alpha mod-alpha)))
-      (message "Alpha[%s]" mod-alpha))))
 
 ;; Scroll-down-Scroll-up
 (defun tv-scroll-down ()
@@ -1721,25 +1717,10 @@ With a prefix arg decrease transparency."
           (message "Bug `#%d' url's copied to kill-ring" bug-number))
         (browse-url url))))
 
-;; Entete-Bash
-(defun tv-insert-bash-header ()
-  "insert bash header at point"
-  (interactive)
-  (insert "#!/bin/bash\n"
-          "## Title:\n"
-          "## Description: \n"
-          "## Author:Thierry Volpiatto<thierry dot volpiatto FROM gmail DOT com>\n"
-          "## Commentary:\n\n"))
-
 (defun tv-shell ()
   (interactive)
   (if (eq major-mode 'shell-mode)
       (bury-buffer) (shell)))
-
-;; Toggle-show-trailing-whitespace
-(defun toggle-show-trailing-whitespace ()
-  (interactive)
-  (setq show-trailing-whitespace (not show-trailing-whitespace)))
 
 (defun tv-restore-scratch-buffer ()
   (unless (buffer-file-name (get-buffer "*scratch*"))
@@ -1805,7 +1786,6 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
 (global-set-key (kbd "C-x C-\"")                   'split-window-horizontally)
 (global-set-key [remap save-buffers-kill-terminal] 'tv-stop-emacs) ; C-x C-c
 (global-set-key (kbd "<f11> s c")                  'goto-scratch)
-(global-set-key (kbd "C-8")                        'tv-transparency-modify)
 
 
 ;;; Elisp
