@@ -277,6 +277,8 @@ So far, F can only be a symbol, not a lambda expression."))
 (use-package newcomment
     :config
   (progn
+    ;; Change the behavior of `M-;' by commenting line.
+    ;; Much simpler than emacs-25 `comment-line'.
     (defun comment--advice-dwim (old--fn &rest args)
       (if (region-active-p)
           (apply old--fn args)
