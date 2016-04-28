@@ -655,18 +655,18 @@ If your system's ping continues until interrupted, you can try setting
         (unless (condition-case err
                     (async-get proc)
                   (error (ignore (message "Error: %s" (car err)))))
-          (message "Recompiling %s...FAILED" file))))
+          (message "Recompiling %s...FAILED" file))))))
 
-    (use-package dired-async :config (dired-async-mode 1))
-    (use-package smtpmail-async
-        :commands 'async-smtpmail-send-it)
-    (use-package async-bytecomp
-        :config (setq async-bytecomp-allowed-packages '(all)))))
+(use-package dired-async :config (dired-async-mode 1))
+(use-package smtpmail-async
+    :commands 'async-smtpmail-send-it)
+(use-package async-bytecomp
+    :config (setq async-bytecomp-allowed-packages '(all)))
 
 ;;; Helm
 ;;
 (use-package helm
-    :config (load "init-helm-thierry.el"))
+    :init (load "init-helm-thierry.el"))
 
 ;;; Firefox protocol
 ;;
