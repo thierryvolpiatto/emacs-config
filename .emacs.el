@@ -1028,6 +1028,7 @@ are returned unchanged."
 (use-package eldoc-eval
     :preface (defvar eldoc-in-minibuffer-mode nil)
     :no-require t
+    :diminish eldoc-mode
     :config
   (progn
     (eldoc-in-minibuffer-mode 1)
