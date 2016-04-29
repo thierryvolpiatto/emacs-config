@@ -641,27 +641,31 @@ If your system's ping continues until interrupted, you can try setting
 (use-package async
     :config
   (progn
-    (defun tv/async-byte-compile-file (file)
-      (interactive "fFile: ")
-      (let ((proc
-             (async-start
-              `(lambda ()
-                 (require 'bytecomp)
-                 ,(async-inject-variables "\\`load-path\\'")
-                 (let ((default-directory ,(file-name-directory file)))
-                   (add-to-list 'load-path default-directory)
-                   (byte-compile-file ,file))))))
+    ;; Dired async.
+    (use-package dired-async :config (dired-async-mode 1))
+    ;; Smtp async.
+    (use-package smtpmail-async
+        :commands 'async-smtpmail-send-it)
+    ;; Byte compilation async.
+    (use-package async-bytecomp
+        :config
+      (progn
+        (setq async-bytecomp-allowed-packages '(all))
+        (defun tv/async-byte-compile-file (file)
+          (interactive "fFile: ")
+          (let ((proc
+                 (async-start
+                  `(lambda ()
+                     (require 'bytecomp)
+                     ,(async-inject-variables "\\`load-path\\'")
+                     (let ((default-directory ,(file-name-directory file)))
+                       (add-to-list 'load-path default-directory)
+                       (byte-compile-file ,file))))))
 
-        (unless (condition-case err
-                    (async-get proc)
-                  (error (ignore (message "Error: %s" (car err)))))
-          (message "Recompiling %s...FAILED" file))))))
-
-(use-package dired-async :config (dired-async-mode 1))
-(use-package smtpmail-async
-    :commands 'async-smtpmail-send-it)
-(use-package async-bytecomp
-    :config (setq async-bytecomp-allowed-packages '(all)))
+            (unless (condition-case err
+                        (async-get proc)
+                      (error (ignore (message "Error: %s" (car err)))))
+              (message "Recompiling %s...FAILED" file))))))))
 
 ;;; Helm
 ;;
