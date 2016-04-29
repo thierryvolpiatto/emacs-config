@@ -665,8 +665,7 @@ If your system's ping continues until interrupted, you can try setting
 
 ;;; Helm
 ;;
-(use-package helm
-    :init (load "init-helm-thierry.el"))
+(use-package init-helm-thierry)
 
 ;;; Firefox protocol
 ;;
@@ -1682,6 +1681,7 @@ from IPython.core.completerlib import module_completion"
 ;;; Which function
 ;;
 (use-package which-func
+    :commands 'which-function
     :config
   (progn
     (defun tv/which-func ()

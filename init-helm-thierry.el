@@ -1,21 +1,26 @@
 ;;; init-helm-thierry.el --- My startup file for helm. -*- lexical-binding: t -*- 
 ;;; Code:
 
-
-
-;;; Enable Modes (This is loading nearly everything).
+;;; Load all autoloads for helm and its extensions
 ;;
-(use-package helm-config
-    :config
-  (progn
-    (helm-mode 1)
-    (helm-adaptive-mode 1)
-    (helm-push-mark-mode 1)))
-
-
-;;;; Extensions
-;;
+(require 'helm-config)
 (load "/home/thierry/elisp/helm-extensions/helm-extensions-autoloads.el")
+
+
+;;; Enable Modes (helm-mode is loading nearly everything).
+;;
+(use-package helm-mode
+    :config (helm-mode 1))
+
+(use-package helm-adaptive
+    :config (helm-adaptive-mode 1))
+
+(use-package helm-ring
+    :config (helm-push-mark-mode 1))
+
+(use-package helm-utils
+    ;; Popup buffer-name or filename in grep/moccur/imenu-all etc...
+    :config (helm-popup-tip-mode 1))
 
 
 ;;;; Test Sources or new helm code. 
@@ -68,10 +73,6 @@
 (define-key helm-moccur-map (kbd "C-c ?") 'helm/occur-which-func)
 (define-key helm-grep-map   (kbd "C-c ?") 'helm/occur-which-func)
 
-;; Popup buffer-name or filename in grep/moccur/imenu-all etc...
-
-(helm-popup-tip-mode 1)
-
 ;; Show the visibles buffers on top of list (issue #1301)
 
 (defun helm/modify-ido-temp-list ()
@@ -84,7 +85,6 @@
 ;;
 ;;
 (define-key helm-command-map (kbd "g") 'helm-apt)
-(define-key helm-command-map (kbd "w") 'helm-psession)
 (define-key helm-command-map (kbd "z") 'helm-complex-command-history)
 (define-key helm-command-map (kbd "w") 'helm-w3m-bookmarks)
 (define-key helm-command-map (kbd "x") 'helm-firefox-bookmarks)
