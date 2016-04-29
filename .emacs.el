@@ -818,6 +818,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Golden-ratio
 ;;
 (use-package golden-ratio
+    :diminish golden-ratio-mode
     :init
   (progn
     (add-hook 'ediff-before-setup-windows-hook (lambda () (golden-ratio-mode -1)))
@@ -885,6 +886,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Undo-tree
 ;;
 (use-package undo-tree
+    :diminish undo-tree-mode
     :config
     (global-undo-tree-mode 1))
 
