@@ -21,19 +21,18 @@
 (when (and (= emacs-major-version 24)
            (not (version< emacs-version "24.4.1")))
   (add-to-list 'load-path "~/.emacs.d/emacs-config/")
-  ;; Load the emacs-25 package.el version adapted to emacs-24.
+  ;; Load my own package.el adapted to emacs-24.
   (load "package-24"))
 
 (package-initialize)
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("melpa-stable" . "https://stable.melpa.org/packages/")
-                         ("gnu" . "https://elpa.gnu.org/packages/")
-                         ))
 
-(setq package-pinned-packages '((async . "melpa")
-                                (magit . "melpa-stable")
+(setq package-archives        '(("melpa"        . "https://melpa.org/packages/")
+                                ("melpa-stable" . "https://stable.melpa.org/packages/")
+                                ("gnu"          . "https://elpa.gnu.org/packages/"))
+      package-pinned-packages '((async       . "melpa")
+                                (magit       . "melpa-stable")
                                 (magit-popup . "melpa-stable")
-                                (git-commit . "melpa-stable")
+                                (git-commit  . "melpa-stable")
                                 (with-editor . "melpa-stable")))
 
 ;;; Use-package.
@@ -44,6 +43,22 @@
 
 ;;; Global settings
 ;;
+;;  Global bindings
+(global-set-key (kbd "C-z")   nil) ; Disable `suspend-frame'.
+(global-set-key (kbd "<f11>") nil)
+(global-set-key (kbd "C-c R") (lambda () (interactive) (revert-buffer t t)))
+(global-set-key [remap save-buffers-kill-terminal] 'tv-stop-emacs) ; C-x C-c
+
+;; y-or-n-p
+(fset 'yes-or-no-p 'y-or-n-p)
+
+;; Kill emacs
+(defun tv-stop-emacs ()
+  (interactive)
+  (if (daemonp)
+      (save-buffers-kill-emacs)
+      (save-buffers-kill-terminal)))
+
 ;; confirm-quit-emacs
 (setq confirm-kill-emacs 'y-or-n-p)
 
@@ -52,27 +67,16 @@
 ;; Add-newline-at-end-of-files
 (setq require-final-newline t)
 
-;; y-or-n-p
-(fset 'yes-or-no-p 'y-or-n-p)
 
 ;; Limite-max-lisp
-(setq max-lisp-eval-depth 40000)
-(setq max-specpdl-size 100000)
+(setq max-lisp-eval-depth 40000
+      max-specpdl-size    100000)
 
 ;; Increase GC
 (setq gc-cons-threshold 20000000)
 
-;; Annoyances section
-;;
-(global-set-key (kbd "<f11>") nil)
+;; Disable bidi
 (setq-default bidi-display-reordering nil)
-
-;; Kill emacs
-(defun tv-stop-emacs ()
-  (interactive)
-  (if (daemonp)
-      (save-buffers-kill-emacs)
-      (save-buffers-kill-terminal)))
 
 ;; column-number in mode-line.
 (column-number-mode 1)
@@ -95,9 +99,6 @@
 
 ;; Load my favourite theme.
 (add-hook 'emacs-startup-hook (lambda () (load-theme 'naquadah)))
-
-;; Don't split this windows horizontally
-(setq split-width-threshold nil)
 
 ;; Pas-de-dialog-gtk
 (setq use-file-dialog nil)
@@ -606,6 +607,14 @@ With a prefix arg decrease transparency."
                                                 )))))
   :bind ("C-8" . tv-transparency-modify))
 
+(use-package window
+    :no-require t
+    :init (setq split-width-threshold nil)  ;; Don't split windows horizontally.
+    :bind (("C-x C-²" . delete-other-windows)
+           ("C-x C-&" . delete-window)
+           ("C-x C-é" . split-window-vertically)
+           ("C-x C-\"" . split-window-horizontally)))
+
 ;;; Use `net-utils-run-simple' in net-utils fns.
 ;;
 (use-package net-utils
@@ -727,26 +736,30 @@ If your system's ping continues until interrupted, you can try setting
 ;;; tv-utils fns
 ;;
 (use-package tv-utils
-    :commands (tv-eval-region tv/async-byte-compile-file)
+    :commands (tv-eval-region tv/async-byte-compile-file tv-restore-scratch-buffer)
     :init (progn
             (bind-key "C-M-!" 'tv-eval-region lisp-interaction-mode-map) 
             (bind-key "C-M-!" 'tv-eval-region emacs-lisp-mode-map))
-    :bind (("M-\"" . tv-insert-double-quote)
-           ("C-M-\`" . tv-insert-double-backquote)
-           ("C-M-(" . tv-move-pair-forward)
-           ("C-M-\"" . tv-insert-double-quote-and-close-forward)
-           ("C-M-)" . tv-insert-pair-and-close-forward)
-           ("C-c t r" . translate-at-point)
-           ("<f5> c" . tv-toggle-calendar)
-           ("C-h C-e" . tv-tail-echo-area-messages)
+    :bind (("M-\""                  . tv-insert-double-quote)
+           ("C-M-\`"                . tv-insert-double-backquote)
+           ("C-M-("                 . tv-move-pair-forward)
+           ("C-M-\""                . tv-insert-double-quote-and-close-forward)
+           ("C-M-)"                 . tv-insert-pair-and-close-forward)
+           ("C-c t r"               . translate-at-point)
+           ("<f5> c"                . tv-toggle-calendar)
+           ("C-h C-e"               . tv-tail-echo-area-messages)
            ([remap kill-whole-line] . tv-kill-whole-line)
-           ("M-e" . tv-eval-last-sexp-at-eol)
-           ([remap delete-char] . tv-delete-char)
-           ("C-x C-'" . tv/split-windows)
-           ("C-<" . other-window-backward)
-           ("C->" . other-window-forward)
-           ([C-left] . screen-top)
-           ([C-right] . screen-bottom)))
+           ("M-e"                   . tv-eval-last-sexp-at-eol)
+           ([remap delete-char]     . tv-delete-char)
+           ("C-x C-'"               . tv/split-windows)
+           ("C-<"                   . other-window-backward)
+           ("C->"                   . other-window-forward)
+           ([C-left]                . screen-top)
+           ([C-right]               . screen-bottom)
+           ("<M-down>"              . tv-scroll-down)
+           ("<M-up>"                . tv-scroll-up)
+           ("<C-M-down>"            . tv-scroll-other-down)
+           ("<C-M-up>"              . tv-scroll-other-up)))
 
 ;;; Ledger
 ;;
@@ -765,8 +778,8 @@ If your system's ping continues until interrupted, you can try setting
                rectangle-utils-extend-rectangle-to-space-or-paren
                rectangle-utils-extend-rectangle-to-space-or-dot
                rectangle-utils-extend-rectangle-to-regexp)
-    :bind (("C-x r e" . rectangle-utils-extend-rectangle-to-end)
-           ("C-x r h" . rectangle-utils-menu)
+    :bind (("C-x r e"       . rectangle-utils-extend-rectangle-to-end)
+           ("C-x r h"       . rectangle-utils-menu)
            ("C-x r <right>" . rectangle-utils-insert-at-right)
            :map emacs-lisp-mode-map
            ("C-x r a" . rectangle-utils-extend-rectangle-to-space-or-paren)
@@ -1223,7 +1236,7 @@ from IPython.core.completerlib import module_completion"
 
     (define-key calendar-mode-map (kbd "C-<right>") 'calendar-forward-month)
     (define-key calendar-mode-map (kbd "C-<left>")  'calendar-backward-month)
-    (define-key calendar-mode-map (kbd "RET") 'tv/calendar-diary-or-holiday))
+    (define-key calendar-mode-map (kbd "RET")       'tv/calendar-diary-or-holiday))
   :defer t)
 
 ;;; Bookmarks
@@ -1265,7 +1278,7 @@ from IPython.core.completerlib import module_completion"
 ;;
 ;;
 (use-package slime
-    :init
+    :config
   (progn
     (setq inferior-lisp-program "/usr/bin/sbcl")
     (slime-setup '(slime-fancy
@@ -1281,9 +1294,6 @@ from IPython.core.completerlib import module_completion"
     ;; common-lisp-info
     (add-to-list 'Info-additional-directory-list "~/elisp/info/gcl-info/")
     (add-hook 'slime-load-hook (lambda () (require 'slime-tramp)))
-    (bind-key "<f11> l r" 'tv-start-slime)
-    (bind-key "<f11> l e" 'slime-scratch)
-    (bind-key "<f11> l l" 'slime-list-connections)
     (defun tv-slime-port (process)
       (let ((slime-port (or (process-id process)
                             (process-contact process))))
@@ -1305,7 +1315,9 @@ from IPython.core.completerlib import module_completion"
               (slime)
               (slime-list-connections))
           (slime))))
-  :no-require t)
+  :bind (("<f11> l r" . tv-start-slime)
+         ("<f11> l e" . slime-scratch)
+         ("<f11> l l" . slime-list-connections)))
 
 ;;; Addressbook
 ;;
@@ -1320,8 +1332,7 @@ from IPython.core.completerlib import module_completion"
 ;;
 (use-package w3m
     :init (require 'config-w3m)
-    :bind ("<f7> h" . w3m)
-    :defer t)
+    :bind ("<f7> h" . w3m))
 
 ;;; Mu4e
 ;;
@@ -1340,8 +1351,9 @@ from IPython.core.completerlib import module_completion"
 
 ;;; Auth-source
 ;;
-(with-eval-after-load "auth-source"
-  (setq auth-sources '("~/.authinfo.gpg" "~/.netrc")))
+(use-package auth-source
+    :no-require t
+    :config (setq auth-sources '("~/.authinfo.gpg" "~/.netrc")))
 
 ;;; esh-toggle
 ;;
@@ -1605,7 +1617,8 @@ from IPython.core.completerlib import module_completion"
   (add-hook 'emacs-startup-hook (lambda ()
                                     (let ((default-directory (getenv "HOME")))
                                       (command-execute 'eshell)
-                                      (bury-buffer)))))
+                                      (bury-buffer))))
+  (global-set-key (kbd "C-!") 'eshell-command))
 
 ;;; linum-relative
 ;;
@@ -1697,101 +1710,78 @@ from IPython.core.completerlib import module_completion"
   :bind (:map emacs-lisp-mode-map
               ("C-c ?" . tv/which-func)))
 
-
-;;; Various fns
+;;; Shell
 ;;
-(defun tv/update-helm-only-symbol (dir)
-  (cl-loop for f in (directory-files dir t "\\.el\\'")
-           do (with-current-buffer (find-file-noselect f)
-                (save-excursion
-                  (goto-char (point-min))
-                  (let (fun)
-                    (while (re-search-forward "(with-helm-alive-p" nil t)
-                      (when (setq fun (which-function))
-                        (end-of-defun)
-                        (unless (looking-at "(put")
-                          (insert (format "(put '%s 'helm-only t)\n" fun))))))))))
+(use-package shell
+    :config
+  (progn
+    (defun comint--advice-send-eof (&rest _args)
+      (kill-buffer))
+    (advice-add 'comint-send-eof :after 'comint--advice-send-eof))
+  :bind ("<f11> s h" . shell))
 
-(defun goto-scratch ()
-  (interactive)
-  (switch-to-buffer "*scratch*"))
+;;; Ielm
+;;
+(use-package ielm
+    :bind ("<f11> i" . ielm))
 
-;; Scroll-down-Scroll-up
-(defun tv-scroll-down ()
-  (interactive)
-  (scroll-down -1))
-(define-key org-mode-map (kbd "<M-down>") 'tv-scroll-down)
+;;; Elisp/lisp
+;;
+;; Fix indentation in CL loop.
+(use-package lisp-mode
+    :config
+  (progn
+    (setq lisp-indent-function 'common-lisp-indent-function
+          lisp-simple-loop-indentation 1
+          lisp-loop-keyword-indentation 6
+          lisp-loop-forms-indentation 6)
 
-(defun tv-scroll-up ()
-  (interactive)
-  (scroll-down 1))
-(define-key org-mode-map (kbd "<M-up>") 'tv-scroll-up)
+    (defun goto-scratch ()
+      (interactive)
+      (switch-to-buffer "*scratch*"))
+    
+    ;; Fix indentation in cl-flet and cl-labels
+    (with-eval-after-load "cl-indent.el"
+      (let ((l '((flet ((&whole 4 &rest (&whole 1 &lambda &body)) &body))
+                 (cl-flet* . flet)
+                 (labels . flet)
+                 (cl-flet . flet)
+                 (cl-labels . flet)
+                 (cl-macrolet . flet)
+                 )))
+        (dolist (el l)
+          (put (car el) 'common-lisp-indent-function
+               (if (symbolp (cdr el))
+                   (get (cdr el) 'common-lisp-indent-function)
+                   (car (cdr el))))))))
+  :bind (("<f11> s c" . goto-scratch)
+         :map
+         emacs-lisp-mode-map
+         ("RET" . newline-and-indent)
+         ("C-c C-c b" . byte-compile-file)
+         ("<next>" . forward-page)
+         ("<prior>" . backward-page)
+         ("C-M-j" . backward-kill-sexp)
+         :map
+         lisp-interaction-mode-map
+         ("RET" . newline-and-indent)
+         ("C-M-j" . backward-kill-sexp)
+         :map
+         lisp-mode-map
+         ("RET" . newline-and-indent)))
 
-;; Enable-scroll-other-window-globally
-(defun tv-scroll-other-down ()
-  (interactive)
-  (scroll-other-window 1))
-(define-key org-mode-map (kbd "<C-M-down>") 'tv-scroll-other-down)
+;;; face-remap - font size <C-fn-up/down>.
+;;
+(use-package face-remap
+    :bind (("<C-prior>" . text-scale-decrease)
+           ("<C-next>" . text-scale-increase)))
 
-(defun tv-scroll-other-up ()
-  (interactive)
-  (scroll-other-window -1))
-(define-key org-mode-map (kbd "<C-M-up>") 'tv-scroll-other-up)
-
-(defun tv-find-or-kill-gnu-bug-number (bug-number arg)
-  "Browse url corresponding to emacs gnu bug number or kill it."
-  (interactive (list (read-number "Bug number: " (thing-at-point 'number))
-                     current-prefix-arg))
-  (let ((url (format "http://debbugs.gnu.org/cgi/bugreport.cgi?bug=%s" bug-number)))
-    (if arg
-        (progn
-          (kill-new url)
-          (message "Bug `#%d' url's copied to kill-ring" bug-number))
-        (browse-url url))))
-
-(defun tv-find-or-kill-helm-bug-number (bug-number arg)
-  "Browse url corresponding to helm bug number or kill it."
-  (interactive (list (read-number "Bug number: " (thing-at-point 'number))
-                     current-prefix-arg))
-  (let ((url (format "https://github.com/emacs-helm/helm/issues/%s" bug-number)))
-    (if arg
-        (progn
-          (kill-new url)
-          (message "Bug `#%d' url's copied to kill-ring" bug-number))
-        (browse-url url))))
-
-(defun tv-shell ()
-  (interactive)
-  (if (eq major-mode 'shell-mode)
-      (bury-buffer) (shell)))
-
-(defun tv-restore-scratch-buffer ()
-  (unless (buffer-file-name (get-buffer "*scratch*"))
-    (and (get-buffer "*scratch*") (kill-buffer "*scratch*")))
-  (with-current-buffer (find-file-noselect "~/.emacs.d/save-scratch.el")
-    (rename-buffer "*scratch*")
-    (lisp-interaction-mode)
-    (setq lexical-binding t)
-    (use-local-map lisp-interaction-mode-map))
-  (when (or (eq (point-min) (point-max))
-            ;; For some reason the scratch buffer have not a zero size.
-            (<= (buffer-size) 2))
-    (insert ";;; -*- coding: utf-8; mode: lisp-interaction; lexical-binding: t -*-\n;;\n;; SCRATCH BUFFER\n;; ==============\n\n")))
-
-;; This is bounded to C-d in shell.
-(defun comint-delchar-or-maybe-eof (arg)
-  "Delete ARG characters forward or send an EOF to subprocess.
-Sends an EOF only if point is at the end of the buffer and there is no input."
-  (interactive "p")
-  (let ((proc (get-buffer-process (current-buffer))))
-    (if (and (eobp) proc (= (point) (marker-position (process-mark proc))))
-        (progn (comint-send-eof) (kill-buffer))
-        (delete-char arg))))
-
+;;; Emacspeak
+;;
 (defun tv/emacspeak-startup ()
-  (let* ((espeak-src-dir "/home/thierry/elisp/emacspeak")
+  (let* ((espeak-src-dir      "/home/thierry/elisp/emacspeak")
          (espeak-lisp-src-dir (expand-file-name "lisp" espeak-src-dir))
-         (espeak-server "/home/thierry/elisp/emacspeak/servers/espeak"))
+         (espeak-server       "/home/thierry/elisp/emacspeak/servers/espeak"))
     (if (file-directory-p espeak-src-dir)
         (progn
           (add-to-list 'load-path espeak-lisp-src-dir)
@@ -1800,77 +1790,13 @@ Sends an EOF only if point is at the end of the buffer and there is no input."
           (setq dtk-program espeak-server)
           (load-file (expand-file-name "emacspeak-setup.el" espeak-lisp-src-dir)))
         (error "No directory named `%s'" espeak-src-dir))))
-
-;;; Bindings
-;;
-;;
-(global-set-key (kbd "C-z")                        nil) ; Disable `suspend-frame'.
-(global-set-key (kbd "C-!")                        'eshell-command)
-(global-set-key (kbd "C-c R")                      (lambda () (interactive) (revert-buffer t t)))
-(global-set-key (kbd "C-M-j")                      'backward-kill-sexp)
-(global-set-key (kbd "<f11> s h")                  'tv-shell)
-(global-set-key (kbd "<f11> i")                    'ielm)
-(global-set-key (kbd "<M-down>")                   'tv-scroll-down)
-(global-set-key (kbd "<M-up>")                     'tv-scroll-up)
-(global-set-key (kbd "<C-M-down>")                 'tv-scroll-other-down)
-(global-set-key (kbd "<C-M-up>")                   'tv-scroll-other-up)
-(global-set-key (kbd "<C-prior>")                  'text-scale-decrease) ; font size (<C-fn-up/down>).
-(global-set-key (kbd "<C-next>")                   'text-scale-increase)
-(global-set-key (kbd "C-x C-²")                    'delete-other-windows)
-(global-set-key (kbd "C-x C-&")                    'delete-window)
-(global-set-key (kbd "C-x C-é")                    'split-window-vertically)
-(global-set-key (kbd "C-x C-\"")                   'split-window-horizontally)
-(global-set-key [remap save-buffers-kill-terminal] 'tv-stop-emacs) ; C-x C-c
-(global-set-key (kbd "<f11> s c")                  'goto-scratch)
 
 
-;;; Elisp
-;;
-;; Fix indentation in CL loop.
-(setq lisp-indent-function 'common-lisp-indent-function
-      lisp-simple-loop-indentation 1
-      lisp-loop-keyword-indentation 6
-      lisp-loop-forms-indentation 6)
-
-;; Fix indentation in cl-flet and cl-labels
-(with-eval-after-load "cl-indent.el"
-  (let ((l '((flet ((&whole 4 &rest (&whole 1 &lambda &body)) &body))
-             (cl-flet* . flet)
-             (labels . flet)
-             (cl-flet . flet)
-             (cl-labels . flet)
-             (cl-macrolet . flet)
-             )))
-    (dolist (el l)
-      (put (car el) 'common-lisp-indent-function
-           (if (symbolp (cdr el))
-               (get (cdr el) 'common-lisp-indent-function)
-               (car (cdr el)))))))
-
-;; Tooltip face
-(set-face-attribute 'tooltip nil
-                    :foreground "black"
-                    :background "NavajoWhite"
-                    :family "unknown-DejaVu Sans Mono-bold-normal-normal"
-                    :underline t)
-
-;; Indent-when-newline (RET) in all elisp modes
-(define-key lisp-interaction-mode-map (kbd "RET") 'newline-and-indent)
-(define-key emacs-lisp-mode-map (kbd "RET") 'newline-and-indent)
-(define-key lisp-mode-map (kbd "RET") 'newline-and-indent)
-
-;; byte-compile-file
-(define-key emacs-lisp-mode-map (kbd "C-c C-c b") 'byte-compile-file)
-
-;; Next page
-(define-key emacs-lisp-mode-map (kbd "<next>") 'forward-page)
-(define-key emacs-lisp-mode-map (kbd "<prior>") 'backward-page)
-
-
-;;; Be sure to reenable touchpad when quitting emacs
+;;; Ensure touchpad is reenabled when quitting emacs
+;;  because of bug that cause desktop loosing focus after killing emacs.
 (add-hook 'kill-emacs-hook (lambda ()
-                               (and (executable-find "reenable_touchpad.sh")
-                                    (shell-command "reenable_touchpad.sh"))))
+                             (and (executable-find "reenable_touchpad.sh")
+                                  (shell-command "reenable_touchpad.sh"))))
 
 ;; Link now scratch buffer to file
 (tv-restore-scratch-buffer)

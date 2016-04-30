@@ -987,6 +987,69 @@ Arg `host' is machine in auth-info file."
             (message rcode-msg)
             (error rcode-msg))))))
 
+;;; Scroll functions
+(defun tv-scroll-down ()
+  (interactive)
+  (scroll-down -1))
+
+(defun tv-scroll-up ()
+  (interactive)
+  (scroll-down 1))
+
+(defun tv-scroll-other-down ()
+  (interactive)
+  (scroll-other-window 1))
+
+(defun tv-scroll-other-up ()
+  (interactive)
+  (scroll-other-window -1))
+
+(defun tv/update-helm-only-symbol (dir)
+  (cl-loop for f in (directory-files dir t "\\.el\\'")
+           do (with-current-buffer (find-file-noselect f)
+                (save-excursion
+                  (goto-char (point-min))
+                  (let (fun)
+                    (while (re-search-forward "(with-helm-alive-p" nil t)
+                      (when (setq fun (which-function))
+                        (end-of-defun)
+                        (unless (looking-at "(put")
+                          (insert (format "(put '%s 'helm-only t)\n" fun))))))))))
+
+(defun tv-find-or-kill-gnu-bug-number (bug-number arg)
+  "Browse url corresponding to emacs gnu bug number or kill it."
+  (interactive (list (read-number "Bug number: " (thing-at-point 'number))
+                     current-prefix-arg))
+  (let ((url (format "http://debbugs.gnu.org/cgi/bugreport.cgi?bug=%s" bug-number)))
+    (if arg
+        (progn
+          (kill-new url)
+          (message "Bug `#%d' url's copied to kill-ring" bug-number))
+        (browse-url url))))
+
+(defun tv-find-or-kill-helm-bug-number (bug-number arg)
+  "Browse url corresponding to helm bug number or kill it."
+  (interactive (list (read-number "Bug number: " (thing-at-point 'number))
+                     current-prefix-arg))
+  (let ((url (format "https://github.com/emacs-helm/helm/issues/%s" bug-number)))
+    (if arg
+        (progn
+          (kill-new url)
+          (message "Bug `#%d' url's copied to kill-ring" bug-number))
+        (browse-url url))))
+
+(defun tv-restore-scratch-buffer ()
+  (unless (buffer-file-name (get-buffer "*scratch*"))
+    (and (get-buffer "*scratch*") (kill-buffer "*scratch*")))
+  (with-current-buffer (find-file-noselect "~/.emacs.d/save-scratch.el")
+    (rename-buffer "*scratch*")
+    (lisp-interaction-mode)
+    (setq lexical-binding t)
+    (use-local-map lisp-interaction-mode-map))
+  (when (or (eq (point-min) (point-max))
+            ;; For some reason the scratch buffer have not a zero size.
+            (<= (buffer-size) 2))
+    (insert ";;; -*- coding: utf-8; mode: lisp-interaction; lexical-binding: t -*-\n;;\n;; SCRATCH BUFFER\n;; ==============\n\n")))
 (provide 'tv-utils)
 
 ;; Local Variables:

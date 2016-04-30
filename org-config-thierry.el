@@ -194,6 +194,10 @@
 (use-package ob-sh)
 (use-package ob-emacs-lisp)
 
+(define-key org-mode-map (kbd "<M-up>") 'tv-scroll-up)
+(define-key org-mode-map (kbd "<M-down>") 'tv-scroll-down)
+(define-key org-mode-map (kbd "<C-M-up>") 'tv-scroll-other-up)
+(define-key org-mode-map (kbd "<C-M-down>") 'tv-scroll-other-down)
 
 (provide 'org-config-thierry)
 
