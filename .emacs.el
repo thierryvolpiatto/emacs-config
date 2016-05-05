@@ -470,12 +470,13 @@ So far, F can only be a symbol, not a lambda expression."))
   (add-to-list 'display-time-world-list '("Europe/Berlin" "Berlin"))
   (add-to-list 'display-time-world-list '("Europe/Oslo" "Oslo"))
   (add-to-list 'display-time-world-list '("Europe/Lisbon" "Lisbon"))
+  (add-to-list 'display-time-world-list '("Europe/Athens" "Athens"))
   (add-to-list 'display-time-world-list '("Asia/Dubai" "Dubai"))
   (add-to-list 'display-time-world-list '("Asia/Tokyo" "Tokyo"))
   (add-to-list 'display-time-world-list '("Hongkong" "Hongkong"))
   (add-to-list 'display-time-world-list '("Indian/Antananarivo" "Antananarivo"))
   (add-to-list 'display-time-world-list '("Indian/Reunion" "Reunion"))
-
+  
     (setq display-time-24hr-format   t
         display-time-day-and-date  t
         display-time-use-mail-icon t
