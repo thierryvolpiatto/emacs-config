@@ -483,7 +483,7 @@ So far, F can only be a symbol, not a lambda expression."))
         display-time-string-forms
         '( ;; date
           (if (and (not display-time-format) display-time-day-and-date)
-              (format-time-string "[%a %e %b " now)
+              (format-time-string "[%a%e %b " now)
             "")
           ;; time
           (concat
