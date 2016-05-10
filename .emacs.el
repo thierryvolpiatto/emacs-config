@@ -1716,12 +1716,15 @@ from IPython.core.completerlib import module_completion"
 ;;; Shell
 ;;
 (use-package shell
+    :requires helm
     :config
   (progn
     (defun comint--advice-send-eof (&rest _args)
       (kill-buffer))
     (advice-add 'comint-send-eof :after 'comint--advice-send-eof))
-  :bind ("<f11> s h" . shell))
+  :bind (("<f11> s h" . shell)
+         :map shell-mode-map
+         ("M-p" . helm-comint-input-ring)))
 
 ;;; Ielm
 ;;
