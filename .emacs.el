@@ -1625,7 +1625,9 @@ from IPython.core.completerlib import module_completion"
 ;;
 (use-package linum-relative
     :commands (linum-relative-mode
-               helm-linum-relative-mode))
+               helm-linum-relative-mode
+               linum-relative-toggle
+               linum-relative-global-mode))
 
 ;;; Outline-mode
 ;;
