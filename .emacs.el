@@ -1477,22 +1477,29 @@ from IPython.core.completerlib import module_completion"
 
 ;;; Elscreen
 ;;
-(when (locate-library "elscreen")
-  (autoload 'elscreen-start "elscreen.el")
-  (elscreen-start)
-  (global-set-key (kbd "C-z l") 'helm-elscreen))
+(use-package elscreen
+    :disabled t
+    :commands 'elscreen-start
+    :config (progn
+              (elscreen-start))
+    :bind ("C-z l" . helm-elscreen))
 
 ;;; Whitespace-mode
 ;;
-(with-eval-after-load "whitespace"
-  (add-to-list 'whitespace-style 'lines-tail)
-  (setq whitespace-line-column 80))
+(use-package whitespace
+    :commands 'whitespace-mode
+    :config (progn
+              (add-to-list 'whitespace-style 'lines-tail)
+              (setq whitespace-line-column 80))
+    :bind ("C-c W" . whitespace-mode))
 
 ;;; antiword
 ;;
-(autoload 'no-word "no-word" "word to txt")
-(add-to-list 'auto-mode-alist '("\\.doc\\'" . no-word))
-
+(use-package no-word
+    :commands 'no-word
+    :config (progn
+              (add-to-list 'auto-mode-alist '("\\.doc\\'" . no-word))))
+              
 ;;; align-let
 ;;
 (use-package align-let
@@ -1511,15 +1518,17 @@ from IPython.core.completerlib import module_completion"
 
 ;;; sqlite-dump
 ;;
-(autoload 'sqlite-dump "sqlite-dump" nil t)
-(modify-coding-system-alist 'file "\\.sqlite\\'" 'raw-text-unix)
-(add-to-list 'auto-mode-alist '("\\.sqlite\\'" . sqlite-dump))
-(setq sql-sqlite-program "sqlite3")
+(use-package sqlite-dump
+    :commands 'sqlite-dump
+    :config (progn
+              (modify-coding-system-alist 'file "\\.sqlite\\'" 'raw-text-unix)
+              (add-to-list 'auto-mode-alist '("\\.sqlite\\'" . sqlite-dump))
+              (setq sql-sqlite-program "sqlite3")))
 
 ;;; Checkdoc
 ;;
-(autoload 'checkdoc-batch       "checkdoc-batch" nil t)
-(autoload 'checkdoc-batch-files "checkdoc-batch" nil t)
+(use-package checkdoc-batch
+    :commands (checkdoc-batch checkdoc-batch-files))
 
 ;;; markdown-mode
 ;;
@@ -1676,11 +1685,6 @@ from IPython.core.completerlib import module_completion"
 	  (when (fboundp 'helm-autoresize-mode)
 	    (helm-autoresize-mode -1))))))
   :bind ("C-c @" . tv/toggle-flyspell))
-
-;;; White-space
-;;
-(use-package white-space
-    :bind ("C-c W" . whitespace-mode))
 
 ;;; Webjump
 ;;
