@@ -895,7 +895,8 @@ If your system's ping continues until interrupted, you can try setting
 ;;
 (use-package emamux
     :init (setq emamux:completing-read-type 'helm)
-    :bind ("C-c y" . emamux:yank-from-list-buffers))
+    :bind (("C-c y" . emamux:yank-from-list-buffers)
+           ("C-c s" . emamux:send-command)))
 
 ;;; Undo-tree
 ;;
