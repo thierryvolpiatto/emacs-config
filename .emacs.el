@@ -809,7 +809,6 @@ If your system's ping continues until interrupted, you can try setting
 (use-package iedit
     :init
   (progn
-    (bind-key "C-;" 'iedit-mode)
     (bind-key "C-²" 'iedit-mode-toggle-on-function)))
 
 (use-package iedit-rect
@@ -832,6 +831,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Golden-ratio
 ;;
 (use-package golden-ratio
+    :disabled t
     :diminish golden-ratio-mode
     :init
   (progn
