@@ -812,8 +812,9 @@ If your system's ping continues until interrupted, you can try setting
     (bind-key "C-²" 'iedit-mode-toggle-on-function)))
 
 (use-package iedit-rect
-    :init (bind-key [C-return] 'iedit-rectangle-mode)
-    :commands (iedit-rectangle-mode))
+    :bind (([C-return] . iedit-rectangle-mode)
+           :map ctl-x-r-map
+                ("RET" . iedit-rectangle-mode)))
 
 ;;; Lacarte
 ;;
