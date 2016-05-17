@@ -279,19 +279,6 @@ First call indent, second complete symbol, third complete fname."
   (setf (slot-value source 'candidate-number-limit) 300))
 
 
-;;; Psession windows
-;;
-(defun helm/psession-windows ()
-  (interactive)
-  (helm :sources (helm-build-sync-source "Psession windows"
-                   :candidates (lambda ()
-                                 (sort (mapcar 'car psession--winconf-alist) #'string-lessp))
-                   :action (helm-make-actions
-                            "Restore" 'psession-restore-winconf
-                            "Delete" 'psession-delete-winconf))
-        :buffer "*helm psession*"))
-
-
 ;;; helm dictionary
 ;;
 (setq helm-dictionary-database "~/helm-dictionary/dic-en-fr.iso")

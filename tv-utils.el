@@ -809,6 +809,12 @@ the password will be of length (floor LIMIT)."
                     for elm = (nth (random (length ls)) ls)
                     concat elm)))
 
+;;;###autoload
+(defun tv/generate-passwd (arg)
+  (interactive "p")
+  (kill-new (genpasswd (max 12 arg)))
+  (message "new password saved to kill ring"))
+
 ;;; Rotate windows
 ;;
 ;;
