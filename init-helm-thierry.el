@@ -226,7 +226,8 @@ First call indent, second complete symbol, third complete fname."
       helm-firefox-show-structure nil
       helm-turn-on-recentf nil
       helm-top-command "env COLUMNS=%s ps -axo pid,user,pri,nice,ucomm,tty,start,vsz,%%cpu,%%mem,etime,command"
-      helm-mini-default-sources '(helm-source-buffers-list helm-source-buffer-not-found))
+      helm-mini-default-sources '(helm-source-buffers-list helm-source-buffer-not-found)
+      helm-debug-root-directory "/home/thierry/tmp/helm-debug")
 
 ;; Avoid hitting forbidden directory .gvfs when using find.
 (add-to-list 'completion-ignored-extensions ".gvfs/")
