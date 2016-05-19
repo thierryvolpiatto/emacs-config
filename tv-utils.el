@@ -1056,6 +1056,7 @@ Arg `host' is machine in auth-info file."
             ;; For some reason the scratch buffer have not a zero size.
             (<= (buffer-size) 2))
     (insert ";;; -*- coding: utf-8; mode: lisp-interaction; lexical-binding: t -*-\n;;\n;; SCRATCH BUFFER\n;; ==============\n\n")))
+
 (provide 'tv-utils)
 
 ;; Local Variables:

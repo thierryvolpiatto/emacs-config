@@ -672,9 +672,10 @@ If your system's ping continues until interrupted, you can try setting
                        (add-to-list 'load-path default-directory)
                        (byte-compile-file ,file))))))
 
-            (unless (condition-case err
-                        (async-get proc)
-                      (error (ignore (message "Error: %s" (car err)))))
+            (if (condition-case err
+                    (async-get proc)
+                  (error (ignore (message "Error: %s" (car err)))))
+              (message "Recompiling %s...DONE" file)  
               (message "Recompiling %s...FAILED" file))))))))
 
 ;;; Helm
