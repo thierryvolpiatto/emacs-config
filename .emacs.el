@@ -4,7 +4,7 @@
 
 (require 'cl-lib)
 
-(setq inhibit-startup-echo-area-message (getenv "USER"))
+(setq inhibit-startup-echo-area-message "thierry")
 
 ;;; Emacs customize have it's own file
 ;;
