@@ -1044,6 +1044,7 @@ Arg `host' is machine in auth-info file."
           (message "Bug `#%d' url's copied to kill-ring" bug-number))
         (browse-url url))))
 
+;;;###autoload
 (defun tv-restore-scratch-buffer ()
   (unless (buffer-file-name (get-buffer "*scratch*"))
     (and (get-buffer "*scratch*") (kill-buffer "*scratch*")))
