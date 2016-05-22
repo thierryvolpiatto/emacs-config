@@ -1789,6 +1789,17 @@ from IPython.core.completerlib import module_completion"
     :bind (("<C-prior>" . text-scale-decrease)
            ("<C-next>" . text-scale-increase)))
 
+;;; Elp instrument
+;;
+(use-package elp
+    :config
+  (progn
+    (defun tv/advice-elp-results (old--fn &rest args)
+      (let ((inhibit-read-only t))
+        (apply old--fn args)
+        (special-mode)))
+    (advice-add 'elp-results :around 'tv/advice-elp-results)))
+
 ;;; Emacspeak
 ;;
 (defun tv/emacspeak-startup ()
