@@ -1796,9 +1796,10 @@ from IPython.core.completerlib import module_completion"
   (progn
     (defun tv/advice-elp-results (old--fn &rest args)
       (let ((inhibit-read-only t))
-        (apply old--fn args)
-        (special-mode)))
-    (advice-add 'elp-results :around 'tv/advice-elp-results)))
+        (with-current-buffer (get-buffer-create elp-results-buffer)
+          (special-mode)
+          (apply old--fn args)))))
+    (advice-add 'elp-results :around 'tv/advice-elp-results))
 
 ;;; Emacspeak
 ;;
