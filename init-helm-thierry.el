@@ -224,7 +224,6 @@ First call indent, second complete symbol, third complete fname."
       "https://fr.wikipedia.org/w/api.php?action=parse&format=json&prop=text&section=0&page="
       helm-firefox-show-structure nil
       helm-turn-on-recentf nil
-      helm-top-command "env COLUMNS=%s ps -axo pid,user,pri,nice,ucomm,tty,start,vsz,%%cpu,%%mem,etime,command"
       helm-mini-default-sources '(helm-source-buffers-list helm-source-buffer-not-found)
       helm-debug-root-directory "/home/thierry/tmp/helm-debug")
 
