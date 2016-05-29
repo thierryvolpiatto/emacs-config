@@ -22,6 +22,8 @@
     ;; Popup buffer-name or filename in grep/moccur/imenu-all etc...
     :config (helm-popup-tip-mode 1))
 
+(use-package helm-sys
+    :config (helm-top-poll-mode 1))
 
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
