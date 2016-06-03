@@ -1803,6 +1803,11 @@ from IPython.core.completerlib import module_completion"
           (apply old--fn args)))))
     (advice-add 'elp-results :around 'tv/advice-elp-results))
 
+;;; Org toc for github
+;;
+(use-package toc-org
+    :config (add-hook 'org-mode-hook 'toc-org-enable))
+
 ;;; Emacspeak
 ;;
 (defun tv/emacspeak-startup ()
