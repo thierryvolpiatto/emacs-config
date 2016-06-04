@@ -649,6 +649,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Async
 ;;
 (use-package async
+    :ensure t
     :config
   (progn
     ;; Dired async.
@@ -689,11 +690,14 @@ If your system's ping continues until interrupted, you can try setting
 
 ;;; Org
 ;;
-(use-package org :config (use-package org-config-thierry))
+(use-package org
+    :ensure t
+    :config (use-package org-config-thierry))
 
 ;;; Emms
 ;;
 (use-package emms
+    :ensure t
     :config (use-package emms-vlc-config)
     :commands (emms-stream-init))
 
@@ -808,6 +812,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Iedit
 ;;
 (use-package iedit
+    :ensure t
     :init
   (progn
     (bind-key "C-²" 'iedit-mode-toggle-on-function)))
@@ -876,6 +881,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Magit
 ;;
 (use-package magit
+    :ensure t
     :init
     (setq magit-status-buffer-name-format    "*magit status: %a*"
           magit-restore-window-configuration t
@@ -896,6 +902,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Emamux
 ;;
 (use-package emamux
+    :ensure t
     :init (setq emamux:completing-read-type 'helm)
     :bind (("C-c y" . emamux:yank-from-list-buffers)
            ("C-c s" . emamux:send-command)))
@@ -903,6 +910,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Undo-tree
 ;;
 (use-package undo-tree
+    :ensure t
     :diminish undo-tree-mode
     :config
     (global-undo-tree-mode 1))
@@ -910,6 +918,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Zoom-window
 ;;
 (use-package zoom-window
+    :ensure t
     :init (setq zoom-window-mode-line-color "DarkGreen")
     :bind ("C-x C-z" . zoom-window-zoom))
 
@@ -1261,6 +1270,7 @@ from IPython.core.completerlib import module_completion"
 ;;; git-gutter-mode
 ;;
 (use-package git-gutter
+    :ensure t
     :init
   (progn
     (customize-set-variable 'git-gutter:update-interval 2) ; Activate live update timer.
@@ -1282,6 +1292,7 @@ from IPython.core.completerlib import module_completion"
 ;;
 ;;
 (use-package slime
+    :ensure t
     :config
   (progn
     (setq inferior-lisp-program "/usr/bin/sbcl")
@@ -1335,6 +1346,7 @@ from IPython.core.completerlib import module_completion"
 ;;; W3m
 ;;
 (use-package w3m
+    :ensure t
     :init (require 'config-w3m)
     :bind ("<f7> h" . w3m))
 
@@ -1536,6 +1548,7 @@ from IPython.core.completerlib import module_completion"
 ;;; markdown-mode
 ;;
 (use-package markdown-mode
+    :ensure t
     :init
   (progn
     (add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
@@ -1806,6 +1819,7 @@ from IPython.core.completerlib import module_completion"
 ;;; Org toc for github
 ;;
 (use-package toc-org
+    :ensure t
     :config (add-hook 'org-mode-hook 'toc-org-enable))
 
 ;;; Emacspeak
