@@ -1829,6 +1829,10 @@ from IPython.core.completerlib import module_completion"
 ;;
 (use-package benchmark-init :ensure t)
 
+;;; Windmove
+;;
+(use-package windmove :config (windmove-default-keybindings))
+
 
 ;;; Emacspeak
 ;;
