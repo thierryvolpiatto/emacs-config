@@ -35,6 +35,9 @@
                                 (git-commit  . "melpa-stable")
                                 (with-editor . "melpa-stable")))
 
+;; Comment out to activate.
+;; (benchmark-init/activate)
+
 ;;; Use-package.
 ;;
 (eval-when-compile (require 'use-package))
@@ -1821,6 +1824,11 @@ from IPython.core.completerlib import module_completion"
 (use-package toc-org
     :ensure t
     :config (add-hook 'org-mode-hook 'toc-org-enable))
+
+;;; Benchmark-init
+;;
+(use-package benchmark-init :ensure t)
+
 
 ;;; Emacspeak
 ;;
