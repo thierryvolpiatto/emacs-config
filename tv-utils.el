@@ -433,9 +433,9 @@ depending the value of N is positive or negative."
     (tv-insert-image-at-point img)))
 
 (defun tv/view-echo-area-messages (old--fn &rest args)
-  (let ((buf (messages-buffer)))
-    (helm-aif (get-buffer-window buf 'visible)
-        (quit-window nil it)
+  (let ((win (get-buffer-window (messages-buffer) 'visible)))
+    (if win
+        (quit-window nil win)
       (apply old--fn args))))
 
 ;; Kill-backward
