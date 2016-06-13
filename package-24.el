@@ -1236,7 +1236,7 @@ using `package-compute-transaction'."
   (mapc #'package-install-from-archive packages))
 
 ;;;###autoload
-(defun package-install (pkg &optional mark-selected)
+(defun package-install (pkg &optional dont-select)
   "Install the package PKG.
 PKG can be a package-desc or the package name of one the available packages
 in an archive in `package-archives'.  Interactively, prompt for its name.
@@ -1263,7 +1263,7 @@ to `package-selected-packages'."
   (let ((name (if (package-desc-p pkg)
                   (package-desc-name pkg)
                 pkg)))
-    (when (and mark-selected (not (package--user-selected-p name)))
+    (unless (and dont-select (package--user-selected-p name))
       (customize-save-variable 'package-selected-packages
                                (cons name package-selected-packages))))
   (package-download-transaction
@@ -1929,7 +1929,7 @@ If optional arg NO-ACTIVATE is non-nil, don't activate packages."
   (let ((pkg-desc (button-get button 'package-desc)))
     (when (y-or-n-p (format "Install package `%s'? "
                             (package-desc-full-name pkg-desc)))
-      (package-install pkg-desc 1)
+      (package-install pkg-desc)
       (revert-buffer nil t)
       (goto-char (point-min)))))
 
@@ -2393,7 +2393,7 @@ Optional argument NOQUERY non-nil means do not ask the user to confirm."
                       (mapconcat #'package-desc-full-name
                                  install-list ", ")))))
           (mapc (lambda (p)
-                  (package-install p (null (package-installed-p p))))
+                  (package-install p (package-installed-p p)))
                 install-list)))
     ;; Delete packages, prompting if necessary.
     (when delete-list
