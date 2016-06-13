@@ -1833,6 +1833,11 @@ from IPython.core.completerlib import module_completion"
 ;;
 (use-package windmove :config (windmove-default-keybindings))
 
+;;; Powerline
+;;
+(use-package powerline
+    :config (powerline-default-theme)
+    :ensure t)
 
 ;;; Emacspeak
 ;;
