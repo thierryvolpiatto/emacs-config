@@ -432,33 +432,11 @@ depending the value of N is positive or negative."
     (forward-line)
     (tv-insert-image-at-point img)))
 
-;;; Show-message-buffer-a-few-seconds
-(autoload 'View-scroll-to-buffer-end "view")
-;;;###autoload
-(defun tv-tail-echo-area-messages ()
-  (interactive)
-  (save-window-excursion
-    (delete-other-windows)
-    (pop-to-buffer (get-buffer-create "*Messages*") t)
-    (View-scroll-to-buffer-end)
-    (while (let ((key (read-key
-                       (propertize
-                        "Up/down/C-n/p: Scroll, Any other key: Quit"
-                        'face 'minibuffer-prompt))))
-             (cl-case key
-               ((up ?\C-p)
-                (condition-case _err
-                    (scroll-down 1)
-                  (beginning-of-buffer nil)
-                  (end-of-buffer nil))
-                t)
-               ((down ?\C-n)
-                (condition-case _err
-                    (scroll-up 1)
-                  (beginning-of-buffer nil)
-                  (end-of-buffer nil))
-                t)
-               (t nil))))))
+(defun tv/view-echo-area-messages (old--fn &rest args)
+  (let ((buf (messages-buffer)))
+    (helm-aif (get-buffer-window buf 'visible)
+        (quit-window nil it)
+      (apply old--fn args))))
 
 ;; Kill-backward
 ;;;###autoload

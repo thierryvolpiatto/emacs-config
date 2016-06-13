@@ -749,6 +749,7 @@ If your system's ping continues until interrupted, you can try setting
     :init (progn
             (bind-key "C-M-!" 'tv-eval-region lisp-interaction-mode-map) 
             (bind-key "C-M-!" 'tv-eval-region emacs-lisp-mode-map))
+    :config (advice-add 'view-echo-area-messages :around 'tv/view-echo-area-messages)
     :bind (("M-\""                  . tv-insert-double-quote)
            ("C-M-\`"                . tv-insert-double-backquote)
            ("C-M-("                 . tv-move-pair-forward)
@@ -756,7 +757,6 @@ If your system's ping continues until interrupted, you can try setting
            ("C-M-)"                 . tv-insert-pair-and-close-forward)
            ("C-c t r"               . translate-at-point)
            ("<f5> c"                . tv-toggle-calendar)
-           ("C-h C-e"               . tv-tail-echo-area-messages)
            ([remap kill-whole-line] . tv-kill-whole-line)
            ("M-e"                   . tv-eval-last-sexp-at-eol)
            ([remap delete-char]     . tv-delete-char)
