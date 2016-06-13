@@ -1836,7 +1836,13 @@ from IPython.core.completerlib import module_completion"
 ;;; Powerline
 ;;
 (use-package powerline
-    :config (powerline-default-theme)
+    :config
+  (progn
+    (powerline-default-theme)
+    (global-set-key [mode-line mouse-1] 'ignore)
+    (global-set-key [mode-line mouse-2] 'ignore)
+    (global-set-key [mode-line mouse-3] 'ignore)
+    (setq mode-line-default-help-echo nil))
     :ensure t)
 
 ;;; Emacspeak
