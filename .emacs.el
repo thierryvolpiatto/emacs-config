@@ -34,7 +34,8 @@
                                 (magit       . "melpa-stable")
                                 (magit-popup . "melpa-stable")
                                 (git-commit  . "melpa-stable")
-                                (with-editor . "melpa-stable")))
+                                (with-editor . "melpa-stable")
+                                (undo-tree . "melpa")))
 
 ;; Comment out to activate.
 ;; (benchmark-init/activate)
@@ -914,6 +915,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Undo-tree
 ;;
 (use-package undo-tree
+    :ensure t
     :diminish undo-tree-mode
     :config
     (global-undo-tree-mode 1))
