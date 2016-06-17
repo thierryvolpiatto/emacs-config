@@ -28,7 +28,8 @@
 
 (setq package-archives        '(("melpa"        . "https://melpa.org/packages/")
                                 ("melpa-stable" . "https://stable.melpa.org/packages/")
-                                ("gnu"          . "https://elpa.gnu.org/packages/"))
+                                ;; ("gnu"          . "https://elpa.gnu.org/packages/")
+                                )
       package-pinned-packages '((async       . "melpa")
                                 (magit       . "melpa-stable")
                                 (magit-popup . "melpa-stable")
@@ -913,7 +914,6 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Undo-tree
 ;;
 (use-package undo-tree
-    :ensure t
     :diminish undo-tree-mode
     :config
     (global-undo-tree-mode 1))
