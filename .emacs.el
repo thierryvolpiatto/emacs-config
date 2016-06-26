@@ -520,9 +520,9 @@ So far, F can only be a symbol, not a lambda expression."))
   (progn
     (defvar tv-default-font (assoc-default 'font (frame-parameters)))
     (setq-default frame-background-mode 'dark)
-    (setq initial-frame-alist '((fullscreen . maximized)))
+    (setq initial-frame-alist '((fullscreen . maximized)
+                                (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")))
     (setq frame-auto-hide-function 'delete-frame)
-
     (defun tv-transparency-modify (arg)
       "Increase Emacs frame transparency.
 With a prefix arg decrease transparency."
@@ -550,6 +550,7 @@ With a prefix arg decrease transparency."
       (setq default-frame-alist `((foreground-color . "Wheat")
                                   (background-color . "black")
                                   (alpha . 90)
+                                  (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
                                   ;; New frames go in right corner.
                                   (left . ,(- (* (window-width) 8) 160)) ; Chars are 8 bits long.
                                   (vertical-scroll-bars . nil)
