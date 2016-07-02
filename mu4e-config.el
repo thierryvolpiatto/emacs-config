@@ -214,7 +214,10 @@
 
 (defun tv/mu4e-browse-url ()
   (interactive)
-  (w3m-browse-url (w3m-active-region-or-url-at-point)))
+  (let ((url (w3m-active-region-or-url-at-point)))
+    (if (string-match-p "\\`http[s]?://github.com" url)
+        (browse-url url)
+        (w3m-browse-url url))))
 (define-key mu4e-view-mode-map (kbd "C-c C-c") 'tv/mu4e-browse-url)
 
 (defadvice w3m-goto-next-anchor (before go-to-end-of-anchor activate)
