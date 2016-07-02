@@ -1353,7 +1353,10 @@ from IPython.core.completerlib import module_completion"
 (use-package w3m
     :ensure t
     :init (require 'config-w3m)
-    :bind ("<f7> h" . w3m))
+    :bind
+    (("<f7> h" . w3m)
+     :map w3m-mode-map
+     ("F" . w3m-view-url-with-browse-url)))
 
 ;;; Mu4e
 ;;
