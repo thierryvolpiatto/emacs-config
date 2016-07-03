@@ -1796,10 +1796,12 @@ from IPython.core.completerlib import module_completion"
          ("<next>" . forward-page)
          ("<prior>" . backward-page)
          ("C-M-j" . backward-kill-sexp)
+         ("C-x e" . pp-eval-last-sexp)
          :map
          lisp-interaction-mode-map
          ("RET" . newline-and-indent)
          ("C-M-j" . backward-kill-sexp)
+         ("C-x e" . pp-eval-last-sexp)
          :map
          lisp-mode-map
          ("RET" . newline-and-indent)))
