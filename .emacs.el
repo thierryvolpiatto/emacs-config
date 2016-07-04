@@ -1285,6 +1285,7 @@ from IPython.core.completerlib import module_completion"
     (bind-key [remap vc-create-tag] 'git-gutter:stage-hunk)
     ;; Revert current hunk
     (bind-key (kbd "C-x v r") 'git-gutter:revert-hunk))
+  :diminish git-gutter-mode
   :config
   (progn
     (global-git-gutter-mode) ; Enable live update.
@@ -1761,10 +1762,10 @@ from IPython.core.completerlib import module_completion"
 
 ;;; Elisp/lisp
 ;;
-;; Fix indentation in CL loop.
 (use-package lisp-mode
     :config
   (progn
+    ;; Fix indentation in CL loop.
     (setq lisp-indent-function 'common-lisp-indent-function
           lisp-simple-loop-indentation 1
           lisp-loop-keyword-indentation 6
