@@ -684,10 +684,6 @@ If your system's ping continues until interrupted, you can try setting
               (message "Recompiling %s...DONE" file)  
               (message "Recompiling %s...FAILED" file))))))))
 
-;;; Helm
-;;
-(use-package init-helm-thierry)
-
 ;;; Firefox protocol
 ;;
 (use-package firefox-protocol
@@ -1132,19 +1128,10 @@ from IPython.core.completerlib import module_completion"
     (setq tramp-default-method "scp")
     ;; (setq tramp-verbose 6) ; See `helm-tramp-verbose' in init-helm.
 
-    ;; Android settings (Only available on trunk)
-    ;;
-    (when (boundp 'tramp-connection-properties)
-      (add-to-list 'tramp-connection-properties
-                   (list (regexp-quote "192.168.0.24") "remote-shell" "sh"))
-      (add-to-list 'tramp-connection-properties
-                   (list (regexp-quote "zte") "remote-shell" "sh"))
-      (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
-      (cl-pushnew "/system/xbin" tramp-remote-path :test 'equal)
-      (add-to-list 'tramp-remote-process-environment "TMPDIR=$HOME/tmp"))
-
     ;; No messages
     (setq tramp-message-show-message nil)
+
+    (setq tramp-use-ssh-controlmaster-options nil)
 
     ;; Allow connecting as root on all remote Linux machines except this one.
     ;; Use e.g /sudo:host:/path
@@ -1852,6 +1839,11 @@ from IPython.core.completerlib import module_completion"
     (global-set-key [mode-line mouse-3] 'ignore)
     (setq mode-line-default-help-echo nil))
     :ensure t)
+
+;;; Helm
+;;
+(use-package init-helm-thierry)
+
 
 ;;; Emacspeak
 ;;
