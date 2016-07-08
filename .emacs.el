@@ -207,6 +207,50 @@ So far, F can only be a symbol, not a lambda expression."))
 
 ;;; Use package declarations
 
+;;; Info
+;;
+(use-package info
+    :init
+  (progn
+    ;; Additional info directories
+    (add-to-list 'Info-directory-list "/usr/local/share/info")
+    (add-to-list 'Info-directory-list "/usr/share/info")
+    (add-to-list 'Info-directory-list "~/elisp/info")
+    (add-to-list 'Info-directory-list "~/elisp/info/eshell-doc")
+    ;; Fancy faces in info.
+    (defface tv-info-ref-item
+        '((((background dark)) :background "DimGray" :foreground "Gold")
+          (((background light)) :background "firebrick" :foreground "LightGray"))
+      "Face for item stating with -- in info." :group 'Info :group 'faces)
+
+    (defvar tv-info-title-face 'tv-info-ref-item)
+    (defvar tv-info-underline 'underline)
+    (defvar info-unicode-quote-start (string 8216))
+    (defvar info-unicode-quote-end (string 8217))
+    (defvar info-unicode-quoted-regexp (format "[%s]\\([^%s%s]+\\)[%s]"
+                                               info-unicode-quote-start
+                                               info-unicode-quote-start
+                                               info-unicode-quote-end
+                                               info-unicode-quote-end
+                                               ))
+    (defun tv-font-lock-doc-rules ()
+      (font-lock-add-keywords
+       nil `(("[^\\s\][`]\\([^`']+\\)[`']?[^\\s\][']?" 1 font-lock-type-face)
+             (,info-unicode-quoted-regexp 1 font-lock-type-face)
+             ("^ --.*$" . tv-info-title-face)
+             ("[_]\\([^_]+\\)[_]" 1 tv-info-underline)
+             ("[\"]\\([^\"]*\\)[\"]" . font-lock-string-face)
+             ("\\*Warning:\\*" . font-lock-warning-face)
+             ("^ *\\([*•]\\) " 1 font-lock-variable-name-face)
+             ("^[[:upper:],]\\{2,\\}$" . font-lock-comment-face)
+             ("^[[:upper]][a-z- ]*:" . font-lock-variable-name-face)
+             )))
+
+    (add-hook 'Info-mode-hook 'tv-font-lock-doc-rules)))
+
+;;; Helm
+;;
+(use-package init-helm-thierry)
 
 ;;; Term - ansi-term
 ;;
@@ -350,51 +394,6 @@ So far, F can only be a symbol, not a lambda expression."))
     :init
   (add-hook 'sh-mode-hook (lambda ()
                             (define-key sh-mode-map (kbd "RET") 'newline-and-indent))))
-
-;;; Info
-;;
-(use-package info
-    :init
-  (progn
-    ;; Additional info directories
-    (add-to-list 'Info-directory-list "/usr/local/share/info")
-    (add-to-list 'Info-directory-list "/usr/share/info")
-    (add-to-list 'Info-directory-list "~/elisp/info")
-    (add-to-list 'Info-directory-list "~/elisp/info/eshell-doc")
-    ;; Fancy faces in info.
-    (defface tv-info-ref-item
-        '((((background dark)) :background "DimGray" :foreground "Gold")
-          (((background light)) :background "firebrick" :foreground "LightGray"))
-      "Face for item stating with -- in info." :group 'Info :group 'faces)
-
-    (defvar tv-info-title-face 'tv-info-ref-item)
-    (defvar tv-info-underline 'underline)
-    (defvar info-unicode-quote-start (string 8216))
-    (defvar info-unicode-quote-end (string 8217))
-    (defvar info-unicode-quoted-regexp (format "[%s]\\([^%s%s]+\\)[%s]"
-                                               info-unicode-quote-start
-                                               info-unicode-quote-start
-                                               info-unicode-quote-end
-                                               info-unicode-quote-end
-                                               ))
-    (defun tv-font-lock-doc-rules ()
-      (font-lock-add-keywords
-       nil `(("[^\\s\][`]\\([^`']+\\)[`']?[^\\s\][']?" 1 font-lock-type-face)
-             (,info-unicode-quoted-regexp 1 font-lock-type-face)
-             ("^ --.*$" . tv-info-title-face)
-             ("[_]\\([^_]+\\)[_]" 1 tv-info-underline)
-             ("[\"]\\([^\"]*\\)[\"]" . font-lock-string-face)
-             ("\\*Warning:\\*" . font-lock-warning-face)
-             ("^ *\\([*•]\\) " 1 font-lock-variable-name-face)
-             ("^[[:upper:],]\\{2,\\}$" . font-lock-comment-face)
-             ("^[[:upper]][a-z- ]*:" . font-lock-variable-name-face)
-             )))
-
-    (add-hook 'Info-mode-hook 'tv-font-lock-doc-rules)))
-
-;;; Helm
-;;
-(use-package init-helm-thierry)
 
 ;;; Auto-conf
 ;;
