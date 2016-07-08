@@ -34,7 +34,8 @@
                                 (magit-popup . "melpa-stable")
                                 (git-commit  . "melpa-stable")
                                 (with-editor . "melpa-stable")
-                                (undo-tree . "melpa")))
+                                (undo-tree . "melpa"))
+      package-check-signature  nil)
 
 ;; Comment out to activate.
 ;; (benchmark-init/activate)
@@ -206,9 +207,6 @@ So far, F can only be a symbol, not a lambda expression."))
 
 ;;; Use package declarations
 
-;;; Helm
-;;
-(use-package init-helm-thierry)
 
 ;;; Term - ansi-term
 ;;
@@ -393,6 +391,10 @@ So far, F can only be a symbol, not a lambda expression."))
              )))
 
     (add-hook 'Info-mode-hook 'tv-font-lock-doc-rules)))
+
+;;; Helm
+;;
+(use-package init-helm-thierry)
 
 ;;; Auto-conf
 ;;
