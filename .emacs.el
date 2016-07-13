@@ -1854,7 +1854,8 @@ from IPython.core.completerlib import module_completion"
                           (separator-right (intern (format "powerline-%s-%s"
                                                            (powerline-current-separator)
                                                            (cdr powerline-default-separator-dir))))
-                          (lhs (list (powerline-raw "%*" mode-line 'l)
+                          (lhs (list (powerline-raw "%@" mode-line)
+                                     (powerline-raw "%*" mode-line 'l)
                                      (when powerline-display-buffer-size
                                        (powerline-buffer-size mode-line 'l))
                                      (when powerline-display-mule-info
