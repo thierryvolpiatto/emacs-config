@@ -188,13 +188,12 @@ First call indent, second complete symbol, third complete fname."
       helm-reuse-last-window-split-state              t
       helm-always-two-windows                         t
       helm-split-window-in-side-p                     nil
-      helm-buffers-favorite-modes                     (append helm-buffers-favorite-modes
-                                                              '(picture-mode artist-mode))
+      helm-buffers-favorite-modes                     (append helm-buffers-favorite-modes '(picture-mode artist-mode))
       helm-ls-git-status-command                      'magit-status-internal
       helm-M-x-requires-pattern                       0
       helm-dabbrev-cycle-threshold                    5
-      helm-surfraw-duckduckgo-url
-      "https://duckduckgo.com/?q=%s&ke=-1&kf=fw&kl=fr-fr&kr=b&k1=-1&k4=-1"
+      helm-surfraw-duckduckgo-url                     "https://duckduckgo.com/?q=%s&ke=-1&kf=fw&kl=fr-fr&kr=b&k1=-1&k4=-1"
+      helm-google-suggest-search-url                  helm-surfraw-duckduckgo-url
       helm-boring-file-regexp-list
       '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$" "\\._darcs$" "\\.la$" "\\.o$" "\\.i$" "\\.steam$" "\\undo-tree-history$")
       helm-buffer-skip-remote-checking                t
