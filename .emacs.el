@@ -1169,8 +1169,7 @@ from IPython.core.completerlib import module_completion"
     (unless (fboundp 'fancy-diary-display) ; Fix emacs-25.
       (defalias 'fancy-diary-display 'diary-fancy-display))
     (defface tv/calendar-blocks
-        '((t (:background "ForestGreen"
-              :foreground "Navajowhite1")))
+        '((t (:background "ForestGreen")))
       "Face used to highlight diary blocks in calendar."
       :group 'calendar)
     (setq calendar-date-style 'european)
