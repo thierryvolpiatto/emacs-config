@@ -98,18 +98,6 @@
 ;; Diary-integration-in-org 
 (setq org-agenda-include-diary t) ; show also content of regular diary file.
 
-;; Insinuate-appt 
-(use-package appt
-    :config
-  (progn
-    ;; When use 'r' (rebuild agenda) reload appt
-    (add-hook 'org-agenda-mode-hook #'(lambda ()
-                                        (setq appt-time-msg-list nil)
-                                        (define-key org-agenda-mode-map (kbd "C-c M") 'org-agenda-month-view)))
-    (setq appt-display-format 'window) ; Values: 'echo, 'window or nil.
-    (appt-activate 1))
-  :defer t)
-
 ;; Subtasks 
 (defun org-summary-todo (n-done n-not-done)
   "Switch entry to DONE when all subentries are done, to TODO otherwise."

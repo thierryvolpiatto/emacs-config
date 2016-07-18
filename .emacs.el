@@ -1168,6 +1168,11 @@ from IPython.core.completerlib import module_completion"
     (setq diary-file "~/.emacs.d/diary")
     (unless (fboundp 'fancy-diary-display) ; Fix emacs-25.
       (defalias 'fancy-diary-display 'diary-fancy-display))
+    (defface tv/calendar-blocks
+        '((t (:background "ForestGreen"
+              :foreground "Navajowhite1")))
+      "Face used to highlight diary blocks in calendar."
+      :group 'calendar)
     (setq calendar-date-style 'european)
     (setq calendar-mark-diary-entries-flag t)
     (setq calendar-mark-holidays-flag t)
@@ -1228,15 +1233,17 @@ from IPython.core.completerlib import module_completion"
       (let* ((ovs (overlays-at (point)))
              (props (cl-loop for ov in ovs
                              for prop = (cadr (overlay-properties ov))
-                             when (or (and (eq prop 'diary)
-                                           'diary)
-                                      (and (eq prop 'holiday)
-                                           'holiday))
+                             when (or (eq prop 'diary)
+                                      (eq prop 'holiday)
+                                      (eq prop 'tv/calendar-blocks)
+                                      (eq prop 'diary-anniversary))
                              collect prop)))
         (cond ((and (memq 'diary props) (memq 'holiday props))
                (diary-view-entries arg)
                (calendar-cursor-holidays))
-              ((memq 'diary props)
+              ((or (memq 'diary props)
+                   (memq 'tv/calendar-blocks props)
+                   (memq 'diary-anniversary props))
                (diary-view-entries arg))
               ((memq 'holiday props)
                (calendar-cursor-holidays))
@@ -1244,7 +1251,12 @@ from IPython.core.completerlib import module_completion"
 
     (define-key calendar-mode-map (kbd "C-<right>") 'calendar-forward-month)
     (define-key calendar-mode-map (kbd "C-<left>")  'calendar-backward-month)
-    (define-key calendar-mode-map (kbd "RET")       'tv/calendar-diary-or-holiday))
+    (define-key calendar-mode-map (kbd "RET")       'tv/calendar-diary-or-holiday)
+    (use-package appt
+        :config
+      (progn
+        (setq appt-display-format 'window) ; Values: 'echo, 'window or nil.
+        (add-hook 'emacs-startup-hook 'appt-activate))))
   :defer t)
 
 ;;; Bookmarks
