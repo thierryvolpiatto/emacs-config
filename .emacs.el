@@ -1172,6 +1172,10 @@ from IPython.core.completerlib import module_completion"
         '((t (:background "ForestGreen")))
       "Face used to highlight diary blocks in calendar."
       :group 'calendar)
+    (defface tv/calendar-blocks-1
+        '((t (:background "DarkOliveGreen")))
+      "Face used to highlight diary blocks in calendar."
+      :group 'calendar)
     (setq calendar-date-style 'european)
     (setq calendar-mark-diary-entries-flag t)
     (setq calendar-mark-holidays-flag t)
@@ -1232,16 +1236,15 @@ from IPython.core.completerlib import module_completion"
       (let* ((ovs (overlays-at (point)))
              (props (cl-loop for ov in ovs
                              for prop = (cadr (overlay-properties ov))
-                             when (or (eq prop 'diary)
-                                      (eq prop 'holiday)
-                                      (eq prop 'tv/calendar-blocks)
-                                      (eq prop 'diary-anniversary))
+                             when (memq prop '(diary holiday diary-anniversary
+                                               tv/calendar-blocks tv/calendar-blocks-1))
                              collect prop)))
         (cond ((and (memq 'diary props) (memq 'holiday props))
                (diary-view-entries arg)
                (calendar-cursor-holidays))
               ((or (memq 'diary props)
                    (memq 'tv/calendar-blocks props)
+                   (memq 'tv/calendar-blocks-1 props)
                    (memq 'diary-anniversary props))
                (diary-view-entries arg))
               ((memq 'holiday props)
