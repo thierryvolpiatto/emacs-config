@@ -40,6 +40,29 @@
 ;; Comment out to activate.
 ;; (benchmark-init/activate)
 
+
+;;; load-path
+;;
+(dolist (i '("/usr/local/share/emacs/site-lisp"
+             "/usr/local/share/emacs/site-lisp/mu4e"
+	     "~/elisp/"
+             "~/elisp/google-maps.el"
+             "~/elisp/Emacs-wgrep"
+             "~/elisp/auctex"
+             "~/elisp/auctex/preview"
+	     "~/elisp/autoconf-mode"
+	     "~/elisp/desktop-file-utils"
+	     "~/elisp/emacs-wget"
+	     "~/elisp/tex-utils"
+	     "~/elisp/ledger/"
+             "~/elisp/helm"
+             "~/elisp/helm-extensions"
+             "~/.emacs.d/themes/"
+	     "~/.emacs.d/emacs-config/"
+	     ))
+  ;; Add all at end of `load-path' to avoid conflicts.
+  (add-to-list 'load-path (file-name-as-directory i) t))
+
 ;;; Use-package.
 ;;
 (eval-when-compile (require 'use-package))
@@ -179,30 +202,6 @@ in cl-case that file does not provide any feature."
     "Set function F's property PROP to VALUE.
 The namespace for PROP is shared with symbols.
 So far, F can only be a symbol, not a lambda expression."))
-
-
-;;; load-path
-;;
-(dolist (i '("/usr/local/share/emacs/site-lisp"
-             "/usr/local/share/emacs/site-lisp/mu4e"
-	     "~/elisp/"
-             "~/elisp/google-maps.el"
-             "~/elisp/Emacs-wgrep"
-             "~/elisp/auctex"
-             "~/elisp/auctex/preview"
-	     "~/elisp/autoconf-mode"
-	     "~/elisp/desktop-file-utils"
-	     "~/elisp/emacs-wget"
-	     "~/elisp/tex-utils"
-	     "~/elisp/ledger/"
-             "~/elisp/helm"
-             "~/elisp/helm-extensions"
-             "~/.emacs.d/themes/"
-	     "~/.emacs.d/emacs-config/"
-	     ))
-  ;; Add all at end of `load-path' to avoid conflicts.
-  (add-to-list 'load-path (file-name-as-directory i) t))
-
 
 
 ;;; Use package declarations
