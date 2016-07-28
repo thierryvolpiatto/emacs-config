@@ -1265,13 +1265,16 @@ to `package-selected-packages'."
                 pkg)))
     (unless (and dont-select (package--user-selected-p name))
       (customize-save-variable 'package-selected-packages
-                               (cons name package-selected-packages))))
-  (package-download-transaction
-   (if (package-desc-p pkg)
-       (package-compute-transaction (list pkg)
-                                    (package-desc-reqs pkg))
-     (package-compute-transaction ()
-                                  (list (list pkg))))))
+                               (cons name package-selected-packages)))
+    (let ((transaction
+           (if (package-desc-p pkg)
+               (unless (package-installed-p pkg)
+                 (package-compute-transaction (list pkg)
+                                              (package-desc-reqs pkg)))
+               (package-compute-transaction () (list (list pkg))))))
+      (if transaction
+          (package-download-transaction transaction)
+          (message "`%s' is already installed" name)))))
 
 ;;;###autoload
 (defun package-reinstall (pkg)
