@@ -1780,19 +1780,19 @@ from IPython.core.completerlib import module_completion"
       (switch-to-buffer "*scratch*"))
     
     ;; Fix indentation in cl-flet and cl-labels
-    (with-eval-after-load "cl-indent.el"
-      (let ((l '((flet ((&whole 4 &rest (&whole 1 &lambda &body)) &body))
-                 (cl-flet* . flet)
-                 (labels . flet)
-                 (cl-flet . flet)
-                 (cl-labels . flet)
-                 (cl-macrolet . flet)
-                 )))
-        (dolist (el l)
-          (put (car el) 'common-lisp-indent-function
-               (if (symbolp (cdr el))
-                   (get (cdr el) 'common-lisp-indent-function)
-                   (car (cdr el))))))))
+    (use-package cl-indent
+      :config (let ((l '((flet ((&whole 4 &rest (&whole 1 &lambda &body)) &body))
+                         (cl-flet* . flet)
+                         (labels . flet)
+                         (cl-flet . flet)
+                         (cl-labels . flet)
+                         (cl-macrolet . flet)
+                         )))
+                (dolist (el l)
+                  (put (car el) 'common-lisp-indent-function
+                       (if (symbolp (cdr el))
+                           (get (cdr el) 'common-lisp-indent-function)
+                           (car (cdr el))))))))
   :bind (("<f11> s c" . goto-scratch)
          :map
          emacs-lisp-mode-map
