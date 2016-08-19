@@ -917,7 +917,10 @@ If your system's ping continues until interrupted, you can try setting
     :ensure t
     :diminish undo-tree-mode
     :config
-    (global-undo-tree-mode 1))
+    (progn
+      (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree-history")))
+      (setq undo-tree-auto-save-history t)
+      (global-undo-tree-mode 1)))
 
 ;;; Zoom-window
 ;;
