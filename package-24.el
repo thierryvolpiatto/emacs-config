@@ -1263,7 +1263,7 @@ to `package-selected-packages'."
   (let ((name (if (package-desc-p pkg)
                   (package-desc-name pkg)
                 pkg)))
-    (unless (and dont-select (package--user-selected-p name))
+    (unless (or dont-select (package--user-selected-p name))
       (customize-save-variable 'package-selected-packages
                                (cons name package-selected-packages)))
     (let ((transaction
