@@ -946,17 +946,18 @@ Arg `host' is machine in auth-info file."
     (if (functionp secret) (funcall secret) secret)))
 
 (defvar tv/freesms-default-url
-  "https://smsapi.free-mobile.fr/sendmsg?user=12333316&pass=%s&msg=%s")
+  "https://smsapi.free-mobile.fr/sendmsg?user=%s&pass=%s&msg=%s")
 ;;;###autoload
-(defun tv/freesms-notify (msg)
-  (interactive (list (read-string "Message: ")))
+(defun tv/freesms-notify (login msg)
+  (interactive (list
+                (completing-read "User: " '("thierry" "rachel"))
+                (read-string "Message: ")))
   (setq msg (url-hexify-string msg))
-  (let ((pwd (tv/get-passwd-from-auth-sources
-              "freesms" :user "thierry.volpiatto@gmail.com")))
+  (let* ((host  (format "freesms%s" login))
+         (user (plist-get (car (auth-source-search :host host)) :user))
+         (pwd   (tv/get-passwd-from-auth-sources host :user user)))
     (with-current-buffer (url-retrieve-synchronously
-                          (format tv/freesms-default-url
-                                  pwd
-                                  msg))
+                          (format tv/freesms-default-url user pwd msg))
       (goto-char (point-min))
       (let* ((rcode (nth 1 (split-string (buffer-substring-no-properties
                                           (point-at-bol) (point-at-eol)))))
