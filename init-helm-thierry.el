@@ -165,6 +165,7 @@ First call indent, second complete symbol, third complete fname."
 
 ;; Use default-as-input in grep
 (add-to-list 'helm-sources-using-default-as-input 'helm-source-grep)
+(add-to-list 'helm-sources-using-default-as-input 'helm-source-grep-git)
 (add-to-list 'helm-sources-using-default-as-input 'helm-source-grep-ag)
 
 ;;; Describe key-bindings
