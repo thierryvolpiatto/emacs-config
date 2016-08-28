@@ -163,10 +163,6 @@ First call indent, second complete symbol, third complete fname."
 (define-key helm-buffer-map (kbd "C-d")     'helm-buffer-run-kill-persistent)
 (define-key helm-find-files-map (kbd "C-/") 'helm-ff-run-find-sh-command)
 
-;; Use default-as-input in grep
-(add-to-list 'helm-sources-using-default-as-input 'helm-source-grep)
-(add-to-list 'helm-sources-using-default-as-input 'helm-source-grep-git)
-(add-to-list 'helm-sources-using-default-as-input 'helm-source-grep-ag)
 
 ;;; Describe key-bindings
 ;;
@@ -229,7 +225,9 @@ First call indent, second complete symbol, third complete fname."
       helm-firefox-show-structure nil
       helm-turn-on-recentf nil
       helm-mini-default-sources '(helm-source-buffers-list helm-source-buffer-not-found)
-      helm-debug-root-directory "/home/thierry/tmp/helm-debug")
+      helm-debug-root-directory "/home/thierry/tmp/helm-debug"
+      helm-follow-mode-persistent t
+      )
 
 ;; Avoid hitting forbidden directory .gvfs when using find.
 (add-to-list 'completion-ignored-extensions ".gvfs/")
