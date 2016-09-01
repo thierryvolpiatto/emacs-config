@@ -1260,7 +1260,7 @@ from IPython.core.completerlib import module_completion"
     (use-package appt
         :config
       (progn
-        (setq appt-display-format 'window) ; Values: 'echo, 'window or nil.
+        (setq appt-display-format 'echo) ; Values: 'echo, 'window or nil.
         (add-hook 'emacs-startup-hook 'appt-activate))))
   :defer t)
 
