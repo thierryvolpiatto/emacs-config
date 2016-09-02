@@ -421,8 +421,13 @@ depending the value of N is positive or negative."
 ;;; Insert-an-image-at-point
 ;;;###autoload
 (defun tv-insert-image-at-point (image)
-  (interactive "fImage: ")
-  (let ((img (create-image image)))
+  (interactive (list (read-file-name "Image: " "~/Images")))
+  (let* ((win (selected-window))
+         (img (save-match-data
+                (apply #'create-image image
+                       (and (image-type-available-p 'imagemagick)
+                            `(imagemagick nil :height ,(* (- (window-height win) 1)
+                                                          (frame-char-height))))))))
     (insert-image img)))
 
 ;;;###autoload
