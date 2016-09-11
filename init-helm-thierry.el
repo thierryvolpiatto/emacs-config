@@ -167,7 +167,7 @@ First call indent, second complete symbol, third complete fname."
 ;;; Describe key-bindings
 ;;
 ;;
-(helm-descbinds-install)            ; C-h b, C-x C-h
+(helm-descbinds-mode 1)            ; C-h b, C-x C-h
 
 
 ;;; Helm-variables
