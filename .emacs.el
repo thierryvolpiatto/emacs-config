@@ -68,6 +68,8 @@
 (eval-when-compile (require 'use-package))
 (setq use-package-verbose t)
 (defun advice--use-package-ensure-elpa (package &optional no-refresh)
+  "Prefer the elpa version of built-in packages if available.
+This allow installation of org from melpa when :ensure is specified."
   (let ((pkg (assq package package-alist)))
     (if pkg
         t
