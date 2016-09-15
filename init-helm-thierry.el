@@ -87,7 +87,7 @@
   (interactive)
   (let ((helm-quit-if-no-candidate
          (lambda ()
-           (message "[No Tramp connection found]"))))
+           (message "No Tramp connection found"))))
     (helm :sources (helm-build-sync-source "Tramp connections"
                      :candidates (tramp-list-connections)
                      :candidate-transformer (lambda (candidates)
