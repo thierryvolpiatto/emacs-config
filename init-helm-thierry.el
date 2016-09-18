@@ -82,29 +82,6 @@
     (setq ido-temp-list (nconc (cdr bl) (list (car bl))))))
 ;;(add-hook 'ido-make-buffer-list-hook 'helm/modify-ido-temp-list)
 
-
-(defun helm/delete-tramp-connection ()
-  (interactive)
-  (let ((helm-quit-if-no-candidate
-         (lambda ()
-           (message "No Tramp connection found"))))
-    (helm :sources (helm-build-sync-source "Tramp connections"
-                     :candidates (tramp-list-connections)
-                     :candidate-transformer (lambda (candidates)
-                                              (cl-loop for v in candidates
-                                                       for name = (apply #'tramp-make-tramp-file-name
-                                                                         (cl-loop for i across v collect i))
-                                                       when (or (processp (tramp-get-connection-process v))
-                                                                (buffer-live-p (get-buffer (tramp-buffer-name v))))
-                                                       collect (cons name v)))
-                     :action (lambda (_vec)
-                               (let ((vecs (helm-marked-candidates)))
-                                 (cl-loop for v in vecs
-                                          do (progn
-                                               (tramp-cleanup-connection v)
-                                               (remhash v tramp-cache-data))))))
-          :buffer "*helm tramp connections*")))
-
 
 ;;; Helm-command-map
 ;;
