@@ -1932,6 +1932,11 @@ from IPython.core.completerlib import module_completion"
     (setq mode-line-default-help-echo nil))
   :ensure t)
 
+;;; Disable-mouse
+;;
+(use-package disable-mouse
+    :config (global-disable-mouse-mode 1))
+
 
 ;;; Emacspeak
 ;;
