@@ -1935,6 +1935,7 @@ from IPython.core.completerlib import module_completion"
 ;;; Disable-mouse
 ;;
 (use-package disable-mouse
+    :ensure t
     :config (global-disable-mouse-mode 1))
 
 
