@@ -1938,6 +1938,16 @@ from IPython.core.completerlib import module_completion"
     :ensure t
     :config (global-disable-mouse-mode 1))
 
+;;; Gnus
+;;
+(use-package gnus
+    :init
+  (progn
+    (setq gnus-asynchronous t)
+    (setq gnus-init-file "~/.emacs.d/.gnus.el"))
+  :bind ("<f7> m" . gnus))
+
+
 
 ;;; Emacspeak
 ;;
