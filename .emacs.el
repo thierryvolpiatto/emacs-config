@@ -1320,7 +1320,6 @@ from IPython.core.completerlib import module_completion"
 ;;
 ;;
 (use-package slime
-    :disabled t
     :config
   (progn
     (setq inferior-lisp-program "/usr/bin/sbcl")
