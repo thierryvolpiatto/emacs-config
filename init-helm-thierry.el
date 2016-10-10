@@ -187,7 +187,7 @@ First call indent, second complete symbol, third complete fname."
       helm-reuse-last-window-split-state              t
       helm-always-two-windows                         t
       helm-split-window-in-side-p                     nil
-      helm-show-action-window-same-window             t
+      helm-show-action-window-other-window            t
       helm-buffers-favorite-modes                     (append helm-buffers-favorite-modes '(picture-mode artist-mode))
       helm-ls-git-status-command                      'magit-status-internal
       helm-M-x-requires-pattern                       0
