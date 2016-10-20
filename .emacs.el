@@ -1958,6 +1958,10 @@ from IPython.core.completerlib import module_completion"
     (setq gnus-init-file "~/.emacs.d/.gnus.el"))
   :bind ("<f7> m" . gnus))
 
+;;; Rectangle edit
+;;
+(use-package rectangle-edit :commands 'rectangle-edit)
+
 
 ;;; Emacspeak
 ;;
