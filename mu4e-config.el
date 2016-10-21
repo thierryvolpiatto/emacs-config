@@ -43,7 +43,7 @@
 
 ;; Contexts (setup smtp servers)
 ;;
-(setq mu4e-compose-context-policy 'pick-first
+(setq mu4e-compose-context-policy 'ask-if-none
       mu4e-context-policy 'pick-first
       mu4e-contexts
       `( ,(make-mu4e-context
