@@ -105,8 +105,6 @@ This allow installation of org from melpa when :ensure is specified."
 ;; confirm-quit-emacs
 (setq confirm-kill-emacs 'y-or-n-p)
 
-(setq case-fold-search t)
-
 ;; Add-newline-at-end-of-files
 (setq require-final-newline t)
 
