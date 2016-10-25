@@ -57,6 +57,7 @@
 	     "~/elisp/ledger/"
              "~/elisp/helm"
              "~/elisp/helm-extensions"
+             "~/elisp/use-package"
              "~/.emacs.d/themes/"
 	     "~/.emacs.d/emacs-config/"
 	     ))
