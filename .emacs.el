@@ -754,6 +754,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; google-maps
 ;;
 (use-package google-maps
+    :ensure t
     :init (setq google-maps-static-default-zoom 10)
     :bind ("<f5> g m" . google-maps))
 

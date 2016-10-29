@@ -91,6 +91,7 @@
         ("p" "Python" entry       (file+headline  "~/org/notes.org"  "Python")       "* %^{Title}\n  %i\n  %a" :prepend t)
         ("b" "Bash" entry         (file+headline  "~/org/notes.org " "Bash")         "* %^{Title}\n  %i\n  %a" :prepend t)
         ("L" "Linux" entry        (file+headline  "~/org/notes.org"  "Linux")        "* %^{Title}\n  %i\n  %a" :prepend t)))
+(global-set-key (kbd "C-c k") 'org-capture)
 
 ;; org-annotation-helper 
 (use-package org-annotation-helper)
