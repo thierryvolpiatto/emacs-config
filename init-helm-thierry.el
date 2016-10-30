@@ -72,8 +72,8 @@
     (when (eq major-mode 'emacs-lisp-mode)
       (message "[%s]" (which-function)))))
 
-(define-key helm-moccur-map (kbd "C-c ?") 'helm/occur-which-func)
-(define-key helm-grep-map   (kbd "C-c ?") 'helm/occur-which-func)
+(define-key helm-moccur-map (kbd "C-M-a") 'helm/occur-which-func)
+(define-key helm-grep-map   (kbd "C-M-a") 'helm/occur-which-func)
 
 ;; Show the visibles buffers on top of list (issue #1301)
 
