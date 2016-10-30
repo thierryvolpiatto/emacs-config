@@ -537,8 +537,7 @@ So far, F can only be a symbol, not a lambda expression."))
   (progn
     (defvar tv-default-font (assoc-default 'font (frame-parameters)))
     (setq-default frame-background-mode 'dark)
-    (setq initial-frame-alist '((fullscreen . maximized)
-                                (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")))
+    (setq initial-frame-alist '((fullscreen . maximized)))
     (setq frame-auto-hide-function 'delete-frame)
     (defun tv-transparency-modify (arg)
       "Increase Emacs frame transparency.
@@ -561,23 +560,21 @@ With a prefix arg decrease transparency."
                                     (tool-bar-lines . 0)
                                     (menu-bar-lines . 0)
                                     (title . ,(format "Emacs-%s" emacs-version))
-                                    (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
                                     (cursor-color . "red")))
 
-      (setq default-frame-alist `((foreground-color . "Wheat")
-                                  (background-color . "black")
-                                  (alpha . 90)
-                                  (font . "-unknown-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
-                                  ;; New frames go in right corner.
-                                  (left . ,(- (* (window-width) 8) 160)) ; Chars are 8 bits long.
-                                  (vertical-scroll-bars . nil)
-                                  (title . ,(format "Emacs-%s" emacs-version))
-                                  (tool-bar-lines . 0)
-                                  (menu-bar-lines . 0)
-                                  (font . ,tv-default-font)
-                                  (cursor-color . "red")
-                                  (fullscreen . nil)
-                                  )))
+        (setq default-frame-alist `((foreground-color . "Wheat")
+                                    (background-color . "black")
+                                    (alpha . 90)
+                                    ;; New frames go in right corner.
+                                    (left . ,(- (* (window-width) 8) 160)) ; Chars are 8 bits long.
+                                    (vertical-scroll-bars . nil)
+                                    (title . ,(format "Emacs-%s" emacs-version))
+                                    (tool-bar-lines . 0)
+                                    (menu-bar-lines . 0)
+                                    (font . ,tv-default-font)
+                                    (cursor-color . "red")
+                                    (fullscreen . nil)
+                                    )))
 
     ;; Special buffer display.
     (add-hook 'window-setup-hook
