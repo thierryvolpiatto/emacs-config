@@ -433,8 +433,8 @@ So far, F can only be a symbol, not a lambda expression."))
 (use-package lua-mode
     :commands 'lua-mode
     :config
-  (add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-mode))
-  (setq lua-default-application "/usr/bin/lua"))
+    (add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-mode))
+    (setq lua-default-application "/usr/bin/lua"))
 
 ;;; Cmake
 ;;
@@ -448,11 +448,11 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;
 (use-package wget
     :config
-    (progn
-      (use-package w3m-wget)
-      ;; Use wget in eshell.
-      (defun eshell/wget (url)
-        (wget url))))
+  (progn
+    (use-package w3m-wget)
+    ;; Use wget in eshell.
+    (defun eshell/wget (url)
+      (wget url))))
 
 ;;; Winner
 ;;
@@ -497,14 +497,14 @@ So far, F can only be a symbol, not a lambda expression."))
   (add-to-list 'display-time-world-list '("Indian/Antananarivo" "Antananarivo"))
   (add-to-list 'display-time-world-list '("Indian/Reunion" "Reunion"))
   
-    (setq display-time-24hr-format   t
+  (setq display-time-24hr-format   t
         display-time-day-and-date  t
         display-time-use-mail-icon t
         display-time-string-forms
         '( ;; date
           (if (and (not display-time-format) display-time-day-and-date)
               (format-time-string "[%a%e %b " now)
-            "")
+              "")
           ;; time
           (concat
            (propertize
@@ -669,33 +669,33 @@ If your system's ping continues until interrupted, you can try setting
 (use-package async
     :ensure t
     :config
-  (progn
-    ;; Dired async.
-    (use-package dired-async :config (dired-async-mode 1))
-    ;; Smtp async.
-    (use-package smtpmail-async
-        :commands 'async-smtpmail-send-it)
-    ;; Byte compilation async.
-    (use-package async-bytecomp
-        :config
-      (progn
-        (setq async-bytecomp-allowed-packages '(all))
-        (defun tv/async-byte-compile-file (file)
-          (interactive "fFile: ")
-          (let ((proc
-                 (async-start
-                  `(lambda ()
-                     (require 'bytecomp)
-                     ,(async-inject-variables "\\`load-path\\'")
-                     (let ((default-directory ,(file-name-directory file)))
-                       (add-to-list 'load-path default-directory)
-                       (byte-compile-file ,file))))))
+    (progn
+      ;; Dired async.
+      (use-package dired-async :config (dired-async-mode 1))
+      ;; Smtp async.
+      (use-package smtpmail-async
+          :commands 'async-smtpmail-send-it)
+      ;; Byte compilation async.
+      (use-package async-bytecomp
+          :config
+        (progn
+          (setq async-bytecomp-allowed-packages '(all))
+          (defun tv/async-byte-compile-file (file)
+            (interactive "fFile: ")
+            (let ((proc
+                   (async-start
+                    `(lambda ()
+                       (require 'bytecomp)
+                       ,(async-inject-variables "\\`load-path\\'")
+                       (let ((default-directory ,(file-name-directory file)))
+                         (add-to-list 'load-path default-directory)
+                         (byte-compile-file ,file))))))
 
-            (if (condition-case err
-                    (async-get proc)
-                  (error (ignore (message "Error: %s" (car err)))))
-              (message "Recompiling %s...DONE" file)  
-              (message "Recompiling %s...FAILED" file))))))))
+              (if (condition-case err
+                      (async-get proc)
+                    (error (ignore (message "Error: %s" (car err)))))
+                  (message "Recompiling %s...DONE" file)  
+                  (message "Recompiling %s...FAILED" file))))))))
 
 ;;; Firefox protocol
 ;;
@@ -744,8 +744,8 @@ If your system's ping continues until interrupted, you can try setting
 (use-package ioccur
     :commands (ioccur)
     :init
-  (add-hook 'ioccur-save-pos-before-jump-hook 'ioccur-save-current-pos-to-mark-ring)
-  :bind ([remap occur] . ioccur)) ; M-s o
+    (add-hook 'ioccur-save-pos-before-jump-hook 'ioccur-save-current-pos-to-mark-ring)
+    :bind ([remap occur] . ioccur)) ; M-s o
 
 ;;; google-maps
 ;;
@@ -829,13 +829,13 @@ If your system's ping continues until interrupted, you can try setting
 (use-package iedit
     :ensure t
     :init
-  (progn
-    (bind-key "C-²" 'iedit-mode-toggle-on-function)))
+    (progn
+      (bind-key "C-²" 'iedit-mode-toggle-on-function)))
 
 (use-package iedit-rect
     :bind (([C-return] . iedit-rectangle-mode)
            :map ctl-x-r-map
-                ("RET" . iedit-rectangle-mode)))
+           ("RET" . iedit-rectangle-mode)))
 
 ;;; Lacarte
 ;;
@@ -856,21 +856,21 @@ If your system's ping continues until interrupted, you can try setting
     :disabled t
     :diminish golden-ratio-mode
     :init
-  (progn
-    (add-hook 'ediff-before-setup-windows-hook (lambda () (golden-ratio-mode -1)))
-    (add-hook 'ediff-quit-hook (lambda () (golden-ratio-mode 1))))
-  :config
-  (progn
-    (defun helm/running-p () helm-alive-p)
-    (defun tv/ispell-running-p ()
-      (and (boundp 'ispell-choices-buffer)
-           (get-buffer ispell-choices-buffer)))
-    (setq golden-ratio-inhibit-functions     '(helm/running-p tv/ispell-running-p))
-    (setq golden-ratio-exclude-buffer-regexp '("\\`\\*[Hh]elm.*\\*\\'"))
-    (setq golden-ratio-exclude-buffer-names  '("*Org Select*"))
-    (setq golden-ratio-exclude-modes         '(ediff-mode calendar-mode wget-mode))
-    (setq golden-ratio-recenter              t)
-    (golden-ratio-mode 1)))
+    (progn
+      (add-hook 'ediff-before-setup-windows-hook (lambda () (golden-ratio-mode -1)))
+      (add-hook 'ediff-quit-hook (lambda () (golden-ratio-mode 1))))
+    :config
+    (progn
+      (defun helm/running-p () helm-alive-p)
+      (defun tv/ispell-running-p ()
+        (and (boundp 'ispell-choices-buffer)
+             (get-buffer ispell-choices-buffer)))
+      (setq golden-ratio-inhibit-functions     '(helm/running-p tv/ispell-running-p))
+      (setq golden-ratio-exclude-buffer-regexp '("\\`\\*[Hh]elm.*\\*\\'"))
+      (setq golden-ratio-exclude-buffer-names  '("*Org Select*"))
+      (setq golden-ratio-exclude-modes         '(ediff-mode calendar-mode wget-mode))
+      (setq golden-ratio-recenter              t)
+      (golden-ratio-mode 1)))
 
 ;;; pcomplete
 ;;
@@ -1087,15 +1087,15 @@ are returned unchanged."
     :no-require t
     :diminish eldoc-mode
     :config
-  (progn
-    (eldoc-in-minibuffer-mode 1)
-    (defadvice edebug-eval-expression (around with-eldoc activate)
-      "This advice enable eldoc support."
-      (interactive (list (with-eldoc-in-minibuffer
-                           (read-from-minibuffer
-                            "Eval: " nil read-expression-map t
-                            'read-expression-history))))
-      ad-do-it)))
+    (progn
+      (eldoc-in-minibuffer-mode 1)
+      (defadvice edebug-eval-expression (around with-eldoc activate)
+        "This advice enable eldoc support."
+        (interactive (list (with-eldoc-in-minibuffer
+                             (read-from-minibuffer
+                              "Eval: " nil read-expression-map t
+                              'read-expression-history))))
+        ad-do-it)))
 
 ;;; Python config
 ;;
@@ -1107,40 +1107,40 @@ are returned unchanged."
 (use-package python
     :no-require t
     :init
-  (progn
-    (setq
-     gud-pdb-command-name "ipdb"
-     python-shell-interpreter "ipython"
-     python-shell-interpreter-args "-i --autoindent"
-     python-shell-prompt-regexp "In \\[[0-9]+\\]: "
-     python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
-     python-shell-completion-setup-code
-     "import rlcompleter2
+    (progn
+      (setq
+       gud-pdb-command-name "ipdb"
+       python-shell-interpreter "ipython"
+       python-shell-interpreter-args "-i --autoindent"
+       python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+       python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+       python-shell-completion-setup-code
+       "import rlcompleter2
 rlcompleter2.setup()
 from IPython.core.completerlib import module_completion"
-     python-shell-completion-module-string-code
-     "';'.join(module_completion('''%s'''))\n"
-     python-shell-completion-string-code
-     "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
+       python-shell-completion-module-string-code
+       "';'.join(module_completion('''%s'''))\n"
+       python-shell-completion-string-code
+       "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
 
-    (add-hook 'python-mode-hook
-              (lambda ()
+      (add-hook 'python-mode-hook
+                (lambda ()
                   (define-key python-mode-map (kbd "C-m") 'newline-and-indent)))
 
-    (when (fboundp 'jedi:setup)
-      (add-hook 'python-mode-hook 'jedi:setup)))
-  :config
-  (progn
-    (defun tv-insert-python-header ()
-      "insert python header at point"
-      (interactive)
-      (insert "#!/usr/bin/env python\n"
-              "# -*- coding: utf-8 -*-\n\n"
-              "## Title: \n"
-              "## Description: \n"
-              "## Author:Thierry Volpiatto<thierry dot volpiatto FROM gmail DOT com>\n"
-              "## Commentary:\n\n")))
-  :bind ("<f11> p" . python-shell-switch-to-shell))
+      (when (fboundp 'jedi:setup)
+        (add-hook 'python-mode-hook 'jedi:setup)))
+    :config
+    (progn
+      (defun tv-insert-python-header ()
+        "insert python header at point"
+        (interactive)
+        (insert "#!/usr/bin/env python\n"
+                "# -*- coding: utf-8 -*-\n\n"
+                "## Title: \n"
+                "## Description: \n"
+                "## Author:Thierry Volpiatto<thierry dot volpiatto FROM gmail DOT com>\n"
+                "## Commentary:\n\n")))
+    :bind ("<f11> p" . python-shell-switch-to-shell))
 
 ;;; xdvi (Needed in auctex)
 ;;
@@ -1151,30 +1151,30 @@ from IPython.core.completerlib import module_completion"
 (use-package tramp
     :no-require t
     :config
-  (progn
-    ;; scp is better for copying large files.
-    (setq tramp-default-method "scp")
-    ;; (setq tramp-verbose 6) ; See `helm-tramp-verbose' in init-helm.
+    (progn
+      ;; scp is better for copying large files.
+      (setq tramp-default-method "scp")
+      ;; (setq tramp-verbose 6) ; See `helm-tramp-verbose' in init-helm.
 
-    ;; No messages
-    (setq tramp-message-show-message nil)
+      ;; No messages
+      (setq tramp-message-show-message nil)
 
-    (setq tramp-use-ssh-controlmaster-options nil)
+      (setq tramp-use-ssh-controlmaster-options nil)
 
-    ;; Allow connecting as root on all remote Linux machines except this one.
-    ;; Use e.g /sudo:host:/path
-    (add-to-list 'tramp-default-proxies-alist
-                 '("\\`thievol\\'" "\\`root\\'" "/ssh:%h:"))
+      ;; Allow connecting as root on all remote Linux machines except this one.
+      ;; Use e.g /sudo:host:/path
+      (add-to-list 'tramp-default-proxies-alist
+                   '("\\`thievol\\'" "\\`root\\'" "/ssh:%h:"))
 
-    (add-to-list 'tramp-default-proxies-alist
-                 '("\\`thievolrem\\'" "\\`root\\'" "/ssh:%h:"))
+      (add-to-list 'tramp-default-proxies-alist
+                   '("\\`thievolrem\\'" "\\`root\\'" "/ssh:%h:"))
 
-    (add-to-list 'tramp-default-proxies-alist
-                 '((regexp-quote (system-name)) nil nil))
+      (add-to-list 'tramp-default-proxies-alist
+                   '((regexp-quote (system-name)) nil nil))
 
-    ;; Connect to my freebox as 'freebox' user.
-    (add-to-list 'tramp-default-user-alist
-                 '("ftp" "\\`mafreebox\\.freebox\\.fr\\'" "freebox"))))
+      ;; Connect to my freebox as 'freebox' user.
+      (add-to-list 'tramp-default-user-alist
+                   '("ftp" "\\`mafreebox\\.freebox\\.fr\\'" "freebox"))))
 
 ;;; Ange-ftp
 ;;
@@ -1291,37 +1291,37 @@ from IPython.core.completerlib import module_completion"
 (use-package bookmark
     :no-require t
     :init
-  (progn
-    (add-hook 'bookmark-bmenu-mode-hook 'hl-line-mode)
-    (setq bookmark-bmenu-toggle-filenames nil)
-    (setq bookmark-default-file "~/.emacs.d/.emacs.bmk")
-    (setq bookmark-automatically-show-annotations nil))
-  :config
-  (progn
-    (and (boundp 'bookmark-bmenu-use-header-line)
-         (setq bookmark-bmenu-use-header-line nil))))
+    (progn
+      (add-hook 'bookmark-bmenu-mode-hook 'hl-line-mode)
+      (setq bookmark-bmenu-toggle-filenames nil)
+      (setq bookmark-default-file "~/.emacs.d/.emacs.bmk")
+      (setq bookmark-automatically-show-annotations nil))
+    :config
+    (progn
+      (and (boundp 'bookmark-bmenu-use-header-line)
+           (setq bookmark-bmenu-use-header-line nil))))
 
 ;;; git-gutter-mode
 ;;
 (use-package git-gutter
     :ensure t
     :init
-  (progn
-    (customize-set-variable 'git-gutter:update-interval 2) ; Activate live update timer.
-    (setq git-gutter:hide-gutter t) ; Always a 0 width margin when no changes.
-    (bind-key [remap vc-dir] 'git-gutter:popup-hunk)
-    ;; Stage current hunk
-    (bind-key [remap vc-create-tag] 'git-gutter:stage-hunk)
-    ;; Revert current hunk
-    (bind-key (kbd "C-x v r") 'git-gutter:revert-hunk))
-  :diminish git-gutter-mode
-  :config
-  (progn
-    (global-git-gutter-mode) ; Enable live update.
-    (helm-define-key-with-subkeys
-        global-map (kbd "C-x v n") ?n 'git-gutter:next-hunk '((?p . git-gutter:previous-hunk)))
-    (helm-define-key-with-subkeys
-        global-map (kbd "C-x v p") ?p 'git-gutter:previous-hunk '((?n . git-gutter:next-hunk)))))
+    (progn
+      (customize-set-variable 'git-gutter:update-interval 2) ; Activate live update timer.
+      (setq git-gutter:hide-gutter t) ; Always a 0 width margin when no changes.
+      (bind-key [remap vc-dir] 'git-gutter:popup-hunk)
+      ;; Stage current hunk
+      (bind-key [remap vc-create-tag] 'git-gutter:stage-hunk)
+      ;; Revert current hunk
+      (bind-key (kbd "C-x v r") 'git-gutter:revert-hunk))
+    :diminish git-gutter-mode
+    :config
+    (progn
+      (global-git-gutter-mode) ; Enable live update.
+      (helm-define-key-with-subkeys
+          global-map (kbd "C-x v n") ?n 'git-gutter:next-hunk '((?p . git-gutter:previous-hunk)))
+      (helm-define-key-with-subkeys
+          global-map (kbd "C-x v p") ?p 'git-gutter:previous-hunk '((?n . git-gutter:next-hunk)))))
 
 ;;; Slime
 ;;
@@ -1551,7 +1551,7 @@ from IPython.core.completerlib import module_completion"
     :commands 'no-word
     :config (progn
               (add-to-list 'auto-mode-alist '("\\.doc\\'" . no-word))))
-              
+
 ;;; align-let
 ;;
 (use-package align-let
@@ -1587,13 +1587,13 @@ from IPython.core.completerlib import module_completion"
 (use-package markdown-mode
     :ensure t
     :init
-  (progn
-    (add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
-    (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
-    (add-to-list 'auto-mode-alist '("\\.mdpp$" . markdown-mode))))
+    (progn
+      (add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
+      (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
+      (add-to-list 'auto-mode-alist '("\\.mdpp$" . markdown-mode))))
 
 (use-package ffap
-  :config
+    :config
   ;; Tramp/ange behave badly in 99.9% of the time for ftp, disable.
   (setq ffap-url-unwrap-remote (remove "ftp" ffap-url-unwrap-remote)))
 
@@ -1605,13 +1605,13 @@ from IPython.core.completerlib import module_completion"
     ;; Eshell-prompt
     (setq eshell-prompt-function
           (lambda nil
-              (concat
-               (getenv "USER")
-               "@"
-               (system-name)
-               ":"
-               (abbreviate-file-name (eshell/pwd))
-               (if (= (user-uid) 0) " # " " $ "))))
+            (concat
+             (getenv "USER")
+             "@"
+             (system-name)
+             ":"
+             (abbreviate-file-name (eshell/pwd))
+             (if (= (user-uid) 0) " # " " $ "))))
 
     ;; Compatibility 24.2/24.3
     (unless (fboundp 'eshell-pcomplete)
@@ -1620,22 +1620,22 @@ from IPython.core.completerlib import module_completion"
       (defalias 'eshell-complete-lisp-symbol 'lisp-complete-symbol))
 
     (add-hook 'eshell-mode-hook (lambda ()
-                                    (setq eshell-pwd-convert-function (lambda (f)
-                                                                        (if (file-equal-p (file-truename f) "/")
-                                                                            "/" f)))
-                                    ;; This is needed for eshell-command (otherwise initial history is empty).
-                                    (eshell-read-history eshell-history-file-name)
-                                    ;; Helm completion with pcomplete
-                                    (setq eshell-cmpl-ignore-case t
-                                          eshell-hist-ignoredups t)
-                                    (eshell-cmpl-initialize)
-                                    (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
-                                    ;; Helm lisp completion
-                                    (define-key eshell-mode-map [remap eshell-complete-lisp-symbol] 'helm-lisp-completion-at-point)
-                                    ;; Helm completion on eshell history.
-                                    (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)
-                                    ;; Eshell prompt
-                                    (set-face-attribute 'eshell-prompt nil :foreground "DeepSkyBlue")))
+                                  (setq eshell-pwd-convert-function (lambda (f)
+                                                                      (if (file-equal-p (file-truename f) "/")
+                                                                          "/" f)))
+                                  ;; This is needed for eshell-command (otherwise initial history is empty).
+                                  (eshell-read-history eshell-history-file-name)
+                                  ;; Helm completion with pcomplete
+                                  (setq eshell-cmpl-ignore-case t
+                                        eshell-hist-ignoredups t)
+                                  (eshell-cmpl-initialize)
+                                  (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
+                                  ;; Helm lisp completion
+                                  (define-key eshell-mode-map [remap eshell-complete-lisp-symbol] 'helm-lisp-completion-at-point)
+                                  ;; Helm completion on eshell history.
+                                  (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)
+                                  ;; Eshell prompt
+                                  (set-face-attribute 'eshell-prompt nil :foreground "DeepSkyBlue")))
 
     ;; Eshell history size
     (setq eshell-history-size 1000) ; Same as env var HISTSIZE.
@@ -1678,9 +1678,9 @@ from IPython.core.completerlib import module_completion"
   :config
   ;; Finally load eshell on startup.
   (add-hook 'emacs-startup-hook (lambda ()
-                                    (let ((default-directory (getenv "HOME")))
-                                      (command-execute 'eshell)
-                                      (bury-buffer))))
+                                  (let ((default-directory (getenv "HOME")))
+                                    (command-execute 'eshell)
+                                    (bury-buffer))))
   (global-set-key (kbd "C-!") 'eshell-command))
 
 ;;; linum-relative
@@ -1696,19 +1696,19 @@ from IPython.core.completerlib import module_completion"
 (use-package outline
     :requires helm
     :config
-  (progn
-    (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-p")
-                                  ?p 'outline-previous-visible-heading
-                                  '((?n . outline-next-visible-heading)))
-    (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-n")
-                                  ?n 'outline-next-visible-heading
-                                  '((?p . outline-previous-visible-heading)))
-    (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-f")
-                                  ?f 'outline-forward-same-level
-                                  '((?b . outline-backward-same-level)))
-    (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-b")
-                                  ?b 'outline-backward-same-level
-                                  '((?f . outline-forward-same-level)))))
+    (progn
+      (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-p")
+                                    ?p 'outline-previous-visible-heading
+                                    '((?n . outline-next-visible-heading)))
+      (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-n")
+                                    ?n 'outline-next-visible-heading
+                                    '((?p . outline-previous-visible-heading)))
+      (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-f")
+                                    ?f 'outline-forward-same-level
+                                    '((?b . outline-backward-same-level)))
+      (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-b")
+                                    ?b 'outline-backward-same-level
+                                    '((?f . outline-forward-same-level)))))
 
 ;;; Flyspell
 ;;
@@ -1726,17 +1726,17 @@ from IPython.core.completerlib import module_completion"
 	  (progn
 	    (flyspell-mode -1)
 	    (message "Flyspell Mode disabled"))
-	(flyspell-mode 1)
-	(unwind-protect
-	    (progn
-	      (when (fboundp 'helm-autoresize-mode)
-		(helm-autoresize-mode 1))
-	      (let ((dic (completing-read "Dictionary: " '("english" "francais"))))
-		(ispell-change-dictionary dic)
-		(flyspell-delete-all-overlays)
-		(message "Starting new Ispell process aspell with %s dictionary..." dic)))
-	  (when (fboundp 'helm-autoresize-mode)
-	    (helm-autoresize-mode -1))))))
+          (flyspell-mode 1)
+          (unwind-protect
+               (progn
+                 (when (fboundp 'helm-autoresize-mode)
+                   (helm-autoresize-mode 1))
+                 (let ((dic (completing-read "Dictionary: " '("english" "francais"))))
+                   (ispell-change-dictionary dic)
+                   (flyspell-delete-all-overlays)
+                   (message "Starting new Ispell process aspell with %s dictionary..." dic)))
+            (when (fboundp 'helm-autoresize-mode)
+              (helm-autoresize-mode -1))))))
   :bind ("C-c @" . tv/toggle-flyspell))
 
 ;;; Webjump
@@ -1763,25 +1763,25 @@ from IPython.core.completerlib import module_completion"
 (use-package which-func
     :commands 'which-function
     :config
-  (progn
-    (defun tv/which-func ()
-      (interactive)
-      (message "[%s]" (which-function))))
-  :bind (:map emacs-lisp-mode-map
-              ("C-c ?" . tv/which-func)))
+    (progn
+      (defun tv/which-func ()
+        (interactive)
+        (message "[%s]" (which-function))))
+    :bind (:map emacs-lisp-mode-map
+                ("C-c ?" . tv/which-func)))
 
 ;;; Shell
 ;;
 (use-package shell
     :requires helm
     :config
-  (progn
-    (defun comint--advice-send-eof (&rest _args)
-      (kill-buffer))
-    (advice-add 'comint-send-eof :after 'comint--advice-send-eof))
-  :bind (("<f11> s h" . shell)
-         :map shell-mode-map
-         ("M-p" . helm-comint-input-ring)))
+    (progn
+      (defun comint--advice-send-eof (&rest _args)
+        (kill-buffer))
+      (advice-add 'comint-send-eof :after 'comint--advice-send-eof))
+    :bind (("<f11> s h" . shell)
+           :map shell-mode-map
+           ("M-p" . helm-comint-input-ring)))
 
 ;;; Ielm
 ;;
@@ -1805,18 +1805,18 @@ from IPython.core.completerlib import module_completion"
     
     ;; Fix indentation in cl-flet and cl-labels
     (use-package cl-indent
-      :config (let ((l '((flet ((&whole 4 &rest (&whole 1 &lambda &body)) &body))
-                         (cl-flet* . flet)
-                         (labels . flet)
-                         (cl-flet . flet)
-                         (cl-labels . flet)
-                         (cl-macrolet . flet)
-                         )))
-                (dolist (el l)
-                  (put (car el) 'common-lisp-indent-function
-                       (if (symbolp (cdr el))
-                           (get (cdr el) 'common-lisp-indent-function)
-                           (car (cdr el))))))))
+        :config (let ((l '((flet ((&whole 4 &rest (&whole 1 &lambda &body)) &body))
+                           (cl-flet* . flet)
+                           (labels . flet)
+                           (cl-flet . flet)
+                           (cl-labels . flet)
+                           (cl-macrolet . flet)
+                           )))
+                  (dolist (el l)
+                    (put (car el) 'common-lisp-indent-function
+                         (if (symbolp (cdr el))
+                             (get (cdr el) 'common-lisp-indent-function)
+                             (car (cdr el))))))))
   :bind (("<f11> s c" . goto-scratch)
          :map
          emacs-lisp-mode-map
@@ -1855,7 +1855,7 @@ from IPython.core.completerlib import module_completion"
                                  (generate-new-buffer elp-results-buffer))
           (special-mode)
           (apply old--fn args)))))
-    (advice-add 'elp-results :around 'tv/advice-elp-results))
+  (advice-add 'elp-results :around 'tv/advice-elp-results))
 
 ;;; Org toc for github
 ;;
