@@ -279,12 +279,10 @@ First call indent, second complete symbol, third complete fname."
    "Magit status"
    (lambda (_candidate)
      (funcall helm-ls-git-status-command
-              (helm-default-directory)))
+              helm-ff-default-directory))
    source
    (lambda (candidate)
-     (locate-dominating-file (if (file-directory-p candidate)
-                                 candidate
-                                 (file-name-directory candidate))
+     (locate-dominating-file helm-ff-default-directory
                              ".git"))
    1))
 
