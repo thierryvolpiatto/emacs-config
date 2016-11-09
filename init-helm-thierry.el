@@ -292,9 +292,9 @@ First call indent, second complete symbol, third complete fname."
   (setf (slot-value source 'candidate-number-limit) 300)
   (helm-source-add-action-to-source-if
    "Magit status"
-   (lambda (_candidate)
+   (lambda (candidate)
      (funcall helm-ls-git-status-command
-              (helm-default-directory)))
+              (with-current-buffer candidate default-directory)))
    source
    (lambda (candidate)
      (locate-dominating-file (with-current-buffer candidate default-directory)
