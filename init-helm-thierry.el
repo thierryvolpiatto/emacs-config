@@ -274,10 +274,32 @@ First call indent, second complete symbol, third complete fname."
    "Byte recompile directory"
    'async-byte-recompile-directory
    source
-   'file-directory-p))
+   'file-directory-p)
+  (helm-source-add-action-to-source-if
+   "Magit status"
+   (lambda (_candidate)
+     (funcall helm-ls-git-status-command
+              (helm-default-directory)))
+   source
+   (lambda (candidate)
+     (locate-dominating-file (if (file-directory-p candidate)
+                                 candidate
+                                 (file-name-directory candidate))
+                             ".git"))
+   1))
 
 (defmethod helm-setup-user-source ((source helm-source-buffers))
-  (setf (slot-value source 'candidate-number-limit) 300))
+  (setf (slot-value source 'candidate-number-limit) 300)
+  (helm-source-add-action-to-source-if
+   "Magit status"
+   (lambda (_candidate)
+     (funcall helm-ls-git-status-command
+              (helm-default-directory)))
+   source
+   (lambda (candidate)
+     (locate-dominating-file (with-current-buffer candidate default-directory)
+                             ".git"))
+   1))
 
 
 ;;; helm dictionary
