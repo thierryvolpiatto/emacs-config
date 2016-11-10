@@ -282,8 +282,9 @@ First call indent, second complete symbol, third complete fname."
               helm-ff-default-directory))
    source
    (lambda (candidate)
-     (locate-dominating-file helm-ff-default-directory
-                             ".git"))
+     (and (not (string-match-p ffap-url-regexp candidate))
+          (locate-dominating-file helm-ff-default-directory
+                                  ".git")))
    1))
 
 (defmethod helm-setup-user-source ((source helm-source-buffers))
