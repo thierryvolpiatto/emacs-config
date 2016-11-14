@@ -1899,7 +1899,7 @@ from IPython.core.completerlib import module_completion"
    "\n"
    "\\usepackage[T1]{fontenc}\n"
    "\\usepackage{lmodern}\n"
-   "\\usepackage{eurosym}\n" ;; Use \euro for €.
+   "\\usepackage{eurosym} % Use \euro for €\n"
    "\\usepackage[francais]{babel}\n"
    "\\usepackage[utf8]{inputenc}\n"
    "\\begin{document}\n"
