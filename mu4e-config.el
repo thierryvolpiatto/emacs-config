@@ -220,13 +220,15 @@
 
 (defadvice w3m-goto-next-anchor (before go-to-end-of-anchor activate)
   (when (w3m-anchor-sequence)
-    (goto-char (next-single-property-change
-                (point) 'w3m-anchor-sequence))))
+    (let ((pos (next-single-property-change
+                (point) 'w3m-anchor-sequence)))
+      (and pos (goto-char pos)))))
 
 (defadvice w3m-goto-previous-anchor (before go-to-end-of-anchor activate)
   (when (w3m-anchor-sequence)
-    (goto-char (previous-single-property-change
-                (point) 'w3m-anchor-sequence))))
+    (let ((pos (previous-single-property-change
+                (point) 'w3m-anchor-sequence)))
+      (and pos (goto-char pos)))))
 
 (define-key mu4e-view-mode-map (kbd "C-i") 'w3m-next-anchor)
 (define-key mu4e-view-mode-map (kbd "M-<tab>") 'w3m-previous-anchor)
