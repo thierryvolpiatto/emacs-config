@@ -244,8 +244,14 @@
 
 (defun tv/w3m-previous-anchor ()
   (interactive)
+  (require 'helm-lib)
   (unless (message-in-body-p) (message-goto-body))
-  (let ((prev-url (text-property-any (point) (point-min) 'face 'mu4e-link-face)))
+  (let ((prev-url (save-excursion
+                    (helm-awhile (re-search-backward ffap-url-regexp nil t)
+                      (goto-char (match-beginning 0))
+                      (when (eq (get-text-property (point) 'face) 'mu4e-link-face)
+                        (cl-return (point)))
+                      (goto-char it)))))
     (if prev-url
         (goto-char prev-url)
         (call-interactively 'w3m-previous-anchor))))
