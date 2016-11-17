@@ -220,16 +220,38 @@
 
 (defadvice w3m-goto-next-anchor (before go-to-end-of-anchor activate)
   (when (w3m-anchor-sequence)
-    (goto-char (next-single-property-change
-                (point) 'w3m-anchor-sequence))))
+    (let ((pos (next-single-property-change
+                (point) 'w3m-anchor-sequence)))
+      (and pos (goto-char pos)))))
 
 (defadvice w3m-goto-previous-anchor (before go-to-end-of-anchor activate)
   (when (w3m-anchor-sequence)
-    (goto-char (previous-single-property-change
-                (point) 'w3m-anchor-sequence))))
+    (let ((pos (previous-single-property-change
+                (point) 'w3m-anchor-sequence)))
+      (and pos (goto-char pos)))))
 
-(define-key mu4e-view-mode-map (kbd "C-i") 'w3m-next-anchor)
-(define-key mu4e-view-mode-map (kbd "M-<tab>") 'w3m-previous-anchor)
+(defun tv/w3m-next-anchor ()
+  (interactive)
+  (unless (message-in-body-p) (message-goto-body))
+  (let ((pos (point)))
+    (when (eq (get-text-property (point) 'face) 'mu4e-link-face)
+      (setq pos (next-single-property-change (point) 'face)))
+    (let ((next-url (and pos (text-property-any
+                              pos (point-max) 'face 'mu4e-link-face))))
+      (if next-url
+          (goto-char next-url)
+          (call-interactively 'w3m-next-anchor)))))
+
+(defun tv/w3m-previous-anchor ()
+  (interactive)
+  (unless (message-in-body-p) (message-goto-body))
+  (let ((prev-url (text-property-any (point) (point-min) 'face 'mu4e-link-face)))
+    (if prev-url
+        (goto-char prev-url)
+        (call-interactively 'w3m-previous-anchor))))
+
+(define-key mu4e-view-mode-map (kbd "<C-tab>") 'tv/w3m-next-anchor)
+(define-key mu4e-view-mode-map (kbd "<backtab>") 'tv/w3m-previous-anchor)
 (define-key mu4e-view-mode-map (kbd "X") 'mu4e-view-save-attachment-multi)
 
 ;;; A simplified and more efficient version of `article-translate-strings'.
