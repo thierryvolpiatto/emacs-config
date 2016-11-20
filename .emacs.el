@@ -1819,6 +1819,7 @@ from IPython.core.completerlib import module_completion"
 ;;; Gnus
 ;;
 (use-package gnus
+    :disabled t
     :init
   (progn
     (setq gnus-asynchronous t)

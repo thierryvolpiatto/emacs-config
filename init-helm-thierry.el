@@ -83,7 +83,7 @@
 ;;(add-hook 'ido-make-buffer-list-hook 'helm/modify-ido-temp-list)
 
 (defun helm-ag-find-file-init (directory)
-  (start-process "ag-find-file" nil "ag" "-g" helm-pattern directory))
+  (start-process "ag-find-file" nil "ag" "--hidden" "-g" helm-pattern directory))
 
 (defclass helm-ag-find-file-class (helm-source-async)
   ((filtered-candidate-transformer
@@ -91,7 +91,8 @@
     (lambda (candidates _source)
       (cl-loop for c in candidates
                collect (helm--ansi-color-apply c))))
-   (requires-pattern :initform 2)))
+   (requires-pattern :initform 2)
+   (candidate-number-limit :initform 99999)))
 
 (defun helm-ag-find-file-1 (directory)
   (helm :sources (helm-make-source "AG find files" 'helm-ag-find-file-class
