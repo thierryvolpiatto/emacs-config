@@ -917,6 +917,9 @@ If your system's ping continues until interrupted, you can try setting
 (use-package emamux
     :ensure t
     :init (setq emamux:completing-read-type 'helm)
+    :config (setq emamux:get-buffers-regexp
+                  "^\\(buffer[0-9]+\\): +\\([0-9]+\\) +\\(bytes\\): +[\"]\\(.*\\)[\"]"
+                  emamux:show-buffers-with-index nil)
     :bind (("C-c y" . emamux:yank-from-list-buffers)
            ("C-c s" . emamux:send-command)))
 
