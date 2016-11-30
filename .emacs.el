@@ -16,13 +16,22 @@
 ;; Possible values for vc backends: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
 (setq vc-handled-backends '(RCS Hg Git))
 
-;;; Melpa marmalade
+;;; Melpa/Elpa
 ;;
 (when (and (= emacs-major-version 24)
            (not (version< emacs-version "24.4.1")))
   (add-to-list 'load-path "~/.emacs.d/emacs-config/")
   ;; Load my own package.el adapted to emacs-24.
   (load "package-24"))
+
+(defun advice--package-menu-refresh ()
+  (interactive)
+  (unless (derived-mode-p 'package-menu-mode)
+    (user-error "The current buffer is not a Package Menu"))
+  (package-refresh-contents package-menu-async))
+
+(when (>= emacs-major-version 25)
+  (advice-add 'package-menu-refresh :override #'advice--package-menu-refresh))
 
 (package-initialize)
 
