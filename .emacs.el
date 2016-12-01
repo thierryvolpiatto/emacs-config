@@ -1843,6 +1843,10 @@ from IPython.core.completerlib import module_completion"
 ;;
 (use-package rectangle-edit :commands 'rectangle-edit)
 
+;;; Gh (needed for helm-open-github)
+;;
+(use-package gh :ensure t)
+
 
 ;;; Emacspeak
 ;;
