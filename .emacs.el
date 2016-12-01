@@ -28,6 +28,7 @@
   (interactive)
   (unless (derived-mode-p 'package-menu-mode)
     (user-error "The current buffer is not a Package Menu"))
+  (setq package-menu--new-package-list nil)
   (package-refresh-contents package-menu-async))
 
 (when (>= emacs-major-version 25)
