@@ -104,20 +104,20 @@ This allow installation of org from melpa when :ensure is specified."
 (fset 'yes-or-no-p 'y-or-n-p)
 
 ;; Stop/restart emacs
-(defun tv-stop-emacs ()
-  (interactive)
+(defun tv-stop-emacs-1 ()
   (if (daemonp)
       (save-buffers-kill-emacs)
       (save-buffers-kill-terminal)))
 
-(defun tv/restart-emacs ()
-  (interactive)
-  (add-hook 'kill-emacs-hook
-            (lambda ()
-              (call-process-shell-command
-               "(emacs &)"))
-            t)
-  (tv-stop-emacs))
+(defun tv-stop-emacs (arg)
+  (interactive "P")
+  (when arg
+    (add-hook 'kill-emacs-hook
+              (lambda ()
+                (call-process-shell-command
+                 "(emacs &)"))
+              t))
+  (tv-stop-emacs-1))
 
 ;; confirm-quit-emacs
 (setq confirm-kill-emacs 'y-or-n-p)
