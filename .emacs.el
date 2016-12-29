@@ -111,16 +111,19 @@ This allow installation of org from melpa when :ensure is specified."
 
 (defun tv-stop-emacs (arg)
   (interactive "P")
-  (let ((confirm-kill-emacs 'y-or-n-p))
-    (when arg
-      (setq confirm-kill-emacs nil)
-      (cl-pushnew (lambda () (y-or-n-p "Really restart Emacs? "))
-                  kill-emacs-query-functions :test 'equal)
-      (add-hook 'kill-emacs-hook
-                (lambda ()
-                  (call-process-shell-command
-                   "(emacs &)"))
-                t))
+  (let ((confirm-kill-emacs (unless arg 'y-or-n-p))
+        (kill-emacs-query-functions
+         (if arg
+             (append (list
+                      (lambda ()
+                        (when (y-or-n-p "Really restart Emacs? ")
+                          (add-hook 'kill-emacs-hook
+                                    (lambda ()
+                                      (call-process-shell-command
+                                       "(emacs &)"))
+                                    t))))
+                     kill-emacs-query-functions)
+             kill-emacs-query-functions)))
     (tv-stop-emacs-1)))
 
 ;; Add-newline-at-end-of-files
