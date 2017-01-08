@@ -24,20 +24,6 @@
   ;; Load my own package.el adapted to emacs-24.
   (load "package-24"))
 
-(defun advice--package-menu-refresh ()
-  (interactive)
-  (unless (derived-mode-p 'package-menu-mode)
-    (user-error "The current buffer is not a Package Menu"))
-  (package-read-all-archive-contents)
-  (setq package-menu--old-archive-contents package-archive-contents)
-  (setq package-menu--new-package-list nil)
-  (package-refresh-contents package-menu-async))
-
-(when (>= emacs-major-version 25)
-  (advice-add 'package-menu-refresh :override #'advice--package-menu-refresh))
-
-(package-initialize)
-
 (setq package-archives        '(("melpa"        . "https://melpa.org/packages/")
                                 ("melpa-stable" . "https://stable.melpa.org/packages/")
                                 ("gnu"          . "https://elpa.gnu.org/packages/"))
@@ -48,6 +34,10 @@
                                 (with-editor . "melpa-stable")
                                 (undo-tree . "melpa"))
       package-check-signature  nil)
+
+;; Initialize packages after setting package-archives
+;; to feed package-archive-contents with all archives.
+(package-initialize)
 
 ;; Comment out to activate.
 ;; (benchmark-init/activate)
