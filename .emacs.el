@@ -28,6 +28,8 @@
   (interactive)
   (unless (derived-mode-p 'package-menu-mode)
     (user-error "The current buffer is not a Package Menu"))
+  (package-read-all-archive-contents)
+  (setq package-menu--old-archive-contents package-archive-contents)
   (setq package-menu--new-package-list nil)
   (package-refresh-contents package-menu-async))
 
