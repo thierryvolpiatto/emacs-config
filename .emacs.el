@@ -1708,6 +1708,7 @@ from IPython.core.completerlib import module_completion"
                              (get (cdr el) 'common-lisp-indent-function)
                              (car (cdr el))))))))
   :bind (("<f11> s c" . goto-scratch)
+         ("<S-f12>" . cancel-debug-on-entry)
          :map
          emacs-lisp-mode-map
          ("RET" . newline-and-indent)
