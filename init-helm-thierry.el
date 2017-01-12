@@ -240,7 +240,6 @@ First call indent, second complete symbol, third complete fname."
       helm-move-to-line-cycle-in-source               t
       ido-use-virtual-buffers                         t             ; Needed in helm-buffers-list
       helm-tramp-verbose                              6
-      helm-locate-command                             "locate %s -e -A --regex %s"
       helm-org-headings-fontify                       t
       helm-autoresize-max-height                      80 ; it is %.
       helm-autoresize-min-height                      20 ; it is %.
