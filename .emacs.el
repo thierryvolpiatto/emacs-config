@@ -1710,7 +1710,7 @@ from IPython.core.completerlib import module_completion"
 
     ;; Enable auto-fill-mode only in comments of source code files.
     (defun tv/point-in-comment-p (pos)
-      "Returns t if POS is in a string"
+      "Returns non-nil if POS is in a comment."
       (eq 'comment (syntax-ppss-context (syntax-ppss pos))))
     (add-hook 'post-command-hook (lambda ()
                                    (when (derived-mode-p major-mode 'prog-mode)
