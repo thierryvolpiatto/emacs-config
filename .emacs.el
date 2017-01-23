@@ -1706,7 +1706,18 @@ from IPython.core.completerlib import module_completion"
                     (put (car el) 'common-lisp-indent-function
                          (if (symbolp (cdr el))
                              (get (cdr el) 'common-lisp-indent-function)
-                             (car (cdr el))))))))
+                             (car (cdr el)))))))
+
+    ;; Enable auto-fill-mode only in comments of source code files.
+    (defun tv/point-in-comment-p (pos)
+      "Returns t if POS is in a string"
+      (eq 'comment (syntax-ppss-context (syntax-ppss pos))))
+    (add-hook 'post-command-hook (lambda ()
+                                   (when (derived-mode-p major-mode 'prog-mode)
+                                     (if (tv/point-in-comment-p (point))
+                                         (auto-fill-mode 1)
+                                         (auto-fill-mode -1))))))
+
   :bind (("<f11> s c" . goto-scratch)
          ("<S-f12>" . cancel-debug-on-entry)
          :map
