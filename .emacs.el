@@ -1714,9 +1714,9 @@ from IPython.core.completerlib import module_completion"
       (eq 'comment (syntax-ppss-context (syntax-ppss pos))))
     (add-hook 'post-command-hook (lambda ()
                                    (when (derived-mode-p major-mode 'prog-mode)
-                                     (if (tv/point-in-comment-p (point))
-                                         (auto-fill-mode 1)
-                                         (auto-fill-mode -1))))))
+                                     (auto-fill-mode
+                                      (if (tv/point-in-comment-p (point))
+                                          1 -1))))))
 
   :bind (("<f11> s c" . goto-scratch)
          ("<S-f12>" . cancel-debug-on-entry)
