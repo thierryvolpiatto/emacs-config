@@ -1720,7 +1720,7 @@ from IPython.core.completerlib import module_completion"
     (defun tv/turn-on-auto-fill-mode-maybe ()
       "Enable auto-fill-mode only in comments or docstrings.
 Variable adaptive-fill-mode is disabled when a docstring field is detected."
-      (when (derived-mode-p major-mode 'prog-mode)
+      (when (memq major-mode '(emacs-lisp-mode lisp-interaction-mode))
         (let ((in-docstring (tv/point-in-docstring-p (point))))
           (setq adaptive-fill-mode (not in-docstring))
           (auto-fill-mode
