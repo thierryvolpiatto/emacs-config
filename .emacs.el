@@ -1708,7 +1708,9 @@ from IPython.core.completerlib import module_completion"
                              (get (cdr el) 'common-lisp-indent-function)
                              (car (cdr el)))))))
 
-    ;; Enable auto-fill-mode only in comments of source code files.
+    ;; Enable auto-fill-mode only in comments and docstrings of source
+    ;; code files, adaptive-fill-mode is disabled when detected field
+    ;; is a docstring.
     (defun tv/point-in-comment-p (pos)
       "Returns non-nil if POS is in a comment."
       (eq 'comment (syntax-ppss-context (syntax-ppss pos))))
