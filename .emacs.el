@@ -1717,17 +1717,19 @@ from IPython.core.completerlib import module_completion"
       (and (eq 'string (syntax-ppss-context (syntax-ppss pos)))
            (eq (get-text-property (point) 'face) 'font-lock-doc-face)))
 
-    ;; Enable auto-fill-mode only in comments and docstrings of source
-    ;; code files, adaptive-fill-mode is disabled when detected field
-    ;; is a docstring.
-    (add-hook 'post-command-hook (lambda ()
-                                   (when (derived-mode-p major-mode 'prog-mode)
-                                     (let ((in-docstring (tv/point-in-docstring-p (point))))
-                                       (setq adaptive-fill-mode (not in-docstring))
-                                       (auto-fill-mode
-                                        (if (or (tv/point-in-comment-p (point))
-                                                in-docstring)
-                                            1 -1)))))))
+    (defun tv/turn-on-auto-fill-mode-maybe ()
+      "Enable auto-fill-mode only in comments or docstrings.
+Variable adaptive-fill-mode is disabled when a docstring field is detected."
+      (when (derived-mode-p major-mode 'prog-mode)
+        (let ((in-docstring (tv/point-in-docstring-p (point))))
+          (setq adaptive-fill-mode (not in-docstring))
+          (auto-fill-mode
+           (if (or (tv/point-in-comment-p (point))
+                   in-docstring)
+               1 -1)))))
+    ;; Maybe turn on auto-fill-mode when a comment or docstring field
+    ;; is detected.
+    (add-hook 'post-command-hook #'tv/turn-on-auto-fill-mode-maybe))
 
   :bind (("<f11> s c" . goto-scratch)
          ("<S-f12>" . cancel-debug-on-entry)
