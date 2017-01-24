@@ -1708,9 +1708,6 @@ from IPython.core.completerlib import module_completion"
                              (get (cdr el) 'common-lisp-indent-function)
                              (car (cdr el)))))))
 
-    ;; Enable auto-fill-mode only in comments and docstrings of source
-    ;; code files, adaptive-fill-mode is disabled when detected field
-    ;; is a docstring.
     (defun tv/point-in-comment-p (pos)
       "Returns non-nil if POS is in a comment."
       (eq 'comment (syntax-ppss-context (syntax-ppss pos))))
@@ -1720,6 +1717,9 @@ from IPython.core.completerlib import module_completion"
       (and (eq 'string (syntax-ppss-context (syntax-ppss pos)))
            (eq (get-text-property (point) 'face) 'font-lock-doc-face)))
 
+    ;; Enable auto-fill-mode only in comments and docstrings of source
+    ;; code files, adaptive-fill-mode is disabled when detected field
+    ;; is a docstring.
     (add-hook 'post-command-hook (lambda ()
                                    (when (derived-mode-p major-mode 'prog-mode)
                                      (let ((in-docstring (tv/point-in-docstring-p (point))))
