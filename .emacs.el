@@ -925,8 +925,7 @@ If your system's ping continues until interrupted, you can try setting
     (bind-key "C"    'magit-commit-add-log magit-diff-mode-map)
     (bind-key "C-]"  'magit-toggle-margin magit-log-mode-map)
     (bind-key "<f2>" 'magit-status)
-    :no-require t
-    :ensure t)
+    :no-require t)
 
 ;;; Emamux
 ;;
