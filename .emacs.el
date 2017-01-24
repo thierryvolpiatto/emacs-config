@@ -1712,11 +1712,20 @@ from IPython.core.completerlib import module_completion"
     (defun tv/point-in-comment-p (pos)
       "Returns non-nil if POS is in a comment."
       (eq 'comment (syntax-ppss-context (syntax-ppss pos))))
+
+    (defun tv/point-in-docstring-p (pos)
+      "Returns non-nil if POS is in a docstring."
+      (and (eq 'string (syntax-ppss-context (syntax-ppss pos)))
+           (eq (get-text-property (point) 'face) 'font-lock-doc-face)))
+
     (add-hook 'post-command-hook (lambda ()
                                    (when (derived-mode-p major-mode 'prog-mode)
-                                     (auto-fill-mode
-                                      (if (tv/point-in-comment-p (point))
-                                          1 -1))))))
+                                     (let ((in-docstring (tv/point-in-docstring-p (point))))
+                                       (setq adaptive-fill-mode (not in-docstring))
+                                       (auto-fill-mode
+                                        (if (or (tv/point-in-comment-p (point))
+                                                in-docstring)
+                                            1 -1)))))))
 
   :bind (("<f11> s c" . goto-scratch)
          ("<S-f12>" . cancel-debug-on-entry)
