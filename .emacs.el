@@ -1728,8 +1728,9 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
                    in-docstring)
                1 -1)))))
     ;; Maybe turn on auto-fill-mode when a comment or docstring field
-    ;; is detected.
-    (add-hook 'post-command-hook #'tv/turn-on-auto-fill-mode-maybe))
+    ;; is detected. Ensure the hook is appended otherwise things like
+    ;; eldoc-eval will not work.
+    (add-hook 'post-command-hook #'tv/turn-on-auto-fill-mode-maybe t))
 
   :bind (("<f11> s c" . goto-scratch)
          ("<S-f12>" . cancel-debug-on-entry)
