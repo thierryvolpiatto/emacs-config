@@ -913,7 +913,7 @@ If your system's ping continues until interrupted, you can try setting
     :init
     (setq magit-status-buffer-name-format    "*magit status: %a*"
           magit-restore-window-configuration t
-          git-commit-fill-column             120
+          git-commit-fill-column             80
           git-commit-summary-max-length      80
           auto-revert-verbose                nil
           magit-auto-revert-immediately
