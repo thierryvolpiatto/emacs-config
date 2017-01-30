@@ -299,6 +299,10 @@ First call indent, second complete symbol, third complete fname."
 ;;
 ;; Add actions to `helm-source-find-files' IF:
 (defmethod helm-setup-user-source ((source helm-source-ffiles))
+  "Adds additional actions to `helm-find-files'.
+- Byte compile file(s) async.
+- Byte recompile directory.
+- Magit status."
   (helm-source-add-action-to-source-if
    "Byte compile file(s) async"
    'tv/async-byte-compile-file
@@ -322,6 +326,8 @@ First call indent, second complete symbol, third complete fname."
    1))
 
 (defmethod helm-setup-user-source ((source helm-source-buffers))
+  "Adds additional actions to `helm-source-buffers-list'.
+- Magit status."
   (setf (slot-value source 'candidate-number-limit) 300)
   (helm-source-add-action-to-source-if
    "Magit status"
