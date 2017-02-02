@@ -910,8 +910,10 @@ If your system's ping continues until interrupted, you can try setting
 
 ;;; Magit
 ;;
+
+;; Magit when installed from git contains also git-commit and
+;; git-rebase so no need to install them as dependency.
 (use-package magit
-    ;:ensure t
     :init
     (setq magit-status-buffer-name-format    "*magit status: %a*"
           magit-restore-window-configuration t
