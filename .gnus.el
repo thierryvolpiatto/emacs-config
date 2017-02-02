@@ -45,8 +45,15 @@
                                       ;(nntp "news.gwene.org")
                                       ))
 
-;; [1] Don't load mime parts when receiving mail, only text part.
-;; Use `A-C' to see entire mail.
+;; [1] Don't load mime parts when receiving mail, only text part, use
+;; instead `A-C' to see entire mail.
+
+(setq gnus-posting-styles
+      '((".*"
+         (name "Thierry Volpiatto")
+         (address "thierry.volpiatto@gmail.com")
+         (organization "Emacs Helm")
+         (signature-file "~/.signature"))))
 
 ;; Nnml mail directory 
 (setq nnml-directory "~/Mail")

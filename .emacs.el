@@ -48,6 +48,8 @@
 (dolist (i '("/usr/local/share/emacs/site-lisp"
              "/usr/local/share/emacs/site-lisp/mu4e"
 	     "~/elisp/"
+             "~/elisp/magit/lisp"
+             "~/elisp/with-editor"
              "~/elisp/google-maps.el"
              "~/elisp/Emacs-wgrep"
 	     "~/elisp/autoconf-mode"
@@ -909,7 +911,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Magit
 ;;
 (use-package magit
-    :ensure t
+    ;:ensure t
     :init
     (setq magit-status-buffer-name-format    "*magit status: %a*"
           magit-restore-window-configuration t
