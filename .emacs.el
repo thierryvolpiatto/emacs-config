@@ -925,6 +925,7 @@ If your system's ping continues until interrupted, you can try setting
                      auto-revert-use-notify))
           magit-revision-show-gravatars nil
           magit-uniquify-buffer-names   nil)
+    (add-hook 'git-commit-setup-hook (lambda () (setq-local adaptive-fill-mode nil)))
     :config
     (bind-key "C"    'magit-commit-add-log magit-diff-mode-map)
     (bind-key "C-]"  'magit-toggle-margin magit-log-mode-map)
