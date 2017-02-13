@@ -181,6 +181,7 @@
 (defvar tv/mu4e-get-mail-command-full "offlineimap -u Basic")
 (defvar tv/mu4e-get-mail-command-quick "offlineimap -q -u Basic")
 (defun tv/mu4e-update-mail-quick-or-full ()
+  (cl-assert (NetworkManager-connected-p) nil "Network disconnected, unable to update mails")
   (if (>= tv/mu4e-counter
           tv/mu4e-max-number-update-before-toggling)
       (progn
