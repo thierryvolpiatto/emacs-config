@@ -1888,7 +1888,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
     :config
     (NetworkManager-add-listener
      (lambda (state)
-       (require 'mu4e-main)
        (setq smtpmail-queue-mail (not state))
        (when (eq major-mode 'mu4e-main-mode)
          (let ((pos (point)))
