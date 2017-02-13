@@ -38,8 +38,7 @@
 (defun tv/message-mode-setup ()
   (setq fill-column 72)
   (turn-on-auto-fill)
-  (epa-mail-mode 1)
-  (setq smtpmail-queue-mail (not (NetworkManager-connected-p))))
+  (epa-mail-mode 1))
 (add-hook 'message-mode-hook 'tv/message-mode-setup)
 
 ;; Contexts (setup smtp servers)
@@ -201,15 +200,8 @@
 
 ;;; Setup queue mail dir
 ;;
+;; `smtpmail-queue-mail' is set by NetworkManager.el.
 (setq smtpmail-queue-dir "~/Maildir/queue/")
-
-(defun tv/mu4e-set-queue-mail (&rest args)
-  (setq smtpmail-queue-mail (not (NetworkManager-connected-p))))
-;; If network connected start in direct mode otherwise in queued
-;; mode. We have to advice `mu4e~main-view-queue' instead of using
-;; `mu4e-main-mode-hook' because this one runs later and buffer is not
-;; updated.
-(advice-add 'mu4e~main-view-queue :before 'tv/mu4e-set-queue-mail)
 
 ;;; Decorate mu main view
 (defun mu4e-main-mode-font-lock-rules ()

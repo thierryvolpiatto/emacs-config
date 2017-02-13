@@ -1885,9 +1885,15 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; NetworkManager
 ;;  https://github.com/tromey/emacs-network-manager
 (use-package NetworkManager
-    :commands (NetworkManager-connected-p
-               NetworkManager-add-listener
-               NetworkManager-remove-listener))
+    :config
+    (NetworkManager-add-listener
+     (lambda (state)
+       (require 'mu4e-main)
+       (setq smtpmail-queue-mail (not state))
+       (when (eq major-mode 'mu4e-main-mode)
+         (let ((pos (point)))
+           (mu4e~main-view-real nil nil)
+           (goto-char pos))))))
 
 ;;; Emacspeak
 ;;
