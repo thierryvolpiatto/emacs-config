@@ -1882,6 +1882,12 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;
 (use-package gh :ensure t)
 
+;;; NetworkManager
+;;  https://github.com/tromey/emacs-network-manager
+(use-package NetworkManager
+    :commands (NetworkManager-connected-p
+               NetworkManager-add-listener
+               NetworkManager-remove-listener))
 
 ;;; Emacspeak
 ;;
