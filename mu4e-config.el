@@ -204,14 +204,6 @@
 ;; `smtpmail-queue-mail' is set by NetworkManager.el.
 (setq smtpmail-queue-dir "~/Maildir/queue/")
 
-;;; Decorate mu main view
-(defun mu4e-main-mode-font-lock-rules ()
-  (save-excursion
-    (goto-char (point-min))
-    (while (re-search-forward "\\[\\([a-zA-Z]\\{1,2\\}\\)\\]" nil t)
-      (add-text-properties (match-beginning 1) (match-end 1) '(face font-lock-variable-name-face)))))
-(add-hook 'mu4e-main-mode-hook 'mu4e-main-mode-font-lock-rules)
-
 ;;; Handle quoted text added with `message-mark-inserted-region' (`C-c M-m')
 (add-hook 'mu4e-view-mode-hook 'mu4e-mark-region-code)
 
