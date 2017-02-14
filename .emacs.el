@@ -1696,7 +1696,7 @@ from IPython.core.completerlib import module_completion"
     (defun goto-scratch ()
       (interactive)
       (switch-to-buffer "*scratch*"))
-    
+
     ;; Fix indentation in cl-flet and cl-labels
     (use-package cl-indent
         :config (let ((l '((flet ((&whole 4 &rest (&whole 1 &lambda &body)) &body))
@@ -1734,7 +1734,12 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
     ;; Maybe turn on auto-fill-mode when a comment or docstring field
     ;; is detected. Ensure the hook is appended otherwise things like
     ;; eldoc-eval will not work.
-    (add-hook 'post-command-hook #'tv/turn-on-auto-fill-mode-maybe t))
+    (add-hook 'post-command-hook #'tv/turn-on-auto-fill-mode-maybe t)
+
+    (defun tv/eval-print-last-sexp ()
+      (interactive)
+      (insert "\n")
+      (pp-eval-last-sexp 'print)))
 
   :bind (("<f11> s c" . goto-scratch)
          ("<S-f12>" . cancel-debug-on-entry)
@@ -1752,6 +1757,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
          ("RET" . newline-and-indent)
          ("C-M-j" . backward-kill-sexp)
          ("C-x C-e" . pp-eval-last-sexp)
+         ("C-j" . tv/eval-print-last-sexp)
          ("C-x C-m e" . pp-macroexpand-last-sexp)
          :map
          lisp-mode-map
