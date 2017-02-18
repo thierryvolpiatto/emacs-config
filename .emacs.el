@@ -1892,13 +1892,26 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;  https://github.com/tromey/emacs-network-manager
 (use-package NetworkManager
     :config
-    (NetworkManager-add-listener
-     (lambda (state)
-       (setq smtpmail-queue-mail (not state))
+  (NetworkManager-add-listener
+   (lambda (state)
+     (let (connectivity)
+       ;; When network is connected, Connectivity takes some time to
+       ;; be measured so poll until it returns a number.
+       (while (and state (not (numberp connectivity)))
+         (setq connectivity (dbus-get-property
+                             NetworkManager-bus
+                             NetworkManager-service
+                             NetworkManager-path
+                             NetworkManager-interface
+                             "Connectivity")))
+       ;; Network is usable when Connectivity == 4.
+       (setq smtpmail-queue-mail (or (null connectivity)
+                                     (and (numberp connectivity)
+                                          (< connectivity 4))))
        (when (eq major-mode 'mu4e-main-mode)
          (let ((pos (point)))
            (mu4e~main-view-real nil nil)
-           (goto-char pos))))))
+           (goto-char pos)))))))
 
 ;;; Emacspeak
 ;;
