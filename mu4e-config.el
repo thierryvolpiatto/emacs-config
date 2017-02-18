@@ -51,9 +51,8 @@
            :enter-func (lambda () (mu4e-message "Switch to Gmail"))
            ;; leave-func not defined
            :match-func (lambda (msg)
-                         (when msg (mu4e-message-contact-field-matches
-                                    msg
-                                    :to "thierry.volpiatto@gmail\\.com")))
+                         (when msg
+			  (string-match-p "^/Gmail" (mu4e-message-field msg :maildir))))
            :vars '((smtpmail-smtp-user           . "thierry.volpiatto@gmail.com")
                    (smtpmail-default-smtp-server . "smtp.gmail.com")
                    (smtpmail-smtp-server         . "smtp.gmail.com")
@@ -66,9 +65,8 @@
             :name "Yahoo"
             :enter-func (lambda () (mu4e-message "Switch to Yahoo"))
             :match-func (lambda (msg)
-                          (when msg (mu4e-message-contact-field-matches
-                                     msg
-                                     :to "tvolpiatto@yahoo\\.fr")))
+                          (when msg
+                            (string-match-p "^/Yahoo" (mu4e-message-field msg :maildir))))
             :vars '((smtpmail-smtp-user           . "tvolpiatto@yahoo.fr")
                     (smtpmail-default-smtp-server . "smtp.mail.yahoo.com")
                     (smtpmail-smtp-server         . "smtp.mail.yahoo.com")

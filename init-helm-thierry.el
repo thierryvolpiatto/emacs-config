@@ -244,7 +244,7 @@ First call indent, second complete symbol, third complete fname."
       helm-autoresize-max-height                      80 ; it is %.
       helm-autoresize-min-height                      20 ; it is %.
       fit-window-to-buffer-horizontally               1
-      helm-open-github-closed-issue-since             30
+      helm-open-github-closed-issue-since             720 ; 2 years
       helm-highlight-matches-around-point-max-lines   30
       helm-search-suggest-action-wikipedia-url
       "https://fr.wikipedia.org/wiki/Special:Search?search=%s"
