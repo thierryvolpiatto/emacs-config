@@ -45,9 +45,10 @@
 
 ;;; load-path
 ;;
-(dolist (i '("/usr/local/share/emacs/site-lisp"
+(dolist (i '("/usr/local/share/emacs/site-lisp/"
              "/usr/local/share/emacs/site-lisp/mu4e"
 	     "~/elisp/"
+             "~/elisp/emacs-async"
              "~/elisp/magit/lisp"
              "~/elisp/with-editor"
              "~/elisp/google-maps.el"
@@ -56,7 +57,7 @@
 	     "~/elisp/desktop-file-utils"
 	     "~/elisp/emacs-wget"
 	     "~/elisp/tex-utils"
-	     "~/elisp/ledger/"
+	     "~/elisp/ledger"
              "~/elisp/helm"
              "~/elisp/helm-extensions"
              "~/.emacs.d/themes/"
@@ -681,7 +682,6 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Async
 ;;
 (use-package async
-    :ensure t
     :config
     (progn
       ;; Dired async.
