@@ -39,9 +39,6 @@
 ;; to feed package-archive-contents with all archives.
 (package-initialize)
 
-;; Comment out to activate.
-;; (benchmark-init/activate)
-
 
 ;;; load-path
 ;;
@@ -1146,10 +1143,7 @@ from IPython.core.completerlib import module_completion"
 
       (add-hook 'python-mode-hook
                 (lambda ()
-                  (define-key python-mode-map (kbd "C-m") 'newline-and-indent)))
-
-      (when (fboundp 'jedi:setup)
-        (add-hook 'python-mode-hook 'jedi:setup)))
+                  (define-key python-mode-map (kbd "C-m") 'newline-and-indent))))
     :config
     (progn
       (defun tv-insert-python-header ()
@@ -1344,51 +1338,6 @@ from IPython.core.completerlib import module_completion"
           global-map (kbd "C-x v n") ?n 'git-gutter:next-hunk '((?p . git-gutter:previous-hunk)))
       (helm-define-key-with-subkeys
           global-map (kbd "C-x v p") ?p 'git-gutter:previous-hunk '((?n . git-gutter:next-hunk)))))
-
-;;; Slime
-;;
-;;
-(use-package slime
-    :config
-  (progn
-    (setq inferior-lisp-program "/usr/bin/sbcl")
-    (slime-setup '(slime-fancy
-                   slime-asdf
-                   slime-tramp
-                   slime-banner
-                   slime-autodoc
-                   slime-xref-browser))
-    (setq slime-net-coding-system 'utf-8-unix
-          slime-complete-symbol-function 'slime-fuzzy-complete-symbol)
-    ;; Save-slime-scratch-buffer
-    (setq slime-scratch-file "~/.emacs.d/slime-scratch.lisp")
-    ;; common-lisp-info
-    (add-to-list 'Info-additional-directory-list "~/elisp/info/gcl-info/")
-    (add-hook 'slime-load-hook (lambda () (require 'slime-tramp)))
-    (defun tv-slime-port (process)
-      (let ((slime-port (or (process-id process)
-                            (process-contact process))))
-        (setq slime-port (cadr slime-port))
-        slime-port))
-
-    (defun tv-get-slime-buffer-list ()
-      (let ((buf-list nil))
-        (dolist (b (buffer-list))
-          (when (string-match "*slime-repl sbcl*" (buffer-name b))
-            (push (buffer-name b) buf-list)))
-        buf-list))
-
-    (defun tv-start-slime ()
-      (interactive)
-      (require 'slime)
-      (if (slime-connected-p)
-          (if (< (length slime-net-processes) 2)
-              (slime)
-              (slime-list-connections))
-          (slime))))
-  :bind (("<f11> l r" . tv-start-slime)
-         ("<f11> l e" . slime-scratch)
-         ("<f11> l l" . slime-list-connections)))
 
 ;;; Addressbook
 ;;
