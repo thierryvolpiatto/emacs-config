@@ -1892,6 +1892,9 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;  https://github.com/tromey/emacs-network-manager
 (use-package NetworkManager
     :config
+  ;; FIXME this listener will kick in when state change, however when
+  ;; connectivity change nothing will happen, perhaps provide a
+  ;; function in NetworkManager to add listener on connectivity only. 
   (NetworkManager-add-listener
    (lambda (state)
      (let (connectivity)
