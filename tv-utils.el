@@ -950,6 +950,20 @@ Arg `host' is machine in auth-info file."
          (secret (plist-get (car token) :secret)))
     (if (functionp secret) (funcall secret) secret)))
 
+;; Avoid typing password for sudo in eshell
+(defun tv/advice--eshell-send-invisible ()
+  (interactive) ; Don't pass str as argument, to avoid snooping via C-x ESC ESC
+  (let ((str (read-passwd
+	      (format "%s Password: "
+		      (process-name (eshell-interactive-process)))
+              nil (tv/get-passwd-from-auth-sources
+                   "default" :user "root" :port "sudo"))))
+    (if (stringp str)
+	(process-send-string (eshell-interactive-process)
+			     (concat str "\n"))
+      (message "Warning: text will be echoed"))))
+(advice-add 'eshell-send-invisible :override #'tv/advice--eshell-send-invisible)
+
 (defvar tv/freesms-default-url
   "https://smsapi.free-mobile.fr/sendmsg?user=%s&pass=%s&msg=%s")
 ;;;###autoload
