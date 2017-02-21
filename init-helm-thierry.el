@@ -302,7 +302,8 @@ First call indent, second complete symbol, third complete fname."
   "Adds additional actions to `helm-find-files'.
 - Byte compile file(s) async.
 - Byte recompile directory.
-- Magit status."
+- Magit status.
+- Github issues."
   (helm-source-add-action-to-source-if
    "Byte compile file(s) async"
    'tv/async-byte-compile-file
@@ -321,8 +322,17 @@ First call indent, second complete symbol, third complete fname."
    source
    (lambda (candidate)
      (and (not (string-match-p ffap-url-regexp candidate))
-          (locate-dominating-file helm-ff-default-directory
-                                  ".git")))
+          (locate-dominating-file helm-ff-default-directory ".git")))
+   1)
+  (helm-source-add-action-to-source-if
+   "Github Issues"
+   (lambda (_candidate)
+     (with-helm-default-directory helm-ff-default-directory
+         (helm-open-github-from-issues helm-current-prefix-arg)))
+   source
+   (lambda (candidate)
+     (and (not (string-match-p ffap-url-regexp candidate))
+          (locate-dominating-file helm-ff-default-directory ".git")))
    1))
 
 (defmethod helm-setup-user-source ((source helm-source-buffers))
