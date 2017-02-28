@@ -187,6 +187,7 @@
 (define-key org-mode-map (kbd "<M-down>") 'tv-scroll-down)
 (define-key org-mode-map (kbd "<C-M-up>") 'tv-scroll-other-up)
 (define-key org-mode-map (kbd "<C-M-down>") 'tv-scroll-other-down)
+(define-key org-mode-map (kbd "C-d") 'tv-delete-char)
 
 (provide 'org-config-thierry)
 
