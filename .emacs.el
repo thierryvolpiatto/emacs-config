@@ -241,6 +241,7 @@ So far, F can only be a symbol, not a lambda expression."))
     (add-to-list 'Info-directory-list "/usr/share/info")
     (add-to-list 'Info-directory-list "~/elisp/info")
     (add-to-list 'Info-directory-list "~/elisp/info/eshell-doc")
+    (add-to-list 'Info-directory-list "/home/thierry/elisp/magit/Documentation")
     ;; Fancy faces in info.
     (defface tv-info-ref-item
         '((((background dark)) :background "DimGray" :foreground "Gold")
