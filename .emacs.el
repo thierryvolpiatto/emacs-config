@@ -1453,13 +1453,23 @@ from IPython.core.completerlib import module_completion"
     ;; Eshell-prompt
     (setq eshell-prompt-function
           (lambda nil
-            (concat
-             (getenv "USER")
-             "@"
-             (system-name)
-             ":"
-             (abbreviate-file-name (eshell/pwd))
-             (if (= (user-uid) 0) " # " " $ "))))
+            (let ((pwd (eshell/pwd)))
+              (with-temp-buffer
+                (let* ((default-directory (file-name-as-directory pwd))
+                       (proc (process-file
+                              "git" nil t nil
+                              "symbolic-ref" "HEAD" "--short"))
+                       (id (if (= (user-uid) 0) " # " " $ ")))
+                  (if (= proc 0)
+                      (concat (propertize (format
+                                           "Git %s"
+                                           (replace-regexp-in-string
+                                            "\n" ""(buffer-string)))
+                                          'face '((:foreground "red")))
+                              ":" (abbreviate-file-name pwd) id)
+                      (concat 
+                       (getenv "USER") "@" (system-name) ":"
+                       (abbreviate-file-name pwd) id)))))))
 
     ;; Compatibility 24.2/24.3
     (unless (fboundp 'eshell-pcomplete)
@@ -1875,9 +1885,11 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
     (add-hook 'shell-dynamic-complete-functions 'bash-completion-dynamic-complete)
     :ensure t)
 
-;;; Pcmpl-git
+;;; Pcmpl-git (For Eshell)
 ;;
-(use-package pcmpl-git :ensure t :disabled t)
+;; Seems that bash-completion and pcmpl can cohabit.
+;; No subcommands completion with pcmpl in eshell though.
+(use-package pcmpl-git :ensure t)
 
 
 ;;; Emacspeak
