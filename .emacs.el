@@ -1459,16 +1459,24 @@ from IPython.core.completerlib import module_completion"
                        (proc (process-file
                               "git" nil t nil
                               "symbolic-ref" "HEAD" "--short"))
-                       (id (if (= (user-uid) 0) " # " " $ ")))
+                       (id (if (= (user-uid) 0) " # " " $ "))
+                       detached)
+                  (unless (= proc 0)
+                    (erase-buffer)
+                    (setq detached t)
+                    (setq proc (process-file
+                                "git" nil t nil
+                                "rev-parse" "--short" "HEAD")))
                   (if (= proc 0)
-                      (concat (propertize (format
-                                           "Git %s"
-                                           (truncate-string-to-width
-                                            (replace-regexp-in-string
-                                             "\n" "" (buffer-string))
-                                            11 nil nil "[...]"))
+                      (format "%s:(%s)%s"
+                              (abbreviate-file-name pwd)
+                              (propertize (format
+                                           "%s%s"
+                                           (if detached "detached@" "")
+                                           (replace-regexp-in-string
+                                            "\n" "" (buffer-string)))
                                           'face '((:foreground "red")))
-                              ":" (abbreviate-file-name pwd) id)
+                              id)
                       (concat 
                        (getenv "USER") "@" (system-name) ":"
                        (abbreviate-file-name pwd) id)))))))
