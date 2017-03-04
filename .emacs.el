@@ -1477,8 +1477,8 @@ from IPython.core.completerlib import module_completion"
                                             "\n" "" (buffer-string)))
                                           'face '((:foreground "red")))
                               id)
-                      (concat 
-                       (getenv "USER") "@" (system-name) ":"
+                      (format "%s@%s:%s%s"
+                       (getenv "USER") (system-name)
                        (abbreviate-file-name pwd) id)))))))
 
     ;; Compatibility 24.2/24.3
