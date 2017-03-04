@@ -1463,8 +1463,10 @@ from IPython.core.completerlib import module_completion"
                   (if (= proc 0)
                       (concat (propertize (format
                                            "Git %s"
-                                           (replace-regexp-in-string
-                                            "\n" ""(buffer-string)))
+                                           (truncate-string-to-width
+                                            (replace-regexp-in-string
+                                             "\n" "" (buffer-string))
+                                            11 nil nil "[...]"))
                                           'face '((:foreground "red")))
                               ":" (abbreviate-file-name pwd) id)
                       (concat 
