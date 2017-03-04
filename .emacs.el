@@ -1873,12 +1873,11 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
     :commands 'bash-completion-dynamic-complete
     :init
     (add-hook 'shell-dynamic-complete-functions 'bash-completion-dynamic-complete)
-    :ensure t
-    :disabled t)
+    :ensure t)
 
 ;;; Pcmpl-git
 ;;
-(use-package pcmpl-git :ensure t)
+(use-package pcmpl-git :ensure t :disabled t)
 
 
 ;;; Emacspeak
