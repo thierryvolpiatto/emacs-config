@@ -1460,7 +1460,7 @@ from IPython.core.completerlib import module_completion"
                               "git" nil t nil
                               "symbolic-ref" "HEAD" "--short"))
                        (id (if (= (user-uid) 0) " # " " $ "))
-                       detached)
+                       detached branch status)
                   (unless (= proc 0)
                     (erase-buffer)
                     (setq detached t)
@@ -1468,15 +1468,28 @@ from IPython.core.completerlib import module_completion"
                                 "git" nil t nil
                                 "rev-parse" "--short" "HEAD")))
                   (if (= proc 0)
-                      (format "%s:(%s)%s"
-                              (abbreviate-file-name pwd)
-                              (propertize (format
-                                           "%s%s"
-                                           (if detached "detached@" "")
-                                           (replace-regexp-in-string
-                                            "\n" "" (buffer-string)))
-                                          'face '((:foreground "red")))
-                              id)
+                      (progn
+                        (setq branch (replace-regexp-in-string
+                                      "\n" "" (buffer-string)))
+                        (erase-buffer)
+                        (setq proc (process-file
+                                    "git" nil t nil "status" "--porcelain"))
+                        (setq status (let ((str (buffer-string)))
+                                       (if (and (not (string= str "")) (= proc 0))
+                                           (if (string-match "\\`[?]" str) "?" "*")
+                                           "")))
+                        (format "%s:(%s%s)%s"
+                                (abbreviate-file-name pwd)
+                                (propertize (format
+                                             "%s%s"
+                                             (if detached "detached@" "")
+                                             branch)
+                                            'face '((:foreground "red")))
+                                (propertize status
+                                            'face `((:foreground
+                                                     ,(if (string= "?" status)
+                                                          "OrangeRed" "gold1"))))
+                                id))
                       (format "%s@%s:%s%s"
                        (getenv "USER") (system-name)
                        (abbreviate-file-name pwd) id)))))))
