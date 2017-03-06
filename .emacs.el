@@ -1474,10 +1474,11 @@ from IPython.core.completerlib import module_completion"
                         (erase-buffer)
                         (setq proc (process-file
                                     "git" nil t nil "status" "--porcelain"))
-                        (setq status (let ((str (buffer-string)))
-                                       (if (and (not (string= str "")) (= proc 0))
-                                           (if (string-match "\\`[?]" str) "?" "*")
-                                           "")))
+                        (setq status (pcase (buffer-string)
+                                       ((and str (guard (and (not (string= str ""))
+                                                             (= proc 0))))
+                                        (if (string-match "\\`[?]" str) "?" "*"))
+                                       (_ "")))
                         (format "%s:(%s%s)%s"
                                 (abbreviate-file-name pwd)
                                 (propertize (format
