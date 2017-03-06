@@ -931,8 +931,11 @@ If your system's ping continues until interrupted, you can try setting
     ;; before.
     (setq magit-visit-ref-behavior '(checkout-any focus-on-ref))
     (add-to-list 'magit-visit-ref-behavior 'create-branch)
+    ;; Recognize french password prompt in shell commands.
+    ;; FIXME use the nth99 submatch to pass the match to authsource
+    ;; via `magit-process-password-auth-source'.
     (add-to-list 'magit-process-password-prompt-regexps
-                 "^\\[sudo\\] Mot de passe de.* ?: ")
+                 "^\\[sudo\\] Mot de passe de \\(.*\\).?: ")
     :no-require t)
 
 ;;; Emamux
