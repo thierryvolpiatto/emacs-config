@@ -913,8 +913,7 @@ If your system's ping continues until interrupted, you can try setting
 ;; git-rebase so no need to install them as dependency.
 (use-package magit
     :init
-    (setq magit-status-buffer-name-format    "*magit status: %a*"
-          magit-restore-window-configuration t
+    (setq magit-restore-window-configuration t
           git-commit-fill-column             80
           git-commit-summary-max-length      80
           auto-revert-verbose                nil
@@ -928,7 +927,6 @@ If your system's ping continues until interrupted, you can try setting
     (bind-key "C"    'magit-commit-add-log magit-diff-mode-map)
     (bind-key "C-]"  'magit-toggle-margin magit-log-mode-map)
     (bind-key "<f2>" 'magit-status)
-    :config
     ;; Press RET while in branch manager to checkout branches as
     ;; before.
     (setq magit-visit-ref-behavior '(checkout-any focus-on-ref))
