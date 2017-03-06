@@ -932,6 +932,9 @@ If your system's ping continues until interrupted, you can try setting
     ;; before.
     (setq magit-visit-ref-behavior '(checkout-any focus-on-ref))
     (add-to-list 'magit-visit-ref-behavior 'create-branch)
+    :config
+    (add-to-list 'magit-process-password-prompt-regexps
+                 "^\\[sudo\\] Mot de passe de.* ?: ")
     :no-require t)
 
 ;;; Emamux
