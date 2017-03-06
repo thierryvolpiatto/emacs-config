@@ -928,11 +928,11 @@ If your system's ping continues until interrupted, you can try setting
     (bind-key "C"    'magit-commit-add-log magit-diff-mode-map)
     (bind-key "C-]"  'magit-toggle-margin magit-log-mode-map)
     (bind-key "<f2>" 'magit-status)
+    :config
     ;; Press RET while in branch manager to checkout branches as
     ;; before.
     (setq magit-visit-ref-behavior '(checkout-any focus-on-ref))
     (add-to-list 'magit-visit-ref-behavior 'create-branch)
-    :config
     (add-to-list 'magit-process-password-prompt-regexps
                  "^\\[sudo\\] Mot de passe de.* ?: ")
     :no-require t)
