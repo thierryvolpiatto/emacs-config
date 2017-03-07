@@ -935,7 +935,7 @@ If your system's ping continues until interrupted, you can try setting
     ;; FIXME use the nth99 submatch to pass the match to authsource
     ;; via `magit-process-password-auth-source'.
     (add-to-list 'magit-process-password-prompt-regexps
-                 "^\\[sudo\\] Mot de passe de \\(.*\\).?: ?$")
+                 "^\\[sudo\\] [Mm]ot de passe de \\(.*\\).?: ?$")
     (add-to-list 'magit-process-password-prompt-regexps
                  "^\\[sudo\\] [Pp]assword for \\(.*\\): ?$")
     :no-require t)
