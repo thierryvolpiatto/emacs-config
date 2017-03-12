@@ -339,7 +339,7 @@ So far, F can only be a symbol, not a lambda expression."))
                                   map-fn 'mapc
                                   looping t))
                            ((hash-table-p object)
-                            (setq prefix (format "#s(hash-table size %s test %s rehash-size %s rehash-threshold %s data"
+                            (setq prefix (format "#s(hash-table size %s test %s rehash-size %s rehash-threshold %s data\n"
                                                  (hash-table-size object)
                                                  (hash-table-test object)
                                                  (hash-table-rehash-size object)
