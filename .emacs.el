@@ -326,13 +326,36 @@ So far, F can only be a symbol, not a lambda expression."))
                                (princ (pp-to-string ob)
                                       (or stream standard-output))
                                (terpri)))
-                         (print-circle t))
-                     (if (consp object)
+                         (print-circle t)
+                         prefix suffix map-fn looping)
+                     (cond ((consp object)
+                            (setq prefix "\n("
+                                  suffix ")"
+                                  map-fn 'mapc
+                                  looping t))
+                           ((vectorp object)
+                            (setq prefix "\n["
+                                  suffix "]"
+                                  map-fn 'mapc
+                                  looping t))
+                           ((hash-table-p object)
+                            (setq prefix (format "#s(hash-table size %s test %s rehash-size %s rehash-threshold %s data"
+                                                 (hash-table-size object)
+                                                 (hash-table-test object)
+                                                 (hash-table-rehash-size object)
+                                                 (hash-table-rehash-threshold object))
+                                  suffix ")"
+                                  map-fn 'maphash
+                                  fn `(lambda (k v &optional stream)
+                                        (funcall ,fn k stream)
+                                        (funcall ,fn v stream))
+                                  looping t)))
+                     (if looping
                          (progn
-                           (insert "\n(")
-                           (mapc fn object)
+                           (insert prefix)
+                           (funcall map-fn fn object)
                            (cl-letf (((point) (1- (point))))
-                             (insert ")")))
+                             (insert suffix)))
                          (funcall fn object stream))))))
         (apply old-fn args)))
     (advice-add 'describe-variable :around #'tv/describe-variable)))
