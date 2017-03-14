@@ -333,6 +333,19 @@ First call indent, second complete symbol, third complete fname."
    (lambda (candidate)
      (and (not (string-match-p ffap-url-regexp candidate))
           (locate-dominating-file helm-ff-default-directory ".git")))
+   1)
+  (helm-source-add-action-to-source-if
+   "Patch region on directory"
+   (lambda (_candidate)
+     (with-helm-current-buffer
+       (shell-command-on-region (region-beginning) (region-end)
+                                (format "patch -d %s -p1"
+                                        helm-ff-default-directory))))
+   source
+   (lambda (_candidate)
+     (with-helm-current-buffer
+       (and (eq major-mode 'mu4e-view-mode)
+            (region-active-p))))
    1))
 
 (defmethod helm-setup-user-source ((source helm-source-buffers))
