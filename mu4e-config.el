@@ -13,9 +13,10 @@
 ;;
 ;;
 ;; Don't send to these address in wide reply.
-(setq message-dont-reply-to-names '("notifications@github\\.com"
-                                    ".*@noreply\\.github\\.com"
-                                    "thierry\\.volpiatto@gmail\\.com"))
+(setq mu4e-compose-reply-ignore-address
+      '("notifications@github\\.com"
+        ".*@noreply\\.github\\.com"
+        "thierry\\.volpiatto@gmail\\.com"))
 
 (setq user-mail-address "thierry.volpiatto@gmail.com")
 (setq user-full-name "Thierry Volpiatto")
