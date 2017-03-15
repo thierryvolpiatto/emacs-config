@@ -964,6 +964,10 @@ If your system's ping continues until interrupted, you can try setting
     (add-to-list 'magit-process-find-password-functions
                  (lambda (key)
                    (tv/get-passwd-from-auth-sources key :port "sudo")))
+    (add-hook 'magit-pre-start-git-hook
+              (lambda ()
+                (cl-assert (NetworkManager-connected-p)
+                           nil "Network disconnected, unable to reach repository")))
     :no-require t)
 
 ;;; Emamux
