@@ -68,7 +68,24 @@
 ;;
 (eval-when-compile (require 'use-package))
 (setq use-package-verbose t)
-
+;; Simplify not understandable new `use-package-ensure-function'.
+(defun tv/use-package-ensure-elpa (name ensure state context &optional no-refresh)
+  "Prefer the elpa version of built-in packages if available.
+This allow installation of org from melpa when :ensure is specified."
+  (let* ((package (or (when (eq ensure t) (use-package-as-symbol name))
+                      ensure))
+         (pkg (assq package package-alist)))
+    (if pkg
+        t
+        (when (and (not no-refresh)
+                   (assoc package
+                          (bound-and-true-p package-pinned-packages)))
+          (package-read-all-archive-contents))
+        (setq pkg (assq package package-archive-contents))
+        (if (or pkg no-refresh)
+            (package-install (cadr pkg))
+            (package-refresh-contents)))))
+(setq use-package-ensure-function #'tv/use-package-ensure-elpa)
 
 ;;; Global settings
 ;;
