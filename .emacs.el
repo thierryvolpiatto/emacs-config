@@ -45,6 +45,7 @@
 (dolist (i '("/usr/local/share/emacs/site-lisp/"
              "/usr/local/share/emacs/site-lisp/mu4e"
 	     "~/elisp/"
+             "~/elisp/use-package"
              "~/elisp/emacs-async"
              "~/elisp/magit/lisp"
              "~/elisp/with-editor"
