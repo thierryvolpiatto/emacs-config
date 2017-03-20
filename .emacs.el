@@ -72,7 +72,7 @@
 (defun tv/use-package-ensure-elpa (name ensure state context &optional no-refresh)
   "Prefer the elpa version of built-in packages if available.
 This allow installation of org from melpa when :ensure is specified."
-  (let* ((package (or (when (eq ensure t) (use-package-as-symbol name))
+  (let* ((package (or (and (eq ensure t) (use-package-as-symbol name))
                       ensure))
          (pkg (assq package package-alist)))
     (if pkg
