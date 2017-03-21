@@ -105,6 +105,7 @@ This allow installation of org from melpa when :ensure is specified."
       (save-buffers-kill-terminal)))
 
 (defun tv-stop-emacs (arg)
+  "Close emacs, with a prefix arg restart it."
   (interactive "P")
   (let ((confirm-kill-emacs (unless arg 'y-or-n-p))
         (kill-emacs-query-functions
