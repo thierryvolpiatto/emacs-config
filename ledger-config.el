@@ -212,7 +212,8 @@ If entries are already pointed, skip."
       (remove-overlays)
       (setq ov (make-overlay beg (point-max)))
       (overlay-put ov 'face '((:background "DarkSlateGray"))))
-    (switch-to-buffer obuf)))
+    (switch-to-buffer obuf)
+    (ledger-reverse-date-to-us)))
 
 ;;;###autoload
 (defun ledger-exchange-point-an-mark-or-overlay ()
