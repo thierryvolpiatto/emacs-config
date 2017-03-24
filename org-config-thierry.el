@@ -179,6 +179,9 @@
 ;; Always show full path of files 
 (setq org-link-file-path-type 'absolute)
 
+;; Invisible edits
+(setq org-catch-invisible-edits 'smart)
+
 ;; Org babel
 (use-package ob-sh)
 (use-package ob-emacs-lisp)
