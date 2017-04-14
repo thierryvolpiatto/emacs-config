@@ -1963,6 +1963,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;
 (use-package flycheck
     :config
+  ;; Need shellcheck as dependency.
   (add-hook 'sh-mode-hook 'flycheck-mode))
 
 ;;; Emacspeak
