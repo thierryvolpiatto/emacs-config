@@ -1966,6 +1966,11 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
     :config
   ;; Need shellcheck as dependency.
   (add-hook 'sh-mode-hook 'flycheck-mode))
+
+;;; Real-gud
+;;
+(use-package realgud :ensure t)
+
 
 ;;; Emacspeak
 ;;
