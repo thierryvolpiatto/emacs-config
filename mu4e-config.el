@@ -61,7 +61,7 @@
                    (mail-reply-to                . "thierry.volpiatto@gmail.com")
                    (user-mail-address            . "thierry.volpiatto@gmail.com")
                    (user-full-name               . "Thierry Volpiatto")
-                   (mu4e-compose-signature       . "Thierry")))
+                   (mu4e-compose-signature       . t)))
           ,(make-mu4e-context
             :name "Yahoo"
             :enter-func (lambda () (mu4e-message "Switch to Yahoo"))
@@ -75,7 +75,7 @@
                     (mail-reply-to                . "tvolpiatto@yahoo.fr")
                     (user-mail-address            . "tvolpiatto@yahoo.fr")
                     (user-full-name               . "Thierry Volpiatto")
-                    (mu4e-compose-signature       . "Thierry")))))
+                    (mu4e-compose-signature       . t)))))
 
 (setq mu4e-user-mail-address-list
       (delq nil
@@ -123,7 +123,7 @@
 (setq mu4e-headers-skip-duplicates t)
 
 ;;; Signature
-(setq mu4e-compose-signature "Thierry")
+(setq mu4e-compose-signature t)
 
 ;;; encryption
 (define-key mu4e-view-mode-map [remap mu4e-view-verify-msg-popup] 'epa-mail-verify)
