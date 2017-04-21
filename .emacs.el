@@ -379,7 +379,8 @@ So far, F can only be a symbol, not a lambda expression."))
             (push-mark (point-at-eol) t t)
             (apply old--fn args))
           (indent-region (point-at-bol) (point-at-eol))
-          (forward-line 1) (indent-for-tab-command)))
+          (forward-line 1) ;; (indent-for-tab-command)
+          ))
     (advice-add 'comment-dwim :around 'comment--advice-dwim)))
 
 ;;; Woman/man
@@ -1896,6 +1897,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Disable-mouse
 ;;
 (use-package disable-mouse
+    :disabled t
     :ensure t
     :diminish (global-disable-mouse-mode . "NM")
     :config (global-disable-mouse-mode 1))

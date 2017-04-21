@@ -231,6 +231,7 @@ First call indent, second complete symbol, third complete fname."
       helm-boring-file-regexp-list                    '("\\.git/" "\\.hg/" "\\.svn/" "\\.CVS/" "\\._darcs/" "\\.la$" "\\.o$" "\\.i$"
                                                         "\\.steam/" "\\undo-tree-history/" "\\.Private/" "\\.encrypted/" "\\emacs_backup/")
       helm-buffer-skip-remote-checking                t
+      helm-allow-mouse                                t
       helm-apropos-fuzzy-match                        t
       helm-M-x-fuzzy-match                            t
       helm-lisp-fuzzy-completion                      t
