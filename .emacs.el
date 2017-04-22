@@ -958,7 +958,6 @@ If your system's ping continues until interrupted, you can try setting
     ;; Press RET while in branch manager to checkout branches as
     ;; before.
     (setq magit-visit-ref-behavior '(checkout-any focus-on-ref))
-    (setq magit-log-arguments '("-n100" "--graph" "--color" "--decorate" "--show-signature"))
     (add-to-list 'magit-visit-ref-behavior 'create-branch)
     ;; Recognize sudo french/english password prompt in shell
     ;; commands.
