@@ -1974,6 +1974,14 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;
 (use-package realgud :ensure t)
 
+;;; Log-view
+;;
+(use-package log-view
+    :config
+  (defun tv/log-view-fontify ()
+    (font-lock-add-keywords nil '(("^revision [0-9.]*" . font-lock-comment-face)
+                                  ("[a-zA-Z ]*:" . font-lock-type-face))))
+  (add-hook 'log-view-mode-hook 'tv/log-view-fontify))
 
 ;;; Emacspeak
 ;;
