@@ -1904,7 +1904,8 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
                 (if global-disable-mouse-mode
                     (setq helm-allow-mouse nil)
                     (setq helm-allow-mouse t))))
-    (global-disable-mouse-mode 1))
+    ;; (global-disable-mouse-mode 1)
+    )
 
 ;;; Gnus
 ;;
