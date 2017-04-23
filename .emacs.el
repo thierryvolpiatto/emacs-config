@@ -1896,10 +1896,15 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Disable-mouse
 ;;
 (use-package disable-mouse
-    :disabled t
     :ensure t
     :diminish (global-disable-mouse-mode . "NM")
-    :config (global-disable-mouse-mode 1))
+    :config
+    (add-hook 'global-disable-mouse-mode-hook
+              (lambda ()
+                (if global-disable-mouse-mode
+                    (setq helm-allow-mouse nil)
+                    (setq helm-allow-mouse t))))
+    (global-disable-mouse-mode 1))
 
 ;;; Gnus
 ;;
