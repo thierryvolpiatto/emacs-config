@@ -125,6 +125,7 @@
 (define-key helm-command-map (kbd "x") 'helm-firefox-bookmarks)
 (define-key helm-command-map (kbd "#") 'helm-emms)
 (define-key helm-command-map (kbd "I") 'helm-imenu-in-all-buffers)
+(define-key helm-command-map (kbd "@") 'helm-list-elisp-packages-no-fetch)
 
 ;;; Global-map
 ;;
