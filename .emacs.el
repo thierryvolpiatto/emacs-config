@@ -1899,7 +1899,8 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
     (global-set-key [mode-line mouse-1] 'ignore)
     (global-set-key [mode-line mouse-2] 'ignore)
     (global-set-key [mode-line mouse-3] 'ignore)
-    (setq mode-line-default-help-echo nil))
+    (setq mode-line-default-help-echo nil)
+    (add-hook 'focus-in-hook 'force-mode-line-update))
   :ensure t)
 
 ;;; Disable-mouse
