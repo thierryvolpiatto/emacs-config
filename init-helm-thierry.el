@@ -259,6 +259,7 @@ First call indent, second complete symbol, third complete fname."
       helm-mini-default-sources '(helm-source-buffers-list helm-source-buffer-not-found)
       helm-debug-root-directory "/home/thierry/tmp/helm-debug"
       helm-follow-mode-persistent t
+      helm-emms-use-track-description-function t
       )
 
 ;; find-file-hook
