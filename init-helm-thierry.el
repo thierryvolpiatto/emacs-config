@@ -362,7 +362,7 @@ First call indent, second complete symbol, third complete fname."
    source
    (lambda (candidate)
      (or (and (file-directory-p candidate)
-              (directory-files candidate nil ".*\\.\\(mp3\\|ogg\\|flac\\)$"))
+              (directory-files candidate nil ".*\\.\\(mp3\\|ogg\\|flac\\)$" t))
          (string-match-p ".*\\.\\(mp3\\|ogg\\|flac\\)$" candidate)))
    1))
 
