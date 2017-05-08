@@ -352,6 +352,18 @@ First call indent, second complete symbol, third complete fname."
      (with-helm-current-buffer
        (and (eq major-mode 'mu4e-view-mode)
             (region-active-p))))
+   1)
+  (helm-source-add-action-to-source-if
+   "Open in emms"
+   (lambda (candidate)
+     (if (file-directory-p candidate)
+         (emms-play-directory candidate)
+       (emms-play-file candidate)))
+   source
+   (lambda (candidate)
+     (or (and (file-directory-p candidate)
+              (directory-files candidate nil ".*\\.\\(mp3\\|ogg\\|flac\\)$"))
+         (string-match-p ".*\\.\\(mp3\\|ogg\\|flac\\)$" candidate)))
    1))
 
 (defmethod helm-setup-user-source ((source helm-source-buffers))
