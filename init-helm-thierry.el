@@ -261,6 +261,9 @@ First call indent, second complete symbol, third complete fname."
       helm-follow-mode-persistent t
       )
 
+;; find-file-hook
+(add-hook 'find-file-hook 'helm-save-current-pos-to-mark-ring)
+
 ;; Avoid hitting forbidden directory .gvfs when using find.
 (add-to-list 'completion-ignored-extensions ".gvfs/")
 
