@@ -203,7 +203,8 @@ This allow installation of org from melpa when :ensure is specified."
       inhibit-startup-message          t
       message-log-max                  1000
       kill-ring-max                    60
-      mark-ring-max                    60)
+      mark-ring-max                    60
+      global-mark-ring-max             150)
 
 ;; Disable indent-tabs-mode
 (setq-default indent-tabs-mode nil)
