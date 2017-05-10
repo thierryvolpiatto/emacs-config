@@ -26,6 +26,9 @@
 ;; «default-action-for-bookmark-streams» (to ".default-action-for-bookmark-streams")
 (setq emms-stream-default-action "play")
 
+(add-to-list 'emms-info-functions 'emms-info-mp3info)
+(setq emms-browser-default-covers '("~/.emacs.d/emms/cover_small.jpg"))
+
 ;; «Mode-line» (to ".Mode-line")
 (setq emms-mode-line-icon-color "Gold1")
 (setq emms-mode-line-icon-before-format "[")
@@ -82,6 +85,10 @@ static char *note[] = {
 (global-set-key (kbd "<f6> p")  'emms-pause)
 (global-set-key (kbd "<f6> >")  'emms-next)
 (global-set-key (kbd "<f6> <")  'emms-previous)
+(global-set-key (kbd "<XF86AudioNext>")  'emms-next)
+(global-set-key (kbd "<XF86AudioPrev>")  'emms-previous)
+(global-set-key (kbd "<XF86AudioPlay>")  'emms-start)
+(global-set-key (kbd "<XF86AudioPlay>")  'emms-pause)
 (global-set-key (kbd "<f6> m")  'emms-mode-line-toggle)
 
 ;; «Update-mpd-directory» (to ".Update-mpd-directory")
