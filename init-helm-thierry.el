@@ -329,6 +329,7 @@ First call indent, second complete symbol, third complete fname."
    source
    (lambda (candidate)
      (and (not (string-match-p ffap-url-regexp candidate))
+          helm-ff-default-directory
           (locate-dominating-file helm-ff-default-directory ".git")))
    1)
   (helm-source-add-action-to-source-if
@@ -339,6 +340,7 @@ First call indent, second complete symbol, third complete fname."
    source
    (lambda (candidate)
      (and (not (string-match-p ffap-url-regexp candidate))
+          helm-ff-default-directory
           (locate-dominating-file helm-ff-default-directory ".git")))
    1)
   (helm-source-add-action-to-source-if
