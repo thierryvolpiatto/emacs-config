@@ -150,6 +150,7 @@
 (global-set-key (kbd "C-c i")                        'helm-imenu-in-all-buffers)
 (global-set-key (kbd "<f11> o")                      'helm-org-agenda-files-headings)
 (global-set-key (kbd "C-s")                          'helm-occur)
+(global-set-key (kbd "<f6> h")                       'helm-emms)
 (define-key global-map [remap jump-to-register]      'helm-register)
 (define-key global-map [remap list-buffers]          'helm-mini)
 (define-key global-map [remap dabbrev-expand]        'helm-dabbrev)
