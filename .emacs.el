@@ -304,7 +304,7 @@ So far, F can only be a symbol, not a lambda expression."))
 (use-package browse-url
     :config
   (progn
-    (setq browse-url-browser-function 'helm-browse-url-opera)))
+    (setq browse-url-browser-function 'helm-browse-url-firefox)))
 
 ;;; Ediff
 ;;
