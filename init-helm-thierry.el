@@ -143,6 +143,7 @@
 (global-set-key (kbd "C-h i")                        'helm-info)
 (global-set-key (kbd "C-x C-d")                      'helm-browse-project)
 (global-set-key (kbd "<f1>")                         'helm-resume)
+(global-set-key (kbd "<S-f1>")                       'helm-cycle-resume)
 (global-set-key (kbd "C-h C-f")                      'helm-apropos)
 (global-set-key (kbd "C-h a")                        'helm-apropos)
 (global-set-key (kbd "<f5> s")                       'helm-find)
@@ -226,6 +227,7 @@ First call indent, second complete symbol, third complete fname."
       helm-show-action-window-other-window            'left
       helm-buffers-favorite-modes                     (append helm-buffers-favorite-modes '(picture-mode artist-mode))
       helm-ls-git-status-command                      'magit-status-internal
+      helm-ls-git-show-abs-or-relative                'relative
       helm-M-x-requires-pattern                       0
       helm-dabbrev-cycle-threshold                    5
       helm-surfraw-duckduckgo-url                     "https://duckduckgo.com/?q=%s&ke=-1&kf=fw&kl=fr-fr&kr=b&k1=-1&k4=-1"
