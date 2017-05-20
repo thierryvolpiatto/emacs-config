@@ -319,6 +319,9 @@ So far, F can only be a symbol, not a lambda expression."))
 (use-package help
     :config
   (progn
+    ;; Fix curly quotes in emacs-25
+    (setq text-quoting-style 'grave)
+
     ;; Speedup `describe-variable' for variables with huge value description.
     (defun tv/describe-variable (old-fn &rest args)
       ;; `cl-flet' can't be used here because `pp' should
