@@ -143,7 +143,6 @@
 (global-set-key (kbd "C-h i")                        'helm-info)
 (global-set-key (kbd "C-x C-d")                      'helm-browse-project)
 (global-set-key (kbd "<f1>")                         'helm-resume)
-(global-set-key (kbd "<S-f1>")                       'helm-cycle-resume)
 (global-set-key (kbd "C-h C-f")                      'helm-apropos)
 (global-set-key (kbd "C-h a")                        'helm-apropos)
 (global-set-key (kbd "<f5> s")                       'helm-find)
@@ -199,6 +198,9 @@ First call indent, second complete symbol, third complete fname."
 (define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
 (define-key helm-buffer-map (kbd "C-d")     'helm-buffer-run-kill-persistent)
 (define-key helm-find-files-map (kbd "C-/") 'helm-ff-run-find-sh-command)
+
+;; Cycle resume
+(helm-define-key-with-subkeys global-map (kbd "C-c n") ?n 'helm-cycle-resume)
 
 
 ;;; Describe key-bindings
