@@ -201,6 +201,8 @@ First call indent, second complete symbol, third complete fname."
 
 ;; Cycle resume
 (helm-define-key-with-subkeys global-map (kbd "C-c n") ?n 'helm-cycle-resume)
+(define-key helm-map (kbd "<S-f1>") 'helm-run-cycle-resume)
+(define-key global-map (kbd "<S-f1>") 'helm-cycle-resume)
 
 
 ;;; Describe key-bindings
