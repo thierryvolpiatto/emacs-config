@@ -798,6 +798,20 @@ the password will be of length (floor LIMIT)."
   (message "New pwd `%s' saved to kill ring"
            (kill-new (genpasswd (max 12 arg)))))
 
+;;;###autoload
+(defun tv/gen-socgen-passwd ()
+  (interactive)
+  (let ((code (mapconcat (lambda (x) (number-to-string x))
+                         (cl-loop with randoms = nil
+                                  while (not (= (length randoms) 6))
+                                  for random = (random 9)
+                                  unless (member random randoms)
+                                  do (push random randoms)
+                                  finally return randoms)
+                         "")))
+    (kill-new code)
+    (message "`%s' copied to kill-ring" code)))
+
 ;;; Rotate windows
 ;;
 ;;
