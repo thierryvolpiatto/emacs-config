@@ -201,8 +201,6 @@ First call indent, second complete symbol, third complete fname."
 
 ;; Cycle resume
 (helm-define-key-with-subkeys global-map (kbd "C-c n") ?n 'helm-cycle-resume)
-(define-key helm-map (kbd "<S-f1>") 'helm-run-cycle-resume)
-(define-key global-map (kbd "<S-f1>") 'helm-cycle-resume)
 
 
 ;;; Describe key-bindings
@@ -231,7 +229,6 @@ First call indent, second complete symbol, third complete fname."
       helm-show-action-window-other-window            'left
       helm-buffers-favorite-modes                     (append helm-buffers-favorite-modes '(picture-mode artist-mode))
       helm-ls-git-status-command                      'magit-status-internal
-      helm-ls-git-show-abs-or-relative                'relative
       helm-M-x-requires-pattern                       0
       helm-dabbrev-cycle-threshold                    5
       helm-surfraw-duckduckgo-url                     "https://duckduckgo.com/?q=%s&ke=-1&kf=fw&kl=fr-fr&kr=b&k1=-1&k4=-1"
