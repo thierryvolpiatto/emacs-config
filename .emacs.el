@@ -1029,15 +1029,16 @@ If your system's ping continues until interrupted, you can try setting
     (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
     (add-hook 'eshell-mode-hook 'turn-on-eldoc-mode))
   :config
-  ;; This is for emacs-25+ (fixes the new fucking quote style).
-  (defun tv/before-elisp--highlight-function-argument (old--fn &rest args)
-    (let ((sym    (nth 0 args))
-          (argstr (substitute-command-keys (nth 1 args)))
-          (index  (nth 2 args))
-          (prefix (nth 3 args)))
-      (funcall old--fn sym argstr index prefix)))
-  (advice-add 'elisp--highlight-function-argument
-              :around #'tv/before-elisp--highlight-function-argument)
+  ;; This is for emacs-25+ (fixes the new idiot quoting style).
+  (when (fboundp 'elisp--highlight-function-argument)
+    (defun tv/before-elisp--highlight-function-argument (old--fn &rest args)
+      (let ((sym    (nth 0 args))
+            (argstr (substitute-command-keys (nth 1 args)))
+            (index  (nth 2 args))
+            (prefix (nth 3 args)))
+        (funcall old--fn sym argstr index prefix)))
+    (advice-add 'elisp--highlight-function-argument
+                :around #'tv/before-elisp--highlight-function-argument))
   ;; This is for emacs-24
   (when (fboundp 'eldoc-highlight-function-argument)
     (defun eldoc-highlight-function-argument (sym args index)
