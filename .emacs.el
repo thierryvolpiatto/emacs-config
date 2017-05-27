@@ -32,7 +32,8 @@
                                 (magit-popup . "melpa-stable")
                                 (git-commit  . "melpa-stable")
                                 (with-editor . "melpa-stable")
-                                (undo-tree . "melpa"))
+                                (undo-tree . "melpa")
+                                (realgud . "melpa"))
       package-check-signature  nil)
 
 ;; Initialize packages after setting package-archives
