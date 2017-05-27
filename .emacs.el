@@ -321,7 +321,8 @@ So far, F can only be a symbol, not a lambda expression."))
     :config
   (progn
     ;; Fix curly quotes in emacs-25
-    (setq text-quoting-style 'grave)
+    (and (boundp 'text-quoting-style)
+         (setq text-quoting-style 'grave))
 
     ;; Speedup `describe-variable' for variables with huge value description.
     (defun tv/describe-variable (old-fn &rest args)
