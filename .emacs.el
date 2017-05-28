@@ -947,8 +947,8 @@ If your system's ping continues until interrupted, you can try setting
 (use-package magit
     :init
     (setq magit-restore-window-configuration t
-          git-commit-fill-column             80
-          git-commit-summary-max-length      80
+          git-commit-fill-column             70
+          git-commit-summary-max-length      70
           auto-revert-verbose                nil
           magit-auto-revert-immediately
           (null (and (boundp 'auto-revert-use-notify)
