@@ -1731,17 +1731,17 @@ from IPython.core.completerlib import module_completion"
 (use-package lisp-mode
     :config
   (progn
-    (defun old-common-lisp-indent-function (indent-point state)
-      ;; The `common-lisp-indent-function' definition of 24.5 which
-      ;; DTRT with `cl-loop', hopefully is is short enough so that I
-      ;; can inline it.
+    ;; Try to have same indentation in both 24, 25 and 26.
+    (defun tv/common-lisp-indent-function (indent-point state)
       (if (save-excursion (goto-char (elt state 1))
-                          (looking-at "([Ll][Oo][Oo][Pp]"))
-          (common-lisp-loop-part-indentation indent-point state)
-        (common-lisp-indent-function-1 indent-point state)))
-
+                          (looking-at "(cl-\\([Ll][Oo][Oo][Pp]\\)"))
+          (common-lisp-indent-function-1 indent-point state)
+        (lisp-indent-function indent-point state)))
+    
     ;; Fix indentation in CL loop.
-    (setq lisp-indent-function 'old-common-lisp-indent-function
+    (setq lisp-indent-function (if (<= emacs-major-version 24)
+                                   #'tv/common-lisp-indent-function
+                                 #'common-lisp-indent-function-1)
           lisp-simple-loop-indentation 1
           lisp-loop-keyword-indentation 6
           lisp-loop-forms-indentation 6)
