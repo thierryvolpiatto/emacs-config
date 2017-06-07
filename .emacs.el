@@ -1068,20 +1068,20 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
           (let* (case-fold-search
                  key-have-value
                  (sym-name (symbol-name sym))
-                 (cur-w (current-word))
+                 (cur-w (current-word t))
                  (args-lst-ak (cdr (member "&key" args-lst)))
                  (limit (save-excursion
                           (when (re-search-backward sym-name nil t)
                             (match-end 0))))
                  (cur-a (if (and cur-w (string-match ":\\([^ ()]*\\)" cur-w))
                             (substring cur-w 1)
-                            (save-excursion
-                              (let (split)
-                                (when (re-search-backward ":\\([^()\n]*\\)" limit t)
-                                  (setq split (split-string (match-string 1) " " t))
-                                  (prog1 (car split)
-                                    (when (cdr split)
-                                      (setq key-have-value t))))))))
+                          (save-excursion
+                            (let (split)
+                              (when (re-search-backward ":\\([^ ()\n]*\\)" limit t)
+                                (setq split (split-string (match-string-no-properties 1) " " t))
+                                (prog1 (car split)
+                                  (when (cdr split)
+                                    (setq key-have-value t))))))))
                  ;; If `cur-a' is not one of `args-lst-ak'
                  ;; assume user is entering an unknow key
                  ;; referenced in last position in signature.
@@ -1089,7 +1089,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                                      args-lst-ak
                                      (not (member (upcase cur-a) args-lst-ak))
                                      (upcase (car (last args-lst-ak))))))
-            (unless (string= cur-w sym-name)
+            (unless (or (null cur-w) (string= cur-w sym-name))
               ;; The last keyword have already a value
               ;; i.e :foo a b and cursor is at b.
               ;; If signature have also `&rest'
@@ -1102,17 +1102,17 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                   (setq index nil ; Skip next block based on positional args.
                         start (match-beginning 1)
                         end   (match-end 1))
-                  ;; If `cur-a' is nil probably cursor is on a positional arg
-                  ;; before `&key', in this case, exit this block and determine
-                  ;; position with `index'.
-                  (when (and cur-a ; A keyword arg (dot removed) or nil.
-                             (or (string-match
-                                  (concat "\\_<" (upcase cur-a) "\\_>") args)
-                                 (string-match
-                                  (concat "\\_<" other-key-arg "\\_>") args)))
-                    (setq index nil ; Skip next block based on positional args.
-                          start (match-beginning 0)
-                          end   (match-end 0)))))))
+                ;; If `cur-a' is nil probably cursor is on a positional arg
+                ;; before `&key', in this case, exit this block and determine
+                ;; position with `index'.
+                (when (and cur-a ; A keyword arg (dot removed) or nil.
+                           (or (string-match
+                                (concat "\\_<" (upcase cur-a) "\\_>") args)
+                               (string-match
+                                (concat "\\_<" other-key-arg "\\_>") args)))
+                  (setq index nil ; Skip next block based on positional args.
+                        start (match-beginning 0)
+                        end   (match-end 0)))))))
         ;; Handle now positional arguments.
         (while (and index (>= index 1))
           (if (string-match "[^ ()]+" args end)
@@ -1136,17 +1136,17 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                          (setq index 0))
                         (t
                          (setq index (1- index))))))
-              (setq end           (length args)
-                    start         (1- end)
-                    argument-face 'font-lock-warning-face
-                    index         0)))
+            (setq end           (length args)
+                  start         (1- end)
+                  argument-face 'font-lock-warning-face
+                  index         0)))
         (let ((doc args))
           (when start
             (setq doc (copy-sequence args))
             (add-text-properties start end (list 'face argument-face) doc))
           (setq doc (eldoc-docstring-format-sym-doc
                      sym doc (if (functionp sym) 'font-lock-function-name-face
-                                 'font-lock-keyword-face)))
+                               'font-lock-keyword-face)))
           doc)))
 
     (when (fboundp 'eldoc-function-argstring-format)
