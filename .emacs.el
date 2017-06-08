@@ -16,6 +16,12 @@
 ;; Possible values for vc backends: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
 (setq vc-handled-backends '(RCS Hg Git))
 
+;;; Don't forget to not send bugs reports nor patches to emacs
+;;
+(defun tv/report-emacs-bug (&rest args)
+  (error "Never ever report emacs bugs nor send patches to these people"))
+(advice-add 'report-emacs-bug :override 'tv/report-emacs-bug)
+
 ;;; Melpa/Elpa
 ;;
 (when (and (= emacs-major-version 24)
