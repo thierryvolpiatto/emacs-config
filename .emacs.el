@@ -1052,13 +1052,14 @@ If your system's ping continues until interrupted, you can try setting
     (defun eldoc-highlight-function-argument (sym args index)
       "Highlight argument INDEX in ARGS list for function SYM.
 In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
-      (let ((start          nil)
-            (end            0)
-            (argument-face  'eldoc-highlight-function-argument)
-            (args-lst (mapcar (lambda (x)
-                                (replace-regexp-in-string
-                                 "\\`[(]\\|[)]\\'" "" x))
-                              (split-string args))))
+      (let* ((start          nil)
+             (end            0)
+             (argument-face  'eldoc-highlight-function-argument)
+             (args-lst (mapcar (lambda (x)
+                                 (replace-regexp-in-string
+                                  "\\`[(]\\|[)]\\'" "" x))
+                               (split-string args)))
+             (start-key-pos (cl-position "&key" args-lst :test 'equal)))
         ;; Find the current argument in the argument string.  We need to
         ;; handle `&rest' and informal `...' properly.
         ;;
@@ -1070,7 +1071,8 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
         ;; When `&key' is used finding position based on `index'
         ;; would be wrong, so find the arg at point and determine
         ;; position in ARGS based on this current arg.
-        (when (string-match "&key" args)
+        (when (and (string-match "&key" args)
+                   (> index start-key-pos))
           (let* (case-fold-search
                  key-have-value
                  (sym-name (symbol-name sym))
