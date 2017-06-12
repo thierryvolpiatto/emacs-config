@@ -775,7 +775,10 @@ If your system's ping continues until interrupted, you can try setting
             (setq dired-backup-overwrite nil) ; nil, always, ask.
             (setq dired-isearch-filenames 'dwim)
             (setq dired-listing-switches (purecopy "-alh")))
-    :config (use-package dired-extension)
+    :config
+    (use-package dired-extension)
+    (use-package wdired
+      :config (setq wdired-use-dired-vertical-movement 'sometimes))
     :defer t)
 
 ;;; htmlize
