@@ -14,7 +14,7 @@
 ;;; VC
 ;;
 ;; Possible values for vc backends: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
-(setq vc-handled-backends '(RCS Hg Git))
+(setq vc-handled-backends '(RCS))
 
 ;;; Don't forget to not send bugs reports nor patches to emacs
 ;;
