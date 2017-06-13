@@ -356,7 +356,8 @@ First call indent, second complete symbol, third complete fname."
    source
    (lambda (_candidate)
      (with-helm-current-buffer
-       (and (eq major-mode 'mu4e-view-mode)
+       (and (or (eq major-mode 'mu4e-view-mode)
+                (eq major-mode 'diff-mode))
             (region-active-p))))
    1)
   (helm-source-add-action-to-source-if
