@@ -199,6 +199,9 @@ First call indent, second complete symbol, third complete fname."
 (define-key helm-buffer-map (kbd "C-d")     'helm-buffer-run-kill-persistent)
 (define-key helm-find-files-map (kbd "C-/") 'helm-ff-run-find-sh-command)
 
+;; Read-file-name
+(define-key helm-read-file-map (kbd "RET") 'helm-ff-RET)
+
 ;; Cycle resume
 (helm-define-key-with-subkeys global-map (kbd "C-c n") ?n 'helm-cycle-resume)
 

@@ -2030,6 +2030,11 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
     (font-lock-add-keywords nil '(("^revision [0-9.]*" . font-lock-comment-face)
                                   ("[a-zA-Z ]*:" . font-lock-type-face))))
   (add-hook 'log-view-mode-hook 'tv/log-view-fontify))
+
+;;; Wgrep
+;;
+(use-package wgrep-helm
+  :config (setq wgrep-enable-key "\C-x\C-q"))
 
 ;;; Emacspeak
 ;;
