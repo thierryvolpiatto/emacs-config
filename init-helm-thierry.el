@@ -82,39 +82,6 @@
     (setq ido-temp-list (nconc (cdr bl) (list (car bl))))))
 ;;(add-hook 'ido-make-buffer-list-hook 'helm/modify-ido-temp-list)
 
-(defun helm-ag-find-file-init (directory)
-  (start-process "ag-find-file" nil "ag" "--hidden" "-g" helm-pattern directory))
-
-(defclass helm-ag-find-file-class (helm-source-async)
-  ((filtered-candidate-transformer
-    :initform
-    (lambda (candidates _source)
-      (cl-loop for c in candidates
-               collect (helm--ansi-color-apply c))))
-   (requires-pattern :initform 2)
-   (candidate-number-limit :initform 99999)))
-
-(defun helm-ag-find-file-1 (directory)
-  (helm :sources (helm-make-source "AG find files" 'helm-ag-find-file-class
-                   :candidates-process (lambda ()
-                                         (helm-ag-find-file-init directory))
-                   :action (helm-actions-from-type-file))
-        :buffer "*helm ag find file*"))
-
-(defun helm-ag-find-file ()
-  (interactive)
-  (helm-ag-find-file-1 (expand-file-name default-directory)))
-
-(defun helm-ff-ag-find-files (_candidate)
-  (helm-ag-find-file-1 helm-ff-default-directory))
-
-(defun helm-ff-run-ag-find-files ()
-  (interactive)
-  (with-helm-alive-p
-    (helm-exit-and-execute-action 'helm-ff-ag-find-files)))
-
-(define-key helm-find-files-map (kbd "C-c f") 'helm-ff-run-ag-find-files)
-
 
 ;;; Helm-command-map
 ;;
@@ -215,7 +182,8 @@ First call indent, second complete symbol, third complete fname."
 ;;; Helm-variables
 ;;
 ;;
-(setq helm-net-prefer-curl                            nil
+(setq helm-candidate-separator                        "––––––––––––––––––––––––––––––––––––––")
+      helm-net-prefer-curl                            nil
       helm-kill-ring-threshold                        1
       helm-raise-command                              "wmctrl -xa %s"
       helm-scroll-amount                              4
