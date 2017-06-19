@@ -182,12 +182,11 @@ First call indent, second complete symbol, third complete fname."
 ;;; Helm-variables
 ;;
 ;;
-(setq helm-candidate-separator                        "––––––––––––––––––––––––––––––––––––––")
+(setq helm-candidate-separator                        "––––––––––––––––––––––––––––––––––––––"
       helm-net-prefer-curl                            nil
       helm-kill-ring-threshold                        1
       helm-raise-command                              "wmctrl -xa %s"
       helm-scroll-amount                              4
-      helm-idle-delay                                 0.01
       helm-input-idle-delay                           0.01
       helm-default-external-file-browser              "thunar"
       helm-pdfgrep-default-read-command               "evince --page-label=%p '%f'"
