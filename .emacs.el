@@ -14,13 +14,7 @@
 ;;; VC
 ;;
 ;; Possible values for vc backends: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
-(setq vc-handled-backends '(RCS))
-
-;;; Don't forget to not send bugs reports nor patches to emacs
-;;
-(defun tv/report-emacs-bug (&rest args)
-  (error "Never ever report emacs bugs nor send patches to these people"))
-(advice-add 'report-emacs-bug :override 'tv/report-emacs-bug)
+(setq vc-handled-backends '(RCS Git))
 
 ;;; Melpa/Elpa
 ;;
@@ -957,7 +951,7 @@ If your system's ping continues until interrupted, you can try setting
     :init
     (setq magit-restore-window-configuration t
           git-commit-fill-column             70
-          git-commit-summary-max-length      70
+          git-commit-summary-max-length      50
           auto-revert-verbose                nil
           magit-auto-revert-immediately
           (null (and (boundp 'auto-revert-use-notify)
