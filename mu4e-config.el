@@ -16,9 +16,10 @@
 (setq mu4e-compose-reply-ignore-address
       '("notifications@github\\.com"
         ".*@noreply\\.github\\.com"
-        "thierry\\.volpiatto@gmail\\.com"))
+        "thierry\\.volpiatto@gmail\\.com"
+        "thievol05@zoho\\.eu"))
 
-(setq user-mail-address "thierry.volpiatto@gmail.com")
+(setq user-mail-address "thievol05@zoho.eu")
 (setq user-full-name "Thierry Volpiatto")
 
 ;; [smtpmail-async] Experimental, use `smtpmail-send-it' otherwise. 
@@ -29,9 +30,9 @@
       mail-envelope-from 'header)  ; otherwise `user-mail-address' is used. 
 
 ;; Default settings.
-(setq smtpmail-default-smtp-server "smtp.gmail.com"
+(setq smtpmail-default-smtp-server "smtp.zoho.eu"
       smtpmail-smtp-user user-mail-address
-      smtpmail-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-server "smtp.zoho.eu"
       smtpmail-smtp-service 587)
 
 ;; Passage à la ligne automatique
@@ -48,6 +49,20 @@
       mu4e-context-policy 'pick-first
       mu4e-contexts
       `( ,(make-mu4e-context
+            :name "Zoho"
+            :enter-func (lambda () (mu4e-message "Switch to Zoho"))
+            :match-func (lambda (msg)
+                          (when msg
+                            (string-match-p "^/Zoho" (mu4e-message-field msg :maildir))))
+            :vars '((smtpmail-smtp-user           . "thievol05@zoho.eu")
+                    (smtpmail-default-smtp-server . "smtp.zoho.eu")
+                    (smtpmail-smtp-server         . "smtp.zoho.eu")
+                    (smtpmail-smtp-service        . 587)
+                    (mail-reply-to                . "thievol05@zoho.eu")
+                    (user-mail-address            . "thievol05@zoho.eu")
+                    (user-full-name               . "Thierry Volpiatto")
+                    (mu4e-compose-signature       . t)))
+         ,(make-mu4e-context
            :name "Gmail"
            :enter-func (lambda () (mu4e-message "Switch to Gmail"))
            ;; leave-func not defined
