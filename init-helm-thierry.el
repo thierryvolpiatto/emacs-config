@@ -234,7 +234,7 @@ First call indent, second complete symbol, third complete fname."
       helm-debug-root-directory "/home/thierry/tmp/helm-debug"
       helm-follow-mode-persistent t
       helm-browse-project-default-find-files-fn       'helm-browse-project-ag-find-files
-      )
+      helm-emms-use-track-description-function        t)
 
 ;; find-file-hook
 (add-hook 'find-file-hook 'helm-save-current-pos-to-mark-ring)
