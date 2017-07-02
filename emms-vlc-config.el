@@ -94,12 +94,15 @@ static char *note[] = {
 
 (defun tv-emms-update-and-clean-cache ()
   (interactive)
-  (and emms-cache-db
-       (clrhash emms-cache-db))
-  (ignore-errors
-    (delete-file "~/.emacs.d/emms/emms-cache")
-    (delete-file "~/.emacs.d/emms/emms-history"))
-  (emms-add-directory-tree "~/Musique/"))
+  (when emms-cache-db
+    (clrhash emms-cache-db)
+    (and (file-exists-p emms-cache-file)
+         (delete-file emms-cache-file))
+    (and (file-exists-p emms-history-file)
+         (delete-file emms-history-file))
+    (with-current-buffer (find-file-noselect emms-cache-file)
+      (save-buffer))
+    (emms-add-directory-tree "~/Musique/")))
 
 
 (provide 'emms-vlc-config)
