@@ -1780,7 +1780,9 @@ from IPython.core.completerlib import module_completion"
                          (if (symbolp (cdr el))
                              (get (cdr el) 'common-lisp-indent-function)
                              (car (cdr el)))))))
-
+    (defvar tv/autofill-modes '(emacs-lisp-mode
+                                lisp-interaction-mode
+                                sh-mode))
     (defun tv/point-in-comment-p (pos)
       "Returns non-nil if POS is in a comment."
       (eq 'comment (syntax-ppss-context (syntax-ppss pos))))
@@ -1793,7 +1795,7 @@ from IPython.core.completerlib import module_completion"
     (defun tv/turn-on-auto-fill-mode-maybe ()
       "Enable auto-fill-mode only in comments or docstrings.
 Variable adaptive-fill-mode is disabled when a docstring field is detected."
-      (when (memq major-mode '(emacs-lisp-mode lisp-interaction-mode))
+      (when (memq major-mode tv/autofill-modes)
         (let ((in-docstring (tv/point-in-docstring-p (point))))
           (setq adaptive-fill-mode (not in-docstring))
           (auto-fill-mode
