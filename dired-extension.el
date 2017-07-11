@@ -109,74 +109,6 @@
 	 '(".+" (dired-move-to-filename) nil (0 'default)))))
 
 
-;; Allow for consp `dired-directory' too.
-;; Took in dired+.el waiting a fix in emacs24.
-;;
-(defun dired-buffers-for-dir (dir &optional file)
-  "Return a list of buffers that dired DIR (top level or in-situ subdir).
-If FILE is non-nil, include only those whose wildcard pattern (if any)
-matches FILE.
-The list is in reverse order of buffer creation, most recent last.
-As a side effect, killed dired buffers for DIR are removed from
-`dired-buffers'."
-  (setq dir (file-name-as-directory dir))
-  (let ((alist  dired-buffers) result elt buf pattern)
-    (while alist
-      (setq elt (car alist)
-            buf (cdr elt))
-      (if (buffer-name buf)
-          (if (dired-in-this-tree dir (car elt))
-              (with-current-buffer buf
-                (and (assoc dir dired-subdir-alist)
-                     (or (null file)
-                         (let ((wildcards
-                                ;; Allow for consp `dired-directory' too.
-                                (file-name-nondirectory (if (consp dired-directory)
-                                                            (car dired-directory)
-                                                            dired-directory))))
-                           (or (= 0 (length wildcards))
-                               (string-match (dired-glob-regexp wildcards) file))))
-                     (setq result (cons buf result)))))
-          ;; else buffer is killed - clean up:
-          (setq dired-buffers (delq elt dired-buffers)))
-      (setq alist (cdr alist)))
-    result))
-
-(defun dired-on-marked (buf-name)
-  (interactive "sBufferName: ")
-  (dired (cons buf-name (dired-get-marked-files))))
-(define-key dired-mode-map (kbd "C-c D") 'dired-on-marked)
-
-;;;;;;;;;;;;;;
-;;
-;; Image dired
-(unless (fboundp 'image-dired-dired-toggle-marked-thumbs)
-  (autoload 'image-dired-get-thumbnail-image "image-dired") 
-  (defun image-dired-dired-insert-marked-thumbs (arg)
-    "Insert or hide thumbnails before file names of marked files in the dired buffer."
-    (interactive "P")
-                                        ;(when (eq arg 1) (setq arg nil)) ; No prefix arg.
-    (dired-map-over-marks
-     (let* ((image-pos  (dired-move-to-filename))
-            (image-file (dired-get-filename 'no-dir t))
-            thumb-file
-            overlay)
-       (when (and image-file (string-match-p (image-file-name-regexp) image-file))
-         (setq thumb-file (image-dired-get-thumbnail-image image-file))
-         ;; If image is not already added, then add it.
-         (let ((cur-ov (overlays-in (point) (1+ (point)))))
-           (if cur-ov
-               (delete-overlay (car cur-ov))
-               (put-image thumb-file image-pos)
-               (setq overlay (loop for o in (overlays-in (point) (1+ (point)))
-                                when (overlay-get o 'put-image) collect o into ov
-                                finally return (car ov)))
-               (overlay-put overlay 'image-file image-file)
-               (overlay-put overlay 'thumb-file thumb-file)))))
-     arg                       ; Show or hide image on ARG next files.
-     'show-progress) ; Update dired display after each image is updated.                                
-    (add-hook 'dired-after-readin-hook 'image-dired-dired-after-readin-hook nil t)))
-
 ;;; Redefine `insert-directory' to showup size available when -h arg of ls used.
 ;;
 (defun insert-directory1 (file switches &optional wildcard full-directory-p)

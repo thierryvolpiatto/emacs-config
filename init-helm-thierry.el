@@ -344,6 +344,16 @@ First call indent, second complete symbol, third complete fname."
          (string-match-p ".*\\.\\(mp3\\|ogg\\|flac\\)$" candidate)))
    1))
 
+(defmethod helm-setup-user-source ((source helm-ls-git-source))
+  (helm-source-add-action-to-source-if
+   "Magit find file"
+   (lambda (candidate)
+     (magit-find-file (magit-branch-or-commit-at-point) candidate))
+   source
+   (lambda (_candidate)
+     (with-helm-current-buffer (eq major-mode 'magit-log-mode)))
+   1))
+
 (defmethod helm-setup-user-source ((source helm-source-buffers))
   "Adds additional actions to `helm-source-buffers-list'.
 - Magit status."
