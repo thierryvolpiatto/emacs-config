@@ -1087,8 +1087,21 @@ See <https://github.com/chubin/wttr.in>."
             "curl" nil t nil
             "-s" (format "wttr.in/~%s" (shell-quote-argument place)))
            (goto-char (point-min))
-           ;; Need a 256 color ansi library, emacs supports only basic
-           ;; ansi colors as now.
+           (while (re-search-forward "38;5;\\([0-9]+\\)m" nil t)
+             ;; Need a 256 color ansi library, emacs supports only basic
+             ;; ansi colors as now, so replace all 38;5 foreground
+             ;; specs by simple ansi sequences.
+             (replace-match (pcase (match-string 1)
+                              ("154" "30")
+                              ("190" "31")
+                              ("118" "32")
+                              ("208" "37")
+                              ("202" "34")
+                              ("214" "35")
+                              ("220" "36")
+                              ("226" "33")
+                              (r     r))
+                            t t nil 1))
            (helm--ansi-color-apply (buffer-string)))))
     (switch-to-buffer buf)
     (erase-buffer)
