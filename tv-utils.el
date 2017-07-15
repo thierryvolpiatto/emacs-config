@@ -1070,6 +1070,31 @@ Arg `host' is machine in auth-info file."
             (<= (buffer-size) 2))
     (insert ";;; -*- coding: utf-8; mode: lisp-interaction; lexical-binding: t -*-\n;;\n;; SCRATCH BUFFER\n;; ==============\n\n")))
 
+(defvar wttr-weather-history nil)
+(defvar wttr-weather-default-location "Toulon")
+;;;###autoload
+(defun tv/wttr-weather (place)
+  "Weather forecast with wttr.in.
+See <https://github.com/chubin/wttr.in>."
+  (interactive (list (read-string "Place: " nil 'wttr-weather-history
+                                  wttr-weather-default-location)))
+  (require 'helm-lib)
+  (let ((buf (get-buffer-create (format "*wttr.in %s*" place)))
+        (inhibit-read-only t)
+        (data
+         (with-temp-buffer
+           (call-process
+            "curl" nil t nil
+            "-s" (format "wttr.in/~%s" place))
+           (goto-char (point-min))
+           ;; Need a 256 color ansi library, emacs supports only basic
+           ;; ansi colors as now.
+           (helm--ansi-color-apply (buffer-string)))))
+    (switch-to-buffer buf)
+    (erase-buffer)
+    (save-excursion (insert data))
+    (special-mode)))
+
 (provide 'tv-utils)
 
 ;; Local Variables:
