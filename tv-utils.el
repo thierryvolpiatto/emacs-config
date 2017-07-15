@@ -1085,7 +1085,7 @@ See <https://github.com/chubin/wttr.in>."
          (with-temp-buffer
            (call-process
             "curl" nil t nil
-            "-s" (format "wttr.in/~%s" place))
+            "-s" (format "wttr.in/~%s" (shell-quote-argument place)))
            (goto-char (point-min))
            ;; Need a 256 color ansi library, emacs supports only basic
            ;; ansi colors as now.
