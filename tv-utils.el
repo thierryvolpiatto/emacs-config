@@ -1092,7 +1092,7 @@ See <https://github.com/chubin/wttr.in>."
              ;; ansi colors as now, so replace all 38;5 foreground
              ;; specs by simple ansi sequences.
              (replace-match (pcase (match-string 1)
-                              ("154" "30")
+                              ("154" "32")
                               ("190" "31")
                               ("118" "32")
                               ("208" "37")
