@@ -1082,9 +1082,10 @@ See <https://github.com/chubin/wttr.in>."
   (require 'helm-lib)
   (let ((buf (get-buffer-create (format "*wttr.in %s*" place))))
     (switch-to-buffer buf)
-    (wttr-weather-update place)
-    (wttr-weather-mode)
-    (setq wttr-weather-last-location place)))
+    (unless wttr-weather-last-location
+      (wttr-weather-update place)
+      (wttr-weather-mode)
+      (set (make-local-variable 'wttr-weather-last-location) place))))
 
 (defun wttr-weather-update (place)
   (let ((inhibit-read-only t)
@@ -1120,8 +1121,7 @@ See <https://github.com/chubin/wttr.in>."
 (defun wttr-weather-revert-fn (_ignore-auto _no_confirm)
   (wttr-weather-update wttr-weather-last-location))
 
-(define-derived-mode wttr-weather-mode special-mode
-  "Mode that run in wttr-weather."
+(define-derived-mode wttr-weather-mode special-mode "wttr"
   (make-local-variable 'wttr-weather-last-location)
   (set (make-local-variable 'revert-buffer-function) 'wttr-weather-revert-fn))
 
