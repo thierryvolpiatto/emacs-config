@@ -1072,15 +1072,22 @@ Arg `host' is machine in auth-info file."
 
 (defvar wttr-weather-history nil)
 (defvar wttr-weather-default-location "Toulon")
+(defvar wttr-weather-last-location nil)
 ;;;###autoload
-(defun tv/wttr-weather (place)
+(defun wttr-weather (place)
   "Weather forecast with wttr.in.
 See <https://github.com/chubin/wttr.in>."
   (interactive (list (read-string "Place: " nil 'wttr-weather-history
                                   wttr-weather-default-location)))
   (require 'helm-lib)
-  (let ((buf (get-buffer-create (format "*wttr.in %s*" place)))
-        (inhibit-read-only t)
+  (let ((buf (get-buffer-create (format "*wttr.in %s*" place))))
+    (switch-to-buffer buf)
+    (wttr-weather-update place)
+    (wttr-weather-mode)
+    (setq wttr-weather-last-location place)))
+
+(defun wttr-weather-update (place)
+  (let ((inhibit-read-only t)
         (data
          (with-temp-buffer
            (call-process
@@ -1103,10 +1110,20 @@ See <https://github.com/chubin/wttr.in>."
                               (r     r))
                             t t nil 1))
            (helm--ansi-color-apply (buffer-string)))))
-    (switch-to-buffer buf)
     (erase-buffer)
-    (save-excursion (insert data))
-    (special-mode)))
+    (save-excursion
+      (insert data))
+    (when (re-search-forward "^Weather report:" nil t)
+      (goto-char (point-at-eol))
+      (insert (format-time-string " - done at %d/%m/%Y %H:%M:%S")))))
+
+(defun wttr-weather-revert-fn (_ignore-auto _no_confirm)
+  (wttr-weather-update wttr-weather-last-location))
+
+(define-derived-mode wttr-weather-mode special-mode
+  "Mode that run in wttr-weather."
+  (make-local-variable 'wttr-weather-last-location)
+  (set (make-local-variable 'revert-buffer-function) 'wttr-weather-revert-fn))
 
 (provide 'tv-utils)
 
