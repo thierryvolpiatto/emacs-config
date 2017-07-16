@@ -1070,6 +1070,8 @@ Arg `host' is machine in auth-info file."
             (<= (buffer-size) 2))
     (insert ";;; -*- coding: utf-8; mode: lisp-interaction; lexical-binding: t -*-\n;;\n;; SCRATCH BUFFER\n;; ==============\n\n")))
 
+;;; wttr.in weather report
+;;
 (defvar wttr-weather-history nil)
 (defvar wttr-weather-default-location "Toulon")
 (defvar wttr-weather-last-location nil)
