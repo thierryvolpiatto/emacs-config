@@ -266,7 +266,7 @@ So far, F can only be a symbol, not a lambda expression."))
                                                ))
     (defun tv-font-lock-doc-rules ()
       (font-lock-add-keywords
-       nil `(("[^\\s\][`]\\([^`']+\\)[`']?[^\\s\][']?" 1 font-lock-type-face)
+       nil `(("[^\\s\][`]\\([^(`']+\\)[`']?[^\\s\][']?" 1 font-lock-type-face)
              (,info-unicode-quoted-regexp 1 font-lock-type-face)
              ("^ --.*$" . tv-info-title-face)
              ("[_]\\([^_]+\\)[_]" 1 tv-info-underline)
