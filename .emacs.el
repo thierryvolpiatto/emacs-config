@@ -2031,6 +2031,11 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;
 (use-package wgrep-helm
   :config (setq wgrep-enable-key "\C-x\C-q"))
+
+;;; Rainbow-mode
+;;
+(use-package rainbow-mode)
+
 
 ;;; Emacspeak
 ;;
