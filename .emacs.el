@@ -960,6 +960,13 @@ If your system's ping continues until interrupted, you can try setting
           magit-uniquify-buffer-names   nil)
     (add-hook 'git-commit-setup-hook (lambda () (setq-local adaptive-fill-mode nil)))
     :config
+    (use-package with-editor
+      :config
+      (setq with-editor-emacsclient-executable
+            (cl-loop for path in (list (shell-command-to-string "which emacsclient")
+                                       (shell-command-to-string "which remacsclient"))
+                     unless (string= path "")
+                     return (replace-regexp-in-string "\n" "" path))))
     (bind-key "C"    'magit-commit-add-log magit-diff-mode-map)
     (bind-key "C-]"  'magit-toggle-margin magit-log-mode-map)
     (bind-key "<f2>" 'magit-status)
