@@ -113,11 +113,16 @@ This allow installation of org from melpa when :ensure is specified."
          (if arg
              (append (list
                       (lambda ()
-                        (when (y-or-n-p "Really restart Emacs? ")
+                        (when (y-or-n-p (format "Really restart %s? "
+                                                (capitalize (invocation-name))))
                           (add-hook 'kill-emacs-hook
                                     (lambda ()
                                       (call-process-shell-command
-                                       "(emacs &)"))
+                                       (format "(%s &)"
+                                               ;; eselect-emacs.sh
+                                               ;; should kept only one of emacs/remacs.
+                                               (or (executable-find "emacs")
+                                                   (executable-find "remacs")))))
                                     t))))
                      kill-emacs-query-functions)
              kill-emacs-query-functions)))
