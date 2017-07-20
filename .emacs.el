@@ -586,7 +586,10 @@ So far, F can only be a symbol, not a lambda expression."))
 (use-package frame
     :config
   (progn
-    (defvar tv-default-font (assoc-default 'font (frame-parameters)))
+    (defvar tv-default-font (if (string= (invocation-name) "remacs")
+                                "-*-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1"
+                              ;; Use .Xdefaults config
+                              (assoc-default 'font (frame-parameters))))
     (setq-default frame-background-mode 'dark)
     (setq initial-frame-alist '((fullscreen . maximized)))
     (setq frame-auto-hide-function 'delete-frame)
