@@ -613,7 +613,9 @@ With a prefix arg decrease transparency."
         (setq default-frame-alist `((vertical-scroll-bars . nil)
                                     (tool-bar-lines . 0)
                                     (menu-bar-lines . 0)
-                                    (title . ,(format "Emacs-%s" emacs-version))
+                                    (title . ,(format "%s-%s"
+                                                      (capitalize (invocation-name))
+                                                      emacs-version))
                                     (cursor-color . "red")))
 
         (setq default-frame-alist `((foreground-color . "Wheat")
@@ -622,7 +624,9 @@ With a prefix arg decrease transparency."
                                     ;; New frames go in right corner.
                                     (left . ,(- (* (window-width) 8) 160)) ; Chars are 8 bits long.
                                     (vertical-scroll-bars . nil)
-                                    (title . ,(format "Emacs-%s" emacs-version))
+                                    (title . ,(format "%s-%s"
+                                                      (capitalize (invocation-name))
+                                                      emacs-version))
                                     (tool-bar-lines . 0)
                                     (menu-bar-lines . 0)
                                     (font . ,tv-default-font)
