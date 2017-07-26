@@ -457,10 +457,9 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;; Shell script
 ;;
 (use-package sh-script
-    :init
-  (add-hook 'sh-mode-hook (lambda ()
-                            (define-key sh-mode-map (kbd "RET") 'newline-and-indent)))
-  :bind (("C-h f" . helm-info-bash)))
+  :bind (:map sh-mode-map
+         ("RET" . newline-and-indent)
+         ("C-h f" . helm-info-bash)))
 
 ;;; Auto-conf
 ;;
