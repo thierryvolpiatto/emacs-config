@@ -120,7 +120,9 @@ This allow installation of org from melpa when :ensure is specified."
                                       (call-process-shell-command
                                        (format "(%s &)"
                                                ;; eselect-emacs.sh
-                                               ;; should kept only one of emacs/remacs.
+                                               ;; should have kept
+                                               ;; only one of
+                                               ;; emacs/remacs.
                                                (or (executable-find "emacs")
                                                    (executable-find "remacs")))))
                                     t))))
@@ -457,7 +459,8 @@ So far, F can only be a symbol, not a lambda expression."))
 (use-package sh-script
     :init
   (add-hook 'sh-mode-hook (lambda ()
-                            (define-key sh-mode-map (kbd "RET") 'newline-and-indent))))
+                            (define-key sh-mode-map (kbd "RET") 'newline-and-indent)))
+  :bind (("C-h f" . helm-info-bash)))
 
 ;;; Auto-conf
 ;;

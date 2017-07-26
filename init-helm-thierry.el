@@ -161,8 +161,7 @@ First call indent, second complete symbol, third complete fname."
             #'(lambda ()
                 (define-key ielm-map [remap completion-at-point] 'helm-lisp-completion-at-point))))
 
-;;; helm find files
-;;
+;; helm find files
 (define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
 (define-key helm-buffer-map (kbd "C-d")     'helm-buffer-run-kill-persistent)
 (define-key helm-find-files-map (kbd "C-/") 'helm-ff-run-find-sh-command)
@@ -172,6 +171,9 @@ First call indent, second complete symbol, third complete fname."
 
 ;; Cycle resume
 (helm-define-key-with-subkeys global-map (kbd "C-c n") ?n 'helm-cycle-resume)
+
+;; sh-mode
+(add-to-list 'helm-sources-using-default-as-input 'helm-source-info-bash)
 
 
 ;;; Describe key-bindings
