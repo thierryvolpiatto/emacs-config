@@ -1899,7 +1899,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
         (if (and window-system (not powerline-gui-use-vcs-glyph))
             (format " Git:%s" (format-mode-line '(:eval (helm-ls-git--branch))))
           (format " %s%s"
-                  (char-to-string #x2221)
+                  (char-to-string #x2221) ; MEASURED ANGLE
                   (format-mode-line '(:eval (helm-ls-git--branch)))))))
 
     (setq powerline-gui-use-vcs-glyph t)
