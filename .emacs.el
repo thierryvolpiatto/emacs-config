@@ -14,7 +14,7 @@
 ;;; VC
 ;;
 ;; Possible values for vc backends: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
-(setq vc-handled-backends '(RCS Git))
+(setq vc-handled-backends '(RCS))
 
 ;;; Melpa/Elpa
 ;;
@@ -1891,6 +1891,16 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 (use-package powerline
     :config
   (progn
+    ;; Will appear in mode-line once helm-ls-git is loaded
+    (defpowerline powerline-git
+      (when (and (buffer-file-name (current-buffer))
+                 (fboundp 'helm-ls-git--branch))
+        (if (and window-system (not powerline-gui-use-vcs-glyph))
+            (format " Git:%s" (format-mode-line '(:eval (helm-ls-git--branch))))
+          (format " %s%s"
+                  (char-to-string #xe0a0)
+                  (format-mode-line '(:eval (helm-ls-git--branch)))))))
+    
     (defun tv/powerline-default-theme ()
       "Setup the default mode-line."
       (interactive)
@@ -1934,7 +1944,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
                                          (powerline-narrow face1 'l)
                                          (powerline-raw " " face1)
                                          (funcall separator-left face1 face2)
-                                         (powerline-vc face2 'r)
+                                         (powerline-git face2 'r)
                                          (when (bound-and-true-p nyan-mode)
                                            (powerline-raw (list (nyan-create)) face2 'l))))
                               (rhs (list (powerline-raw global-mode-string face2 'r)
