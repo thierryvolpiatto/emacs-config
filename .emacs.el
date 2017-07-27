@@ -1900,6 +1900,8 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
           (format " %s%s"
                   (char-to-string #xe0a0)
                   (format-mode-line '(:eval (helm-ls-git--branch)))))))
+
+    (setq powerline-gui-use-vcs-glyph t)
     
     (defun tv/powerline-default-theme ()
       "Setup the default mode-line."
