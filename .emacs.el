@@ -1894,7 +1894,8 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
     ;; Will appear in mode-line once helm-ls-git is loaded
     (defpowerline powerline-git
       (when (and (buffer-file-name (current-buffer))
-                 (fboundp 'helm-ls-git--branch))
+                 (fboundp 'helm-ls-git--branch)
+                 (helm-ls-git-root-dir))
         (if (and window-system (not powerline-gui-use-vcs-glyph))
             (format " Git:%s" (format-mode-line '(:eval (helm-ls-git--branch))))
           (format " %s%s"
