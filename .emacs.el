@@ -2077,6 +2077,10 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;
 (use-package rainbow-mode)
 
+;;; edebug
+;;
+(use-package edebug :config (setq edebug-on-quit nil))
+
 
 ;;; Emacspeak
 ;;
