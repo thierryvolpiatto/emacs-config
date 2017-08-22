@@ -6,21 +6,6 @@
 
 (setq inhibit-startup-echo-area-message "thierry")
 
-;;; Emacs customize have it's own file
-;;
-(setq custom-file "~/.emacs.d/.emacs-custom.el")
-(load custom-file)
-
-;;; VC
-;;
-;; Possible values for vc backends: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
-(setq vc-handled-backends '(RCS))
-(setq vc-ignore-dir-regexp
-      (format "\\(%s\\)\\|\\(%s\\)"
-              vc-ignore-dir-regexp
-              tramp-file-name-regexp))
-
-
 ;;; Melpa/Elpa
 ;;
 (when (and (= emacs-major-version 24)
@@ -69,6 +54,20 @@
 	     ))
   ;; Add all at end of `load-path' to avoid conflicts.
   (add-to-list 'load-path (file-name-as-directory i) t))
+
+;;; Emacs customize have it's own file
+;;
+(setq custom-file "~/.emacs.d/.emacs-custom.el")
+(load custom-file)
+
+;;; VC
+;;
+;; Possible values for vc backends: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
+(setq vc-handled-backends '(RCS))
+(setq vc-ignore-dir-regexp
+      (format "\\(%s\\)\\|\\(%s\\)"
+              vc-ignore-dir-regexp
+              tramp-file-name-regexp))
 
 ;;; Use-package.
 ;;
