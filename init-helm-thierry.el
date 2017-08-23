@@ -196,6 +196,7 @@ First call indent, second complete symbol, third complete fname."
       helm-ff-auto-update-initial-value               t
       helm-grep-default-command                       "ack-grep -Hn --color --smart-case --no-group %e %p %f"
       helm-grep-default-recurse-command               "ack-grep -H --color --smart-case --no-group %e %p %f"
+      helm-grep-ag-command                            "rg --color=always --smart-case --no-heading --line-number %s %s %s"
       helm-reuse-last-window-split-state              t
       helm-always-two-windows                         t
       helm-split-window-in-side-p                     nil
