@@ -295,7 +295,7 @@ First call indent, second complete symbol, third complete fname."
    source
    'helm/ff-candidates-lisp-p)
   (helm-source-add-action-to-source-if
-   "Byte recompile directory"
+   "Byte recompile directory (async)"
    'async-byte-recompile-directory
    source
    'file-directory-p)
