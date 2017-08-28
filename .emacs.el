@@ -80,14 +80,14 @@ This allow installation of org from melpa when :ensure is specified."
          (pkg (assq package package-alist)))
     (if pkg
         t
-        (when (and (not no-refresh)
-                   (assoc package
-                          (bound-and-true-p package-pinned-packages)))
-          (package-read-all-archive-contents))
-        (setq pkg (assq package package-archive-contents))
-        (if (or pkg no-refresh)
-            (package-install (cadr pkg))
-            (package-refresh-contents)))))
+      (when (and (not no-refresh)
+                 (assoc package
+                        (bound-and-true-p package-pinned-packages)))
+        (package-read-all-archive-contents))
+      (setq pkg (assq package package-archive-contents))
+      (if (or pkg no-refresh)
+          (package-install (cadr pkg))
+        (package-refresh-contents)))))
 (setq use-package-ensure-function #'tv/use-package-ensure-elpa)
 
 ;;; Global settings
@@ -105,7 +105,7 @@ This allow installation of org from melpa when :ensure is specified."
 (defun tv-stop-emacs-1 ()
   (if (daemonp)
       (save-buffers-kill-emacs)
-      (save-buffers-kill-terminal)))
+    (save-buffers-kill-terminal)))
 
 (defun tv-stop-emacs (arg)
   "Close emacs, with a prefix arg restart it."
@@ -129,7 +129,7 @@ This allow installation of org from melpa when :ensure is specified."
                                                    (executable-find "remacs")))))
                                     t))))
                      kill-emacs-query-functions)
-             kill-emacs-query-functions)))
+           kill-emacs-query-functions)))
     (tv-stop-emacs-1)))
 
 ;; Add-newline-at-end-of-files
@@ -235,10 +235,10 @@ in cl-case that file does not provide any feature."
 ;; Avoid rebuilding all the autoloads just for this when switching to 24.3.
 (unless (fboundp 'function-put)
   (defalias 'function-put
-      ;; We don't want people to just use `put' because we can't conveniently
-      ;; hook into `put' to remap old properties to new ones.  But for now, there's
-      ;; no such remapping, so we just call `put'.
-      (lambda (f prop value) (put f prop value))
+    ;; We don't want people to just use `put' because we can't conveniently
+    ;; hook into `put' to remap old properties to new ones.  But for now, there's
+    ;; no such remapping, so we just call `put'.
+    (lambda (f prop value) (put f prop value))
     "Set function F's property PROP to VALUE.
 The namespace for PROP is shared with symbols.
 So far, F can only be a symbol, not a lambda expression."))
@@ -249,7 +249,7 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;; Info
 ;;
 (use-package info
-    :init
+  :init
   (progn
     ;; Additional info directories
     (add-to-list 'Info-directory-list "/usr/local/share/info")
@@ -259,8 +259,8 @@ So far, F can only be a symbol, not a lambda expression."))
     (add-to-list 'Info-directory-list "/home/thierry/elisp/magit/Documentation")
     ;; Fancy faces in info.
     (defface tv-info-ref-item
-        '((((background dark)) :background "DimGray" :foreground "Gold")
-          (((background light)) :background "firebrick" :foreground "LightGray"))
+      '((((background dark)) :background "DimGray" :foreground "Gold")
+        (((background light)) :background "firebrick" :foreground "LightGray"))
       "Face for item stating with -- in info." :group 'Info :group 'faces)
 
     (defvar tv-info-title-face 'tv-info-ref-item)
@@ -295,7 +295,7 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;; Term - ansi-term
 ;;
 (use-package term
-    :config
+  :config
   (progn
     ;; Kill buffer after C-d in ansi-term.
     (defadvice term-sentinel (after kill-buffer activate)
@@ -312,14 +312,14 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;
 ;;
 (use-package browse-url
-    :config
+  :config
   (progn
     (setq browse-url-browser-function 'helm-browse-url-firefox)))
 
 ;;; Ediff
 ;;
 (use-package ediff
-    :config
+  :config
   (progn
     (setq ediff-window-setup-function 'ediff-setup-windows-plain
           ediff-split-window-function 'split-window-horizontally)))
@@ -327,7 +327,7 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;; Help
 ;;
 (use-package help
-    :config
+  :config
   (progn
     ;; Fix curly quotes in emacs-25
     (and (boundp 'text-quoting-style)
@@ -375,43 +375,43 @@ So far, F can only be a symbol, not a lambda expression."))
                            (funcall map-fn fn object)
                            (cl-letf (((point) (1- (point))))
                              (insert suffix)))
-                         (funcall fn object stream))))))
+                       (funcall fn object stream))))))
         (apply old-fn args)))
     (advice-add 'describe-variable :around #'tv/describe-variable)))
 
 ;;; comment
 ;;
 (use-package newcomment
-    :config
+  :config
   (progn
     ;; Change the behavior of `M-;' by commenting line.
     ;; Much simpler than emacs-25 `comment-line'.
     (defun comment--advice-dwim (old--fn &rest args)
       (if (region-active-p)
           (apply old--fn args)
-          (save-excursion
-            (goto-char (point-at-bol))
-            (push-mark (point-at-eol) t t)
-            (apply old--fn args))
-          (indent-region (point-at-bol) (point-at-eol))
-          (forward-line 1) ;; (indent-for-tab-command)
-          ))
+        (save-excursion
+          (goto-char (point-at-bol))
+          (push-mark (point-at-eol) t t)
+          (apply old--fn args))
+        (indent-region (point-at-bol) (point-at-eol))
+        (forward-line 1) ;; (indent-for-tab-command)
+        ))
     (advice-add 'comment-dwim :around 'comment--advice-dwim)))
 
 ;;; Woman/man
 ;;
 (use-package woman
-    :config
+  :config
   (setq woman-use-own-frame nil))
 
 (use-package man
-    :config
+  :config
   (setq Man-notify-method 'pushy))
 
 ;; show-paren-mode
 ;;
 (use-package paren
-    :config
+  :config
   (progn
     (show-paren-mode 1)
     (setq show-paren-ring-bell-on-mismatch t)))
@@ -419,38 +419,38 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;; Save-minibuffer-history
 ;;
 (use-package savehist
-    :config
+  :config
   (setq savehist-file             "~/.emacs.d/history"
         history-delete-duplicates t
         history-length            100) ; default is 30.
   (savehist-mode 1))
 
 (use-package electric
-    :config (electric-indent-mode -1))
+  :config (electric-indent-mode -1))
 
 ;;; auto-compression-mode
 ;;
 (use-package jka-cmpr-hook
-    :config (auto-compression-mode 1))
+  :config (auto-compression-mode 1))
 
 ;;; Image file
 ;;
 (use-package image-file
-    :config (auto-image-file-mode 1))
+  :config (auto-image-file-mode 1))
 
 ;;; Rst-mode
 ;;
 (use-package rst
-    :config
+  :config
   (add-hook 'rst-mode-hook 'auto-fill-mode))
 
 ;;; Printing
 ;;
 (use-package lpr
-    :config
+  :config
   (setq lpr-command "gtklp")
   (use-package ps-print
-      :config
+    :config
     (setq printer-name "EpsonStylus")
     (setq-default ps-print-header nil)
     (setq ps-font-size   '(10 . 11.5))
@@ -460,42 +460,42 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;
 (use-package sh-script
   :bind (:map sh-mode-map
-         ("RET" . newline-and-indent)
-         ("C-h f" . helm-info-bash)))
+              ("RET" . newline-and-indent)
+              ("C-h f" . helm-info-bash)))
 
 ;;; Auto-conf
 ;;
 (use-package autoconf-mode
-    :config
+  :config
   (add-to-list 'auto-mode-alist
                '("\\.ac\\'\\|configure\\.in\\'" . autoconf-mode)))
 
 (use-package autotest-mode
-    :config
+  :config
   (add-to-list 'auto-mode-alist
                '("\\.at\\'" . autotest-mode)))
 
 ;;; Desktop-entry-mode
 ;;
 (use-package desktop-entry-mode
-    :load-path "~/elisp/desktop-file-utils/"
-    :commands 'desktop-entry-mode
-    :config
-    (add-to-list 'auto-mode-alist
-                 '("\\.desktop\\(\\.in\\)?$" . desktop-entry-mode)))
+  :load-path "~/elisp/desktop-file-utils/"
+  :commands 'desktop-entry-mode
+  :config
+  (add-to-list 'auto-mode-alist
+               '("\\.desktop\\(\\.in\\)?$" . desktop-entry-mode)))
 
 ;;; Lua-mode
 ;;
 (use-package lua-mode
-    :commands 'lua-mode
-    :config
-    (add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-mode))
-    (setq lua-default-application "/usr/bin/lua"))
+  :commands 'lua-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-mode))
+  (setq lua-default-application "/usr/bin/lua"))
 
 ;;; Cmake
 ;;
 (use-package cmake-mode
-    :config
+  :config
   (add-to-list 'auto-mode-alist '("CMakeLists\\.txt\\'" . cmake-mode))
   (add-to-list 'auto-mode-alist '("\\.cmake\\'" . cmake-mode)))
 
@@ -503,7 +503,7 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;
 ;;
 (use-package wget
-    :config
+  :config
   (progn
     (use-package w3m-wget)
     ;; Use wget in eshell.
@@ -513,7 +513,7 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;; Winner
 ;;
 (use-package winner
-    :config
+  :config
   (setq winner-boring-buffers '("*Completions*"
                                 "*Compile-Log*"
                                 "*inferior-lisp*"
@@ -529,7 +529,7 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;; Time
 ;;
 (use-package time
-    :config
+  :config
   ;; World-time
   (add-to-list 'display-time-world-list '("Greenwich" "Greenwich"))
   (add-to-list 'display-time-world-list '("Australia/Sydney" "Sydney"))
@@ -560,7 +560,7 @@ So far, F can only be a symbol, not a lambda expression."))
         '( ;; date
           (if (and (not display-time-format) display-time-day-and-date)
               (format-time-string "[%a%e %b " now)
-              "")
+            "")
           ;; time
           (concat
            (propertize
@@ -588,7 +588,7 @@ So far, F can only be a symbol, not a lambda expression."))
 ;; To reload .Xresources [EVAL]: (shell-command xrdb "~/.Xresources")
 
 (use-package frame
-    :config
+  :config
   (progn
     (defvar tv-default-font (if (string= (invocation-name) "remacs")
                                 "-*-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1"
@@ -606,8 +606,8 @@ With a prefix arg decrease transparency."
                (def-alpha (or ini-alpha 80))
                (mod-alpha (if arg
                               (min (+ def-alpha 10) 100)
-                              (max (- def-alpha 10)
-                                   frame-alpha-lower-limit)))) ; 20
+                            (max (- def-alpha 10)
+                                 frame-alpha-lower-limit)))) ; 20
           (modify-frame-parameters nil (list (cons 'alpha mod-alpha)))
           (message "Alpha[%s]" mod-alpha))))
     
@@ -622,21 +622,21 @@ With a prefix arg decrease transparency."
                                                       emacs-version))
                                     (cursor-color . "red")))
 
-        (setq default-frame-alist `((foreground-color . "Wheat")
-                                    (background-color . "black")
-                                    (alpha . 90)
-                                    ;; New frames go in right corner.
-                                    (left . ,(- (* (window-width) 8) 160)) ; Chars are 8 bits long.
-                                    (vertical-scroll-bars . nil)
-                                    (title . ,(format "%s-%s"
-                                                      (capitalize (invocation-name))
-                                                      emacs-version))
-                                    (tool-bar-lines . 0)
-                                    (menu-bar-lines . 0)
-                                    (font . ,tv-default-font)
-                                    (cursor-color . "red")
-                                    (fullscreen . nil)
-                                    )))
+      (setq default-frame-alist `((foreground-color . "Wheat")
+                                  (background-color . "black")
+                                  (alpha . 90)
+                                  ;; New frames go in right corner.
+                                  (left . ,(- (* (window-width) 8) 160)) ; Chars are 8 bits long.
+                                  (vertical-scroll-bars . nil)
+                                  (title . ,(format "%s-%s"
+                                                    (capitalize (invocation-name))
+                                                    emacs-version))
+                                  (tool-bar-lines . 0)
+                                  (menu-bar-lines . 0)
+                                  (font . ,tv-default-font)
+                                  (cursor-color . "red")
+                                  (fullscreen . nil)
+                                  )))
 
     ;; Special buffer display.
     (add-hook 'window-setup-hook
@@ -690,17 +690,17 @@ With a prefix arg decrease transparency."
   :bind ("C-8" . tv-transparency-modify))
 
 (use-package window
-    :no-require t
-    :init (setq split-width-threshold nil)  ;; Don't split windows horizontally.
-    :bind (("C-x C-²" . delete-other-windows)
-           ("C-x C-&" . delete-window)
-           ("C-x C-é" . split-window-vertically)
-           ("C-x C-\"" . split-window-horizontally)))
+  :no-require t
+  :init (setq split-width-threshold nil)  ;; Don't split windows horizontally.
+  :bind (("C-x C-²" . delete-other-windows)
+         ("C-x C-&" . delete-window)
+         ("C-x C-é" . split-window-vertically)
+         ("C-x C-\"" . split-window-horizontally)))
 
 ;;; Use `net-utils-run-simple' in net-utils fns.
 ;;
 (use-package net-utils
-    :config
+  :config
   (progn
     (defun ping (host)
       "Ping HOST.
@@ -710,7 +710,7 @@ If your system's ping continues until interrupted, you can try setting
       (let ((options
              (if ping-program-options
                  (append ping-program-options (list host))
-                 (list host))))
+               (list host))))
         (net-utils-run-simple
          (concat "Ping" " " host)
          ping-program
@@ -730,68 +730,68 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Async
 ;;
 (use-package async
-    :config
-    (progn
-      ;; Dired async.
-      (use-package dired-async :config (dired-async-mode 1))
-      ;; Smtp async.
-      (use-package smtpmail-async
-          :commands 'async-smtpmail-send-it)
-      ;; Byte compilation async.
-      (use-package async-bytecomp
-          :config
-        (progn
-          (setq async-bytecomp-allowed-packages '(all))
-          (defun tv/async-byte-compile-file (file)
-            (interactive "fFile: ")
-            (let ((proc
-                   (async-start
-                    `(lambda ()
-                       (require 'bytecomp)
-                       ,(async-inject-variables "\\`load-path\\'")
-                       (let ((default-directory ,(file-name-directory file)))
-                         (add-to-list 'load-path default-directory)
-                         (byte-compile-file ,file))))))
+  :config
+  (progn
+    ;; Dired async.
+    (use-package dired-async :config (dired-async-mode 1))
+    ;; Smtp async.
+    (use-package smtpmail-async
+      :commands 'async-smtpmail-send-it)
+    ;; Byte compilation async.
+    (use-package async-bytecomp
+      :config
+      (progn
+        (setq async-bytecomp-allowed-packages '(all))
+        (defun tv/async-byte-compile-file (file)
+          (interactive "fFile: ")
+          (let ((proc
+                 (async-start
+                  `(lambda ()
+                     (require 'bytecomp)
+                     ,(async-inject-variables "\\`load-path\\'")
+                     (let ((default-directory ,(file-name-directory file)))
+                       (add-to-list 'load-path default-directory)
+                       (byte-compile-file ,file))))))
 
-              (if (condition-case err
-                      (async-get proc)
-                    (error (ignore (message "Error: %s" (car err)))))
-                  (message "Recompiling %s...DONE" file)  
-                  (message "Recompiling %s...FAILED" file))))))))
+            (if (condition-case err
+                    (async-get proc)
+                  (error (ignore (message "Error: %s" (car err)))))
+                (message "Recompiling %s...DONE" file)  
+              (message "Recompiling %s...FAILED" file))))))))
 
 ;;; Firefox protocol
 ;;
 (use-package firefox-protocol
-    :commands 'firefox-protocol-installer-install)
+  :commands 'firefox-protocol-installer-install)
 
 ;;; Org
 ;;
 (use-package org
-    :ensure t
-    :defer t
-    :config (use-package org-config-thierry))
+  :ensure t
+  :defer t
+  :config (use-package org-config-thierry))
 
 ;;; Emms
 ;;
 (use-package emms
-    :ensure t
-    :defer t
-    :config (use-package emms-vlc-config))
+  :ensure t
+  :defer t
+  :config (use-package emms-vlc-config))
 
 ;;; Dired
 ;;
 (use-package dired
-    :init (progn
-            (setq dired-dwim-target t)
-            (setq dired-auto-revert-buffer t)
-            (setq dired-backup-overwrite nil) ; nil, always, ask.
-            (setq dired-isearch-filenames 'dwim)
-            (setq dired-listing-switches (purecopy "-alh")))
-    :config
-    (use-package dired-extension)
-    (use-package wdired
-      :config (setq wdired-use-dired-vertical-movement 'sometimes))
-    :defer t)
+  :init (progn
+          (setq dired-dwim-target t)
+          (setq dired-auto-revert-buffer t)
+          (setq dired-backup-overwrite nil) ; nil, always, ask.
+          (setq dired-isearch-filenames 'dwim)
+          (setq dired-listing-switches (purecopy "-alh")))
+  :config
+  (use-package dired-extension)
+  (use-package wdired
+    :config (setq wdired-use-dired-vertical-movement 'sometimes))
+  :defer t)
 
 ;;; htmlize
 ;;
@@ -808,101 +808,101 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Ioccur
 ;;
 (use-package ioccur
-    :commands (ioccur)
-    :init
-    (add-hook 'ioccur-save-pos-before-jump-hook 'ioccur-save-current-pos-to-mark-ring)
-    :bind ([remap occur] . ioccur)) ; M-s o
+  :commands (ioccur)
+  :init
+  (add-hook 'ioccur-save-pos-before-jump-hook 'ioccur-save-current-pos-to-mark-ring)
+  :bind ([remap occur] . ioccur)) ; M-s o
 
 ;;; google-maps
 ;;
 (use-package google-maps
-    :ensure t
-    :init (setq google-maps-static-default-zoom 10)
-    :bind ("<f5> g m" . google-maps))
+  :ensure t
+  :init (setq google-maps-static-default-zoom 10)
+  :bind ("<f5> g m" . google-maps))
 
 ;;; tv-utils fns
 ;;
 (use-package tv-utils
-    :commands (tv-eval-region tv/async-byte-compile-file tv-restore-scratch-buffer)
-    :init (progn
-            (bind-key "C-M-!" 'tv-eval-region lisp-interaction-mode-map) 
-            (bind-key "C-M-!" 'tv-eval-region emacs-lisp-mode-map))
-    :config (advice-add 'view-echo-area-messages :around 'tv/view-echo-area-messages)
-    :bind (("M-\""                  . tv-insert-double-quote)
-           ("C-M-\`"                . tv-insert-double-backquote)
-           ("C-M-("                 . tv-move-pair-forward)
-           ("C-M-\""                . tv-insert-double-quote-and-close-forward)
-           ("C-M-)"                 . tv-insert-pair-and-close-forward)
-           ("C-c t r"               . translate-at-point)
-           ("<f5> c"                . tv-toggle-calendar)
-           ([remap kill-whole-line] . tv-kill-whole-line)
-           ("M-e"                   . tv-eval-last-sexp-at-eol)
-           ([remap delete-char]     . tv-delete-char)
-           ([remap c-electric-delete-forward] . tv-delete-char)
-           ("C-x C-'"               . tv/split-windows)
-           ("C-<"                   . other-window-backward)
-           ("C->"                   . other-window-forward)
-           ([C-left]                . screen-top)
-           ([C-right]               . screen-bottom)
-           ("<M-down>"              . tv-scroll-down)
-           ("<M-up>"                . tv-scroll-up)
-           ("<C-M-down>"            . tv-scroll-other-down)
-           ("<C-M-up>"              . tv-scroll-other-up)))
+  :commands (tv-eval-region tv/async-byte-compile-file tv-restore-scratch-buffer)
+  :init (progn
+          (bind-key "C-M-!" 'tv-eval-region lisp-interaction-mode-map) 
+          (bind-key "C-M-!" 'tv-eval-region emacs-lisp-mode-map))
+  :config (advice-add 'view-echo-area-messages :around 'tv/view-echo-area-messages)
+  :bind (("M-\""                  . tv-insert-double-quote)
+         ("C-M-\`"                . tv-insert-double-backquote)
+         ("C-M-("                 . tv-move-pair-forward)
+         ("C-M-\""                . tv-insert-double-quote-and-close-forward)
+         ("C-M-)"                 . tv-insert-pair-and-close-forward)
+         ("C-c t r"               . translate-at-point)
+         ("<f5> c"                . tv-toggle-calendar)
+         ([remap kill-whole-line] . tv-kill-whole-line)
+         ("M-e"                   . tv-eval-last-sexp-at-eol)
+         ([remap delete-char]     . tv-delete-char)
+         ([remap c-electric-delete-forward] . tv-delete-char)
+         ("C-x C-'"               . tv/split-windows)
+         ("C-<"                   . other-window-backward)
+         ("C->"                   . other-window-forward)
+         ([C-left]                . screen-top)
+         ([C-right]               . screen-bottom)
+         ("<M-down>"              . tv-scroll-down)
+         ("<M-up>"                . tv-scroll-up)
+         ("<C-M-down>"            . tv-scroll-other-down)
+         ("<C-M-up>"              . tv-scroll-other-up)))
 
 ;;; Ledger
 ;;
 (use-package ledger
-    :init (setenv "LEDGER_PAGER" "cat")
-    :commands (ledger-mode csv2ledger)
-    :config (use-package ledger-config))
+  :init (setenv "LEDGER_PAGER" "cat")
+  :commands (ledger-mode csv2ledger)
+  :config (use-package ledger-config))
 
 ;;; Rectangle
 ;;
 (use-package rectangle-utils
-    :commands (rectangle-utils-menu
-               rectangle-utils-copy-rectangle
-               rectangle-utils-insert-at-right
-               rectangle-utils-extend-rectangle-to-end
-               rectangle-utils-extend-rectangle-to-space-or-paren
-               rectangle-utils-extend-rectangle-to-space-or-dot
-               rectangle-utils-extend-rectangle-to-regexp)
-    :bind (("C-x r e"       . rectangle-utils-extend-rectangle-to-end)
-           ("C-x r h"       . rectangle-utils-menu)
-           ("C-x r <right>" . rectangle-utils-insert-at-right)
-           :map emacs-lisp-mode-map
-           ("C-x r a" . rectangle-utils-extend-rectangle-to-space-or-paren)
-           ("C-c C-a" . rectangle-utils-extend-rectangle-to-regexp)
-           :map lisp-interaction-mode-map
-           ("C-c C-a" . rectangle-utils-extend-rectangle-to-regexp)
-           ("C-x r a" . rectangle-utils-extend-rectangle-to-space-or-paren)))
+  :commands (rectangle-utils-menu
+             rectangle-utils-copy-rectangle
+             rectangle-utils-insert-at-right
+             rectangle-utils-extend-rectangle-to-end
+             rectangle-utils-extend-rectangle-to-space-or-paren
+             rectangle-utils-extend-rectangle-to-space-or-dot
+             rectangle-utils-extend-rectangle-to-regexp)
+  :bind (("C-x r e"       . rectangle-utils-extend-rectangle-to-end)
+         ("C-x r h"       . rectangle-utils-menu)
+         ("C-x r <right>" . rectangle-utils-insert-at-right)
+         :map emacs-lisp-mode-map
+         ("C-x r a" . rectangle-utils-extend-rectangle-to-space-or-paren)
+         ("C-c C-a" . rectangle-utils-extend-rectangle-to-regexp)
+         :map lisp-interaction-mode-map
+         ("C-c C-a" . rectangle-utils-extend-rectangle-to-regexp)
+         ("C-x r a" . rectangle-utils-extend-rectangle-to-space-or-paren)))
 
 ;;; Smallurl
 ;;
 (use-package smallurl
-    :commands (smallurl smallurl-replace-at-point))
+  :commands (smallurl smallurl-replace-at-point))
 
 ;;; Zop-to-char
 ;;
 (use-package zop-to-char
-    :commands (zop-to-char zop-up-to-char)
-    :init
-    (progn
-      (setq zop-to-char-prec-keys '(left ?\C-b ?\M-a)
-            zop-to-char-next-keys '(right ?\C-f ?\M-e)))
-    :bind ([remap zap-to-char] . zop-to-char))
+  :commands (zop-to-char zop-up-to-char)
+  :init
+  (progn
+    (setq zop-to-char-prec-keys '(left ?\C-b ?\M-a)
+          zop-to-char-next-keys '(right ?\C-f ?\M-e)))
+  :bind ([remap zap-to-char] . zop-to-char))
 
 ;;; Iedit
 ;;
 (use-package iedit
-    :ensure t
-    :init
-    (progn
-      (bind-key "C-²" 'iedit-mode-toggle-on-function)))
+  :ensure t
+  :init
+  (progn
+    (bind-key "C-²" 'iedit-mode-toggle-on-function)))
 
 (use-package iedit-rect
-    :bind (([C-return] . iedit-rectangle-mode)
-           :map ctl-x-r-map
-           ("RET" . iedit-rectangle-mode)))
+  :bind (([C-return] . iedit-rectangle-mode)
+         :map ctl-x-r-map
+         ("RET" . iedit-rectangle-mode)))
 
 ;;; Lacarte
 ;;
@@ -915,29 +915,29 @@ If your system's ping continues until interrupted, you can try setting
 ;;; psession
 ;;
 (use-package psession
-    :config (psession-mode 1))
+  :config (psession-mode 1))
 
 ;;; Golden-ratio
 ;;
 (use-package golden-ratio
-    :disabled t
-    :diminish golden-ratio-mode
-    :init
-    (progn
-      (add-hook 'ediff-before-setup-windows-hook (lambda () (golden-ratio-mode -1)))
-      (add-hook 'ediff-quit-hook (lambda () (golden-ratio-mode 1))))
-    :config
-    (progn
-      (defun helm/running-p () helm-alive-p)
-      (defun tv/ispell-running-p ()
-        (and (boundp 'ispell-choices-buffer)
-             (get-buffer ispell-choices-buffer)))
-      (setq golden-ratio-inhibit-functions     '(helm/running-p tv/ispell-running-p))
-      (setq golden-ratio-exclude-buffer-regexp '("\\`\\*[Hh]elm.*\\*\\'"))
-      (setq golden-ratio-exclude-buffer-names  '("*Org Select*"))
-      (setq golden-ratio-exclude-modes         '(ediff-mode calendar-mode wget-mode))
-      (setq golden-ratio-recenter              t)
-      (golden-ratio-mode 1)))
+  :disabled t
+  :diminish golden-ratio-mode
+  :init
+  (progn
+    (add-hook 'ediff-before-setup-windows-hook (lambda () (golden-ratio-mode -1)))
+    (add-hook 'ediff-quit-hook (lambda () (golden-ratio-mode 1))))
+  :config
+  (progn
+    (defun helm/running-p () helm-alive-p)
+    (defun tv/ispell-running-p ()
+      (and (boundp 'ispell-choices-buffer)
+           (get-buffer ispell-choices-buffer)))
+    (setq golden-ratio-inhibit-functions     '(helm/running-p tv/ispell-running-p))
+    (setq golden-ratio-exclude-buffer-regexp '("\\`\\*[Hh]elm.*\\*\\'"))
+    (setq golden-ratio-exclude-buffer-names  '("*Org Select*"))
+    (setq golden-ratio-exclude-modes         '(ediff-mode calendar-mode wget-mode))
+    (setq golden-ratio-recenter              t)
+    (golden-ratio-mode 1)))
 
 ;;; pcomplete
 ;;
@@ -950,7 +950,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Migemo
 ;;
 (use-package migemo
-    :init
+  :init
   (setq migemo-command          "cmigemo"
         migemo-options          '("-q" "-e")
         migemo-dictionary       "/usr/share/cmigemo/utf-8/migemo-dict"
@@ -1014,47 +1014,47 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Emamux
 ;;
 (use-package emamux
-    :ensure t
-    :init (setq emamux:completing-read-type 'helm)
-    :config (setq emamux:get-buffers-regexp
-                  "^\\(buffer[0-9]+\\): +\\([0-9]+\\) +\\(bytes\\): +[\"]\\(.*\\)[\"]"
-                  emamux:show-buffers-with-index nil)
-    :bind (("C-c y" . emamux:yank-from-list-buffers)
-           ("C-c s" . emamux:send-command)))
+  :ensure t
+  :init (setq emamux:completing-read-type 'helm)
+  :config (setq emamux:get-buffers-regexp
+                "^\\(buffer[0-9]+\\): +\\([0-9]+\\) +\\(bytes\\): +[\"]\\(.*\\)[\"]"
+                emamux:show-buffers-with-index nil)
+  :bind (("C-c y" . emamux:yank-from-list-buffers)
+         ("C-c s" . emamux:send-command)))
 
 ;;; Undo-tree
 ;;
 (use-package undo-tree
-    :ensure t
-    :diminish undo-tree-mode
-    :config
-    (progn
-      (defun git-gutter:undo-tree-undo (&rest _args)
-        (when git-gutter-mode
-          (run-with-idle-timer 0.1 nil 'git-gutter)))
+  :ensure t
+  :diminish undo-tree-mode
+  :config
+  (progn
+    (defun git-gutter:undo-tree-undo (&rest _args)
+      (when git-gutter-mode
+        (run-with-idle-timer 0.1 nil 'git-gutter)))
 
-      (defun git-gutter:undo-tree-redo (&rest _args)
-        (when git-gutter-mode
-          (run-with-idle-timer 0.1 nil 'git-gutter)))
+    (defun git-gutter:undo-tree-redo (&rest _args)
+      (when git-gutter-mode
+        (run-with-idle-timer 0.1 nil 'git-gutter)))
 
-      (advice-add 'undo-tree-undo :after 'git-gutter:undo-tree-undo)
-      (advice-add 'undo-tree-redo :after 'git-gutter:undo-tree-undo)
+    (advice-add 'undo-tree-undo :after 'git-gutter:undo-tree-undo)
+    (advice-add 'undo-tree-redo :after 'git-gutter:undo-tree-undo)
 
-      ;; (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree-history")))
-      ;; (setq undo-tree-auto-save-history t)
-      (global-undo-tree-mode 1)))
+    ;; (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree-history")))
+    ;; (setq undo-tree-auto-save-history t)
+    (global-undo-tree-mode 1)))
 
 ;;; Zoom-window
 ;;
 (use-package zoom-window
-    :ensure t
-    :init (setq zoom-window-mode-line-color "DarkGreen")
-    :bind ("C-x C-z" . zoom-window-zoom))
+  :ensure t
+  :init (setq zoom-window-mode-line-color "DarkGreen")
+  :bind ("C-x C-z" . zoom-window-zoom))
 
 ;;; Eldoc
 ;;
 (use-package eldoc
-    :init
+  :init
   (progn
     (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
     (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
@@ -1191,23 +1191,23 @@ are returned unchanged."
            (if (string-match-p
                 "\\`(?&\\(?:optional\\|rest\\|key\\|allow-other-keys\\))?\\'" s)
                s
-               (funcall eldoc-argument-case s)))
+             (funcall eldoc-argument-case s)))
          (split-string argstring) " ")))))
 
 (use-package eldoc-eval
-    :preface (defvar eldoc-in-minibuffer-mode nil)
-    :no-require t
-    :diminish eldoc-mode
-    :config
-    (progn
-      (eldoc-in-minibuffer-mode 1)
-      (defadvice edebug-eval-expression (around with-eldoc activate)
-        "This advice enable eldoc support."
-        (interactive (list (with-eldoc-in-minibuffer
-                             (read-from-minibuffer
-                              "Eval: " nil read-expression-map t
-                              'read-expression-history))))
-        ad-do-it)))
+  :preface (defvar eldoc-in-minibuffer-mode nil)
+  :no-require t
+  :diminish eldoc-mode
+  :config
+  (progn
+    (eldoc-in-minibuffer-mode 1)
+    (defadvice edebug-eval-expression (around with-eldoc activate)
+      "This advice enable eldoc support."
+      (interactive (list (with-eldoc-in-minibuffer
+                           (read-from-minibuffer
+                            "Eval: " nil read-expression-map t
+                            'read-expression-history))))
+      ad-do-it)))
 
 ;;; Python config
 ;;
@@ -1217,39 +1217,39 @@ are returned unchanged."
 ;; (define-key python-mode-map (kbd "C-c C-i") 'helm-ipython-import-modules-from-buffer)
 
 (use-package python
-    :no-require t
-    :init
-    (progn
-      (setq
-       gud-pdb-command-name "ipdb"
-       python-shell-interpreter "ipython"
-       python-shell-interpreter-args "-i --autoindent"
-       python-shell-prompt-regexp "In \\[[0-9]+\\]: "
-       python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
-       python-shell-completion-setup-code
-       "import rlcompleter2
+  :no-require t
+  :init
+  (progn
+    (setq
+     gud-pdb-command-name "ipdb"
+     python-shell-interpreter "ipython"
+     python-shell-interpreter-args "-i --autoindent"
+     python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+     python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+     python-shell-completion-setup-code
+     "import rlcompleter2
 rlcompleter2.setup()
 from IPython.core.completerlib import module_completion"
-       python-shell-completion-module-string-code
-       "';'.join(module_completion('''%s'''))\n"
-       python-shell-completion-string-code
-       "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
+     python-shell-completion-module-string-code
+     "';'.join(module_completion('''%s'''))\n"
+     python-shell-completion-string-code
+     "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
 
-      (add-hook 'python-mode-hook
-                (lambda ()
-                  (define-key python-mode-map (kbd "C-m") 'newline-and-indent))))
-    :config
-    (progn
-      (defun tv-insert-python-header ()
-        "insert python header at point"
-        (interactive)
-        (insert "#!/usr/bin/env python\n"
-                "# -*- coding: utf-8 -*-\n\n"
-                "## Title: \n"
-                "## Description: \n"
-                "## Author:Thierry Volpiatto<thierry dot volpiatto FROM gmail DOT com>\n"
-                "## Commentary:\n\n")))
-    :bind ("<f11> p" . python-shell-switch-to-shell))
+    (add-hook 'python-mode-hook
+              (lambda ()
+                (define-key python-mode-map (kbd "C-m") 'newline-and-indent))))
+  :config
+  (progn
+    (defun tv-insert-python-header ()
+      "insert python header at point"
+      (interactive)
+      (insert "#!/usr/bin/env python\n"
+              "# -*- coding: utf-8 -*-\n\n"
+              "## Title: \n"
+              "## Description: \n"
+              "## Author:Thierry Volpiatto<thierry dot volpiatto FROM gmail DOT com>\n"
+              "## Commentary:\n\n")))
+  :bind ("<f11> p" . python-shell-switch-to-shell))
 
 ;;; xdvi (Needed in auctex)
 ;;
@@ -1258,37 +1258,37 @@ from IPython.core.completerlib import module_completion"
 ;;; Tramp-config
 ;;
 (use-package tramp
-    :no-require t
-    :config
-    (progn
-      ;; scp is better for copying large files.
-      (setq tramp-default-method "scp")
-      ;; (setq tramp-verbose 6) ; See `helm-tramp-verbose' in init-helm.
+  :no-require t
+  :config
+  (progn
+    ;; scp is better for copying large files.
+    (setq tramp-default-method "scp")
+    ;; (setq tramp-verbose 6) ; See `helm-tramp-verbose' in init-helm.
 
-      ;; No messages
-      (setq tramp-message-show-message nil)
+    ;; No messages
+    (setq tramp-message-show-message nil)
 
-      (setq tramp-use-ssh-controlmaster-options nil)
+    (setq tramp-use-ssh-controlmaster-options nil)
 
-      ;; Allow connecting as root on all remote Linux machines except this one.
-      ;; Use e.g /sudo:host:/path
-      (add-to-list 'tramp-default-proxies-alist
-                   '("\\`thievol\\'" "\\`root\\'" "/ssh:%h:"))
+    ;; Allow connecting as root on all remote Linux machines except this one.
+    ;; Use e.g /sudo:host:/path
+    (add-to-list 'tramp-default-proxies-alist
+                 '("\\`thievol\\'" "\\`root\\'" "/ssh:%h:"))
 
-      (add-to-list 'tramp-default-proxies-alist
-                   '("\\`thievolrem\\'" "\\`root\\'" "/ssh:%h:"))
+    (add-to-list 'tramp-default-proxies-alist
+                 '("\\`thievolrem\\'" "\\`root\\'" "/ssh:%h:"))
 
-      (add-to-list 'tramp-default-proxies-alist
-                   '((regexp-quote (system-name)) nil nil))
+    (add-to-list 'tramp-default-proxies-alist
+                 '((regexp-quote (system-name)) nil nil))
 
-      ;; Connect to my freebox as 'freebox' user.
-      (add-to-list 'tramp-default-user-alist
-                   '("ftp" "\\`mafreebox\\.freebox\\.fr\\'" "freebox"))))
+    ;; Connect to my freebox as 'freebox' user.
+    (add-to-list 'tramp-default-user-alist
+                 '("ftp" "\\`mafreebox\\.freebox\\.fr\\'" "freebox"))))
 
 ;;; Ange-ftp
 ;;
 (use-package ange-ftp
-    :init
+  :init
   (progn
     (setq ange-ftp-try-passive-mode t)
     (setq ange-ftp-passive-host-alist '(("mafreebox.freebox.fr" . "on"))))
@@ -1297,17 +1297,17 @@ from IPython.core.completerlib import module_completion"
 ;;; Calendar and diary
 ;;
 (use-package calendar
-    :config
+  :config
   (progn
     (setq diary-file "~/.emacs.d/diary")
     (unless (fboundp 'fancy-diary-display) ; Fix emacs-25.
       (defalias 'fancy-diary-display 'diary-fancy-display))
     (defface tv/calendar-blocks
-        '((t (:background "ForestGreen")))
+      '((t (:background "ForestGreen")))
       "Face used to highlight diary blocks in calendar."
       :group 'calendar)
     (defface tv/calendar-blocks-1
-        '((t (:background "DarkOliveGreen")))
+      '((t (:background "DarkOliveGreen")))
       "Face used to highlight diary blocks in calendar."
       :group 'calendar)
     (setq calendar-date-style 'european)
@@ -1329,11 +1329,11 @@ from IPython.core.completerlib import module_completion"
     (setq calendar-week-start-day 1
           calendar-day-name-array
           ["Dimanche" "Lundi" "Mardi"
-                      "Mercredi" "Jeudi" "Vendredi" "Samedi"]
+           "Mercredi" "Jeudi" "Vendredi" "Samedi"]
           calendar-month-name-array
           ["Janvier" "Février" "Mars" "Avril"
-                     "Mai" "Juin" "Juillet" "Août" "Septembre"
-                     "Octobre" "Novembre" "Décembre"])
+           "Mai" "Juin" "Juillet" "Août" "Septembre"
+           "Octobre" "Novembre" "Décembre"])
 
     (defvar holiday-french-holidays nil
       "French holidays")
@@ -1371,7 +1371,7 @@ from IPython.core.completerlib import module_completion"
              (props (cl-loop for ov in ovs
                              for prop = (cadr (overlay-properties ov))
                              when (memq prop '(diary holiday diary-anniversary
-                                               tv/calendar-blocks tv/calendar-blocks-1))
+                                                     tv/calendar-blocks tv/calendar-blocks-1))
                              collect prop)))
         (cond ((and (or (memq 'diary props)
                         (memq 'tv/calendar-blocks props)
@@ -1395,7 +1395,7 @@ from IPython.core.completerlib import module_completion"
     (define-key calendar-mode-map (kbd "C-<left>")  'calendar-backward-month)
     (define-key calendar-mode-map (kbd "RET")       'tv/calendar-diary-or-holiday)
     (use-package appt
-        :config
+      :config
       (progn
         (setq appt-display-format 'echo ; Values: 'echo, 'window or nil.
               appt-warning-time-regexp "warn ?\\([0-9]+\\)") 
@@ -1405,136 +1405,136 @@ from IPython.core.completerlib import module_completion"
 ;;; Bookmarks
 ;;
 (use-package bookmark
-    :no-require t
-    :init
-    (progn
-      (add-hook 'bookmark-bmenu-mode-hook 'hl-line-mode)
-      (setq bookmark-bmenu-toggle-filenames nil)
-      (setq bookmark-default-file "~/.emacs.d/.emacs.bmk")
-      (setq bookmark-automatically-show-annotations nil))
-    :config
-    (progn
-      (and (boundp 'bookmark-bmenu-use-header-line)
-           (setq bookmark-bmenu-use-header-line nil))))
+  :no-require t
+  :init
+  (progn
+    (add-hook 'bookmark-bmenu-mode-hook 'hl-line-mode)
+    (setq bookmark-bmenu-toggle-filenames nil)
+    (setq bookmark-default-file "~/.emacs.d/.emacs.bmk")
+    (setq bookmark-automatically-show-annotations nil))
+  :config
+  (progn
+    (and (boundp 'bookmark-bmenu-use-header-line)
+         (setq bookmark-bmenu-use-header-line nil))))
 
 ;;; git-gutter-mode
 ;;
 (use-package git-gutter
-    :ensure t
-    :init
-    (progn
-      (customize-set-variable 'git-gutter:update-interval 2) ; Activate live update timer.
-      (setq git-gutter:hide-gutter t) ; Always a 0 width margin when no changes.
-      (bind-key [remap vc-dir] 'git-gutter:popup-hunk)
-      ;; Stage current hunk
-      (bind-key [remap vc-create-tag] 'git-gutter:stage-hunk)
-      ;; Revert current hunk
-      (bind-key (kbd "C-x v r") 'git-gutter:revert-hunk))
-    :diminish git-gutter-mode
-    :config
-    (progn
-      (global-git-gutter-mode) ; Enable live update.
-      (helm-define-key-with-subkeys
-          global-map (kbd "C-x v n") ?n 'git-gutter:next-hunk '((?p . git-gutter:previous-hunk)))
-      (helm-define-key-with-subkeys
-          global-map (kbd "C-x v p") ?p 'git-gutter:previous-hunk '((?n . git-gutter:next-hunk)))))
+  :ensure t
+  :init
+  (progn
+    (customize-set-variable 'git-gutter:update-interval 2) ; Activate live update timer.
+    (setq git-gutter:hide-gutter t) ; Always a 0 width margin when no changes.
+    (bind-key [remap vc-dir] 'git-gutter:popup-hunk)
+    ;; Stage current hunk
+    (bind-key [remap vc-create-tag] 'git-gutter:stage-hunk)
+    ;; Revert current hunk
+    (bind-key (kbd "C-x v r") 'git-gutter:revert-hunk))
+  :diminish git-gutter-mode
+  :config
+  (progn
+    (global-git-gutter-mode) ; Enable live update.
+    (helm-define-key-with-subkeys
+        global-map (kbd "C-x v n") ?n 'git-gutter:next-hunk '((?p . git-gutter:previous-hunk)))
+    (helm-define-key-with-subkeys
+        global-map (kbd "C-x v p") ?p 'git-gutter:previous-hunk '((?n . git-gutter:next-hunk)))))
 
 ;;; Addressbook
 ;;
 (use-package addressbook-bookmark
-    :commands (addressbook-turn-on-mail-completion
-               addressbook-bookmark-set
-               addressbook-mu4e-bookmark
-               addressbook-bmenu-edit
-               addressbook-bookmark-jump))
+  :commands (addressbook-turn-on-mail-completion
+             addressbook-bookmark-set
+             addressbook-mu4e-bookmark
+             addressbook-bmenu-edit
+             addressbook-bookmark-jump))
 
 ;;; W3m
 ;;
 (use-package w3m
-    :ensure t
-    :init (require 'config-w3m)
-    :bind
-    (("<f7> h" . w3m)
-     :map w3m-mode-map
-     ("F" . w3m-view-url-with-browse-url)))
+  :ensure t
+  :init (require 'config-w3m)
+  :bind
+  (("<f7> h" . w3m)
+   :map w3m-mode-map
+   ("F" . w3m-view-url-with-browse-url)))
 
 ;;; Mu4e
 ;;
 (use-package mu4e
-    :init (progn (require 'mu4e-config)
-                 (addressbook-turn-on-mail-completion))
-    :commands 'mu4e
-    :bind ("<f8>" . mu4e))
+  :init (progn (require 'mu4e-config)
+               (addressbook-turn-on-mail-completion))
+  :commands 'mu4e
+  :bind ("<f8>" . mu4e))
 
 ;;; Message
 ;;
 (use-package message
-    :no-require t
-    :init (progn (require 'mu4e-config)
-                 (addressbook-turn-on-mail-completion)))
+  :no-require t
+  :init (progn (require 'mu4e-config)
+               (addressbook-turn-on-mail-completion)))
 
 ;;; Auth-source
 ;;
 (use-package auth-source
-    :no-require t
-    :config (setq auth-sources '("~/.authinfo.gpg" "~/.netrc")))
+  :no-require t
+  :config (setq auth-sources '("~/.authinfo.gpg" "~/.netrc")))
 
 ;;; esh-toggle
 ;;
 (use-package esh-toggle
-    :commands (eshell-toggle-cd eshell-toggle)
-    :bind (("<f11> e c" . eshell-toggle-cd)
-           ("<f11> e t" . eshell-toggle)))
+  :commands (eshell-toggle-cd eshell-toggle)
+  :bind (("<f11> e c" . eshell-toggle-cd)
+         ("<f11> e t" . eshell-toggle)))
 
 ;;; Whitespace-mode
 ;;
 (use-package whitespace
-    :commands 'whitespace-mode
-    :config (progn
-              (add-to-list 'whitespace-style 'lines-tail)
-              (setq whitespace-line-column 80))
-    :bind ("C-c W" . whitespace-mode))
+  :commands 'whitespace-mode
+  :config (progn
+            (add-to-list 'whitespace-style 'lines-tail)
+            (setq whitespace-line-column 80))
+  :bind ("C-c W" . whitespace-mode))
 
 ;;; align-let
 ;;
 (use-package align-let
-    :commands 'align-let-keybinding
-    :init
-    (progn
-      (add-hook 'emacs-lisp-mode-hook 'align-let-keybinding)
-      (add-hook 'lisp-interaction-mode-hook 'align-let-keybinding)
-      (add-hook 'lisp-mode-hook 'align-let-keybinding))
-    :config
-    (progn
-      (put 'setq-local 'align-let 'setq)
-      (put 'cl-psetq 'align-let 'setq)
-      (put 'helm-set-local-variable 'align-let 'setq))
-    :disabled t)
+  :commands 'align-let-keybinding
+  :init
+  (progn
+    (add-hook 'emacs-lisp-mode-hook 'align-let-keybinding)
+    (add-hook 'lisp-interaction-mode-hook 'align-let-keybinding)
+    (add-hook 'lisp-mode-hook 'align-let-keybinding))
+  :config
+  (progn
+    (put 'setq-local 'align-let 'setq)
+    (put 'cl-psetq 'align-let 'setq)
+    (put 'helm-set-local-variable 'align-let 'setq))
+  :disabled t)
 
 ;;; sqlite-dump
 ;;
 (use-package sqlite-dump
-    :commands 'sqlite-dump
-    :config (progn
-              (modify-coding-system-alist 'file "\\.sqlite\\'" 'raw-text-unix)
-              (add-to-list 'auto-mode-alist '("\\.sqlite\\'" . sqlite-dump))
-              (setq sql-sqlite-program "sqlite3")))
+  :commands 'sqlite-dump
+  :config (progn
+            (modify-coding-system-alist 'file "\\.sqlite\\'" 'raw-text-unix)
+            (add-to-list 'auto-mode-alist '("\\.sqlite\\'" . sqlite-dump))
+            (setq sql-sqlite-program "sqlite3")))
 
 ;;; Checkdoc
 ;;
 (use-package checkdoc-batch
-    :commands (checkdoc-batch checkdoc-batch-files))
+  :commands (checkdoc-batch checkdoc-batch-files))
 
 ;;; markdown-mode
 ;;
 (use-package markdown-mode
-    :ensure t
-    :mode (("\\.markdown$" . markdown-mode)
-           ("\\.md$" . markdown-mode)
-           ("\\.mdpp$" . markdown-mode)))
+  :ensure t
+  :mode (("\\.markdown$" . markdown-mode)
+         ("\\.md$" . markdown-mode)
+         ("\\.mdpp$" . markdown-mode)))
 
 (use-package ffap
-    :config
+  :config
   ;; Tramp/ange behave badly in 99.9% of the time for ftp, disable.
   (setq ffap-url-unwrap-remote (remove "ftp" ffap-url-unwrap-remote))
   (when (> emacs-major-version 24)
@@ -1545,7 +1545,7 @@ from IPython.core.completerlib import module_completion"
 ;;; Eshell-config
 ;;
 (use-package eshell
-    :init
+  :init
   (progn
     ;; Eshell-prompt
     (setq eshell-prompt-function
@@ -1588,9 +1588,9 @@ from IPython.core.completerlib import module_completion"
                                                      ,(if (string= "?" status)
                                                           "OrangeRed" "gold1"))))
                                 id))
-                      (format "%s@%s:%s%s"
-                       (getenv "USER") (system-name)
-                       (abbreviate-file-name pwd) id)))))))
+                    (format "%s@%s:%s%s"
+                            (getenv "USER") (system-name)
+                            (abbreviate-file-name pwd) id)))))))
 
     ;; Compatibility 24.2/24.3
     (unless (fboundp 'eshell-pcomplete)
@@ -1665,34 +1665,34 @@ from IPython.core.completerlib import module_completion"
 ;;; linum-relative
 ;;
 (use-package linum-relative
-    :commands (linum-relative-mode
-               helm-linum-relative-mode
-               linum-relative-toggle
-               linum-relative-global-mode))
+  :commands (linum-relative-mode
+             helm-linum-relative-mode
+             linum-relative-toggle
+             linum-relative-global-mode))
 
 ;;; Outline-mode
 ;;
 (use-package outline
-    :requires helm
-    :config
-    (progn
-      (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-p")
-                                    ?p 'outline-previous-visible-heading
-                                    '((?n . outline-next-visible-heading)))
-      (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-n")
-                                    ?n 'outline-next-visible-heading
-                                    '((?p . outline-previous-visible-heading)))
-      (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-f")
-                                    ?f 'outline-forward-same-level
-                                    '((?b . outline-backward-same-level)))
-      (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-b")
-                                    ?b 'outline-backward-same-level
-                                    '((?f . outline-forward-same-level)))))
+  :requires helm
+  :config
+  (progn
+    (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-p")
+                                  ?p 'outline-previous-visible-heading
+                                  '((?n . outline-next-visible-heading)))
+    (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-n")
+                                  ?n 'outline-next-visible-heading
+                                  '((?p . outline-previous-visible-heading)))
+    (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-f")
+                                  ?f 'outline-forward-same-level
+                                  '((?b . outline-backward-same-level)))
+    (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-b")
+                                  ?b 'outline-backward-same-level
+                                  '((?f . outline-forward-same-level)))))
 
 ;;; Flyspell
 ;;
 (use-package ispell
-    :init
+  :init
   (progn
     (setq-default ispell-program-name "aspell")
     (setq ispell-local-dictionary "francais"))
@@ -1705,28 +1705,28 @@ from IPython.core.completerlib import module_completion"
 	  (progn
 	    (flyspell-mode -1)
 	    (message "Flyspell Mode disabled"))
-          (flyspell-mode 1)
-          (unwind-protect
-               (progn
-                 (when (fboundp 'helm-autoresize-mode)
-                   (helm-autoresize-mode 1))
-                 (let ((dic (completing-read "Dictionary: " '("english" "francais"))))
-                   (ispell-change-dictionary dic)
-                   (flyspell-delete-all-overlays)
-                   (message "Starting new Ispell process aspell with %s dictionary..." dic)))
-            (when (fboundp 'helm-autoresize-mode)
-              (helm-autoresize-mode -1))))))
+        (flyspell-mode 1)
+        (unwind-protect
+            (progn
+              (when (fboundp 'helm-autoresize-mode)
+                (helm-autoresize-mode 1))
+              (let ((dic (completing-read "Dictionary: " '("english" "francais"))))
+                (ispell-change-dictionary dic)
+                (flyspell-delete-all-overlays)
+                (message "Starting new Ispell process aspell with %s dictionary..." dic)))
+          (when (fboundp 'helm-autoresize-mode)
+            (helm-autoresize-mode -1))))))
   :bind ("C-c @" . tv/toggle-flyspell))
 
 ;;; Webjump
 ;;
 (use-package webjump
-    :bind ("<f7> j" . webjump))
+  :bind ("<f7> j" . webjump))
 
 ;;; Semantic
 ;;
 (use-package semantic
-    :config
+  :config
   (progn
     (add-hook 'semantic-mode-hook
               ;; With my fixes in lisp/cedet/semantic/bovine/el.el.
@@ -1740,37 +1740,37 @@ from IPython.core.completerlib import module_completion"
 ;;; Which function
 ;;
 (use-package which-func
-    :commands 'which-function
-    :config
-    (progn
-      (defun tv/which-func ()
-        (interactive)
-        (message "[%s]" (which-function))))
-    :bind (:map emacs-lisp-mode-map
-                ("C-c ?" . tv/which-func)))
+  :commands 'which-function
+  :config
+  (progn
+    (defun tv/which-func ()
+      (interactive)
+      (message "[%s]" (which-function))))
+  :bind (:map emacs-lisp-mode-map
+              ("C-c ?" . tv/which-func)))
 
 ;;; Shell
 ;;
 (use-package shell
-    :requires helm
-    :config
-    (progn
-      (defun comint--advice-send-eof (&rest _args)
-        (kill-buffer))
-      (advice-add 'comint-send-eof :after 'comint--advice-send-eof))
-    :bind (("<f11> s h" . shell)
-           :map shell-mode-map
-           ("M-p" . helm-comint-input-ring)))
+  :requires helm
+  :config
+  (progn
+    (defun comint--advice-send-eof (&rest _args)
+      (kill-buffer))
+    (advice-add 'comint-send-eof :after 'comint--advice-send-eof))
+  :bind (("<f11> s h" . shell)
+         :map shell-mode-map
+         ("M-p" . helm-comint-input-ring)))
 
 ;;; Ielm
 ;;
 (use-package ielm
-    :bind ("<f11> i" . ielm))
+  :bind ("<f11> i" . ielm))
 
 ;;; Elisp/lisp
 ;;
 (use-package lisp-mode
-    :config
+  :config
   (progn
     ;; Try to have same indentation in both 24, 25 and 26.
     (defun tv/common-lisp-indent-function (indent-point state)
@@ -1793,18 +1793,18 @@ from IPython.core.completerlib import module_completion"
 
     ;; Fix indentation in cl-flet and cl-labels
     (use-package cl-indent
-        :config (let ((l '((flet ((&whole 4 &rest (&whole 1 &lambda &body)) &body))
-                           (cl-flet* . flet)
-                           (labels . flet)
-                           (cl-flet . flet)
-                           (cl-labels . flet)
-                           (cl-macrolet . flet)
-                           )))
-                  (dolist (el l)
-                    (put (car el) 'common-lisp-indent-function
-                         (if (symbolp (cdr el))
-                             (get (cdr el) 'common-lisp-indent-function)
-                             (car (cdr el)))))))
+      :config (let ((l '((flet ((&whole 4 &rest (&whole 1 &lambda &body)) &body))
+                         (cl-flet* . flet)
+                         (labels . flet)
+                         (cl-flet . flet)
+                         (cl-labels . flet)
+                         (cl-macrolet . flet)
+                         )))
+                (dolist (el l)
+                  (put (car el) 'common-lisp-indent-function
+                       (if (symbolp (cdr el))
+                           (get (cdr el) 'common-lisp-indent-function)
+                         (car (cdr el)))))))
     (defvar tv/autofill-modes '(emacs-lisp-mode
                                 lisp-interaction-mode
                                 sh-mode))
@@ -1862,19 +1862,19 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; face-remap - font size <C-fn-up/down>.
 ;;
 (use-package face-remap
-    :bind (("<C-prior>" . text-scale-decrease)
-           ("<C-next>" . text-scale-increase)))
+  :bind (("<C-prior>" . text-scale-decrease)
+         ("<C-next>" . text-scale-increase)))
 
 ;;; Elp instrument
 ;;
 (use-package elp
-    :config
+  :config
   (progn
     (defun tv/advice-elp-results (old--fn &rest args)
       (let ((inhibit-read-only t))
         (with-current-buffer (if elp-recycle-buffers-p
                                  (get-buffer-create elp-results-buffer)
-                                 (generate-new-buffer elp-results-buffer))
+                               (generate-new-buffer elp-results-buffer))
           (special-mode)
           (apply old--fn args)))))
   (advice-add 'elp-results :around 'tv/advice-elp-results))
@@ -1882,8 +1882,8 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Org toc for github
 ;;
 (use-package toc-org
-    :ensure t
-    :config (add-hook 'org-mode-hook 'toc-org-enable))
+  :ensure t
+  :config (add-hook 'org-mode-hook 'toc-org-enable))
 
 ;;; Windmove
 ;;
@@ -1892,103 +1892,103 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Powerline
 ;;
 (use-package powerline
-    :config
-    (progn
-      (use-package helm-ls-git)
-      ;; Will appear in mode-line once helm-ls-git is loaded
-      (defpowerline powerline-git
-        (when (and (buffer-file-name (current-buffer))
-                   (fboundp 'helm-ls-git--branch)
-                   (helm-ls-git-root-dir))
-          (if (and window-system (not powerline-gui-use-vcs-glyph))
-              (format " Git:%s" (format-mode-line '(:eval (helm-ls-git--branch))))
-            (format " %s%s"
-                    (char-to-string #x2221) ; MEASURED ANGLE
-                    (format-mode-line '(:eval (helm-ls-git--branch)))))))
+  :config
+  (progn
+    (use-package helm-ls-git)
+    ;; Will appear in mode-line once helm-ls-git is loaded
+    (defpowerline powerline-git
+      (when (and (buffer-file-name (current-buffer))
+                 (fboundp 'helm-ls-git--branch)
+                 (helm-ls-git-root-dir))
+        (if (and window-system (not powerline-gui-use-vcs-glyph))
+            (format " Git:%s" (format-mode-line '(:eval (helm-ls-git--branch))))
+          (format " %s%s"
+                  (char-to-string #x2221) ; MEASURED ANGLE
+                  (format-mode-line '(:eval (helm-ls-git--branch)))))))
 
-      (setq powerline-gui-use-vcs-glyph t)
+    (setq powerline-gui-use-vcs-glyph t)
     
-      (defun tv/powerline-default-theme ()
-        "Setup the default mode-line."
-        (interactive)
-        (setq-default mode-line-format
-                      '("%e"
-                        (:eval
-                         (let* ((active (powerline-selected-window-active))
-                                (mode-line-buffer-id (if active 'mode-line-buffer-id 'mode-line-buffer-id-inactive))
-                                (mode-line (if active 'mode-line 'mode-line-inactive))
-                                (face1 (if active 'powerline-active1 'powerline-inactive1))
-                                (face2 (if active 'powerline-active2 'powerline-inactive2))
-                                (separator-left (intern (format "powerline-%s-%s"
-                                                                (powerline-current-separator)
-                                                                (car powerline-default-separator-dir))))
-                                (separator-right (intern (format "powerline-%s-%s"
-                                                                 (powerline-current-separator)
-                                                                 (cdr powerline-default-separator-dir))))
-                                (lhs (list (powerline-raw mode-line-remote mode-line 'l)
-                                           (powerline-raw "%*" mode-line 'l)
-                                           (when powerline-display-buffer-size
-                                             (powerline-buffer-size mode-line 'l))
-                                           (when powerline-display-mule-info
-                                             (powerline-raw mode-line-mule-info mode-line 'l))
-                                           (powerline-buffer-id mode-line-buffer-id 'l)
-                                           (when (and (boundp 'which-func-mode) which-func-mode)
-                                             (powerline-raw which-func-format nil 'l))
-                                           (powerline-raw " ")
-                                           (funcall separator-left mode-line face1)
-                                           (powerline-raw "%4l" face1 'l)
-                                           (powerline-raw ":" face1 'l)
-                                           (powerline-raw "%3c" face1 'r)
-                                           (funcall separator-left face1 mode-line)
-                                           (powerline-raw " ")
-                                           (powerline-raw "%6p" mode-line 'r)
-                                           (funcall separator-left mode-line face1)
-                                           (when (and (boundp 'erc-track-minor-mode) erc-track-minor-mode)
-                                             (powerline-raw erc-modified-channels-object face1 'l))
-                                           (powerline-major-mode face1 'l)
-                                           (powerline-process face1)
-                                           (powerline-minor-modes face1 'l)
-                                           (powerline-narrow face1 'l)
-                                           (powerline-raw " " face1)
-                                           (funcall separator-left face1 face2)
-                                           (powerline-git face2 'r)
-                                           (when (bound-and-true-p nyan-mode)
-                                             (powerline-raw (list (nyan-create)) face2 'l))))
-                                (rhs (list (powerline-raw global-mode-string face2 'r)
-                                           (funcall separator-right face2 face1)
-                                           (unless window-system
-                                             (powerline-raw (char-to-string #xe0a1) face1 'l))
-                                           (when powerline-display-hud
-                                             (powerline-hud face2 face1)))))
-                           (concat (powerline-render lhs)
-                                   (powerline-fill face2 (powerline-width rhs))
-                                   (powerline-render rhs)))))))
-      (tv/powerline-default-theme)
-      (global-set-key [mode-line mouse-1] 'ignore)
-      (global-set-key [mode-line mouse-2] 'ignore)
-      (global-set-key [mode-line mouse-3] 'ignore)
-      (setq mode-line-default-help-echo nil)
-      (add-hook 'focus-in-hook 'force-mode-line-update))
+    (defun tv/powerline-default-theme ()
+      "Setup the default mode-line."
+      (interactive)
+      (setq-default mode-line-format
+                    '("%e"
+                      (:eval
+                       (let* ((active (powerline-selected-window-active))
+                              (mode-line-buffer-id (if active 'mode-line-buffer-id 'mode-line-buffer-id-inactive))
+                              (mode-line (if active 'mode-line 'mode-line-inactive))
+                              (face1 (if active 'powerline-active1 'powerline-inactive1))
+                              (face2 (if active 'powerline-active2 'powerline-inactive2))
+                              (separator-left (intern (format "powerline-%s-%s"
+                                                              (powerline-current-separator)
+                                                              (car powerline-default-separator-dir))))
+                              (separator-right (intern (format "powerline-%s-%s"
+                                                               (powerline-current-separator)
+                                                               (cdr powerline-default-separator-dir))))
+                              (lhs (list (powerline-raw mode-line-remote mode-line 'l)
+                                         (powerline-raw "%*" mode-line 'l)
+                                         (when powerline-display-buffer-size
+                                           (powerline-buffer-size mode-line 'l))
+                                         (when powerline-display-mule-info
+                                           (powerline-raw mode-line-mule-info mode-line 'l))
+                                         (powerline-buffer-id mode-line-buffer-id 'l)
+                                         (when (and (boundp 'which-func-mode) which-func-mode)
+                                           (powerline-raw which-func-format nil 'l))
+                                         (powerline-raw " ")
+                                         (funcall separator-left mode-line face1)
+                                         (powerline-raw "%4l" face1 'l)
+                                         (powerline-raw ":" face1 'l)
+                                         (powerline-raw "%3c" face1 'r)
+                                         (funcall separator-left face1 mode-line)
+                                         (powerline-raw " ")
+                                         (powerline-raw "%6p" mode-line 'r)
+                                         (funcall separator-left mode-line face1)
+                                         (when (and (boundp 'erc-track-minor-mode) erc-track-minor-mode)
+                                           (powerline-raw erc-modified-channels-object face1 'l))
+                                         (powerline-major-mode face1 'l)
+                                         (powerline-process face1)
+                                         (powerline-minor-modes face1 'l)
+                                         (powerline-narrow face1 'l)
+                                         (powerline-raw " " face1)
+                                         (funcall separator-left face1 face2)
+                                         (powerline-git face2 'r)
+                                         (when (bound-and-true-p nyan-mode)
+                                           (powerline-raw (list (nyan-create)) face2 'l))))
+                              (rhs (list (powerline-raw global-mode-string face2 'r)
+                                         (funcall separator-right face2 face1)
+                                         (unless window-system
+                                           (powerline-raw (char-to-string #xe0a1) face1 'l))
+                                         (when powerline-display-hud
+                                           (powerline-hud face2 face1)))))
+                         (concat (powerline-render lhs)
+                                 (powerline-fill face2 (powerline-width rhs))
+                                 (powerline-render rhs)))))))
+    (tv/powerline-default-theme)
+    (global-set-key [mode-line mouse-1] 'ignore)
+    (global-set-key [mode-line mouse-2] 'ignore)
+    (global-set-key [mode-line mouse-3] 'ignore)
+    (setq mode-line-default-help-echo nil)
+    (add-hook 'focus-in-hook 'force-mode-line-update))
   :ensure t)
 
 ;;; Disable-mouse
 ;;
 (use-package disable-mouse
-    :ensure t
-    :diminish (global-disable-mouse-mode . "NM")
-    :config
-    (add-hook 'global-disable-mouse-mode-hook
-              (lambda ()
-                (if global-disable-mouse-mode
-                    (setq helm-allow-mouse nil)
-                    (setq helm-allow-mouse t))))
-    ;; (global-disable-mouse-mode 1)
-    )
+  :ensure t
+  :diminish (global-disable-mouse-mode . "NM")
+  :config
+  (add-hook 'global-disable-mouse-mode-hook
+            (lambda ()
+              (if global-disable-mouse-mode
+                  (setq helm-allow-mouse nil)
+                (setq helm-allow-mouse t))))
+  ;; (global-disable-mouse-mode 1)
+  )
 
 ;;; Gnus
 ;;
 (use-package gnus
-    :init
+  :init
   (progn
     (setq gnus-asynchronous t)
     (setq gnus-init-file "~/.emacs.d/.gnus.el"))
@@ -2006,7 +2006,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; NetworkManager
 ;;  https://github.com/tromey/emacs-network-manager
 (use-package NetworkManager
-    :config
+  :config
   ;; FIXME this listener will kick in when state change, however when
   ;; connectivity change nothing will happen, perhaps provide a
   ;; function in NetworkManager to add listener on connectivity only. 
@@ -2034,10 +2034,10 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Bash-completion
 ;;
 (use-package bash-completion
-    :commands 'bash-completion-dynamic-complete
-    :init
-    (add-hook 'shell-dynamic-complete-functions 'bash-completion-dynamic-complete)
-    :ensure t)
+  :commands 'bash-completion-dynamic-complete
+  :init
+  (add-hook 'shell-dynamic-complete-functions 'bash-completion-dynamic-complete)
+  :ensure t)
 
 ;;; Pcmpl-git (For Eshell)
 ;;
@@ -2048,8 +2048,8 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Flycheck
 ;;
 (use-package flycheck
-    :ensure t
-    :config
+  :ensure t
+  :config
   ;; Need shellcheck as dependency.
   (add-hook 'sh-mode-hook 'flycheck-mode))
 
@@ -2060,7 +2060,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Log-view
 ;;
 (use-package log-view
-    :config
+  :config
   (defun tv/log-view-fontify ()
     (font-lock-add-keywords nil '(("^revision [0-9.]*" . font-lock-comment-face)
                                   ("[a-zA-Z ]*:" . font-lock-type-face))))
@@ -2093,7 +2093,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
           (setenv "DTK_PROGRAM" espeak-server)
           (setq dtk-program espeak-server)
           (load-file (expand-file-name "emacspeak-setup.el" espeak-lisp-src-dir)))
-        (error "No directory named `%s'" espeak-src-dir))))
+      (error "No directory named `%s'" espeak-src-dir))))
 
 ;;; Auctex/Latex config
 ;;
