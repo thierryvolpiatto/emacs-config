@@ -2001,7 +2001,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 
 ;;; Gh (needed for helm-open-github)
 ;;
-(use-package gh :ensure t)
+(use-package gh :ensure t :defer t)
 
 ;;; NetworkManager
 ;;  https://github.com/tromey/emacs-network-manager
