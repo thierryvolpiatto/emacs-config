@@ -974,41 +974,42 @@ If your system's ping continues until interrupted, you can try setting
             (executable-find "remacsclient"))))
 
 (use-package magit
-    :init
-    (setq magit-restore-window-configuration t
-          git-commit-fill-column             70
-          git-commit-summary-max-length      56
-          auto-revert-verbose                nil
-          magit-auto-revert-immediately
-          (null (and (boundp 'auto-revert-use-notify)
-                     auto-revert-use-notify))
-          magit-revision-show-gravatars nil
-          magit-uniquify-buffer-names   nil)
-    (add-hook 'git-commit-setup-hook (lambda () (setq-local adaptive-fill-mode nil)))
-    :config
-    (bind-key "C"    'magit-commit-add-log magit-diff-mode-map)
-    (bind-key "C-]"  'magit-toggle-margin magit-log-mode-map)
-    (bind-key "<f2>" 'magit-status)
-    ;; Press RET while in branch manager to checkout branches as
-    ;; before.
-    (setq magit-visit-ref-behavior '(checkout-any focus-on-ref))
-    (add-to-list 'magit-visit-ref-behavior 'create-branch)
-    ;; Recognize sudo french/english password prompt in shell
-    ;; commands.
-    ;; Use the nth99 submatch to pass the match to auth-source.
-    (add-to-list 'magit-process-password-prompt-regexps
-                 "^\\[sudo\\] [Mm]ot de passe de \\(?99:.*[^ ]\\).?: ?$")
-    (add-to-list 'magit-process-password-prompt-regexps
-                 "^\\[sudo\\] [Pp]assword for \\(?99:.*\\): ?$")
-    (add-to-list 'magit-process-find-password-functions
-                 (lambda (key)
-                   (tv/get-passwd-from-auth-sources key :port "sudo")))
+  :commands (magit-status magit-status-internal magit-blame)
+  :init
+  (bind-key "<f2>" 'magit-status)
+  (setq magit-restore-window-configuration t
+        git-commit-fill-column             70
+        git-commit-summary-max-length      56
+        auto-revert-verbose                nil
+        magit-auto-revert-immediately
+        (null (and (boundp 'auto-revert-use-notify)
+                   auto-revert-use-notify))
+        magit-revision-show-gravatars nil
+        magit-uniquify-buffer-names   nil)
+  (add-hook 'git-commit-setup-hook (lambda () (setq-local adaptive-fill-mode nil)))
+  :config
+  (bind-key "C"    'magit-commit-add-log magit-diff-mode-map)
+  (bind-key "C-]"  'magit-toggle-margin magit-log-mode-map)
+  ;; Press RET while in branch manager to checkout branches as
+  ;; before.
+  (setq magit-visit-ref-behavior '(checkout-any focus-on-ref))
+  (add-to-list 'magit-visit-ref-behavior 'create-branch)
+  ;; Recognize sudo french/english password prompt in shell
+  ;; commands.
+  ;; Use the nth99 submatch to pass the match to auth-source.
+  (add-to-list 'magit-process-password-prompt-regexps
+               "^\\[sudo\\] [Mm]ot de passe de \\(?99:.*[^ ]\\).?: ?$")
+  (add-to-list 'magit-process-password-prompt-regexps
+               "^\\[sudo\\] [Pp]assword for \\(?99:.*\\): ?$")
+  (add-to-list 'magit-process-find-password-functions
+               (lambda (key)
+                 (tv/get-passwd-from-auth-sources key :port "sudo")))
 
-    (add-hook 'magit-pre-start-git-hook
-              (lambda ()
-                (cl-assert (NetworkManager-connected-p)
-                           nil "Network disconnected, unable to reach repository")))
-    :no-require t)
+  (add-hook 'magit-pre-start-git-hook
+            (lambda ()
+              (cl-assert (NetworkManager-connected-p)
+                         nil "Network disconnected, unable to reach repository")))
+  :no-require t)
 
 ;;; Emamux
 ;;
@@ -1528,11 +1529,9 @@ from IPython.core.completerlib import module_completion"
 ;;
 (use-package markdown-mode
     :ensure t
-    :init
-    (progn
-      (add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
-      (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
-      (add-to-list 'auto-mode-alist '("\\.mdpp$" . markdown-mode))))
+    :mode (("\\.markdown$" . markdown-mode)
+           ("\\.md$" . markdown-mode)
+           ("\\.mdpp$" . markdown-mode)))
 
 (use-package ffap
     :config
@@ -2056,7 +2055,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 
 ;;; Real-gud
 ;;
-(use-package realgud :ensure t)
+(use-package realgud :ensure t :defer t)
 
 ;;; Log-view
 ;;
