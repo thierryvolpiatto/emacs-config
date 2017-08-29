@@ -1805,6 +1805,13 @@ from IPython.core.completerlib import module_completion"
                        (if (symbolp (cdr el))
                            (get (cdr el) 'common-lisp-indent-function)
                          (car (cdr el)))))))
+
+    ;; Add fontification to some functions
+    (cl-dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
+      (font-lock-add-keywords
+       mode
+       '(("(\\<\\(cl-dolist\\)\\>" 1 font-lock-keyword-face))))
+
     (defvar tv/autofill-modes '(emacs-lisp-mode
                                 lisp-interaction-mode
                                 sh-mode))
