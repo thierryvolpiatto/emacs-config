@@ -1729,7 +1729,7 @@ from IPython.core.completerlib import module_completion"
   :config
   (progn
     (add-hook 'semantic-mode-hook
-              ;; With my fixes in lisp/cedet/semantic/bovine/el.el.
+              ;; My patched lisp/cedet/semantic/bovine/el.el.
               (lambda ()
                 (load-file "~/elisp/el.el")
                 (when (fboundp 'semantic-default-elisp-setup)
