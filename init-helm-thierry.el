@@ -377,6 +377,8 @@ First call indent, second complete symbol, third complete fname."
                              ".git"))
    1))
 
+(defmethod helm-setup-user-source ((source helm-source-multi-occur))
+  (setf (slot-value source 'requires-pattern) 1))
 
 ;;; helm dictionary
 ;;
