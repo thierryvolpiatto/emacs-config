@@ -220,7 +220,6 @@ First call indent, second complete symbol, third complete fname."
       helm-buffers-fuzzy-matching                     t
       helm-locate-fuzzy-match                         t
       helm-move-to-line-cycle-in-source               t
-      ido-use-virtual-buffers                         t             ; Needed in helm-buffers-list
       helm-tramp-verbose                              6
       helm-org-headings-fontify                       t
       helm-autoresize-max-height                      80 ; it is %.
@@ -234,7 +233,6 @@ First call indent, second complete symbol, third complete fname."
       "https://fr.wikipedia.org/w/api.php?action=opensearch&search="
       helm-wikipedia-summary-url
       "https://fr.wikipedia.org/w/api.php?action=parse&format=json&prop=text&section=0&page="
-      helm-firefox-show-structure nil
       helm-turn-on-recentf nil
       helm-mini-default-sources '(helm-source-buffers-list helm-source-buffer-not-found)
       helm-debug-root-directory "/home/thierry/tmp/helm-debug"
