@@ -1257,6 +1257,7 @@ from IPython.core.completerlib import module_completion"
 ;;; Tramp-config
 ;;
 (use-package tramp
+  :defer t
   :no-require t
   :config
   (progn
