@@ -965,14 +965,6 @@ If your system's ping continues until interrupted, you can try setting
 ;; Magit when installed from git contains also git-commit and
 ;; git-rebase so no need to install them as dependency.
 
-(use-package with-editor
-  :init
-  (setq with-editor-emacsclient-executable
-        ;; eselect-emacs.sh should ensure to have always only one
-        ;; emacs/emacsclient in PATH.
-        (or (executable-find "emacsclient")
-            (executable-find "remacsclient"))))
-
 (use-package magit
   :commands (magit-status magit-status-internal magit-blame)
   :init
@@ -988,6 +980,13 @@ If your system's ping continues until interrupted, you can try setting
         magit-uniquify-buffer-names   nil)
   (add-hook 'git-commit-setup-hook (lambda () (setq-local adaptive-fill-mode nil)))
   :config
+  (use-package with-editor
+  :init
+  (setq with-editor-emacsclient-executable
+        ;; eselect-emacs.sh should ensure to have always only one
+        ;; emacs/emacsclient in PATH.
+        (or (executable-find "emacsclient")
+            (executable-find "remacsclient"))))
   (bind-key "C"    'magit-commit-add-log magit-diff-mode-map)
   (bind-key "C-]"  'magit-toggle-margin magit-log-mode-map)
   ;; Press RET while in branch manager to checkout branches as
