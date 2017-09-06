@@ -10,20 +10,18 @@
 ;;; Enable Modes (helm-mode is loading nearly everything).
 ;;
 (use-package helm-mode
-    :config (helm-mode 1))
+  :config (helm-mode 1))
 
 (use-package helm-adaptive
-    :config (helm-adaptive-mode 1))
-
-(use-package helm-ring
-    :config (helm-push-mark-mode 1))
+  :config (helm-adaptive-mode 1))
 
 (use-package helm-utils
-    ;; Popup buffer-name or filename in grep/moccur/imenu-all etc...
-    :config (helm-popup-tip-mode 1))
+  ;; Popup buffer-name or filename in grep/moccur/imenu-all etc...
+  :config (helm-popup-tip-mode 1))
 
 (use-package helm-sys
-    :config (helm-top-poll-mode 1))
+  :commands (helm-top)
+  :config (helm-top-poll-mode 1))
 
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
