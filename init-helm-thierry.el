@@ -285,10 +285,12 @@ First call indent, second complete symbol, third complete fname."
 ;; Add actions to `helm-source-find-files' IF:
 (defmethod helm-setup-user-source ((source helm-source-ffiles))
   "Adds additional actions to `helm-find-files'.
-- Byte compile file(s) async.
-- Byte recompile directory.
-- Magit status.
-- Github issues."
+    - Byte compile file(s) async
+    - Byte recompile directory
+    - Magit status
+    - Github issues
+    - Patch region on directory
+    - Open in emms"
   (helm-source-add-action-to-source-if
    "Byte compile file(s) async"
    'tv/async-byte-compile-file
