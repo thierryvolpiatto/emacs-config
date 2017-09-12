@@ -224,6 +224,7 @@ AND NOT /Yahoo/Bulk Mail Mail" "Unread messages"                                
 
 (defun tv/mu4e-browse-url ()
   (interactive)
+  (require 'helm-net)
   (let ((url (w3m-active-region-or-url-at-point)))
     (browse-url url)))
 (define-key mu4e-view-mode-map (kbd "C-c C-c") 'tv/mu4e-browse-url)
