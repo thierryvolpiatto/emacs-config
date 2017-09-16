@@ -2022,16 +2022,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   ;; (global-disable-mouse-mode 1)
   )
 
-;;; Gnus
-;;
-(use-package gnus
-  :init
-  (progn
-    (setq gnus-asynchronous t)
-    (setq gnus-init-file "~/.emacs.d/.gnus.el"))
-  :bind ("<f7> m" . gnus)
-  :disabled t)
-
 ;;; Rectangle edit
 ;;
 (use-package rectangle-edit :commands 'rectangle-edit)
