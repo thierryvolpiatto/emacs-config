@@ -2080,6 +2080,11 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   ;; Need shellcheck as dependency.
   (add-hook 'sh-mode-hook 'flycheck-mode))
 
+(use-package flycheck-checkbashisms
+  :ensure t
+  :config
+  (flycheck-checkbashisms-setup))
+
 ;;; Real-gud
 ;;
 (use-package realgud :ensure t :defer t)
