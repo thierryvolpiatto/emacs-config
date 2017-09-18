@@ -110,6 +110,7 @@
 (global-set-key (kbd "<f1>")                         'helm-resume)
 (global-set-key (kbd "C-h C-f")                      'helm-apropos)
 (global-set-key (kbd "C-h a")                        'helm-apropos)
+(global-set-key (kbd "C-h C-d")                      'helm-debug-open-last-log)
 (global-set-key (kbd "<f5> s")                       'helm-find)
 (global-set-key (kbd "S-<f2>")                       'helm-execute-kmacro)
 (global-set-key (kbd "C-c i")                        'helm-imenu-in-all-buffers)

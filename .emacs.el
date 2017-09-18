@@ -944,7 +944,11 @@ If your system's ping continues until interrupted, you can try setting
 ;;; psession
 ;;
 (use-package psession
-  :config (psession-mode 1))
+  :config
+  (psession-mode 1)
+  (bind-key "C-x p s" 'psession-save-winconf)
+  (bind-key "C-x p d" 'psession-delete-winconf)
+  (bind-key "C-x p j" 'psession-restore-winconf))
 
 ;;; Golden-ratio
 ;;
