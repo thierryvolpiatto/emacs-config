@@ -1,10 +1,9 @@
 ;;; .emacs-config-w3m.el -- config w3m for thievol
 
 ;; Code:
-;; (load "w3m-autoloads.el")
+
 (setq w3m-bookmark-file "~/.w3m/bookmark.html")
-;; Icons are not provided with MELPA
-;; (setq w3m-icon-directory "~/share/w3m-icons")
+
 ;; Get icons from melpa directory
 (setq w3m-icon-directory (expand-file-name
                           "icons"
@@ -18,6 +17,24 @@
       w3m-input-coding-system 'utf-8
       w3m-terminal-coding-system 'utf-8
       w3m-default-display-inline-images t)
+
+;; `w3m-bookmark-save-buffer' is backing up bookmark file by renaming,
+;; so that when `w3m-bookmark-file' is a symlink the symlink is
+;; replaced by the file, fix this. 
+(defun tv/advice--w3m-bookmark-save-buffer ()
+  (cond
+   ((buffer-file-name)
+    (basic-save-buffer))
+   ((buffer-modified-p)
+    (when (and (file-exists-p w3m-bookmark-file)
+               make-backup-files
+               (funcall backup-enable-predicate w3m-bookmark-file))
+      (with-current-buffer (find-file-noselect w3m-bookmark-file)
+        (backup-buffer)
+        (kill-buffer)))
+    (write-region (point-min) (point-max) w3m-bookmark-file nil t)
+    (kill-buffer))))
+(advice-add 'w3m-bookmark-save-buffer :override #'tv/advice--w3m-bookmark-save-buffer)
 
 (when (require 'w3m-search)
   (add-to-list 'w3m-search-engine-alist '("DuckDuckGo" "https://duckduckgo.com/lite/?q=%s&kp=1"))
