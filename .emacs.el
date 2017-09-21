@@ -724,12 +724,18 @@ With a prefix arg decrease transparency."
   :init (setq split-width-threshold nil)
   (use-package helm
     :config
-    (helm-define-key-with-subkeys global-map (kbd "C-x ^") ?^ 'enlarge-window)
-    (helm-define-key-with-subkeys global-map (kbd "C-x }") ?} 'enlarge-window-horizontally))
-  :bind (("C-x C-²" . delete-other-windows)
-         ("C-x C-&" . delete-window)
-         ("C-x C-é" . split-window-vertically)
-         ("C-x C-\"" . split-window-horizontally)))
+    (helm-define-key-with-subkeys global-map (kbd "C-x ^") ?^ 'enlarge-window
+                                  '((?ç . shrink-window)
+                                    (?} . enlarge-window-horizontally)
+                                    (?{ . shrink-window-horizontally)))
+    (helm-define-key-with-subkeys global-map (kbd "C-x }") ?} 'enlarge-window-horizontally
+                                  '((?^ . enlarge-window)
+                                    (?ç . shrink-window)
+                                    (?{ . shrink-window-horizontally))))
+    :bind (("C-x C-²" . delete-other-windows)
+           ("C-x C-&" . delete-window)
+           ("C-x C-é" . split-window-vertically)
+           ("C-x C-\"" . split-window-horizontally)))
 
 ;;; Use `net-utils-run-simple' in net-utils fns.
 ;;
@@ -1042,11 +1048,6 @@ If your system's ping continues until interrupted, you can try setting
   (add-to-list 'magit-process-find-password-functions
                (lambda (key)
                  (tv/get-passwd-from-auth-sources key :port "sudo")))
-
-  (add-hook 'magit-pre-start-git-hook
-            (lambda ()
-              (cl-assert (NetworkManager-connected-p)
-                         nil "Network disconnected, unable to reach repository")))
   :no-require t)
 
 ;;; Emamux
