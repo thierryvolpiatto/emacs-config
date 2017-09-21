@@ -720,7 +720,12 @@ With a prefix arg decrease transparency."
 
 (use-package window
   :no-require t
-  :init (setq split-width-threshold nil)  ;; Don't split windows horizontally.
+  ;; Don't split windows horizontally.
+  :init (setq split-width-threshold nil)
+  (use-package helm
+    :config
+    (helm-define-key-with-subkeys global-map (kbd "C-x ^") ?^ 'enlarge-window)
+    (helm-define-key-with-subkeys global-map (kbd "C-x }") ?} 'enlarge-window-horizontally))
   :bind (("C-x C-²" . delete-other-windows)
          ("C-x C-&" . delete-window)
          ("C-x C-é" . split-window-vertically)
