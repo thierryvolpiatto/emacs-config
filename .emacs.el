@@ -727,11 +727,13 @@ With a prefix arg decrease transparency."
     (helm-define-key-with-subkeys global-map (kbd "C-x ^") ?^ 'enlarge-window
                                   '((?ç . shrink-window)
                                     (?} . enlarge-window-horizontally)
-                                    (?{ . shrink-window-horizontally)))
+                                    (?{ . shrink-window-horizontally))
+                                  (propertize "^:Enl.ver }:Enl.hor, ç:Shr.ver, {:Shr.hor" 'face 'minibuffer-prompt))
     (helm-define-key-with-subkeys global-map (kbd "C-x }") ?} 'enlarge-window-horizontally
                                   '((?^ . enlarge-window)
                                     (?ç . shrink-window)
-                                    (?{ . shrink-window-horizontally))))
+                                    (?{ . shrink-window-horizontally))
+                                  (propertize "^:Enl.ver }:Enl.hor, ç:Shr.ver, {:Shr.hor" 'face 'minibuffer-prompt)))
     :bind (("C-x C-²" . delete-other-windows)
            ("C-x C-&" . delete-window)
            ("C-x C-é" . split-window-vertically)
