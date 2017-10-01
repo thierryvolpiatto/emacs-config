@@ -1095,6 +1095,7 @@ See <https://github.com/chubin/wttr.in>."
          (with-temp-buffer
            (call-process
             "curl" nil t nil
+            "-H" "Accept-Language: fr"
             "-s" (format "wttr.in/~%s" (shell-quote-argument place)))
            (goto-char (point-min))
            (while (re-search-forward "38;5;\\([0-9]+\\)m" nil t)
