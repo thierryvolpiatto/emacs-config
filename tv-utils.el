@@ -1095,8 +1095,7 @@ See <https://github.com/chubin/wttr.in>."
          (with-temp-buffer
            (call-process
             "curl" nil t nil
-            "-H" "Accept-Language: fr"
-            "-s" (format "wttr.in/~%s" (shell-quote-argument place)))
+            "-s" (format "wttr.in/~%s?lang=fr" (shell-quote-argument place)))
            (goto-char (point-min))
            (while (re-search-forward "38;5;\\([0-9]+\\)m" nil t)
              ;; Need a 256 color ansi library, emacs supports only basic
@@ -1116,10 +1115,12 @@ See <https://github.com/chubin/wttr.in>."
            (helm--ansi-color-apply (buffer-string)))))
     (erase-buffer)
     (save-excursion
-      (insert data))
-    (when (re-search-forward "^Weather report:" nil t)
-      (goto-char (point-at-eol))
-      (insert (format-time-string " - done at %d/%m/%Y %H:%M:%S")))))
+      (insert data)
+      (forward-line -1)
+      (when (re-search-backward "^$" nil t) (delete-region (point) (point-max))))
+    (while (re-search-forward "\\s\\" (point-at-eol) t) (replace-match ""))
+    (goto-char (point-at-eol))
+    (insert (format-time-string " à %d/%m/%Y %H:%M:%S"))))
 
 (defun wttr-weather-revert-fn (_ignore-auto _no_confirm)
   (wttr-weather-update wttr-weather-last-location))
