@@ -1120,7 +1120,7 @@ See <https://github.com/chubin/wttr.in>."
       (when (re-search-backward "^$" nil t) (delete-region (point) (point-max))))
     (while (re-search-forward "\\s\\" (point-at-eol) t) (replace-match ""))
     (goto-char (point-at-eol))
-    (insert (format-time-string " à %d/%m/%Y %H:%M:%S"))))
+    (insert (format-time-string " le %d/%m/%Y à %H:%M:%S"))))
 
 (defun wttr-weather-revert-fn (_ignore-auto _no_confirm)
   (wttr-weather-update wttr-weather-last-location))
