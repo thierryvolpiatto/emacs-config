@@ -343,6 +343,7 @@ So far, F can only be a symbol, not a lambda expression."))
 (use-package browse-url
   :config
   (progn
+    (setq browse-url-firefox-program "firefox-nightly")
     (setq browse-url-browser-function 'helm-browse-url-firefox)))
 
 ;;; Ediff
