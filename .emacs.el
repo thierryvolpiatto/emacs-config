@@ -1015,8 +1015,7 @@ If your system's ping continues until interrupted, you can try setting
   :commands (magit-status magit-status-internal magit-blame)
   :init
   (bind-key "<f2>" 'magit-status)
-  (setq magit-restore-window-configuration t
-        git-commit-fill-column             70
+  (setq git-commit-fill-column             70
         git-commit-summary-max-length      56
         auto-revert-verbose                nil
         magit-auto-revert-immediately
