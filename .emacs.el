@@ -861,7 +861,17 @@ If your system's ping continues until interrupted, you can try setting
 (use-package google-maps
   :ensure t
   :init (setq google-maps-static-default-zoom 10)
-  :bind ("<f5> g m" . google-maps))
+  :bind ("<f5> g m" . google-maps)
+  :config
+  (defun tv/google-map-special-mode-hook ()
+    (special-mode)
+    (set (make-local-variable 'revert-buffer-function)
+         (lambda (ignore-auto noconfirm)
+           (message "Refreshing google map buffer...")
+           (google-maps-static-refresh)
+           (message "Refreshing google map buffer done"))))
+  (add-hook 'google-maps-static-mode-hook #'tv/google-map-special-mode-hook)
+  (bind-key (kbd "q") 'ignore google-maps-static-mode))
 
 ;;; tv-utils fns
 ;;
