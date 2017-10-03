@@ -816,7 +816,7 @@ the password will be of length (floor LIMIT)."
 ;;
 ;;
 ;;;###autoload
-(defun rotate-windows ()
+(defun tv/rotate-windows ()
   (interactive)
   (require 'iterator)
   (cl-assert (> (length (window-list)) 1)
@@ -837,7 +837,7 @@ the password will be of length (floor LIMIT)."
                        (set-window-start w1 s2)
                        (set-window-buffer w2 b1)
                        (set-window-start w2 s1)))))
-(global-set-key (kbd "C-c -") 'rotate-windows)
+(global-set-key (kbd "C-c -") 'tv/rotate-windows)
 
 ;;;###autoload
 (defun tv-delete-duplicate-lines (beg end &optional arg)
