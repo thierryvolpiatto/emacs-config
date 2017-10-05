@@ -22,6 +22,9 @@
 (use-package helm-sys
   :commands (helm-top)
   :config (helm-top-poll-mode 1))
+
+(use-package helm-info
+  :bind ("C-h r" . helm-info-emacs))
 
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
@@ -101,7 +104,6 @@
 (global-set-key (kbd "C-x C-f")                      'helm-find-files)
 (global-set-key (kbd "C-c <SPC>")                    'helm-all-mark-rings)
 (global-set-key (kbd "C-x r b")                      'helm-filtered-bookmarks)
-(global-set-key (kbd "C-h r")                        'helm-info-emacs)
 (global-set-key (kbd "C-:")                          'helm-eval-expression-with-eldoc)
 (global-set-key (kbd "C-,")                          'helm-calcul-expression)
 (global-set-key (kbd "C-h d")                        'helm-info-at-point)
