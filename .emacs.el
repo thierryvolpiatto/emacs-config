@@ -811,7 +811,6 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Org
 ;;
 (use-package org
-  :ensure t
   :defer t
   :config (use-package org-config-thierry))
 
