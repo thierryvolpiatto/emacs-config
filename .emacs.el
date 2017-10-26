@@ -225,7 +225,6 @@ This allow installation of org from melpa when :ensure is specified."
 ;;; DTRT for global-mark, avoid duplicates and update the last
 ;;  position.
 (defun tv/advice-push-mark (&optional location nomsg activate)
-  "[Internal] Don't use directly, use instead `helm-push-mark-mode'."
   (unless (null (mark t))
     (setq mark-ring (cons (copy-marker (mark-marker)) mark-ring))
     (when (> (length mark-ring) mark-ring-max)
