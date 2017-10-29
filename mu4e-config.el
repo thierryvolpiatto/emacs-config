@@ -221,6 +221,43 @@ AND NOT /Yahoo/Bulk Mail Mail" "Unread messages"                                
 
 ;;; Handle quoted text added with `message-mark-inserted-region' (`C-c M-m')
 (add-hook 'mu4e-view-mode-hook 'mu4e-mark-region-code)
+;;; Show Smileys
+(add-hook 'mu4e-view-mode-hook 'smiley-buffer)
+
+(defun tv/advice--mu4e-view (msg)
+  "Display the message MSG in a new buffer, and keep in sync with HDRSBUF.
+'In sync' here means that moving to the next/previous message in
+the the message view affects HDRSBUF, as does marking etc.
+
+As a side-effect, a message that is being viewed loses its 'unread'
+marking if it still had that."
+  (let* ((embedded ;; is it as an embedded msg (ie. message/rfc822 att)?
+	   (when (gethash (mu4e-message-field msg :path)
+		   mu4e~path-parent-docid-map) t))
+	  (buf
+	    (if embedded
+	      (mu4e~view-embedded-winbuf)
+	      (get-buffer-create mu4e~view-buffer-name))))
+    (with-current-buffer buf
+      (switch-to-buffer buf)
+      ;; When MSG is unread, mu4e~view-mark-as-read-maybe will trigger
+      ;; another call to mu4e-view (via mu4e~headers-update-handler as
+      ;; the reply handler to mu4e~proc-move)
+      (let ((inhibit-read-only t))
+        (when (or embedded (not (mu4e~view-mark-as-read-maybe msg)))
+	  (erase-buffer)
+	  (mu4e~delete-all-overlays)
+	  (insert (mu4e-view-message-text msg))
+	  (goto-char (point-min))
+	  (mu4e~fontify-cited)
+	  (mu4e~fontify-signature)
+	  (mu4e~view-make-urls-clickable)
+	  (mu4e~view-show-images-maybe msg)
+	  (when embedded (local-set-key "q" 'kill-buffer-and-window)))
+        (unless (eq major-mode 'mu4e-view-mode)
+          (mu4e-view-mode))
+        (setq mu4e~view-msg msg)))))
+(advice-add 'mu4e-view :override 'tv/advice--mu4e-view)
 
 (defun tv/mu4e-browse-url ()
   (interactive)
@@ -320,10 +357,6 @@ try this wash."
         (if (eolp)
             (replace-match "" t t)
             (replace-match "\n" t t))))))
-
-;;; Show Smileys
-;;
-(add-hook 'mu4e-view-mode-hook 'smiley-buffer)
 
 (provide 'mu4e-config)
 
