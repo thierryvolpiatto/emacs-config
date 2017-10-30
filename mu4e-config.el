@@ -149,28 +149,25 @@
 ;; the 'All Mail' folder by pressing ``ma''.
 
 (setq mu4e-maildir-shortcuts
-      '(("/drafts"                    . ?d)
-        ("/Gmail/INBOX"               . ?i)
-        ("/Gmail/github-emacs-helm"   . ?h)
-        ("/Gmail/emacs-helm"          . ?e)
-        ("/Gmail/Emacs development"   . ?E)
-        ("/Gmail/Friends"             . ?f)
-        ("/Gmail/[Gmail].Sent Mail"   . ?s)
-        ("/Gmail/[Gmail].Trash"       . ?t)
-        ("/Gmail/[Gmail].Spam"        . ?!)
-        ("/Gmail/[Gmail].All Mail"    . ?a)
-        ("/Yahoo/Trash"               . ?p)
-        ("/Yahoo/Inbox"               . ?y)))
+      '(("/drafts"                         . ?d)
+        ("/Gmail/INBOX"                    . ?i)
+        ("/Zoho/INBOX.Github.Emacs-helm"   . ?h)
+        ("/Zoho/INBOX.Github.Emacs-mu4e"   . ?m)
+        ("/Gmail/emacs-helm"               . ?e)
+        ("/Gmail/Friends"                  . ?f)
+        ("/Gmail/[Gmail].Sent Mail"        . ?s)
+        ("/Gmail/[Gmail].Trash"            . ?t)
+        ("/Gmail/[Gmail].Spam"             . ?!)
+        ("/Yahoo/Inbox"                    . ?y)))
 
 (setq mu4e-bookmarks
-      '(("date:1w..now helm AND NOT flag:trashed" "Last 7 days helm messages"                                                                           ?h)
-        ("date:1d..now helm AND NOT flag:trashed" "Yesterday and today helm messages"                                                                   ?b)
-        ("flag:unread AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam AND NOT maildir:/Gmail/[Gmail].All \
-AND NOT /Yahoo/Bulk Mail Mail" "Unread messages"                                                                                                        ?u)
-        ("date:today..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam AND NOT maildir:/Gmail/[Gmail].All Mail" "Today's messages"          ?t)
-        ("date:1d..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam AND NOT maildir:/Gmail/[Gmail].All Mail" "Yesterday and today messages" ?y)
-        ("date:7d..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam AND NOT maildir:/Gmail/[Gmail].All Mail" "Last 7 days"                  ?w)
-        ("mime:image/* AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam AND NOT maildir:/Gmail/[Gmail].All Mail" "Messages with images"         ?p)))
+      '(("date:1w..now helm AND NOT flag:trashed" "Last 7 days helm messages"                                                              ?h)
+        ("date:1d..now helm AND NOT flag:trashed" "Yesterday and today helm messages"                                                      ?b)
+        ("flag:unread AND NOT maildir:/Gmail/[Gmail].Spam AND NOT maildir:Zoho/Spam AND NOT maildir:/Yahoo/Bulk.Mail" "Unread messages"    ?u)
+        ("date:today..now AND NOT maildir:/Gmail/[Gmail].Spam AND NOT maildir:Zoho/Spam" "Today's messages"                                ?t)
+        ("date:1d..now AND NOT maildir:/Gmail/[Gmail].Spam AND NOT maildir:Zoho/Spam" "Yesterday and today messages"                       ?y)
+        ("date:7d..now AND NOT maildir:/Gmail/[Gmail].Spam AND NOT maildir:Zoho/Spam" "Last 7 days"                                        ?w)
+        ("mime:image/* AND NOT maildir:/Gmail/[Gmail].Spam AND NOT maildir:Zoho/Spam" "Messages with images"                               ?p)))
 
 (add-hook 'mu4e-compose-mode-hook 'tv/message-mode-setup)
 
