@@ -351,7 +351,9 @@ So far, F can only be a symbol, not a lambda expression."))
                                (terpri)))
                          (print-circle t)
                          prefix suffix map-fn looping)
-                     (cond ((consp object)
+                     (cond ((ring-p object)
+                            (setq looping nil))
+                           ((consp object)
                             (setq prefix "\n("
                                   suffix ")"
                                   map-fn 'mapc
