@@ -161,8 +161,8 @@
         ("/Yahoo/Inbox"                    . ?y)))
 
 (setq mu4e-bookmarks
-      '(("date:1w..now helm AND NOT flag:trashed" "Last 7 days helm messages"                                                                                   ?h)
-        ("date:1d..now helm AND NOT flag:trashed" "Yesterday and today helm messages"                                                                           ?b)
+      '(("date:1w..now helm AND NOT flag:trashed" "Last 7 days helm messages"                                                                                    ?h)
+        ("date:1d..now helm AND NOT flag:trashed" "Yesterday and today helm messages"                                                                            ?b)
         ("flag:unread AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk.Mail" "Unread messages"    ?u)
         ("date:today..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam AND NOT maildir:/Zoho/Spam" "Today's messages"                                ?t)
         ("date:1d..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam AND NOT maildir:/Zoho/Spam" "Yesterday and today messages"                       ?y)
