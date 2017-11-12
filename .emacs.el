@@ -1910,10 +1910,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   :ensure t
   :config (add-hook 'org-mode-hook 'toc-org-enable))
 
-;;; Windmove
-;;
-(use-package windmove :config (windmove-default-keybindings))
-
 ;;; Powerline
 ;;
 (use-package powerline
