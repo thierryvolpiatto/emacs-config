@@ -223,7 +223,7 @@ First call indent, second complete symbol, third complete fname."
       helm-buffers-fuzzy-matching                     t
       helm-locate-fuzzy-match                         t
       helm-move-to-line-cycle-in-source               t
-      helm-tramp-verbose                              6
+      ;; helm-tramp-verbose                              6
       helm-org-headings-fontify                       t
       helm-autoresize-max-height                      80 ; it is %.
       helm-autoresize-min-height                      20 ; it is %.

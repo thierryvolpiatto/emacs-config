@@ -205,8 +205,8 @@ If entries are already pointed, skip."
                 (insert
                  (concat date " * " payee "\n    "
                          (if deb
-                             (format "Expenses:unknown    € %s\n    Liabilities:Socgen\n\n" amountstr)
-                             (format "Assets:%s:Checking    € %s\n    Income\n\n" account amountstr))))))))))
+                             (format "Expenses:unknown    € %s\n    Liabilities:socgen\n\n" amountstr)
+                             (format "Assets:%s:checking    € %s\n    Income\n\n" account amountstr))))))))))
     (with-current-buffer obuf
       (ledger-mode)
       (remove-overlays)
