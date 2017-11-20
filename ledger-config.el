@@ -33,7 +33,7 @@
               (goto-char beg)
               (insert (make-string (- target-col col) ? )))
             (move-to-column target-col)
-            (if (looking-back "  ")
+            (if (looking-back "  " (1- (point)))
                 (delete-char (- col target-col))
                 (skip-chars-forward "^ \t")
                 (delete-horizontal-space)
