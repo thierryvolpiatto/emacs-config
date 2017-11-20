@@ -119,16 +119,16 @@
    (list (read-string "Date: " (format-time-string "%Y/%m/%d"))
          (read-string "Payee: ")
          (helm-comp-read "Categorie: " (ledger-collect-categories))
-         (helm-comp-read "Account: " '("Socgen:Checking" "Socgen:Prelevement")) ;; TODO add completion here
+         (helm-comp-read "Account: " '("socgen:checking" "socgen:prelevement")) ;; TODO add completion here
          (read-string "Amount: ")))
   (let ((ledger-file (getenv "LEDGER_FILE")))
     (with-current-buffer (find-file-noselect ledger-file)
       (goto-char (point-max))
       (insert (concat
                date " " payee "\n    "
-               (if (string= account "Socgen:Checking") "Assets:" "Liabilities:")
+               (if (string= account "socgen:checking") "Assets:" "Liabilities:")
                account (make-string 8 ? ) "€ "
-               (if (string= account "Socgen:Checking")
+               (if (string= account "socgen:checking")
                    amount (int-to-string (- (string-to-number amount))))
                "\n    Income:" categorie "\n\n"))
       (goto-char (point-min))
