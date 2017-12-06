@@ -105,6 +105,22 @@ static char *note[] = {
     (emms-add-directory-tree "~/Musique/")))
 
 
+(defun tv/emms-track-simple-description (track)
+  "Simple function to give a user-readable description of a track.
+If it's a file track, just return the file name.  Otherwise,
+return the type and the name with a colon in between.
+Hex-encoded characters in URLs are replaced by the decoded
+character."
+  (let ((type (emms-track-type track)))
+    (cond ((eq 'file type)
+           (file-name-sans-extension
+            (file-name-nondirectory (emms-track-name track))))
+          ((eq 'url type)
+           (emms-format-url-track-name (emms-track-name track)))
+          (t (concat (symbol-name type)
+                     ": " (emms-track-name track))))))
+(setq emms-track-description-function 'tv/emms-track-simple-description)
+
 (provide 'emms-vlc-config)
 
 ;;; emms-vlc-config.el ends here
