@@ -23,7 +23,7 @@
 (setq user-full-name "Thierry Volpiatto")
 
 ;; [smtpmail-async] Experimental, use `smtpmail-send-it' otherwise. 
-(setq message-send-mail-function 'async-smtpmail-send-it
+(setq message-send-mail-function 'smtpmail-send-it ;'async-smtpmail-send-it
       ;smtpmail-debug-info t        ; Uncomment to debug
       ;smtpmail-debug-verb t        ; Uncomment to debug on server
       mail-specify-envelope-from t ; Use from field to specify sender name.
