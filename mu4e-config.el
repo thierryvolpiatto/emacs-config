@@ -357,6 +357,13 @@ try this wash."
             (replace-match "" t t)
             (replace-match "\n" t t))))))
 
+;; Refresh main buffer when sending queued mails
+(defun tv/advice-smtpmail-send-queued-mail ()
+  (when (and mu4e~main-buffer-name
+             (eq major-mode 'mu4e-main-mode))
+    (with-current-buffer mu4e~main-buffer-name
+      (revert-buffer))))
+(advice-add 'smtpmail-send-queued-mail :after #'tv/advice-smtpmail-send-queued-mail)
 
 (provide 'mu4e-config)
 
