@@ -1,4 +1,4 @@
-;;; .emacs.el --- emacs configuration
+;;; init.el --- emacs configuration
 
 ;;; Code:
 
@@ -2210,4 +2210,4 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;; Link now scratch buffer to file
 (tv-restore-scratch-buffer)
 
-;;; .emacs.el ends here
+;;; init.el ends here
