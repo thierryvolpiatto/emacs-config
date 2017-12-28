@@ -183,6 +183,7 @@ This allow installation of org from melpa when :ensure is specified."
 
 ;; Start-emacs-server
 ;;
+(require 'server)
 (add-hook 'after-init-hook (lambda ()
                              (unless (or (daemonp) (server-running-p))
                                (server-start)
