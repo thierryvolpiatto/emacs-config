@@ -200,8 +200,8 @@ First call indent, second complete symbol, third complete fname."
       helm-grep-ag-command                            "rg --color=always --smart-case --no-heading --line-number %s %s %s"
       helm-reuse-last-window-split-state              t
       helm-always-two-windows                         t
-      helm-split-window-inside-p                     nil
-      helm-show-completion-display-function          #'helm-display-buffer-in-own-frame
+      helm-split-window-inside-p                      nil
+      helm-show-completion-display-function           #'helm-display-buffer-in-own-frame
       helm-show-action-window-other-window            'left
       helm-buffers-favorite-modes                     (append helm-buffers-favorite-modes '(picture-mode artist-mode))
       helm-ls-git-status-command                      'magit-status-internal
