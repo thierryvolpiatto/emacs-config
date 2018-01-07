@@ -987,7 +987,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;
 ;; Magit when installed from git contains also git-commit and
 ;; git-rebase so no need to install them as dependency.
-
+;;
 (use-package magit
   :commands (magit-status magit-status-internal magit-blame)
   :init
