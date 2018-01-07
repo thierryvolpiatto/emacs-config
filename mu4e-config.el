@@ -221,43 +221,6 @@
 ;;; Show Smileys
 (add-hook 'mu4e-view-mode-hook 'smiley-buffer)
 
-(defun tv/advice--mu4e-view (msg)
-  "Display the message MSG in a new buffer, and keep in sync with HDRSBUF.
-'In sync' here means that moving to the next/previous message in
-the the message view affects HDRSBUF, as does marking etc.
-
-As a side-effect, a message that is being viewed loses its 'unread'
-marking if it still had that."
-  (let* ((embedded ;; is it as an embedded msg (ie. message/rfc822 att)?
-          (gethash (mu4e-message-field msg :path)
-                   mu4e~path-parent-docid-map))
-         (buf
-          (if embedded
-	      (mu4e~view-embedded-winbuf)
-            (get-buffer-create mu4e~view-buffer-name)))
-         mode-enabled)
-    (with-current-buffer buf
-      (unless (setq mode-enabled (eq major-mode 'mu4e-view-mode))
-        (let (mu4e-view-mode-hook) (mu4e-view-mode)))
-      (setq mu4e~view-msg msg)
-      ;; When MSG is unread, mu4e~view-mark-as-read-maybe will trigger
-      ;; another call to mu4e-view (via mu4e~headers-update-handler as
-      ;; the reply handler to mu4e~proc-move)
-      (let ((inhibit-read-only t))
-        (when (or embedded (not (mu4e~view-mark-as-read-maybe msg)))
-	  (erase-buffer)
-	  (mu4e~delete-all-overlays)
-	  (insert (mu4e-view-message-text msg))
-	  (goto-char (point-min))
-	  (mu4e~fontify-cited)
-	  (mu4e~fontify-signature)
-	  (mu4e~view-show-images-maybe msg)
-          (mu4e~view-make-urls-clickable)
-	  (when embedded (local-set-key "q" 'kill-buffer-and-window))
-          (unless mode-enabled (run-mode-hooks 'mu4e-view-mode-hook)))))
-    (switch-to-buffer buf)))
-(advice-add 'mu4e-view :override 'tv/advice--mu4e-view)
-
 (defun tv/mu4e-browse-url ()
   (interactive)
   (require 'helm-net)
