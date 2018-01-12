@@ -178,7 +178,7 @@ You can specify input function to use."
 (defun other-window-backward (&optional n)
   "Move backward to other window or frame."
   (interactive "p")
-  (other-window (- n) t)
+  (other-window (- n) 0)
   (select-frame-set-input-focus (selected-frame)))
 
 ;;;###autoload
@@ -187,7 +187,7 @@ You can specify input function to use."
 With a prefix arg move N window forward or backward
 depending the value of N is positive or negative."
   (interactive "p")
-  (other-window n t)
+  (other-window n 0)
   (select-frame-set-input-focus (selected-frame)))
 
 ;;; Stardict
