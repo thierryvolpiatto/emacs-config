@@ -209,12 +209,12 @@ First call indent, second complete symbol, third complete fname."
       helm-M-x-requires-pattern                       0
       helm-surfraw-duckduckgo-url                     "https://duckduckgo.com/?q=%s&ke=-1&kf=fw&kl=fr-fr&kr=b&k1=-1&k4=-1"
       helm-google-suggest-search-url                  helm-surfraw-duckduckgo-url
-      helm-boring-file-regexp-list                    '("\\.git/?$" "\\.hg/?$" "\\.svn/?$"
-                                                        "\\.CVS/?$" "\\._darcs/?$" "\\.la$"
-                                                        "\\.o$" "\\.i$" "\\.steam/?$"
-                                                        "undo-tree-history/?$"
-                                                        "\\.Private/?$" "\\.encrypted/?$"
-                                                        "emacs_backup/?$")
+      helm-boring-file-regexp-list                    '("\\.git/?" "\\.hg/?" "\\.svn/?"
+                                                        "\\.CVS/?" "\\._darcs/?" "\\.la"
+                                                        "\\.o" "\\.i" "\\.steam/?"
+                                                        "undo-tree-history/?"
+                                                        "\\.Private/?" "\\.encrypted/?"
+                                                        "emacs_backup/?")
       helm-buffer-skip-remote-checking                t
       helm-allow-mouse                                t
       helm-apropos-fuzzy-match                        t
