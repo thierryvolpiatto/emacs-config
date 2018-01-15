@@ -1279,8 +1279,9 @@ from IPython.core.completerlib import module_completion"
   :no-require t
   :config
   (progn
-    ;; scp is better for copying large files.
-    (setq tramp-default-method "scp")
+    ;; scp is better for copying large files but not working with many
+    ;; files.
+    (setq tramp-default-method "ssh")
     ;; (setq tramp-verbose 6) ; See `helm-tramp-verbose' in init-helm.
 
     ;; No messages
