@@ -63,6 +63,14 @@
               (let ((buffer-read-only nil))
                 (delete-trailing-whitespace))))
 
+(defun tv/w3m-fill-region-or-paragraph ()
+  (interactive)
+  (let ((inhibit-read-only t))
+    (if (region-active-p)
+        (call-interactively #'fill-region)
+      (call-interactively #'fill-paragraph))))
+(define-key w3m-mode-map (kbd "M-q") 'tv/w3m-fill-region-or-paragraph)
+
 
 (provide 'config-w3m)
 
