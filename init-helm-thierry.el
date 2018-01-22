@@ -83,6 +83,13 @@
     (setq ido-temp-list (nconc (cdr bl) (list (car bl))))))
 ;;(add-hook 'ido-make-buffer-list-hook 'helm/modify-ido-temp-list)
 
+(defun helm-find-files-in-frame ()
+  (interactive)
+  (with-helm-in-frame
+    (call-interactively #'helm-find-files)))
+
+(define-key ctl-x-5-map (kbd "C-x C-f") 'helm-find-files-in-frame)
+
 
 ;;; Helm-command-map
 ;;
