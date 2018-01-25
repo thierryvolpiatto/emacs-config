@@ -88,7 +88,13 @@
   (with-helm-in-frame
     (call-interactively #'helm-find-files)))
 
+(defun helm-M-x-in-frame ()
+  (interactive)
+  (with-helm-in-frame
+    (call-interactively #'helm-M-x)))
+
 (define-key ctl-x-5-map (kbd "C-x C-f") 'helm-find-files-in-frame)
+(define-key ctl-x-5-map (kbd "M-x") 'helm-M-x-in-frame)
 
 
 ;;; Helm-command-map
