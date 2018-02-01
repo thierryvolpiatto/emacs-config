@@ -103,11 +103,22 @@
   (with-helm-in-frame
     (call-interactively #'helm-mini)))
 
-(define-key ctl-x-5-map (kbd "C-x C-f") 'helm-find-files-in-frame)
-(define-key ctl-x-5-map (kbd "M-x") 'helm-M-x-in-frame)
-(define-key ctl-x-5-map (kbd "C-s") 'helm-occur-in-frame)
-(define-key ctl-x-5-map (kbd "C-x C-b") 'helm-mini-in-frame)
+(defun helm-do-grep-ag-in-frame ()
+  (interactive)
+  (with-helm-in-frame
+    (call-interactively #'helm-do-grep-ag)))
 
+(defun helm-do-git-grep-in-frame ()
+  (interactive)
+  (with-helm-in-frame
+    (call-interactively #'helm-grep-do-git-grep)))
+
+(define-key ctl-x-5-map (kbd "C-x C-f") 'helm-find-files-in-frame)
+(define-key ctl-x-5-map (kbd "M-x")     'helm-M-x-in-frame)
+(define-key ctl-x-5-map (kbd "C-s")     'helm-occur-in-frame)
+(define-key ctl-x-5-map (kbd "C-x C-b") 'helm-mini-in-frame)
+(define-key ctl-x-5-map (kbd "M-g a")   'helm-do-grep-ag-in-frame)
+(define-key ctl-x-5-map (kbd "M-g g")   'helm-do-git-grep-in-frame)
 
 ;;; Helm-command-map
 ;;
