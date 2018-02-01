@@ -377,8 +377,27 @@ First call indent, second complete symbol, third complete fname."
    source
    (lambda (candidate)
      (or (and (file-directory-p candidate)
-              (directory-files candidate nil ".*\\.\\(mp3\\|ogg\\|flac\\)$" t))
+              (directory-files
+               candidate
+               nil ".*\\.\\(mp3\\|ogg\\|flac\\)$" t))
          (string-match-p ".*\\.\\(mp3\\|ogg\\|flac\\)$" candidate)))
+   1)
+  (helm-source-add-action-to-source-if
+   "Update directory autoloads"
+   (lambda (candidate)
+     (require 'autoload)
+     (let ((default-directory helm-ff-default-directory)
+           (generated-autoload-file
+            (read-file-name "Write autoload definitions to file: "
+                            helm-ff-default-directory)))
+       (cl-letf (((symbol-function 'autoload-generated-file)
+                  (lambda ()
+                    (expand-file-name generated-autoload-file default-directory))))
+         (update-directory-autoloads (expand-file-name candidate)))))
+   source
+   (lambda (candidate)
+     (and (file-directory-p candidate)
+          (string-match "\\.\\'" candidate)))
    1))
 
 (defmethod helm-setup-user-source ((source helm-ls-git-source))
