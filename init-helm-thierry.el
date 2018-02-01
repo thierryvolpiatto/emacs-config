@@ -408,7 +408,7 @@ First call indent, second complete symbol, third complete fname."
    source
    (lambda (candidate)
      (and (file-directory-p candidate)
-          (string-match "\\.\\'" candidate)))
+          (string= (helm-basename candidate) ".")))
    1))
 
 (defmethod helm-setup-user-source ((source helm-ls-git-source))
