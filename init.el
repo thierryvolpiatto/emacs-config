@@ -1472,7 +1472,7 @@ from IPython.core.completerlib import module_completion"
 (use-package w3m
   :ensure t
   :commands (w3m-toggle-inline-image w3m-region w3m-browse-url)
-  :init (require 'config-w3m)
+  :init (use-package config-w3m)
   :bind
   (("<f7> h" . w3m)
    :map w3m-mode-map
@@ -1481,7 +1481,7 @@ from IPython.core.completerlib import module_completion"
 ;;; Mu4e
 ;;
 (use-package mu4e
-  :init (progn (require 'mu4e-config)
+  :init (progn (use-package mu4e-config)
                (addressbook-turn-on-mail-completion))
   :commands 'mu4e
   :bind ("<f8>" . mu4e))
@@ -1490,7 +1490,7 @@ from IPython.core.completerlib import module_completion"
 ;;
 (use-package message
   :no-require t
-  :init (progn (require 'mu4e-config)
+  :init (progn (use-package mu4e-config)
                (addressbook-turn-on-mail-completion)))
 
 ;;; Auth-source
