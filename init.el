@@ -72,24 +72,7 @@
 ;;
 (eval-when-compile (require 'use-package))
 (setq use-package-verbose t)
-;; Simplify not understandable new `use-package-ensure-function'.
-(defun tv/use-package-ensure-elpa (name ensure state context &optional no-refresh)
-  "Prefer the elpa version of built-in packages if available.
-This allow installation of org from melpa when :ensure is specified."
-  (let* ((package (or (and (eq ensure t) (use-package-as-symbol name))
-                      ensure))
-         (pkg (assq package package-alist)))
-    (if pkg
-        t
-      (when (and (not no-refresh)
-                 (assoc package
-                        (bound-and-true-p package-pinned-packages)))
-        (package-read-all-archive-contents))
-      (setq pkg (assq package package-archive-contents))
-      (if (or pkg no-refresh)
-          (package-install (cadr pkg))
-        (package-refresh-contents)))))
-(setq use-package-ensure-function #'tv/use-package-ensure-elpa)
+
 
 ;;; Global settings
 ;;
@@ -966,10 +949,6 @@ If your system's ping continues until interrupted, you can try setting
 ;;
 (use-package pcomplete-extension)
 
-;;; Xmodmap
-;;
-(use-package xmodmap)
-
 ;;; Migemo
 ;;
 (use-package migemo
@@ -1212,19 +1191,18 @@ are returned unchanged."
          (split-string argstring) " ")))))
 
 (use-package eldoc-eval
-  :preface (defvar eldoc-in-minibuffer-mode nil)
-  :no-require t
-  :diminish eldoc-mode
-  :config
-  (progn
-    (eldoc-in-minibuffer-mode 1)
-    (defadvice edebug-eval-expression (around with-eldoc activate)
-      "This advice enable eldoc support."
-      (interactive (list (with-eldoc-in-minibuffer
-                           (read-from-minibuffer
-                            "Eval: " nil read-expression-map t
-                            'read-expression-history))))
-      ad-do-it)))
+    :preface (defvar eldoc-in-minibuffer-mode nil)
+    :diminish eldoc-mode
+    :config
+    (progn
+      (eldoc-in-minibuffer-mode 1)
+      (defadvice edebug-eval-expression (around with-eldoc activate)
+        "This advice enable eldoc support."
+        (interactive (list (with-eldoc-in-minibuffer
+                               (read-from-minibuffer
+                                "Eval: " nil read-expression-map t
+                                'read-expression-history))))
+        ad-do-it)))
 
 ;;; Python config
 ;;
@@ -2088,10 +2066,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;
 (use-package wgrep-helm
   :config (setq wgrep-enable-key "\C-x\C-q"))
-
-;;; Rainbow-mode
-;;
-(use-package rainbow-mode)
 
 ;;; edebug
 ;;

@@ -94,7 +94,7 @@
 (global-set-key (kbd "C-c k") 'org-capture)
 
 ;; org-annotation-helper 
-(use-package org-annotation-helper)
+;; (use-package org-annotation-helper)
 
 ;; Diary-integration-in-org 
 (setq org-agenda-include-diary t) ; show also content of regular diary file.
