@@ -1454,7 +1454,12 @@ from IPython.core.completerlib import module_completion"
   :bind
   (("<f7> h" . w3m)
    :map w3m-mode-map
-   ("F" . w3m-view-url-with-browse-url)))
+   ("F" . w3m-view-url-with-browse-url)
+   ("M-<right>" . w3m-next-buffer)
+   ("M-<left>" . w3m-previous-buffer)
+   ("V" . helm-w3m-bookmarks)
+   ("M" . w3m-view-url-with-browse-url)
+   ("M-q" . tv/w3m-fill-region-or-paragraph)))
 
 ;;; Mu4e
 ;;

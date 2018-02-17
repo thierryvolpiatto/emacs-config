@@ -37,9 +37,10 @@
 (advice-add 'w3m-bookmark-save-buffer :override #'tv/advice--w3m-bookmark-save-buffer)
 
 (use-package w3m-search
-  :config
-  (add-to-list 'w3m-search-engine-alist '("DuckDuckGo" "https://duckduckgo.com/lite/?q=%s&kp=1"))
-  (setq w3m-search-default-engine "DuckDuckGo"))
+    :defer t
+    :config
+    (add-to-list 'w3m-search-engine-alist '("DuckDuckGo" "https://duckduckgo.com/lite/?q=%s&kp=1"))
+    (setq w3m-search-default-engine "DuckDuckGo"))
 
 (setq w3m-home-page "http://www.duckduckgo.com")
 
@@ -49,13 +50,6 @@
 
 ;; netscape-vs-firefox 
 (setq browse-url-netscape-program "firefox")
-
-;; Change tabs easily and helm-w3m-bookmarks.
-
-(define-key w3m-mode-map (kbd "M-<right>") 'w3m-next-buffer)
-(define-key w3m-mode-map (kbd "M-<left>") 'w3m-previous-buffer)
-(define-key w3m-mode-map (kbd "V") 'helm-w3m-bookmarks)
-(define-key w3m-mode-map (kbd "M") 'w3m-view-url-with-browse-url)
 
 ;; Remove-trailing-white-space-in-w3m-buffers 
 (add-hook 'w3m-display-hook
@@ -69,8 +63,6 @@
     (if (region-active-p)
         (call-interactively #'fill-region)
       (call-interactively #'fill-paragraph))))
-(define-key w3m-mode-map (kbd "M-q") 'tv/w3m-fill-region-or-paragraph)
-
 
 (provide 'config-w3m)
 
