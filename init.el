@@ -384,8 +384,8 @@ So far, F can only be a symbol, not a lambda expression."))
           (push-mark (point-at-eol) t t)
           (apply old--fn args))
         (indent-region (point-at-bol) (point-at-eol))
-        (forward-line 1) ;; (indent-for-tab-command)
-        ))
+        (forward-line 1)
+        (back-to-indentation)))
     (advice-add 'comment-dwim :around 'comment--advice-dwim)))
 
 ;;; Woman/man
