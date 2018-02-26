@@ -33,9 +33,7 @@
 
 ;;; load-path
 ;;
-(dolist (i '("/usr/local/share/emacs/site-lisp/"
-             "/usr/local/share/emacs/site-lisp/mu4e"
-	     "~/elisp/"
+(dolist (i '("~/elisp/"
              "~/elisp/use-package"
              "~/elisp/magit/lisp"
              "~/elisp/with-editor"
@@ -45,7 +43,6 @@
 	     "~/elisp/emacs-wget"
 	     "~/elisp/tex-utils"
 	     "~/elisp/ledger"
-             "~/elisp/helm"
              "~/elisp/helm-extensions"
              "~/elisp/google-maps.el"
              "~/.emacs.d/themes/"
