@@ -332,7 +332,8 @@ First call indent, second complete symbol, third complete fname."
     - Magit status
     - Github issues
     - Patch region on directory
-    - Open in emms"
+    - Open in emms
+    - Update directory autoloads"
   (helm-source-add-action-to-source-if
    "Byte compile file(s) async"
    'tv/async-byte-compile-file
