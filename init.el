@@ -510,6 +510,7 @@ So far, F can only be a symbol, not a lambda expression."))
                                 "*cvs*"
                                 "*Buffer List*"
                                 "*Ibuffer*"
+                                "*mu4e-loading*"
                                 ))
   (winner-mode 1))
 
