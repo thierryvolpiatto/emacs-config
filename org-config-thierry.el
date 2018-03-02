@@ -183,7 +183,6 @@
 (setq org-catch-invisible-edits 'smart)
 
 ;; Org babel
-(use-package ob-sh)
 (use-package ob-emacs-lisp)
 
 (define-key org-mode-map (kbd "<M-up>") 'tv-scroll-up)
