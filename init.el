@@ -519,6 +519,13 @@ So far, F can only be a symbol, not a lambda expression."))
 (use-package time
   :config
   ;; World-time
+  (when (eq display-time-world-list t) ; emacs-26+
+    (setq display-time-world-list
+          (let ((nyt (format-time-string "%z" nil "America/New_York"))
+                (gmt (format-time-string "%z" nil "Europe/London")))
+            (if (string-equal nyt gmt)
+                legacy-style-world-list
+              zoneinfo-style-world-list))))
   (add-to-list 'display-time-world-list '("Greenwich" "Greenwich"))
   (add-to-list 'display-time-world-list '("Australia/Sydney" "Sydney"))
   (add-to-list 'display-time-world-list '("Australia/Melbourne" "Melbourne"))
