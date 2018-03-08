@@ -274,7 +274,7 @@ So far, F can only be a symbol, not a lambda expression."))
 
 ;;; Helm
 ;;
-(use-package init-helm-thierry)
+(use-package init-helm-thierry :defer 1)
 
 ;;; Term - ansi-term
 ;;

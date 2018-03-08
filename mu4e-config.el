@@ -2,7 +2,6 @@
 
 ;;; Code:
 
-(require 'mu4e)
 (require 'mu4e-contrib)
 (require 'helm-mu)
 (require 'org-mu4e)
