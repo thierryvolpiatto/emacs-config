@@ -240,6 +240,7 @@ First call indent, second complete symbol, third complete fname."
       helm-show-completion-display-function           #'helm-display-buffer-in-own-frame
       helm-commands-using-frame                       '(completion-at-point helm-apropos helm-eshell-prompts)
       helm-actions-inherit-frame-settings             t
+      helm-use-frame-when-more-than-two-windows       t
       helm-show-action-window-other-window            'left
       helm-buffers-favorite-modes                     (append helm-buffers-favorite-modes '(picture-mode artist-mode))
       helm-ls-git-status-command                      'magit-status-internal
