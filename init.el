@@ -1237,6 +1237,7 @@ from IPython.core.completerlib import module_completion"
 
     (add-hook 'python-mode-hook
               (lambda ()
+                (run-with-idle-timer 0.1 nil 'semantic-mode)
                 (define-key python-mode-map (kbd "C-m") 'newline-and-indent))))
   :config
   (progn
