@@ -987,6 +987,7 @@ If your system's ping continues until interrupted, you can try setting
   (add-hook 'git-commit-setup-hook (lambda () (setq-local adaptive-fill-mode nil)))
   ;; Setup with-editor here before magit search emacsclient executable.
   (use-package with-editor
+      :defer t
     :init
     (setq with-editor-emacsclient-executable
           ;; eselect-emacs.sh should ensure to have always only one
@@ -1469,10 +1470,11 @@ from IPython.core.completerlib import module_completion"
 ;;; Mu4e
 ;;
 (use-package mu4e
-  :init (progn (use-package mu4e-config)
-               (addressbook-turn-on-mail-completion))
-  :commands 'mu4e
-  :bind ("<f8>" . mu4e))
+    :defer t
+    :init (progn (use-package mu4e-config)
+                 (addressbook-turn-on-mail-completion))
+    :commands 'mu4e
+    :bind ("<f8>" . mu4e))
 
 ;;; Message
 ;;
