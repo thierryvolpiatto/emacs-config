@@ -1461,11 +1461,10 @@ from IPython.core.completerlib import module_completion"
 ;;; Mu4e
 ;;
 (use-package mu4e
-    :defer t
-    :init (progn (use-package mu4e-config)
-                 (addressbook-turn-on-mail-completion))
-    :commands 'mu4e
-    :bind ("<f8>" . mu4e))
+  :init (progn (use-package mu4e-config)
+               (addressbook-turn-on-mail-completion))
+  :commands 'mu4e
+  :bind ("<f8>" . mu4e))
 
 ;;; Message
 ;;
