@@ -987,7 +987,7 @@ If your system's ping continues until interrupted, you can try setting
   (add-hook 'git-commit-setup-hook (lambda () (setq-local adaptive-fill-mode nil)))
   ;; Setup with-editor here before magit search emacsclient executable.
   (use-package with-editor
-      :defer t
+    :defer t
     :init
     (setq with-editor-emacsclient-executable
           ;; eselect-emacs.sh should ensure to have always only one
