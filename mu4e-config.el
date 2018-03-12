@@ -218,12 +218,32 @@
 ;;; Show Smileys
 (add-hook 'mu4e-view-mode-hook 'smiley-buffer)
 
-(defun tv/mu4e-browse-url ()
+(defun tv/curl-url-retrieve (url)
+  (with-temp-buffer
+    (call-process "curl" nil t nil "-s" "-L" url)
+    (buffer-string)))
+
+(defun tv/mu4e-show-patch-other-frame (url)
+  (let ((contents "")
+        (bufname (file-name-nondirectory url)))
+    (if (buffer-live-p (get-buffer bufname))
+        (progn (switch-to-buffer-other-frame bufname)
+               (view-mode))
+      (setq contents (tv/curl-url-retrieve url))
+      (switch-to-buffer-other-frame (get-buffer-create bufname))
+      (erase-buffer)
+      (save-excursion (insert contents))
+      (diff-mode)
+      (view-mode))))
+
+(defun tv/mu4e-browse-url-or-show-patch ()
   (interactive)
   (require 'helm-net)
   (let ((url (w3m-active-region-or-url-at-point)))
-    (browse-url url)))
-(define-key mu4e-view-mode-map (kbd "C-c C-c") 'tv/mu4e-browse-url)
+    (if (string-match "\\.\\(patch\\|diff\\)\\'" url)
+        (tv/mu4e-show-patch-other-frame url)
+      (browse-url url))))
+(define-key mu4e-view-mode-map (kbd "C-c C-c") 'tv/mu4e-browse-url-or-show-patch)
 
 (defadvice w3m-goto-next-anchor (before go-to-end-of-anchor activate)
   (when (w3m-anchor-sequence)
