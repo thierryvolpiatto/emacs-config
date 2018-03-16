@@ -1447,7 +1447,7 @@ from IPython.core.completerlib import module_completion"
 (use-package w3m
   :ensure t
   :commands (w3m-toggle-inline-image w3m-region w3m-browse-url)
-  :init (use-package config-w3m)
+  :init (require 'config-w3m)
   :bind
   (("<f7> h" . w3m)
    :map w3m-mode-map
