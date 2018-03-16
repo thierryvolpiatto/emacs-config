@@ -274,7 +274,7 @@ So far, F can only be a symbol, not a lambda expression."))
 
 ;;; Helm
 ;;
-(use-package init-helm-thierry)
+(require 'init-helm-thierry)
 
 ;;; Term - ansi-term
 ;;
@@ -1461,17 +1461,10 @@ from IPython.core.completerlib import module_completion"
 ;;; Mu4e
 ;;
 (use-package mu4e
-  :init (progn (use-package mu4e-config)
+  :init (progn (require 'mu4e-config)
                (addressbook-turn-on-mail-completion))
-  :commands 'mu4e
+  :commands (mu4e compose-mail)
   :bind ("<f8>" . mu4e))
-
-;;; Message
-;;
-(use-package message
-  :no-require t
-  :init (progn (use-package mu4e-config)
-               (addressbook-turn-on-mail-completion)))
 
 ;;; Auth-source
 ;;
@@ -1545,6 +1538,7 @@ from IPython.core.completerlib import module_completion"
 ;;; Eshell-config
 ;;
 (use-package eshell
+  :commands (eshell eshell-command)  
   :init
   (progn
     ;; Eshell-prompt
@@ -1655,11 +1649,6 @@ from IPython.core.completerlib import module_completion"
       (dolist (i '("tmux" "htop" "ipython" "alsamixer" "git-log"))
         (add-to-list 'eshell-visual-commands i))))
   :config
-  ;; Finally load eshell on startup.
-  (add-hook 'emacs-startup-hook (lambda ()
-                                  (let ((default-directory (getenv "HOME")))
-                                    (command-execute 'eshell)
-                                    (bury-buffer))))
   (global-set-key (kbd "C-!") 'eshell-command))
 
 ;;; linum-relative
@@ -1673,6 +1662,7 @@ from IPython.core.completerlib import module_completion"
 ;;; Outline-mode
 ;;
 (use-package outline
+  :defer t
   :requires helm
   :config
   (progn
@@ -1889,6 +1879,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Org toc for github
 ;;
 (use-package toc-org
+  :commands (toc-org-insert-toc)  
   :ensure t
   :config (add-hook 'org-mode-hook 'toc-org-enable))
 
