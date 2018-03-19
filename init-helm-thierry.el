@@ -402,7 +402,10 @@ First call indent, second complete symbol, third complete fname."
      (let ((default-directory helm-ff-default-directory)
            (generated-autoload-file
             (read-file-name "Write autoload definitions to file: "
-                            helm-ff-default-directory)))
+                            helm-ff-default-directory
+                            nil nil nil
+                            (lambda (f)
+                              (string-match "autoloads\\|loaddefs" f)))))
        (cl-letf (((symbol-function 'autoload-generated-file)
                   (lambda ()
                     (expand-file-name generated-autoload-file default-directory))))
