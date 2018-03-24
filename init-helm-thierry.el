@@ -244,7 +244,9 @@ First call indent, second complete symbol, third complete fname."
       helm-always-two-windows                         t
       helm-split-window-inside-p                      nil
       helm-show-completion-display-function           #'helm-display-buffer-in-own-frame
-      helm-commands-using-frame                       '(completion-at-point helm-apropos helm-eshell-prompts)
+      helm-commands-using-frame                       '(completion-at-point helm-apropos
+                                                        helm-eshell-prompts helm-semantic-or-imenu
+                                                        helm-imenu-in-all-buffers)
       helm-actions-inherit-frame-settings             t
       helm-use-frame-when-more-than-two-windows       t
       helm-show-action-window-other-window            'left
