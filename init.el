@@ -766,7 +766,8 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Org
 ;;
 (use-package org
-  :defer t
+  :bind (("C-c a" . org-agenda)
+         ("C-c k" . org-capture))
   :config (use-package org-config-thierry))
 
 ;;; Emms
