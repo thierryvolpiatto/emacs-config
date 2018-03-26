@@ -1318,10 +1318,14 @@ from IPython.core.completerlib import module_completion"
           calendar-day-name-array
           ["Dimanche" "Lundi" "Mardi"
            "Mercredi" "Jeudi" "Vendredi" "Samedi"]
-          calendar-day-abbrev-array
-          ["Dim" "Lun" "Mar" "Mer" "Jeu" "Ven" "Sam"]
-          calendar-day-header-array
-          ["Di" "Lu" "Ma" "Me" "Je" "Ve" "Sa"]
+          ;; FIXME there is a bug in calendar that break diary when
+          ;; abbreviated names are different than US.
+          ;; calendar-day-abbrev-array
+          ;; ["Dim" "Lun" "Mar" "Mer" "Jeu" "Ven" "Sam"]
+          ;; calendar-day-header-array
+          ;; ["Di" "Lu" "Ma" "Me" "Je" "Ve" "Sa"]
+          ;; calendar-month-abbrev-array
+          ;; ["Jan" "Fév" "Mar" "Avr" "Mai" "Juin" "Juil" "Aou" "Sep" "Oct" "Nov" "Déc"]
           calendar-month-name-array
           ["Janvier" "Février" "Mars" "Avril"
            "Mai" "Juin" "Juillet" "Août" "Septembre"
