@@ -403,21 +403,6 @@ So far, F can only be a symbol, not a lambda expression."))
     (show-paren-mode 1)
     (setq show-paren-ring-bell-on-mismatch t)))
 
-;;; Save-minibuffer-history
-;;
-(use-package savehist
-  :config
-  (defun tv/savehist-save-hook ()
-    (setq savehist-minibuffer-history-variables
-          (cl-loop for v in savehist-minibuffer-history-variables
-                   unless (assq v psession-object-to-save-alist)
-                   collect v)))
-  (add-hook 'savehist-save-hook 'tv/savehist-save-hook)
-  (setq savehist-file             "~/.emacs.d/history"
-        history-delete-duplicates t
-        history-length            100) ; default is 30.
-  (savehist-mode 1))
-
 (use-package electric
   :config (electric-indent-mode -1))
 
