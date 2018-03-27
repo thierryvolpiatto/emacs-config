@@ -915,7 +915,6 @@ If your system's ping continues until interrupted, you can try setting
 ;;
 (use-package psession
   :config
-  (setq psession-auto-save t)
   (psession-mode 1)
   (bind-key "C-x p s" 'psession-save-winconf)
   (bind-key "C-x p d" 'psession-delete-winconf)
