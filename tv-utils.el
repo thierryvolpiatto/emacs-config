@@ -1034,9 +1034,14 @@ Arg `host' is machine in auth-info file."
                         (unless (looking-at "(put")
                           (insert (format "(put '%s 'helm-only t)\n" fun))))))))))
 
+(defun tv/thing-at-point-number ()
+  (save-excursion
+    (when (re-search-forward "[0-9]\\{1,6\\}" (min (+ (point) 6) (point-at-eol)) t)
+      (string-to-number (match-string-no-properties 0)))))
+
 (defun tv-find-or-kill-gnu-bug-number (bug-number arg)
   "Browse url corresponding to emacs gnu bug number or kill it."
-  (interactive (list (read-number "Bug number: " (thing-at-point 'number))
+  (interactive (list (read-number "Bug number: " (tv/thing-at-point-number))
                      current-prefix-arg))
   (let ((url (format "http://debbugs.gnu.org/cgi/bugreport.cgi?bug=%s" bug-number)))
     (if arg
@@ -1047,7 +1052,7 @@ Arg `host' is machine in auth-info file."
 
 (defun tv-find-or-kill-helm-bug-number (bug-number arg)
   "Browse url corresponding to helm bug number or kill it."
-  (interactive (list (read-number "Bug number: " (thing-at-point 'number))
+  (interactive (list (read-number "Bug number: " (tv/thing-at-point-number))
                      current-prefix-arg))
   (let ((url (format "https://github.com/emacs-helm/helm/issues/%s" bug-number)))
     (if arg
