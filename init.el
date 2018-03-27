@@ -16,7 +16,8 @@
 
 (setq package-archives        '(("melpa"        . "https://melpa.org/packages/")
                                 ("melpa-stable" . "https://stable.melpa.org/packages/")
-                                ("gnu"          . "https://elpa.gnu.org/packages/"))
+                                ;; ("gnu"          . "https://elpa.gnu.org/packages/")
+                                )
       package-pinned-packages '((async       . "melpa")
                                 (magit       . "melpa-stable")
                                 (magit-popup . "melpa-stable")
