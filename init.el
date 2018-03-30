@@ -14,22 +14,26 @@
   ;; Load my own package.el adapted to emacs-24.
   (load "package-24"))
 
-(setq package-archives        '(("melpa"        . "https://melpa.org/packages/")
-                                ("melpa-stable" . "https://stable.melpa.org/packages/")
-                                ;; ("gnu"          . "https://elpa.gnu.org/packages/")
-                                )
-      package-pinned-packages '((async       . "melpa")
-                                (magit       . "melpa-stable")
-                                (magit-popup . "melpa-stable")
-                                (git-commit  . "melpa-stable")
-                                (with-editor . "melpa-stable")
-                                (undo-tree . "melpa")
-                                (realgud . "melpa"))
-      package-check-signature  nil)
+;; This have been already set in early-init.el with emacs-26+
+(unless (boundp 'package-quickstart)
+  (setq package-archives        '(("melpa"        . "https://melpa.org/packages/")
+                                  ("melpa-stable" . "https://stable.melpa.org/packages/")
+                                  ;; ("gnu"          . "https://elpa.gnu.org/packages/")
+                                  )
+        package-pinned-packages '((async       . "melpa")
+                                  (magit       . "melpa-stable")
+                                  (magit-popup . "melpa-stable")
+                                  (git-commit  . "melpa-stable")
+                                  (with-editor . "melpa-stable")
+                                  (undo-tree . "melpa")
+                                  (realgud . "melpa"))
+        package-check-signature  nil))
 
 ;; Initialize packages after setting package-archives
 ;; to feed package-archive-contents with all archives.
-(package-initialize)
+(if (boundp 'package-quickstart)
+    (setq package-quickstart t)
+  (package-initialize))
 
 
 ;;; load-path
