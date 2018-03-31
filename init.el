@@ -1417,7 +1417,6 @@ from IPython.core.completerlib import module_completion"
 ;;; git-gutter-mode
 ;;
 (use-package git-gutter
-  :ensure t
   :init
   (progn
     (customize-set-variable 'git-gutter:update-interval 2) ; Activate live update timer.
