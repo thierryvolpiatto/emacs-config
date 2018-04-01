@@ -26,7 +26,7 @@
                                   (git-commit  . "melpa-stable")
                                   (with-editor . "melpa-stable")
                                   (undo-tree . "melpa")
-                                  (realgud . "melpa"))
+                                  (realgud . "melpa-stable"))
         package-check-signature  nil))
 
 ;; Initialize packages after setting package-archives
