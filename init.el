@@ -933,28 +933,6 @@ If your system's ping continues until interrupted, you can try setting
   (bind-key "C-x p d" 'psession-delete-winconf)
   (bind-key "C-x p j" 'psession-restore-winconf))
 
-;;; Golden-ratio
-;;
-(use-package golden-ratio
-  :disabled t
-  :diminish golden-ratio-mode
-  :init
-  (progn
-    (add-hook 'ediff-before-setup-windows-hook (lambda () (golden-ratio-mode -1)))
-    (add-hook 'ediff-quit-hook (lambda () (golden-ratio-mode 1))))
-  :config
-  (progn
-    (defun helm/running-p () helm-alive-p)
-    (defun tv/ispell-running-p ()
-      (and (boundp 'ispell-choices-buffer)
-           (get-buffer ispell-choices-buffer)))
-    (setq golden-ratio-inhibit-functions     '(helm/running-p tv/ispell-running-p))
-    (setq golden-ratio-exclude-buffer-regexp '("\\`\\*[Hh]elm.*\\*\\'"))
-    (setq golden-ratio-exclude-buffer-names  '("*Org Select*"))
-    (setq golden-ratio-exclude-modes         '(ediff-mode calendar-mode wget-mode))
-    (setq golden-ratio-recenter              t)
-    (golden-ratio-mode 1)))
-
 ;;; pcomplete
 ;;
 (use-package pcomplete-extension)
