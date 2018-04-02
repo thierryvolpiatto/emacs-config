@@ -919,15 +919,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;
 (use-package psession
   :config
-  (defvar psession-ignored-variables '(minibuffer-history))
-  (defun psession-minibuffer-hook ()
-  (unless (or (eq minibuffer-history-variable t)
-              (memq minibuffer-history-variable psession-ignored-variables))
-    (cl-pushnew (cons minibuffer-history-variable
-                      (concat (symbol-name minibuffer-history-variable) ".el"))
-                psession-object-to-save-alist
-                :test 'equal)))
-  (add-hook 'minibuffer-setup-hook 'psession-minibuffer-hook)
+  (psession-savehist-mode 1)
   (psession-mode 1)
   (bind-key "C-x p s" 'psession-save-winconf)
   (bind-key "C-x p d" 'psession-delete-winconf)
