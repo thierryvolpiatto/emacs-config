@@ -288,12 +288,6 @@ First call indent, second complete symbol, third complete fname."
       helm-buffer-max-length            22
       helm-buffers-end-truncated-string "…")
 
-(customize-set-variable 'helm-boring-file-regexp-list '("\\.git/?" "\\.hg/?" "\\.svn/?"
-                                                        "\\.CVS/?" "\\._darcs/?" "\\.la$"
-                                                        "\\.o$" "\\.i$" "\\.steam/?"
-                                                        "undo-tree-history/?"
-                                                        "\\.Private/?" "\\.encrypted/?"
-                                                        "emacs_backup/?"))
 ;; find-file-hook
 (add-hook 'find-file-hook 'helm-save-current-pos-to-mark-ring)
 
