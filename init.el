@@ -16,7 +16,7 @@
 
 ;; This have been already set in early-init.el with emacs-26+
 (unless (boundp 'package-quickstart)
-  (load-file "early-init.el")
+  (load-file (expand-file-name "early-init.el" user-emacs-directory))
   ;; Initialize packages after setting package-archives
   ;; to feed package-archive-contents with all archives.
   (package-initialize))
