@@ -1950,20 +1950,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
     (add-hook 'focus-in-hook 'force-mode-line-update))
   :ensure t)
 
-;;; Disable-mouse
-;;
-(use-package disable-mouse
-  :ensure t
-  :diminish (global-disable-mouse-mode . "NM")
-  :config
-  (add-hook 'global-disable-mouse-mode-hook
-            (lambda ()
-              (if global-disable-mouse-mode
-                  (setq helm-allow-mouse nil)
-                (setq helm-allow-mouse t))))
-  ;; (global-disable-mouse-mode 1)
-  )
-
 ;;; Rectangle edit
 ;;
 (use-package rectangle-edit :commands 'rectangle-edit)
