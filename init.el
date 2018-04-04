@@ -31,8 +31,7 @@
 
 ;; Initialize packages after setting package-archives
 ;; to feed package-archive-contents with all archives.
-(if (boundp 'package-quickstart)
-    (setq package-quickstart t)
+(unless (boundp 'package-quickstart)
   (package-initialize))
 
 
