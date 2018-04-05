@@ -1502,7 +1502,7 @@ from IPython.core.completerlib import module_completion"
 (use-package ffap
   :config
   ;; See issue #2003 in helm
-  (setq ffap-url-unwrap-remote '("ftp" "file"))
+  (setq ffap-url-unwrap-remote '("ftp" "file" "mailto"))
   (when (> emacs-major-version 24)
     ;; See issue #1716 in helm.
     (setcdr (assq 'file ffap-string-at-point-mode-alist)
