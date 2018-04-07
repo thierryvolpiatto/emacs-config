@@ -1400,20 +1400,12 @@ from IPython.core.completerlib import module_completion"
   :diminish git-gutter-mode
   :config
   (progn
-    (defun tv/git-gutter:toggle-diff ()
-      (interactive)
-      (helm-aif (get-buffer-window git-gutter:popup-buffer 'visible)
-          (with-selected-window it
-            (View-quit))
-        (git-gutter:popup-hunk)))
     (setq git-gutter:diff-option "-b")
     (global-git-gutter-mode) ; Enable live update.
     (helm-define-key-with-subkeys
         global-map (kbd "C-x v n") ?n 'git-gutter:next-hunk '((?p . git-gutter:previous-hunk)))
     (helm-define-key-with-subkeys
-        global-map (kbd "C-x v p") ?p 'git-gutter:previous-hunk '((?n . git-gutter:next-hunk)))
-    (helm-define-key-with-subkeys
-        global-map (kbd "C-x v d") ?d 'tv/git-gutter:toggle-diff)))
+        global-map (kbd "C-x v p") ?p 'git-gutter:previous-hunk '((?n . git-gutter:next-hunk)))))
 
 ;;; Addressbook
 ;;
