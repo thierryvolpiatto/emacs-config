@@ -2033,7 +2033,18 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 (use-package edebug-x
     :config
   (edebug-x-mode 1)
-  (setq edebug-on-quit nil))
+  (setq edebug-on-quit nil)
+  (defun tv/edebug-set-initial-mode ()
+    (interactive)
+    (let* ((old-mode (intern-soft edebug-initial-mode))
+           (mode (completing-read
+                  (format "Change initial edebug mode from `%s' to: " old-mode)
+                  (mapcar 'cdr (remove (rassq old-mode edebug-initial-mode-alist)
+                                       edebug-initial-mode-alist))
+                  nil t)))
+      (setq edebug-initial-mode mode)
+      (message "Edebug's initial mode is now: %s" mode)))
+  (advice-add 'edebug-set-initial-mode :override 'tv/edebug-set-initial-mode))
 
 
 ;;; Ensure touchpad is reenabled when quitting emacs
