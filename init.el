@@ -53,7 +53,7 @@
 (setq vc-handled-backends '(RCS))
 (setq vc-ignore-dir-regexp
       (format "\\(%s\\)\\|\\(%s\\)"
-              vc-ignore-dir-regexp
+                   vc-ignore-dir-regexp
               tramp-file-name-regexp))
 
 ;;; Use-package.
@@ -888,9 +888,8 @@ If your system's ping continues until interrupted, you can try setting
 ;;
 (use-package iedit
   :ensure t
-  :init
-  (progn
-    (bind-key "C-²" 'iedit-mode-toggle-on-function)))
+  :bind (("C-²" . iedit-mode-toggle-on-function)
+         ("C-;" . iedit-mode)))
 
 (use-package iedit-rect
   :bind (([C-return] . iedit-rectangle-mode)
@@ -2029,9 +2028,12 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 (use-package wgrep-helm
   :config (setq wgrep-enable-key "\C-x\C-q"))
 
-;;; edebug
+;;; edebug-x
 ;;
-(use-package edebug :config (setq edebug-on-quit nil))
+(use-package edebug-x
+    :config
+  (edebug-x-mode 1)
+  (setq edebug-on-quit nil))
 
 
 ;;; Ensure touchpad is reenabled when quitting emacs
