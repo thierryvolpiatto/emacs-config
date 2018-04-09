@@ -908,7 +908,6 @@ If your system's ping continues until interrupted, you can try setting
 ;;
 (use-package psession
   :config
-  (setq psession-auto-save-delay 60)
   (setq psession-auto-save t)
   (psession-savehist-mode 1)
   (psession-mode 1)
