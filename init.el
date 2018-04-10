@@ -80,11 +80,13 @@
     (save-buffers-kill-terminal)))
 
 (defun tv-stop-emacs (arg)
-  "Close emacs, with a prefix arg restart it."
+  "Close emacs, with a prefix arg restart it.
+Restart works only on graphic display."
   (interactive "P")
-  (let ((confirm-kill-emacs (unless arg 'y-or-n-p))
+  (let ((confirm-kill-emacs (unless (and arg (display-graphic-p))
+                              'y-or-n-p))
         (kill-emacs-query-functions
-         (if arg
+         (if (and arg (display-graphic-p))
              (append (list
                       (lambda ()
                         (when (y-or-n-p (format "Really restart %s? "
