@@ -267,7 +267,9 @@ So far, F can only be a symbol, not a lambda expression."))
              ("^[[:upper]][a-z- ]*:" . font-lock-variable-name-face)
              )))
 
-    (add-hook 'Info-mode-hook 'tv-font-lock-doc-rules)))
+    (add-hook 'Info-mode-hook 'tv-font-lock-doc-rules))
+  :config
+  (define-key Info-mode-map [remap Info-index] 'helm-info-at-point))
 
 ;;; Helm
 ;;
