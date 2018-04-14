@@ -1406,7 +1406,7 @@ from IPython.core.completerlib import module_completion"
       (interactive)
       (with-selected-window (get-buffer-window git-gutter:popup-buffer)
         (View-quit)))
-    (setq git-gutter:diff-option "-b")
+    ;; (setq git-gutter:diff-option "-b")
     (global-git-gutter-mode) ; Enable live update.
     (helm-define-key-with-subkeys
         global-map (kbd "C-x v n") ?n 'git-gutter:next-hunk '((?p . git-gutter:previous-hunk)))
