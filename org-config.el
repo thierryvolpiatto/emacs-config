@@ -180,7 +180,13 @@
 (setq org-catch-invisible-edits 'smart)
 
 ;; Org babel
-(use-package ob-emacs-lisp)
+(use-package ob-emacs-lisp
+    :config
+  ;; active Babel languages
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((gnuplot . t)
+     (emacs-lisp . t))))
 
 (define-key org-mode-map (kbd "<M-up>") 'tv-scroll-up)
 (define-key org-mode-map (kbd "<M-down>") 'tv-scroll-down)
