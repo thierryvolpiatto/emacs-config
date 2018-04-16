@@ -1,4 +1,4 @@
-;;; init-helm-thierry.el --- My startup file for helm. -*- lexical-binding: t -*- 
+;;; init-helm.el --- My startup file for helm. -*- lexical-binding: t -*- 
 ;;; Code:
 
 ;;; Load all autoloads for helm and its extensions
@@ -457,6 +457,6 @@ First call indent, second complete symbol, third complete fname."
                                       "http://translate.reference.com/translate?query=%s&src=fr&dst=en")))
 
 
-(provide 'init-helm-thierry)
+(provide 'init-helm)
 
-;;; init-helm-thierry.el ends here
+;;; init-helm.el ends here

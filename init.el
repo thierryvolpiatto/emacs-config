@@ -273,7 +273,7 @@ So far, F can only be a symbol, not a lambda expression."))
 
 ;;; Helm
 ;;
-(require 'init-helm-thierry)
+(require 'init-helm)
 
 ;;; Term - ansi-term
 ;;
@@ -767,7 +767,7 @@ If your system's ping continues until interrupted, you can try setting
 (use-package org
   :bind (("C-c a" . org-agenda)
          ("C-c k" . org-capture))
-  :config (use-package org-config-thierry))
+  :config (use-package org-config))
 
 ;;; Emms
 ;;

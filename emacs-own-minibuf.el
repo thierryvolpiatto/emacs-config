@@ -83,7 +83,7 @@
 (setq completion-cycle-threshold t)
 
 ;; Helm
-(require 'init-helm-thierry)
+(require 'init-helm)
 (helm-mode 1)
 (require 'helm-descbinds)
 (helm-descbinds-install)            ; C-h b, C-x C-h

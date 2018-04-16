@@ -1,4 +1,4 @@
-;;; org-config-thierry.el --- My config for org
+;;; org-config.el --- My config for org
 ;; 
 ;; Author: Thierry Volpiatto
 ;; Maintainer: Thierry Volpiatto
@@ -188,6 +188,6 @@
 (define-key org-mode-map (kbd "<C-M-down>") 'tv-scroll-other-down)
 (define-key org-mode-map (kbd "C-d") 'tv-delete-char)
 
-(provide 'org-config-thierry)
+(provide 'org-config)
 
-;;; org-config-thierry.el ends here
+;;; org-config.el ends here
