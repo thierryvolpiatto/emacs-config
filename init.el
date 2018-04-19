@@ -21,6 +21,9 @@
   ;; to feed package-archive-contents with all archives.
   (package-initialize))
 
+(when (boundp 'package-quickstart)
+  (setq package-quickstart t))
+
 
 ;;; load-path
 ;;
