@@ -25,7 +25,6 @@
 ;;; load-path
 ;;
 (dolist (i '("~/elisp/"
-             "~/elisp/use-package"
              "~/elisp/magit/lisp"
              "~/elisp/with-editor"
              "~/elisp/Emacs-wgrep"
