@@ -748,7 +748,6 @@ If your system's ping continues until interrupted, you can try setting
                  (lambda (&optional _ignore)
                    (if (file-exists-p async-byte-compile-log-file)
                        (let ((buf (get-buffer-create byte-compile-log-buffer))
-                             (n 0)
                              (bn (file-name-nondirectory file)))
                          (with-current-buffer buf
                            (goto-char (point-max))
