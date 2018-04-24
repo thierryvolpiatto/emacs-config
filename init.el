@@ -744,20 +744,40 @@ If your system's ping continues until interrupted, you can try setting
         (setq async-bytecomp-allowed-packages '(all))
         (defun tv/async-byte-compile-file (file)
           (interactive "fFile: ")
-          (let ((proc
-                 (async-start
-                  `(lambda ()
-                     (require 'bytecomp)
-                     ,(async-inject-variables "\\`load-path\\'")
-                     (let ((default-directory ,(file-name-directory file)))
-                       (add-to-list 'load-path default-directory)
-                       (byte-compile-file ,file))))))
-
-            (if (condition-case err
-                    (async-get proc)
-                  (error (ignore (message "Error: %s" (car err)))))
-                (message "Recompiling %s...DONE" file)  
-              (message "Recompiling %s...FAILED" file))))))))
+          (let ((call-back
+                 (lambda (&optional _ignore)
+                   (if (file-exists-p async-byte-compile-log-file)
+                       (let ((buf (get-buffer-create byte-compile-log-buffer))
+                             (n 0)
+                             (bn (file-name-nondirectory file)))
+                         (with-current-buffer buf
+                           (goto-char (point-max))
+                           (let ((inhibit-read-only t))
+                             (insert-file-contents async-byte-compile-log-file)
+                             (compilation-mode))
+                           (display-buffer buf)
+                           (delete-file async-byte-compile-log-file)
+                           (save-excursion
+                             (goto-char (point-min))
+                             (if (re-search-forward "^.*:Error:" nil t)
+                                 (message "Failed to compile `%s'" bn)
+                               (message "`%s' compiled asynchronously with warnings" bn)))))
+                     (message "`%s' compiled asynchronously with success" bn)))))
+            (async-start
+             `(lambda ()
+                (require 'bytecomp)
+                ,(async-inject-variables "\\`load-path\\'")
+                (let ((default-directory ,(file-name-directory file)))
+                  (add-to-list 'load-path default-directory)
+                  (byte-compile-file ,file)
+                  (when (get-buffer byte-compile-log-buffer)
+                    (setq error-data (with-current-buffer byte-compile-log-buffer
+                                       (buffer-substring-no-properties (point-min) (point-max))))
+                    (unless (string= error-data "")
+                      (with-temp-file ,async-byte-compile-log-file
+                        (erase-buffer)
+                        (insert error-data))))))
+             call-back)))))))
 
 ;;; Firefox protocol
 ;;
