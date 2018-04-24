@@ -347,7 +347,7 @@ depending the value of N is positive or negative."
             (setq action (read-key "`(': Insert, (any key to exit)."))
             (cl-case action
               (?\(
-               (skip-chars-forward " ")
+               (skip-chars-forward " \n")
                (insert "(")
                (forward-sexp 1)
                (insert ")"))
