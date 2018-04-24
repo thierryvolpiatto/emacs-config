@@ -1,4 +1,4 @@
-;;; init.el --- emacs configuration
+;;; init.el --- emacs configuration. -*- lexical-binding: t -*-
 
 ;;; Code:
 
@@ -748,16 +748,17 @@ If your system's ping continues until interrupted, you can try setting
                  (lambda (&optional _ignore)
                    (if (file-exists-p async-byte-compile-log-file)
                        (let ((buf (get-buffer-create byte-compile-log-buffer))
-                             (bn (file-name-nondirectory file)))
+                             (bn (file-name-nondirectory file))
+                             start)
                          (with-current-buffer buf
-                           (goto-char (point-max))
+                           (goto-char (setq start (point-max)))
                            (let ((inhibit-read-only t))
                              (insert-file-contents async-byte-compile-log-file)
                              (compilation-mode))
                            (display-buffer buf)
                            (delete-file async-byte-compile-log-file)
                            (save-excursion
-                             (goto-char (point-min))
+                             (goto-char start)
                              (if (re-search-forward "^.*:Error:" nil t)
                                  (message "Failed to compile `%s'" bn)
                                (message "`%s' compiled asynchronously with warnings" bn)))))
