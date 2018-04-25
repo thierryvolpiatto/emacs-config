@@ -740,44 +740,7 @@ If your system's ping continues until interrupted, you can try setting
     ;; Byte compilation async.
     (use-package async-bytecomp
       :config
-      (progn
-        (setq async-bytecomp-allowed-packages '(all))
-        (defun tv/async-byte-compile-file (file)
-          (interactive "fFile: ")
-          (let ((call-back
-                 (lambda (&optional _ignore)
-                   (let ((bn (file-name-nondirectory file)))
-                     (if (file-exists-p async-byte-compile-log-file)
-                         (let ((buf (get-buffer-create byte-compile-log-buffer))
-                               start)
-                           (with-current-buffer buf
-                             (goto-char (setq start (point-max)))
-                             (let ((inhibit-read-only t))
-                               (insert-file-contents async-byte-compile-log-file)
-                               (compilation-mode))
-                             (display-buffer buf)
-                             (delete-file async-byte-compile-log-file)
-                             (save-excursion
-                               (goto-char start)
-                               (if (re-search-forward "^.*:Error:" nil t)
-                                   (message "Failed to compile `%s'" bn)
-                                 (message "`%s' compiled asynchronously with warnings" bn)))))
-                       (message "`%s' compiled asynchronously with success" bn))))))
-            (async-start
-             `(lambda ()
-                (require 'bytecomp)
-                ,(async-inject-variables "\\`load-path\\'")
-                (let ((default-directory ,(file-name-directory file)))
-                  (add-to-list 'load-path default-directory)
-                  (byte-compile-file ,file)
-                  (when (get-buffer byte-compile-log-buffer)
-                    (setq error-data (with-current-buffer byte-compile-log-buffer
-                                       (buffer-substring-no-properties (point-min) (point-max))))
-                    (unless (string= error-data "")
-                      (with-temp-file ,async-byte-compile-log-file
-                        (erase-buffer)
-                        (insert error-data))))))
-             call-back)))))))
+      (setq async-bytecomp-allowed-packages '(all)))))
 
 ;;; Firefox protocol
 ;;

@@ -323,7 +323,7 @@ First call indent, second complete symbol, third complete fname."
     - Update directory autoloads"
   (helm-source-add-action-to-source-if
    "Byte compile file(s) async"
-   'tv/async-byte-compile-file
+   'async-byte-compile-file
    source
    'helm/ff-candidates-lisp-p)
   (helm-source-add-action-to-source-if
