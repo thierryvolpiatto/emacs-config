@@ -805,7 +805,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; tv-utils fns
 ;;
 (use-package tv-utils
-  :commands (tv-eval-region tv/async-byte-compile-file tv-restore-scratch-buffer)
+  :commands (tv-eval-region tv-restore-scratch-buffer)
   :init (progn
           (bind-key "C-M-!" 'tv-eval-region lisp-interaction-mode-map) 
           (bind-key "C-M-!" 'tv-eval-region emacs-lisp-mode-map))
