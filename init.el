@@ -1637,7 +1637,7 @@ from IPython.core.completerlib import module_completion"
     ;; Eshell-visual
     (setq eshell-term-name "eterm-color")
     (with-eval-after-load "em-term"
-      (dolist (i '("tmux" "htop" "ipython" "alsamixer" "git-log"))
+      (dolist (i '("tmux" "htop" "ipython" "alsamixer" "git-log" "w3mman"))
         (add-to-list 'eshell-visual-commands i))))
   :config
   (global-set-key (kbd "C-!") 'eshell-command))
