@@ -406,10 +406,9 @@ So far, F can only be a symbol, not a lambda expression."))
           (Man-highlight-references0 nil Man-apropos-regexp 1
                                      'Man-default-man-entry
                                      (or xref-man-type 'Man-xref-man-page)))
+      ;; Highlight references from top to bottom, not only from "SEE
+      ;; ALSO" section.
       (Man-highlight-references0 nil Man-reference-regexp 1
-                                 'Man-default-man-entry
-                                 (or xref-man-type 'Man-xref-man-page))
-      (Man-highlight-references0 Man-see-also-regexp Man-reference-regexp 1
                                  'Man-default-man-entry
                                  (or xref-man-type 'Man-xref-man-page))
       (Man-highlight-references0 Man-synopsis-regexp Man-header-regexp 0 2
