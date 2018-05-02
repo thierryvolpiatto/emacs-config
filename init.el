@@ -2017,6 +2017,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 (use-package flycheck-checkbashisms
   :ensure t
   :config
+  ;; Needs devscripts as dependency.
   (flycheck-checkbashisms-setup))
 
 ;;; Real-gud
