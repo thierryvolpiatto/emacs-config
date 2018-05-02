@@ -2040,6 +2040,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; edebug-x
 ;;
 (use-package edebug-x
+    :ensure t
     :config
   (edebug-x-mode 1)
   (setq edebug-on-quit nil)
