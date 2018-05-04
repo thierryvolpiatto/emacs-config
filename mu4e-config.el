@@ -16,7 +16,7 @@
         "thierry\\.volpiatto@gmail\\.com"
         "thievol05@zoho\\.eu"))
 
-(setq user-mail-address "thierry.volpiatto@gmail.com")
+(setq user-mail-address "thievol05@zoho.eu")
 (setq user-full-name "Thierry Volpiatto")
 
 ;; [smtpmail-async] Experimental, use `smtpmail-send-it' otherwise. 
@@ -27,9 +27,9 @@
       mail-envelope-from 'header)  ; otherwise `user-mail-address' is used. 
 
 ;; Default settings.
-(setq smtpmail-default-smtp-server "smtp.gmail.com"
+(setq smtpmail-default-smtp-server "smtp.zoho.eu"
       smtpmail-smtp-user user-mail-address
-      smtpmail-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-server "smtp.zoho.eu"
       smtpmail-smtp-service 587)
 
 ;; Passage à la ligne automatique
@@ -45,13 +45,27 @@
 (setq mu4e-compose-context-policy 'ask-if-none
       mu4e-context-policy 'pick-first
       mu4e-contexts
-      `( ,(make-mu4e-context
+      `(,(make-mu4e-context
+          :name "Zoho"
+          :enter-func (lambda () (mu4e-message "Switch to Zoho"))
+          :match-func (lambda (msg)
+                        (when msg
+                          (string-match-p "^/Zoho" (mu4e-message-field msg :maildir))))
+          :vars '((smtpmail-smtp-user           . "thievol05@zoho.eu")
+                  (smtpmail-default-smtp-server . "smtp.zoho.eu")
+                  (smtpmail-smtp-server         . "smtp.zoho.eu")
+                  (smtpmail-smtp-service        . 587)
+                  (mail-reply-to                . "thievol05@zoho.eu")
+                  (user-mail-address            . "thievol05@zoho.eu")
+                  (user-full-name               . "Thierry Volpiatto")
+                  (mu4e-compose-signature       . t)))
+         ,(make-mu4e-context
            :name "Gmail"
            :enter-func (lambda () (mu4e-message "Switch to Gmail"))
            ;; leave-func not defined
            :match-func (lambda (msg)
                          (when msg
-			  (string-match-p "^/Gmail" (mu4e-message-field msg :maildir))))
+                           (string-match-p "^/Gmail" (mu4e-message-field msg :maildir))))
            :vars '((smtpmail-smtp-user           . "thierry.volpiatto@gmail.com")
                    (smtpmail-default-smtp-server . "smtp.gmail.com")
                    (smtpmail-smtp-server         . "smtp.gmail.com")
@@ -61,33 +75,19 @@
                    (user-full-name               . "Thierry Volpiatto")
                    (mu4e-compose-signature       . t)))
          ,(make-mu4e-context
-            :name "Zoho"
-            :enter-func (lambda () (mu4e-message "Switch to Zoho"))
-            :match-func (lambda (msg)
-                          (when msg
-                            (string-match-p "^/Zoho" (mu4e-message-field msg :maildir))))
-            :vars '((smtpmail-smtp-user           . "thievol05@zoho.eu")
-                    (smtpmail-default-smtp-server . "smtp.zoho.eu")
-                    (smtpmail-smtp-server         . "smtp.zoho.eu")
-                    (smtpmail-smtp-service        . 587)
-                    (mail-reply-to                . "thievol05@zoho.eu")
-                    (user-mail-address            . "thievol05@zoho.eu")
-                    (user-full-name               . "Thierry Volpiatto")
-                    (mu4e-compose-signature       . t)))
-          ,(make-mu4e-context
-            :name "Yahoo"
-            :enter-func (lambda () (mu4e-message "Switch to Yahoo"))
-            :match-func (lambda (msg)
-                          (when msg
-                            (string-match-p "^/Yahoo" (mu4e-message-field msg :maildir))))
-            :vars '((smtpmail-smtp-user           . "tvolpiatto@yahoo.fr")
-                    (smtpmail-default-smtp-server . "smtp.mail.yahoo.com")
-                    (smtpmail-smtp-server         . "smtp.mail.yahoo.com")
-                    (smtpmail-smtp-service        . 587)
-                    (mail-reply-to                . "tvolpiatto@yahoo.fr")
-                    (user-mail-address            . "tvolpiatto@yahoo.fr")
-                    (user-full-name               . "Thierry Volpiatto")
-                    (mu4e-compose-signature       . t)))))
+           :name "Yahoo"
+           :enter-func (lambda () (mu4e-message "Switch to Yahoo"))
+           :match-func (lambda (msg)
+                         (when msg
+                           (string-match-p "^/Yahoo" (mu4e-message-field msg :maildir))))
+           :vars '((smtpmail-smtp-user           . "tvolpiatto@yahoo.fr")
+                   (smtpmail-default-smtp-server . "smtp.mail.yahoo.com")
+                   (smtpmail-smtp-server         . "smtp.mail.yahoo.com")
+                   (smtpmail-smtp-service        . 587)
+                   (mail-reply-to                . "tvolpiatto@yahoo.fr")
+                   (user-mail-address            . "tvolpiatto@yahoo.fr")
+                   (user-full-name               . "Thierry Volpiatto")
+                   (mu4e-compose-signature       . t)))))
 
 (setq mu4e-user-mail-address-list
       (delq nil
