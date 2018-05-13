@@ -190,14 +190,13 @@
 (defvar tv/mu4e-get-mail-command-full "offlineimap -u Basic")
 (defvar tv/mu4e-get-mail-command-quick "offlineimap -q -u Basic")
 (defun tv/mu4e-update-mail-quick-or-full ()
-  (cl-assert (NetworkManager-connected-p) nil "Network disconnected, unable to update mails")
   (if (>= tv/mu4e-counter
           tv/mu4e-max-number-update-before-toggling)
       (progn
         (setq mu4e-get-mail-command tv/mu4e-get-mail-command-full)
         (setq tv/mu4e-counter 0))
-      (setq mu4e-get-mail-command tv/mu4e-get-mail-command-quick)
-      (incf tv/mu4e-counter)))
+    (setq mu4e-get-mail-command tv/mu4e-get-mail-command-quick)
+    (incf tv/mu4e-counter)))
 (add-hook 'mu4e-update-pre-hook #'tv/mu4e-update-mail-quick-or-full)
 
 ;;; Attempt to show images when viewing messages
