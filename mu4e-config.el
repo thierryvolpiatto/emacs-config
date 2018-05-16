@@ -117,10 +117,7 @@
                                       (w3m-region (point-min) (point-max))))
                                    ((executable-find "w3m")
                                     "w3m -T text/html") ; Use w3m shell-command
-                                   (t (lambda ()        ; Use shr (slow)
-                                        (let ((shr-color-visible-luminance-min 75)
-                                              shr-width)
-                                          (shr-render-region (point-min) (point-max)))))))
+                                   (t 'html2text)))
 
 (setq mail-user-agent      'mu4e-user-agent
       read-mail-command    'mu4e
