@@ -200,8 +200,8 @@
 (add-hook 'mu4e-update-pre-hook #'tv/mu4e-update-mail-quick-or-full)
 
 ;;; Attempt to show images when viewing messages
-(setq mu4e-view-show-images t
-      mu4e-view-image-max-width 800)
+;; (setq mu4e-view-show-images t
+;;       mu4e-view-image-max-width 800)
 
 ;; View html message in firefox (type aV)
 (add-to-list 'mu4e-view-actions
