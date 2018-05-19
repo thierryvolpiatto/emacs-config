@@ -1246,8 +1246,8 @@ from IPython.core.completerlib import module_completion"
     (add-to-list 'tramp-default-proxies-alist
                  '((regexp-quote (system-name)) nil nil))
 
-    (when (boundp 'tramp-save-ad-hoc-proxies)
-      (setq tramp-save-ad-hoc-proxies t))
+    ;; (when (boundp 'tramp-save-ad-hoc-proxies)
+    ;;   (setq tramp-save-ad-hoc-proxies t))
 
     ;; Connect to my freebox as 'freebox' user.
     (add-to-list 'tramp-default-user-alist
