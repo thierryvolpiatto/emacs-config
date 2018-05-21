@@ -16,7 +16,7 @@
       w3m-output-coding-system 'utf-8
       w3m-input-coding-system 'utf-8
       w3m-terminal-coding-system 'utf-8
-      w3m-default-display-inline-images t)
+      w3m-default-display-inline-images nil)
 
 ;; `w3m-bookmark-save-buffer' is backing up bookmark file by renaming,
 ;; so that when `w3m-bookmark-file' is a symlink the symlink is
