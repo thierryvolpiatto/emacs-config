@@ -19,7 +19,8 @@
 (setq user-mail-address "thievol05@zoho.eu")
 (setq user-full-name "Thierry Volpiatto")
 
-;; [smtpmail-async] Experimental, use `smtpmail-send-it' otherwise. 
+;; [smtpmail-async] Experimental, use `smtpmail-send-it' otherwise.
+;; To debug use `smtpmail-send-it'
 (setq message-send-mail-function 'async-smtpmail-send-it
       ;smtpmail-debug-info t        ; Uncomment to debug
       ;smtpmail-debug-verb t        ; Uncomment to debug on server
