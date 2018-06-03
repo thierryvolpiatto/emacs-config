@@ -133,7 +133,7 @@
 
 ;; mcp 
 ;;;###autoload
-(defun mcp (file &optional list-of-dir)
+(defun tv/mcp (file &optional list-of-dir)
   "Copy `file' in different directories.
 Empty prompt to exit."
   (interactive "fFile: ")
