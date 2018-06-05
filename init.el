@@ -156,6 +156,9 @@ Restart works only on graphic display."
       delete-old-versions t)
 (setq tramp-backup-directory-alist backup-directory-alist)
 
+;; Trash
+(setq delete-by-moving-to-trash t)
+
 ;; Start-emacs-server
 ;;
 (require 'server)
