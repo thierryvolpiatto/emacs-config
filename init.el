@@ -1966,10 +1966,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;
 (use-package rectangle-edit :commands 'rectangle-edit)
 
-;;; Gh (needed for helm-open-github)
-;;
-(use-package gh :ensure t :defer t)
-
 ;;; Bash-completion
 ;;
 (use-package bash-completion
