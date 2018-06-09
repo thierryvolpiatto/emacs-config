@@ -349,17 +349,6 @@ First call indent, second complete symbol, third complete fname."
           (locate-dominating-file helm-ff-default-directory ".git")))
    1)
   (helm-source-add-action-to-source-if
-   "Github Issues"
-   (lambda (_candidate)
-     (with-helm-default-directory helm-ff-default-directory
-         (helm-open-github-from-issues helm-current-prefix-arg)))
-   source
-   (lambda (candidate)
-     (and (not (string-match-p ffap-url-regexp candidate))
-          helm-ff-default-directory
-          (locate-dominating-file helm-ff-default-directory ".git")))
-   1)
-  (helm-source-add-action-to-source-if
    "Patch region on directory"
    (lambda (_candidate)
      (with-helm-current-buffer
