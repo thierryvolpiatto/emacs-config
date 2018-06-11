@@ -296,7 +296,12 @@ So far, F can only be a symbol, not a lambda expression."))
       (ansi-term "/bin/bash"))
     (defadvice term-command-hook (before decode-string)
       (setq string (decode-coding-string string locale-coding-system)))
-    (when (version< emacs-version "24.3.50.1") (ad-activate 'term-command-hook)))
+    (when (version< emacs-version "24.3.50.1") (ad-activate 'term-command-hook))
+    ;; Retrieve emacs-25 behavior with 26+.
+    (when (and (boundp 'term-char-mode-buffer-read-only)
+               (boundp 'term-char-mode-point-at-process-mark))
+      (setq term-char-mode-point-at-process-mark nil
+            term-char-mode-buffer-read-only nil)))
   :bind ("<f11> t" . tv-term))
 
 ;; Browse url
