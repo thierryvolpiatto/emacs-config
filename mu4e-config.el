@@ -58,6 +58,11 @@
                   (smtpmail-smtp-service        . 587)
                   (mail-reply-to                . "thievol05@zoho.eu")
                   (user-mail-address            . "thievol05@zoho.eu")
+                  ;; Not sure that works, once sending once from
+                  ;; webmail, it seems I am allowed to send from any
+                  ;; VPN but perhaps this may be needed? Note that
+                  ;; gmail doesn't add such headers when sending from webmail.
+                  ;; (message-default-headers      "User-Agent: Zoho Mail\nX-Mailer: Zoho Mail\n")
                   (user-full-name               . "Thierry Volpiatto")
                   (mu4e-compose-signature       . t)))
          ,(make-mu4e-context
