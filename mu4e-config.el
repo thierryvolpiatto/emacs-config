@@ -259,8 +259,39 @@
                 (point) 'w3m-anchor-sequence)))
       (and pos (goto-char pos)))))
 
-(define-key mu4e-view-mode-map (kbd "<C-tab>")   'w3m-next-anchor)
-(define-key mu4e-view-mode-map (kbd "<backtab>") 'w3m-previous-anchor)
+(defun tv/w3m-next-anchor ()
+  (interactive)
+  (or (stringp (w3m-next-anchor))
+      (let ((pos (point)))
+        (when (eq (get-text-property (point) 'face)
+                  'mu4e-link-face)
+          (setq pos (next-single-property-change (point) 'face)))
+        (let ((next-url (and pos
+                             (or (text-property-any
+                                  pos (point-max)
+                                  'face 'mu4e-link-face)
+                                 (text-property-any
+                                  (point-min) (point-max)
+                                  'face 'mu4e-link-face)))))
+          (and next-url (goto-char next-url))))))
+
+(defun tv/w3m-previous-anchor ()
+  (interactive)
+  (require 'helm-lib)
+  (or (stringp (w3m-previous-anchor))
+      (let ((prev-url (save-excursion
+                        (helm-awhile (re-search-backward
+                                      ffap-url-regexp nil t)
+                          (goto-char (match-beginning 0))
+                          (when (eq (get-text-property
+                                     (point) 'face)
+                                    'mu4e-link-face)
+                            (cl-return (point)))
+                          (goto-char it)))))
+        (and prev-url (goto-char prev-url)))))
+
+(define-key mu4e-view-mode-map (kbd "<C-tab>")   'tv/w3m-next-anchor)
+(define-key mu4e-view-mode-map (kbd "<backtab>") 'tv/w3m-previous-anchor)
 (define-key mu4e-view-mode-map (kbd "X") 'mu4e-view-save-attachment-multi)
 
 ;;; A simplified and more efficient version of `article-translate-strings'.
