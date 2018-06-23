@@ -111,17 +111,17 @@
 
 ;;; showup size available when -h arg of ls used.
 
-(defun tv--advice-get-free-disk-space (dir &optional human)
-  (save-match-data
-    (unless (file-remote-p dir)
+(defun tv--advice-get-free-disk-space (dir)
+  (unless (file-remote-p (expand-file-name dir))
+    (save-match-data
       ;; That is for windows.
       (if (fboundp 'file-system-info)
 	  (let ((fsinfo (file-system-info dir)))
 	    (if fsinfo
 	        (format "%.0f" (/ (nth 2 fsinfo) 1024))))
-        ;; And this is for Unix/GNULinux.
+        ;; And this is for Linux.
         (when (executable-find directory-free-space-program)
-          (cl-getf (tv-get-disk-info dir human) :available))))))
+          (cl-getf (tv-get-disk-info dir 'human) :available))))))
 
 (defun tv-get-disk-info (directory &optional human)
   (let* ((directory-free-space-args
@@ -129,14 +129,16 @@
                    (string-match "h" dired-actual-switches))
               (concat directory-free-space-args "h")
             directory-free-space-args))
-         (dir     (expand-file-name directory))
-         (args    (if human
-                      (concat directory-free-space-args "h")
-                      directory-free-space-args))
-         (data   (with-temp-buffer
-                   (call-process directory-free-space-program
-                                 nil t nil args dir)
-                   (split-string (buffer-string) "\n" t)))
+         (default-directory (expand-file-name directory))
+         (dir  (or (file-remote-p default-directory 'localname)
+                   default-directory))
+         (args (if human
+                   (concat directory-free-space-args "h")
+                 directory-free-space-args))
+         (data (with-temp-buffer
+                 (process-file directory-free-space-program
+                               nil t nil args dir)
+                 (split-string (buffer-string) "\n" t)))
          (values (split-string (cadr data))))
     (cl-loop for i in '(:device :blocks :used :available :capacity :mount-point)
              for j in values
