@@ -274,7 +274,8 @@ First call indent, second complete symbol, third complete fname."
       helm-browse-project-default-find-files-fn       'helm-browse-project-ag-find-files
       helm-emms-use-track-description-function        nil
       helm-buffer-max-length            22
-      helm-buffers-end-truncated-string "…")
+      helm-buffers-end-truncated-string "…"
+      helm-list-directory-function #'helm-list-dir-external)
 
 ;; find-file-hook
 (add-hook 'find-file-hook 'helm-save-current-pos-to-mark-ring)
