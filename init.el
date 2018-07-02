@@ -157,14 +157,14 @@ Restart works only on graphic display."
 (setq tramp-backup-directory-alist backup-directory-alist)
 
 ;; Trash
-;; Trash is unsafe in emacs don't use it.
-;; especially is ENV var XDG_DATA_HOME is set with $HOME/.local/share,
+;; Trash is unsafe in emacs.
+;; especially if ENV var XDG_DATA_HOME is set with $HOME/.local/share,
 ;; as move-file-to-trash is not using substitute-in-file-name to
 ;; compute XDG_DATA_HOME you may endup with a duplicated HOME directory.
 ;; Thus you may expect files to be trashed when using /sudo::, this is
 ;; not supported.
-(setenv "XDG_DATA_HOME" "") ; Ensure this is unset in emacs.
-;; (setq delete-by-moving-to-trash t)
+(setenv "XDG_DATA_HOME") ; Ensure this is unset in emacs.
+(setq delete-by-moving-to-trash t)
 
 ;; Start-emacs-server
 ;;
