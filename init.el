@@ -163,6 +163,7 @@ Restart works only on graphic display."
 ;; compute XDG_DATA_HOME you may endup with a duplicated HOME directory.
 ;; Thus you may expect files to be trashed when using /sudo::, this is
 ;; not supported.
+(setenv "XDG_DATA_HOME" "") ; Ensure this is unset in emacs.
 ;; (setq delete-by-moving-to-trash t)
 
 ;; Start-emacs-server
