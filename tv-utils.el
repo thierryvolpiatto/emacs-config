@@ -378,6 +378,8 @@ depending the value of N is positive or negative."
                  (delete-char -1))
                (skip-chars-forward " ")
                (forward-symbol 1)
+               ;; move forward in a list of strings
+               (skip-chars-forward "\"")
                (insert ")"))
               (t (setq kb  (this-command-keys-vector))
                  (setq com (lookup-key (current-local-map) kb))
