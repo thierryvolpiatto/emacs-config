@@ -68,15 +68,15 @@
 ;; Tags-setting 
 ;; (info "(org)Setting tags")
 
-(setq org-tag-alist '(("@entrainement")
+(setq org-tag-alist '(("entrainement")
                       ("climbing")
                       ("equipement")
-                      ("@github")
+                      ("github")
                       ("helm")
                       ("async")
                       ("crypt")
-                      ("@home")
-                      ("@travel")))
+                      ("home")
+                      ("travel")))
 
 ;; org-capture
 (setq org-default-notes-file (expand-file-name "notes.org" org-directory))
