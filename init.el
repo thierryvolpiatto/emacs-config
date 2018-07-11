@@ -1227,11 +1227,7 @@ from IPython.core.completerlib import module_completion"
               "## Title: \n"
               "## Description: \n"
               "## Author:Thierry Volpiatto<thierry dot volpiatto FROM gmail DOT com>\n"
-              "## Commentary:\n\n"))
-    (use-package helm-ipyton
-        :config
-      (define-key python-mode-map (kbd "C-c C-i") 'helm-ipython-import-modules-from-buffer)
-      (define-key python-mode-map (kbd "<M-tab>") 'helm-ipython-complete)))
+              "## Commentary:\n\n")))
   :bind ("<f11> p" . python-shell-switch-to-shell))
 
 ;;; Tramp-config
