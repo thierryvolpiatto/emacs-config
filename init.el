@@ -1195,10 +1195,6 @@ are returned unchanged."
 ;;
 ;; Install rlcompleter2
 ;; https://pypi.org/project/rlcompleter2
-(require 'helm-ipython)
-(define-key python-mode-map (kbd "<M-tab>") 'helm-ipython-complete)
-(define-key python-mode-map (kbd "C-c C-i") 'helm-ipython-import-modules-from-buffer)
-
 (use-package python
   :no-require t
   :init
@@ -1231,7 +1227,11 @@ from IPython.core.completerlib import module_completion"
               "## Title: \n"
               "## Description: \n"
               "## Author:Thierry Volpiatto<thierry dot volpiatto FROM gmail DOT com>\n"
-              "## Commentary:\n\n")))
+              "## Commentary:\n\n"))
+    (use-package helm-ipyton
+        :config
+      (define-key python-mode-map (kbd "C-c C-i") 'helm-ipython-import-modules-from-buffer)
+      (define-key python-mode-map (kbd "<M-tab>") 'helm-ipython-complete)))
   :bind ("<f11> p" . python-shell-switch-to-shell))
 
 ;;; Tramp-config
