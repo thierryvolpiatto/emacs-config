@@ -1195,6 +1195,10 @@ are returned unchanged."
 ;;
 ;; Install rlcompleter2
 ;; https://pypi.org/project/rlcompleter2
+(require 'helm-ipython)
+(define-key python-mode-map (kbd "<M-tab>") 'helm-ipython-complete)
+(define-key python-mode-map (kbd "C-c C-i") 'helm-ipython-import-modules-from-buffer)
+
 (use-package python
   :no-require t
   :init
@@ -1207,7 +1211,7 @@ are returned unchanged."
      python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
      python-shell-completion-setup-code
      "import rlcompleter2
-rlcompleter2.setup()
+rlcompleter2.setup(histfn=None, button='tab',verbose=None)
 from IPython.core.completerlib import module_completion"
      python-shell-completion-module-string-code
      "';'.join(module_completion('''%s'''))\n"
