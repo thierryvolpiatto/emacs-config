@@ -1195,10 +1195,6 @@ are returned unchanged."
 ;;
 ;; Install rlcompleter2
 ;; https://pypi.org/project/rlcompleter2
-(require 'helm-ipython)
-(define-key python-mode-map (kbd "<M-tab>") 'helm-ipython-complete)
-(define-key python-mode-map (kbd "C-c C-i") 'helm-ipython-import-modules-from-buffer)
-
 (use-package python
   :no-require t
   :init
