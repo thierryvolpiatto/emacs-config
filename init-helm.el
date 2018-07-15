@@ -123,8 +123,13 @@
 (define-key ctl-x-5-map (kbd "M-g a")   'helm-do-grep-ag-in-frame)
 (define-key ctl-x-5-map (kbd "M-g g")   'helm-do-git-grep-in-frame)
 
+(defvar helm-auto-complete-timer nil)
 (defun helm-ipython-auto-complete ()
-  (run-with-idle-timer 0.8 nil #'helm-ipython-complete))
+  (when helm-auto-complete-timer
+    (cancel-timer helm-auto-complete-timer)
+    (setq helm-auto-complete-timer nil))
+  (setq helm-auto-complete-timer
+        (run-with-idle-timer 0.8 nil #'helm-ipython-complete)))
 
 (defvar helm-auto-complete-modes '((python-mode . helm-ipython-auto-complete)))
 (define-minor-mode helm-auto-complete-mode
