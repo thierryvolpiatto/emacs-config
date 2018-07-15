@@ -122,6 +122,17 @@
 (define-key ctl-x-5-map (kbd "C-x C-b") 'helm-mini-in-frame)
 (define-key ctl-x-5-map (kbd "M-g a")   'helm-do-grep-ag-in-frame)
 (define-key ctl-x-5-map (kbd "M-g g")   'helm-do-git-grep-in-frame)
+
+(defvar helm-auto-complete-modes '((python-mode . helm-ipython-complete)))
+(define-minor-mode helm-auto-complete-mode
+    "doc."
+  :init-value t
+  (let ((cmode (assoc-default major-mode helm-auto-complete-modes)))
+    (when cmode
+      (if helm-auto-complete-mode
+          (add-hook 'post-self-insert-hook cmode nil 'local)
+        (remove-hook 'post-self-insert-hook cmode 'local)))))
+
 
 ;;; Helm-command-map
 ;;
