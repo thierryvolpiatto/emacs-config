@@ -1741,7 +1741,7 @@ are returned unchanged."
   :config
   (progn
     (defun comint--advice-send-eof (&rest _args)
-      (kill-buffer))
+      (kill-buffer) (delete-window))
     (advice-add 'comint-send-eof :after 'comint--advice-send-eof))
   :bind (("<f11> s h" . shell)
          :map shell-mode-map
