@@ -1208,7 +1208,9 @@ are returned unchanged."
 
     (add-hook 'python-mode-hook
               (lambda ()
-                (define-key python-mode-map (kbd "C-m") 'newline-and-indent))))
+                (define-key python-mode-map (kbd "C-m") 'newline-and-indent)))
+
+    (add-hook 'python-mode-hook 'helm-auto-complete-mode))
   :config
   (progn
     (defun tv-insert-python-header ()
