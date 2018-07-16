@@ -1193,8 +1193,6 @@ are returned unchanged."
 ;;; Python config
 ;;
 ;;
-;; Install rlcompleter2
-;; https://pypi.org/project/rlcompleter2
 (use-package python
   :no-require t
   :init
@@ -1204,17 +1202,7 @@ are returned unchanged."
      python-shell-interpreter "ipython"
      python-shell-interpreter-args "-i --autoindent"
      python-shell-prompt-regexp "In \\[[0-9]+\\]: "
-     python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
-     ;; The 3 next are only needed if using rlcompleter2 as completer
-     ;; in interactive inferior shell (specified in ~/.pythonstartup).
-     python-shell-completion-setup-code
-     "import rlcompleter2
-rlcompleter2.setup(histfn=None, button='tab',verbose=None)
-from IPython.core.completerlib import module_completion"
-     python-shell-completion-module-string-code
-     "';'.join(module_completion('''%s'''))\n"
-     python-shell-completion-string-code
-     "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
+     python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: ")
 
     (add-hook 'python-mode-hook
               (lambda ()
