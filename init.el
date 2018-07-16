@@ -1218,10 +1218,7 @@ from IPython.core.completerlib import module_completion"
 
     (add-hook 'python-mode-hook
               (lambda ()
-                (define-key python-mode-map (kbd "C-m") 'newline-and-indent)))
-
-    ;; Experimental.
-    (add-hook 'python-mode-hook 'helm-auto-complete-mode))
+                (define-key python-mode-map (kbd "C-m") 'newline-and-indent))))
   
   :config
   (progn
