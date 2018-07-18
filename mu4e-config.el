@@ -117,7 +117,7 @@
 (setq mu4e-headers-include-related nil)
 
 ;;; Html rendering
-(setq mu4e-view-prefer-html t)
+(setq mu4e-view-prefer-html nil)
 (setq mu4e-html2text-command (cond ((fboundp 'w3m)
                                     (lambda ()          ; Use emacs-w3m
                                       (w3m-region (point-min) (point-max))))
