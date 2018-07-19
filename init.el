@@ -1217,7 +1217,10 @@ are returned unchanged."
             obj = eval(obj, globals())
         doc = inspect.getdoc(obj)
         if callable(obj):
-            sig = inspect.formatargspec(*argspec_function(obj))
+            try:
+                sig = inspect.formatargspec(*argspec_function(obj))
+            except:
+                sig = None
         else:
             sig = None
         if not doc and callable(obj):
@@ -1240,8 +1243,9 @@ are returned unchanged."
         doc = ''
         sig = ''
     if sig:
-        doc = sig+'\\n'+doc
-    return doc ")
+        doc = '\\n'.join([sig,doc])
+    return doc
+")
     (add-hook 'python-mode-hook
               (lambda ()
                 (define-key python-mode-map (kbd "C-m") 'newline-and-indent))))
