@@ -1203,7 +1203,42 @@ are returned unchanged."
      python-shell-interpreter-args "-i --autoindent"
      python-shell-prompt-regexp "In \\[[0-9]+\\]: "
      python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: ")
-
+    (setq python-eldoc-setup-code
+          "def __PYDOC_get_help(obj):
+    try:
+        import inspect
+        try:
+            str_type = basestring
+            argspec_function = inspect.getargspec
+        except NameError:
+            str_type = str
+            argspec_function = inspect.getfullargspec
+        if isinstance(obj, str_type):
+            obj = eval(obj, globals())
+        doc = inspect.getdoc(obj)
+        if not doc and callable(obj):
+            target = None
+            if inspect.isclass(obj) and hasattr(obj, '__init__'):
+                target = obj.__init__
+                objtype = 'class'
+            else:
+                target = obj
+                objtype = 'def'
+            if target:
+                args = inspect.formatargspec(*argspec_function(target))
+                name = obj.__name__
+                doc = '{objtype} {name}{args}'.format(
+                    objtype=objtype, name=name, args=args
+                )
+        else:
+            doc = doc.splitlines()[0]
+            sig = inspect.formatargspec(argspec_function(obj)[0])
+    except:
+        doc = ''
+        sig = ''
+    if sig:
+        doc = sig+'\\n'+doc
+    return doc")
     (add-hook 'python-mode-hook
               (lambda ()
                 (define-key python-mode-map (kbd "C-m") 'newline-and-indent))))
