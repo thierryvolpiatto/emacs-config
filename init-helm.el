@@ -283,7 +283,9 @@ First call indent, second complete symbol, third complete fname."
       helm-emms-use-track-description-function        nil
       helm-buffer-max-length            22
       helm-buffers-end-truncated-string "…"
-      helm-trash-remote-files           t)
+      helm-trash-remote-files           t
+      helm-grep-git-grep-command
+      "git --no-pager grep -n%cH --color=always --exclude-standard --no-index --full-name -e %p -- %f")
 
 ;; find-file-hook
 (add-hook 'find-file-hook 'helm-save-current-pos-to-mark-ring)
