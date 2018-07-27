@@ -241,7 +241,7 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;; Info
 ;;
 (use-package info
-  :init
+  :config
   (progn
     ;; Additional info directories
     (add-to-list 'Info-directory-list "/usr/local/share/info")
@@ -278,9 +278,8 @@ So far, F can only be a symbol, not a lambda expression."))
              ("^[[:upper]][a-z- ]*:" . font-lock-variable-name-face)
              )))
 
-    (add-hook 'Info-mode-hook 'tv-font-lock-doc-rules))
-  :config
-  (define-key Info-mode-map [remap Info-index] 'helm-info-at-point))
+    (add-hook 'Info-mode-hook 'tv-font-lock-doc-rules)
+    (define-key Info-mode-map [remap Info-index] 'helm-info-at-point)))
 
 ;;; Helm
 ;;
