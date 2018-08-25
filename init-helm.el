@@ -34,6 +34,17 @@
   (define-key inferior-python-mode-map (kbd "C-i") 'helm-ipython-complete)
   (define-key python-mode-map (kbd "C-c C-i") 'helm-ipython-import-modules-from-buffer))
 
+(use-package helm-ring
+    :config
+  ;; Action for helm kill-ring
+  (defun helm/emamux:copy-from-kill-ring (candidate)
+    (require 'emamux)
+    (emamux:check-tmux-running)
+    (when (null kill-ring)
+      (error "kill-ring is nil!!"))
+    (emamux:set-buffer candidate 0))
+  (add-to-list 'helm-kill-ring-actions '("Emamux copy" . helm/emamux:copy-from-kill-ring) t))
+
 
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
