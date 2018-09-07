@@ -2068,13 +2068,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
       (message "Edebug's initial mode is now: %s" mode)))
   (advice-add 'edebug-set-initial-mode :override 'tv/edebug-set-initial-mode))
 
-
-;;; Ensure touchpad is reenabled when quitting emacs
-;;  because of bug that cause desktop loosing focus after killing emacs.
-(add-hook 'kill-emacs-hook (lambda ()
-                             (and (executable-find "reenable_touchpad.sh")
-                                  (shell-command "reenable_touchpad.sh"))))
-
 ;; Link now scratch buffer to file
 (tv-restore-scratch-buffer)
 
