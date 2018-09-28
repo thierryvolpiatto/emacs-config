@@ -296,6 +296,7 @@ First call indent, second complete symbol, third complete fname."
       helm-trash-remote-files           t
       helm-grep-git-grep-command
       "git --no-pager grep -n%cH --color=always --exclude-standard --no-index --full-name -e %p -- %f"
+      helm-dwim-target 'next-window
       )
 
 ;; find-file-hook
