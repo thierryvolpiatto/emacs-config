@@ -164,15 +164,15 @@
       '(("date:1w..now helm AND NOT flag:trashed" "Last 7 days helm messages" ?h)
         ("date:1d..now helm AND NOT flag:trashed" "Yesterday and today helm messages" ?b)
         ("flag:unread AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam \
-AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk Mail" "Unread messages" ?u)
+AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk\\s-Mail" "Unread messages" ?u)
         ("date:today..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam \
-AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk Mail" "Today's messages" ?t)
+AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk\\s-Mail" "Today's messages" ?t)
         ("date:1d..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam \
-AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk Mail" "Yesterday and today messages" ?y)
+AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk\\s-Mail" "Yesterday and today messages" ?y)
         ("date:7d..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam \
-AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk Mail" "Last 7 days" ?w)
+AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk\\s-Mail" "Last 7 days" ?w)
         ("mime:image/* AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam \
-AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk Mail" "Messages with images" ?p)))
+AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk\\s-Mail" "Messages with images" ?p)))
 
 (add-hook 'mu4e-compose-mode-hook 'tv/message-mode-setup)
 
