@@ -1080,7 +1080,7 @@ Arg `host' is machine in auth-info file."
 ;;; wttr.in weather report
 ;;
 (defvar wttr-weather-history nil)
-(defvar wttr-weather-default-location "La Ciotat")
+(defvar wttr-weather-default-location "Le Beausset")
 (defvar wttr-weather-last-location nil)
 ;;;###autoload
 (defun wttr-weather (place)
