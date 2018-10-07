@@ -1085,12 +1085,15 @@ Arg `host' is machine in auth-info file."
 ;;;###autoload
 (defun wttr-weather (place)
   "Weather forecast with wttr.in.
+With a prefix arg refresh buffer if some.
 See <https://github.com/chubin/wttr.in>."
   (interactive (list (read-string "Place: " nil 'wttr-weather-history
                                   wttr-weather-default-location)))
   (require 'helm-lib)
   (let ((buf (get-buffer-create (format "*wttr.in %s*" place))))
     (switch-to-buffer buf)
+    (when current-prefix-arg
+      (set (make-local-variable 'wttr-weather-last-location) nil))
     (unless wttr-weather-last-location
       (wttr-weather-update place)
       (wttr-weather-mode)
