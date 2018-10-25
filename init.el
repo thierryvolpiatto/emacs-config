@@ -927,17 +927,6 @@ If your system's ping continues until interrupted, you can try setting
 ;;
 (use-package iterator)
 
-;;; psession
-;;
-(use-package psession
-  :config
-  (psession-savehist-mode 1)
-  (psession-mode 1)
-  (psession-autosave-mode 1)
-  (bind-key "C-x p s" 'psession-save-winconf)
-  (bind-key "C-x p d" 'psession-delete-winconf)
-  (bind-key "C-x p j" 'psession-restore-winconf))
-
 ;;; pcomplete
 ;;
 (use-package pcomplete-extension)
@@ -963,6 +952,7 @@ If your system's ping continues until interrupted, you can try setting
 (use-package magit
   :commands (magit-status magit-status-internal magit-blame)
   :init
+  (defvar magit-git-command-history nil)
   (bind-key "<f2>" 'magit-status)
   (setq git-commit-fill-column             70
         git-commit-summary-max-length      56
@@ -2067,6 +2057,18 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
       (setq edebug-initial-mode mode)
       (message "Edebug's initial mode is now: %s" mode)))
   (advice-add 'edebug-set-initial-mode :override 'tv/edebug-set-initial-mode))
+
+;;; psession
+;;
+(use-package psession
+  :config
+  (psession-savehist-mode 1)
+  (psession-mode 1)
+  (psession-autosave-mode 1)
+  (bind-key "C-x p s" 'psession-save-winconf)
+  (bind-key "C-x p d" 'psession-delete-winconf)
+  (bind-key "C-x p j" 'psession-restore-winconf))
+
 
 ;; Link now scratch buffer to file
 (tv-restore-scratch-buffer)
