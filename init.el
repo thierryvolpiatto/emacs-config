@@ -1687,10 +1687,11 @@ are returned unchanged."
 ;;; linum-relative
 ;;
 (use-package linum-relative
-  :commands (linum-relative-mode
-             helm-linum-relative-mode
-             linum-relative-toggle
-             linum-relative-global-mode))
+    :disabled t
+    :commands (linum-relative-mode
+               helm-linum-relative-mode
+               linum-relative-toggle
+               linum-relative-global-mode))
 
 ;;; Outline-mode
 ;;
