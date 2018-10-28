@@ -1693,6 +1693,12 @@ are returned unchanged."
                linum-relative-toggle
                linum-relative-global-mode))
 
+(use-package display-line-numbers
+    :commands (display-line-numbers-mode
+               global-display-line-numbers-mode)
+    :config
+    (setq display-line-numbers-type 'relative))
+
 ;;; Outline-mode
 ;;
 (use-package outline
