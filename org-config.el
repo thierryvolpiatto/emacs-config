@@ -184,6 +184,8 @@
 ;; Invisible edits
 (setq org-catch-invisible-edits 'smart)
 
+(setq org-show-context-detail '((default . local)))
+
 ;; Org babel
 (use-package ob-emacs-lisp
     :config
