@@ -108,6 +108,17 @@ Restart works only on graphic display."
            kill-emacs-query-functions)))
     (tv-stop-emacs-1)))
 
+;; Kill buffer and windows
+(defun tv/kill-buffer-and-windows (buffer)
+  "Kill BUFFER and delete its windows."
+  (interactive (list (read-buffer "Kill buffer: " (current-buffer) t)))
+  (let ((windows (get-buffer-window-list buffer nil t)))
+    (when (kill-buffer buffer)
+      (dolist (win windows)
+        (when (window-live-p win)
+          (ignore-errors (delete-window win)))))))
+(global-set-key [remap kill-buffer] 'tv/kill-buffer-and-windows)
+
 ;; Add-newline-at-end-of-files
 (setq require-final-newline t)
 
