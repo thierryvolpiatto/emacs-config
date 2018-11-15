@@ -304,6 +304,8 @@ First call indent, second complete symbol, third complete fname."
 
 ;; Avoid hitting forbidden directory .gvfs when using find.
 (add-to-list 'completion-ignored-extensions ".gvfs/")
+(add-to-list 'completion-ignored-extensions ".dbus/")
+(add-to-list 'completion-ignored-extensions "dconf/")
 
 
 ;;; Toggle grep program
