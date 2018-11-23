@@ -798,7 +798,7 @@ the password will be of length (floor LIMIT)."
 (defun tv/generate-passwd (arg)
   (interactive "p")
   (message "New pwd `%s' saved to kill ring"
-           (kill-new (genpasswd (max 12 arg)))))
+           (kill-new (genpasswd (max 8 arg)))))
 
 ;;;###autoload
 (defun tv/gen-socgen-passwd ()
