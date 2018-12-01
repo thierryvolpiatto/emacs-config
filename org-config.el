@@ -122,9 +122,15 @@
     (forward-line 1)
     (insert "\n#+end_src")))
 
+(defun tv/org-headings (arg)
+  (interactive "P")
+  (if arg
+      (helm-org-agenda-files-headings)
+    (helm-org-in-buffer-headings)))
+
 (add-hook 'org-mode-hook 
 	  (lambda ()
-	    (define-key org-mode-map (kbd "<f11> o") 'helm-org-in-buffer-headings)
+	    (define-key org-mode-map (kbd "<f11> o") 'tv/org-headings)
 	    (define-key org-mode-map (kbd "<f11> k") 'tv/insert-org-src-keyword)))
                                              
 ;; Colorize-Diary's-entries-in-agenda 
