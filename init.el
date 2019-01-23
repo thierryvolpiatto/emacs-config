@@ -1302,8 +1302,11 @@ are returned unchanged."
 (use-package ange-ftp
   :init
   (progn
-    (setq ange-ftp-try-passive-mode t)
-    (setq ange-ftp-passive-host-alist '(("mafreebox.freebox.fr" . "on"))))
+    ;; Following used to work with previous emacs version but is now broken.
+    ;; (setq ange-ftp-try-passive-mode t)
+    ;; (setq ange-ftp-passive-host-alist '(("mafreebox.freebox.fr" . "on")))
+    ;; So use now directly pftp.
+    (setq ange-ftp-ftp-program-name "pftp"))
   :no-require t)
 
 ;;; Calendar and diary

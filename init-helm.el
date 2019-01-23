@@ -298,6 +298,7 @@ First call indent, second complete symbol, third complete fname."
       helm-grep-git-grep-command
       "git --no-pager grep -n%cH --color=always --exclude-standard --no-index --full-name -e %p -- %f"
       helm-dwim-target 'next-window
+      helm-candidate-number-limit 200
       )
 
 ;; find-file-hook
@@ -338,7 +339,7 @@ First call indent, second complete symbol, third complete fname."
 
 (defun helm/ff-candidates-lisp-p (candidate)
   (cl-loop for cand in (helm-marked-candidates)
-           always (string-match "\.el$" cand)))
+           always (string-match "\\.el$" cand)))
 
 
 ;;; Modify source attributes
