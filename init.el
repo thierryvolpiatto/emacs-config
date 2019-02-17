@@ -2078,6 +2078,31 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
       (message "Edebug's initial mode is now: %s" mode)))
   (advice-add 'edebug-set-initial-mode :override 'tv/edebug-set-initial-mode))
 
+;;; Slime
+;;
+;;
+(use-package slime
+    :init
+  (progn
+    (setq inferior-lisp-program "/usr/bin/sbcl")
+    (slime-setup '(slime-fancy
+                   slime-asdf
+                   slime-tramp
+                   slime-banner
+                   slime-autodoc
+                   slime-xref-browser))
+    (setq slime-net-coding-system 'utf-8-unix
+          slime-complete-symbol-function 'slime-fuzzy-complete-symbol)
+    ;; Save-slime-scratch-buffer
+    (setq slime-scratch-file "~/.emacs.d/slime-scratch.lisp")
+    ;; common-lisp-info
+    (add-to-list 'Info-additional-directory-list "~/elisp/info/gcl-info/")
+    (bind-key "<f11> l r" 'slime)
+    (bind-key "<f11> l e" 'slime-scratch)
+    (bind-key "<f11> l l" 'helm-slime-list-connections)
+    
+  :no-require t)
+
 ;;; psession
 ;;
 (use-package psession
