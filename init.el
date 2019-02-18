@@ -2101,7 +2101,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
     (bind-key "<f11> l e" 'slime-scratch)
     (bind-key "<f11> l l" 'helm-slime-list-connections)
     
-  :no-require t)
+  :no-require t))
 
 ;;; psession
 ;;
