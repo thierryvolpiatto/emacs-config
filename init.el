@@ -829,10 +829,6 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'htmlize-many-files "htmlize" nil t)
 (autoload 'htmlize-many-files-dired "htmlize" nil t)
 
-;;; Cl-info
-;;
-(autoload 'cl-info "cl-info" nil t)
-
 ;;; Ioccur
 ;;
 (use-package ioccur
@@ -2077,6 +2073,23 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
       (setq edebug-initial-mode mode)
       (message "Edebug's initial mode is now: %s" mode)))
   (advice-add 'edebug-set-initial-mode :override 'tv/edebug-set-initial-mode))
+
+;;; Slime
+;;
+(use-package slime
+    :ensure t
+    :init
+  (progn
+    (setq inferior-lisp-program "/usr/bin/sbcl"
+          slime-net-coding-system 'utf-8-unix
+          slime-contribs '(slime-fancy)
+          slime-scratch-file "~/.emacs.d/slime-scratch.lisp")
+    ;; common-lisp-info
+    (require 'cl-info)
+    (add-to-list 'Info-additional-directory-list "~/elisp/info/gcl-info/")
+    (bind-key "<f11> l r" 'slime)
+    (bind-key "<f11> l s" 'slime-scratch)
+    (bind-key "<f11> l l" 'helm-slime-list-connections)))
 
 ;;; psession
 ;;
