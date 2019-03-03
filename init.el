@@ -1016,7 +1016,7 @@ If your system's ping continues until interrupted, you can try setting
 
     (advice-add 'undo-tree-undo :after 'git-gutter:undo-tree-undo)
     (advice-add 'undo-tree-redo :after 'git-gutter:undo-tree-undo)
-
+    (setq undo-tree-enable-undo-in-region nil)
     ;; (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree-history")))
     ;; (setq undo-tree-auto-save-history t)
     (global-undo-tree-mode 1)))
