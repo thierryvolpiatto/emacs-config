@@ -1787,7 +1787,8 @@ are returned unchanged."
   :config
   (progn
     (defun comint--advice-send-eof (&rest _args)
-      (kill-buffer) (delete-window))
+      (let ((win (selected-window)))
+        (kill-buffer) (delete-window win)))
     (advice-add 'comint-send-eof :after 'comint--advice-send-eof))
   :bind (("<f11> s h" . shell)
          :map shell-mode-map
