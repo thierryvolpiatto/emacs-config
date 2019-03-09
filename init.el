@@ -2092,6 +2092,16 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
     (bind-key "<f11> l s" 'slime-scratch)
     (bind-key "<f11> l l" 'helm-slime-list-connections)))
 
+;;; Geiser
+;;
+(use-package geiser
+    :ensure t
+    :config
+    (setq geiser-completion--module-list-func
+          (completion-table-dynamic 'geiser-completion--module-list)
+          geiser-completion--symbol-list-func
+          (completion-table-dynamic 'geiser-completion--symbol-list)))
+
 ;;; psession
 ;;
 (use-package psession
