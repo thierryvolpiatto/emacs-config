@@ -280,12 +280,6 @@ First call indent, second complete symbol, third complete fname."
       helm-autoresize-min-height                      20 ; it is %.
       fit-window-to-buffer-horizontally               1
       helm-highlight-matches-around-point-max-lines   30
-      helm-search-suggest-action-wikipedia-url
-      "https://fr.wikipedia.org/wiki/Special:Search?search=%s"
-      helm-wikipedia-suggest-url
-      "https://fr.wikipedia.org/w/api.php?action=opensearch&search="
-      helm-wikipedia-summary-url
-      "https://fr.wikipedia.org/w/api.php?action=parse&format=json&prop=text&section=0&page="
       helm-turn-on-recentf nil
       helm-mini-default-sources '(helm-source-buffers-list helm-source-buffer-not-found)
       helm-debug-root-directory "/home/thierry/tmp/helm-debug"
