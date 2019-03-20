@@ -3,7 +3,6 @@
 ;;; Code:
 
 (require 'mu4e-contrib)
-(require 'config-w3m)
 (require 'mu4e-patch)
 
 ;;; Message and smtp settings

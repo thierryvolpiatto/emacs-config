@@ -529,7 +529,6 @@ So far, F can only be a symbol, not a lambda expression."))
 (use-package wget
   :config
   (progn
-    (use-package w3m-wget)
     ;; Use wget in eshell.
     (defun eshell/wget (url)
       (wget url))))
@@ -1476,22 +1475,6 @@ are returned unchanged."
              addressbook-bmenu-edit
              addressbook-bookmark-jump))
 
-;;; W3m
-;;
-(use-package w3m
-  :ensure t
-  :commands (w3m-toggle-inline-image w3m-region w3m-browse-url)
-  :init (require 'config-w3m)
-  :bind
-  (("<f7> h" . w3m)
-   :map w3m-mode-map
-   ("F" . w3m-view-url-with-browse-url)
-   ("M-<right>" . w3m-next-buffer)
-   ("M-<left>" . w3m-previous-buffer)
-   ("V" . helm-w3m-bookmarks)
-   ("M" . w3m-view-url-with-browse-url)
-   ("M-q" . tv/w3m-fill-region-or-paragraph)))
-
 ;;; Mu4e
 ;;
 (use-package mu4e
@@ -1680,7 +1663,7 @@ are returned unchanged."
     ;; Eshell-visual
     (setq eshell-term-name "eterm-color")
     (with-eval-after-load "em-term"
-      (dolist (i '("tmux" "htop" "ipython" "alsamixer" "git-log" "w3mman"))
+      (dolist (i '("tmux" "htop" "ipython" "alsamixer" "git-log"))
         (add-to-list 'eshell-visual-commands i))))
   :config
   (global-set-key (kbd "C-!") 'eshell-command))
