@@ -75,7 +75,7 @@
     (when (eq major-mode 'emacs-lisp-mode)
       (message "[%s]" (which-function)))))
 
-(define-key helm-moccur-map (kbd "C-M-a") 'helm/occur-which-func)
+(define-key helm-occur-map (kbd "C-M-a") 'helm/occur-which-func)
 (define-key helm-grep-map   (kbd "C-M-a") 'helm/occur-which-func)
 
 ;; Show the visibles buffers on top of list (issue #1301)
@@ -443,8 +443,6 @@ First call indent, second complete symbol, third complete fname."
                              ".git"))
    1))
 
-(defmethod helm-setup-user-source ((source helm-source-multi-occur))
-  (setf (slot-value source 'requires-pattern) 1))
 
 ;;; helm dictionary
 ;;
