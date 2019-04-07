@@ -856,7 +856,6 @@ If your system's ping continues until interrupted, you can try setting
          ("C-M-("                 . tv-move-pair-forward)
          ("C-M-\""                . tv-insert-double-quote-and-close-forward)
          ("C-M-)"                 . tv-insert-pair-and-close-forward)
-         ("C-c t r"               . translate-at-point)
          ("<f5> c"                . tv-toggle-calendar)
          ([remap kill-whole-line] . tv-kill-whole-line)
          ("M-e"                   . tv-eval-last-sexp-at-eol)

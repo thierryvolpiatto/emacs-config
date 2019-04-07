@@ -181,6 +181,7 @@
 (define-key global-map (kbd "M-g i")                 'helm-gid)
 (define-key global-map (kbd "C-x r p")               'helm-projects-history)
 (define-key global-map (kbd "C-x r c")               'helm-addressbook-bookmarks)
+(define-key global-map (kbd "C-c t r")               'helm-dictionary)
 
 (helm-multi-key-defun helm-multi-lisp-complete-at-point
     "Multi key function for completion in emacs lisp buffers.
