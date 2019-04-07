@@ -447,7 +447,8 @@ First call indent, second complete symbol, third complete fname."
 
 ;;; helm dictionary
 ;;
-(setq helm-dictionary-database "~/helm-dictionary/dic-en-fr.iso")
+(setq helm-dictionary-database '(("en-fr" . "~/helm-dictionary/dic-en-fr.iso")
+                                 ("fr-en" . "~/helm-dictionary/dic-fr-en.iso")))
 (setq helm-dictionary-online-dicts '(("translate.reference.com en->fr" .
                                       "http://translate.reference.com/translate?query=%s&src=en&dst=fr")
                                      ("translate.reference.com fr->en" .
