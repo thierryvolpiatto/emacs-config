@@ -53,15 +53,15 @@
   (with-temp-buffer
     (save-excursion
       (insert "\n" line))
-    (cl-loop while (re-search-forward "\\(https?\\|ftp\\)://[^ >\"]*" nil t)
-      collect (match-string 0))))
+    (cl-loop while (re-search-forward "\\<\\(https?\\|ftp\\)://[^ >\"]*" nil t)
+             collect (match-string 0))))
 
 (defun helm-occur-browse-urls (_candidate)
   (let ((urls (helm-occur-extract-urls-from-line (helm-get-selection nil t))))
     (browse-url (helm-comp-read "Url: " urls :exec-when-only-one t))))
 
 (defun helm-occur-action-transformer (actions _candidate)
-  (cond ((string-match "\\(https?\\|ftp\\)://[^ >\"]*" (helm-get-selection nil t))
+  (cond ((string-match "\\<\\(https?\\|ftp\\)://[^ >\"]*" (helm-get-selection nil t))
          (helm-append-at-nth actions '(("Browse urls in line" . helm-occur-browse-urls)) 1))
         (t actions)))
 
