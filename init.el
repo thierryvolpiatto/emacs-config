@@ -890,13 +890,7 @@ If your system's ping continues until interrupted, you can try setting
              rectangle-utils-extend-rectangle-to-regexp)
   :bind (("C-x r e"       . rectangle-utils-extend-rectangle-to-end)
          ("C-x r h"       . rectangle-utils-menu)
-         ("C-x r <right>" . rectangle-utils-insert-at-right)
-         :map emacs-lisp-mode-map
-         ("C-x r a" . rectangle-utils-extend-rectangle-to-space-or-paren)
-         ("C-c C-a" . rectangle-utils-extend-rectangle-to-regexp)
-         :map lisp-interaction-mode-map
-         ("C-c C-a" . rectangle-utils-extend-rectangle-to-regexp)
-         ("C-x r a" . rectangle-utils-extend-rectangle-to-space-or-paren)))
+         ("C-x r <right>" . rectangle-utils-insert-at-right)))
 
 ;;; Smallurl
 ;;
