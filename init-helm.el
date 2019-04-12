@@ -49,25 +49,6 @@
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
 
-(defun helm-occur-extract-urls-from-line (line)
-  (with-temp-buffer
-    (save-excursion
-      (insert "\n" line))
-    (cl-loop while (re-search-forward "\\<\\(https?\\|ftp\\)://[^ >\"]*" nil t)
-             collect (match-string 0))))
-
-(defun helm-occur-browse-urls (_candidate)
-  (let ((urls (helm-occur-extract-urls-from-line (helm-get-selection nil t))))
-    (browse-url (helm-comp-read "Url: " urls :exec-when-only-one t))))
-
-(defun helm-occur-action-transformer (actions _candidate)
-  (cond ((string-match "\\<\\(https?\\|ftp\\)://[^ >\"]*" (helm-get-selection nil t))
-         (helm-append-at-nth actions '(("Browse urls in line" . helm-occur-browse-urls)) 1))
-        (t actions)))
-
-(defmethod helm-setup-user-source ((source helm-moccur-class))
-  (setf (slot-value source 'action-transformer) 'helm-occur-action-transformer))
-
 (defun helm/turn-on-header-line ()
   (interactive)
   (setq helm-echo-input-in-header-line t)
