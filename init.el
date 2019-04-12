@@ -892,12 +892,6 @@ If your system's ping continues until interrupted, you can try setting
          ("C-x r h"       . rectangle-utils-menu)
          ("C-x r <right>" . rectangle-utils-insert-at-right)))
 
-;;; Align-let
-;;
-(use-package align-let
-    :commands (align-let align-let-region)
-    :bind (("C-c C-a" . align-let)))
-
 ;;; Smallurl
 ;;
 (use-package smallurl
