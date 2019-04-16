@@ -129,8 +129,9 @@
       read-mail-command    'mu4e
       gnus-dired-mail-mode 'mu4e-user-agent)
 
-(define-key mu4e-main-mode-map "q" 'quit-window)
-(define-key mu4e-main-mode-map "Q" 'mu4e-quit)
+(define-key mu4e-main-mode-map "q"   'quit-window)
+(define-key mu4e-main-mode-map "Q"   'mu4e-quit)
+(define-key mu4e-main-mode-map "\C-s" 'helm-mu)
 
 ;;; Don't save message to Sent Messages, Gmail/IMAP takes care of this
 (setq mu4e-sent-messages-behavior 'delete)
