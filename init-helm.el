@@ -294,6 +294,7 @@ First call indent, second complete symbol, third complete fname."
       "git --no-pager grep -n%cH --color=always --exclude-standard --no-index --full-name -e %p -- %f"
       helm-dwim-target 'next-window
       helm-candidate-number-limit 200
+      helm-ff-allow-non-existing-file-at-point t
       )
 
 ;; find-file-hook
