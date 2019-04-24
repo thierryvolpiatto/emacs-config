@@ -295,6 +295,7 @@ First call indent, second complete symbol, third complete fname."
       helm-dwim-target 'next-window
       helm-candidate-number-limit 200
       helm-ff-allow-non-existing-file-at-point t
+      helm-find-noerrors t
       )
 
 ;; find-file-hook
