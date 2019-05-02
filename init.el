@@ -341,55 +341,7 @@ So far, F can only be a symbol, not a lambda expression."))
   (progn
     ;; Fix curly quotes in emacs-25
     (and (boundp 'text-quoting-style)
-         (setq text-quoting-style 'grave))
-
-    ;; Speedup `describe-variable' for variables with huge value description.
-    (defun tv/describe-variable (old-fn &rest args)
-      ;; `cl-flet' can't be used here because `pp' should
-      ;; appear lexically in its body, which is not the case.
-      ;; Using `flet' is an option, but even better is binding
-      ;; (symbol-function 'pp) with `cl-letf'.
-      (cl-letf (((symbol-function 'pp)
-                 (lambda (object &optional stream)
-                   (let ((fn (lambda (ob &optional stream)
-                               (princ (pp-to-string ob)
-                                      (or stream standard-output))
-                               (terpri)))
-                         (print-circle t)
-                         prefix suffix map-fn looping)
-                     (cond ((ring-p object)
-                            (setq looping nil))
-                           ((consp object)
-                            (setq prefix "\n("
-                                  suffix ")"
-                                  map-fn 'mapc
-                                  looping t))
-                           ((vectorp object)
-                            (setq prefix "\n["
-                                  suffix "]"
-                                  map-fn 'mapc
-                                  looping t))
-                           ((hash-table-p object)
-                            (setq prefix (format "#s(hash-table size %s test %s rehash-size %s rehash-threshold %s data\n"
-                                                 (hash-table-size object)
-                                                 (hash-table-test object)
-                                                 (hash-table-rehash-size object)
-                                                 (hash-table-rehash-threshold object))
-                                  suffix ")"
-                                  map-fn 'maphash
-                                  fn `(lambda (k v &optional stream)
-                                        (funcall ,fn k stream)
-                                        (funcall ,fn v stream))
-                                  looping t)))
-                     (if looping
-                         (progn
-                           (insert prefix)
-                           (funcall map-fn fn object)
-                           (cl-letf (((point) (1- (point))))
-                             (insert suffix)))
-                       (funcall fn object stream))))))
-        (apply old-fn args)))
-    (advice-add 'describe-variable :around #'tv/describe-variable)))
+         (setq text-quoting-style 'grave))))
 
 ;;; comment
 ;;
@@ -2107,6 +2059,8 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   :config
   (psession-savehist-mode 1)
   (psession-mode 1)
+  (setq psession-auto-save-delay 60)
+  (psession-autosave-mode 1)
   (bind-key "C-x p s" 'psession-save-winconf)
   (bind-key "C-x p d" 'psession-delete-winconf)
   (bind-key "C-x p j" 'psession-restore-winconf))
