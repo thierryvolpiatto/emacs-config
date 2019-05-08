@@ -2059,7 +2059,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   :config
   (psession-savehist-mode 1)
   (psession-mode 1)
-  (setq psession-auto-save-delay 60)
   (psession-autosave-mode 1)
   (bind-key "C-x p s" 'psession-save-winconf)
   (bind-key "C-x p d" 'psession-delete-winconf)
