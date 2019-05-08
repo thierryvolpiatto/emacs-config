@@ -502,6 +502,22 @@ Can be used from any place in the line."
   "Create a .sig file."
   (epa-sign-file file nil 'detached))
 
+;;;###autoload
+(defun tv/gpg-verify-file (gpg-file)
+  "Meant to be used from eshell alias.
+    alias gpg-verify tv/gpg-verify-file $1"
+  (let ((data-file (directory-files
+                    (file-name-directory gpg-file) t
+                    (concat (regexp-quote (helm-basename gpg-file t)) "$"))))
+    (cl-assert (member (file-name-extension gpg-file) '("gpg" "sig" "asc"))
+               nil "Please select the signed file not the data file")
+    (cl-assert (null (cdr data-file)) nil "Failed to find data-file")
+    (setq data-file (car data-file))
+    (with-temp-buffer
+      (if (= (call-process "gpg" nil t nil "--verify" gpg-file data-file) 0)
+          (buffer-string)
+        "Gpg error while verifying signature"))))
+
 ;; Insert-log-from-patch
 ;;;###autoload
 (defun tv-insert-log-from-patch (patch)
