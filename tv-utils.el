@@ -28,6 +28,24 @@
 
 (require 'cl-lib)
 
+(declare-function helm-find-files-1             "ext:helm-files.el")
+(declare-function mailcap-extension-to-mime     "mailcap.el")
+(declare-function htmlize-file                  "htmlize.el")
+(declare-function calendar-exit                 "calendar.el")
+(declare-function helm-region-active-p          "ext:helm-lib.el")
+(declare-function helm-basename                 "ext:helm-lib.el")
+(declare-function helm-read-file-name           "ext:helm-mode.el")
+(declare-function common-lisp-indent-function-1 "cl-indent.el")
+(declare-function tv-get-disk-info              "ext:dired-extension.el")
+(declare-function iterator:circular             "ext:iterator.el")
+(declare-function iterator:next                 "ext:iterator.el")
+(declare-function helm-fast-remove-dups         "ext:helm-lib.el")
+(declare-function auth-source-search            "auth-source.el")
+(declare-function eshell-interactive-process    "esh-cmd.el")
+(declare-function which-function                "which-func.el")
+(declare-function helm--ansi-color-apply        "ext:helm-lib.el")
+
+
 ;;; Sshfs
 ;;
 ;;
@@ -482,6 +500,7 @@ Can be used from any place in the line."
       (delete-char arg)))
 
 ;; Easypg
+(defvar epa-armor)
 ;;;###autoload
 (defun epa-sign-to-armored ()
   "Create a .asc file."
@@ -550,6 +569,7 @@ Can be used from any place in the line."
     (message "Switching to Common lisp indenting style.")))
 
 ;; C-mode conf
+(defvar c-mode-map)
 ;;;###autoload
 (defun tv-cc-this-file ()
   (interactive)
@@ -834,6 +854,7 @@ the password will be of length (floor LIMIT)."
 ;;; Rotate windows
 ;;
 ;;
+(defvar helm-alive-p)
 ;;;###autoload
 (defun tv/rotate-windows ()
   (interactive)
