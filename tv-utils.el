@@ -541,12 +541,12 @@ Can be used from any place in the line."
 ;;;###autoload
 (defun toggle-lisp-indent ()
   (interactive)
-  (helm-aif (memq lisp-indent-function '(common-lisp-indent-function
-                                         common-lisp-indent-function-1))
+  (if (memq lisp-indent-function '(common-lisp-indent-function
+                                   common-lisp-indent-function-1))
       (progn
         (setq lisp-indent-function #'lisp-indent-function)
         (message "Switching to Emacs lisp indenting style."))
-    (setq lisp-indent-function (car it))
+    (setq lisp-indent-function #'common-lisp-indent-function-1)
     (message "Switching to Common lisp indenting style.")))
 
 ;; C-mode conf
