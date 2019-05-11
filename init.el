@@ -2073,6 +2073,12 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
             (lambda ()
               (when (string-match "github.com" (buffer-name))
                 (markdown-mode))))
+  (add-hook 'edit-server-start-hook
+            (lambda ()
+              (shell-command "wmctrl -xa \"emacs\"")))
+  (add-hook 'edit-server-done-hook
+            (lambda ()
+              (shell-command "wmctrl -xa \"$FIREFOXEXE\"")))
   (edit-server-start))
 
 ;; Link now scratch buffer to file
