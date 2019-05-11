@@ -358,6 +358,10 @@ try this wash."
       (revert-buffer))))
 (advice-add 'smtpmail-send-queued-mail :after #'tv/advice-smtpmail-send-queued-mail)
 
+;; Org links
+(require 'org-mu4e)
+(define-key mu4e-view-mode-map (kbd "C-c C-l") 'org-store-link)
+
 (provide 'mu4e-config)
 
 ;;; mu4e-config.el ends here
