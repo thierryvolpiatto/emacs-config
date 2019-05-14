@@ -43,7 +43,9 @@
     (when (null kill-ring)
       (error "kill-ring is nil!!"))
     (emamux:set-buffer candidate 0))
-  (add-to-list 'helm-kill-ring-actions '("Emamux copy" . helm/emamux:copy-from-kill-ring) t))
+  (add-to-list 'helm-kill-ring-actions '("Emamux copy" . helm/emamux:copy-from-kill-ring) t)
+  :bind (:map helm-kill-ring-map
+              ("C-d" . helm-kill-ring-run-persistent-delete)))
 
 
 ;;;; Test Sources or new helm code. 
