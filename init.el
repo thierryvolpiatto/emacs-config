@@ -869,8 +869,18 @@ If your system's ping continues until interrupted, you can try setting
 ;;
 (use-package iedit
   :ensure t
-  :bind (("C-²" . iedit-mode-toggle-on-function)
-         ("C-;" . iedit-mode)))
+  :config
+  (defun iedit-narrow-to-defun (arg)
+    (interactive "P")
+    (require 'iedit)
+    (save-window-excursion
+      (save-restriction
+        (narrow-to-defun)
+        (iedit-mode arg))))
+  :bind (("C-²" . iedit-narrow-to-defun)
+         ("C-;" . iedit-mode)
+         :map isearch-mode-map
+         ("C-;" . iedit-mode-from-isearch)))
 
 (use-package iedit-rect
   :bind (([C-return] . iedit-rectangle-mode)
