@@ -424,18 +424,6 @@ So far, F can only be a symbol, not a lambda expression."))
   :config
   (add-hook 'rst-mode-hook 'auto-fill-mode))
 
-;;; Printing
-;;
-(use-package lpr
-  :config
-  (setq lpr-command "gtklp")
-  (use-package ps-print
-    :config
-    (setq printer-name "EpsonStylus")
-    (setq-default ps-print-header nil)
-    (setq ps-font-size   '(10 . 11.5))
-    (setq ps-font-family 'Courier)))
-
 ;;; Shell script
 ;;
 (use-package sh-script
