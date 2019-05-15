@@ -246,6 +246,10 @@ So far, F can only be a symbol, not a lambda expression."))
 ;; Fix slow helm frame popup in emacs-26 helm issue #1976
 (when (= emacs-major-version 26)
   (setq x-wait-for-event-timeout nil))
+
+;; Don't beep (debian)
+(setq visible-bell t)
+
 
 ;;; Use package declarations
 
