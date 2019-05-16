@@ -933,7 +933,7 @@ If your system's ping continues until interrupted, you can try setting
   ;; commands.
   ;; Use the nth99 submatch to pass the match to auth-source.
   (add-to-list 'magit-process-password-prompt-regexps
-               "^\\[sudo\\] [Mm]ot de passe de \\(?99:.*[^ ]\\).?: ?$")
+               "^\\[sudo\\] [Mm]ot de passe de \\(?99:.*[^ ]\\).?:.*$")
   (add-to-list 'magit-process-password-prompt-regexps
                "^\\[sudo\\] [Pp]assword for \\(?99:.*\\): ?$")
   (add-to-list 'magit-process-find-password-functions
