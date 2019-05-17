@@ -151,30 +151,18 @@
 
 ;; mcp 
 ;;;###autoload
-(defun tv/mcp (file &optional list-of-dir)
-  "Copy `file' in different directories.
-Empty prompt to exit."
+(defun tv/mcp (file &optional dests)
+  "Copy FILE in DESTS directories."
   (interactive "fFile: ")
-  (let ((final-list
-         (if list-of-dir
-             list-of-dir
-             (tv/multi-read-name "Directory: "
-                                 'read-directory-name))))
-    (cl-loop for i in final-list
-             do
-             (copy-file file i t))))
-
-;; Multi-read-name
-(cl-defun tv/multi-read-name (prompt &optional (fn 'read-string))
-  "Prompt as many time you add + to end of prompt.
-Return a list of all inputs in `var'.
-You can specify input function to use."
-    (let (result val)
-      (while (let ((str (funcall fn prompt)))
-               (unless (string= str "")
-                 (setq val str)))
-        (push val result))
-      (nreverse result)))
+  (unless dests
+    (setq dests
+          (helm-read-file-name "Directory: "
+                               :marked-candidates t
+                               :test 'file-directory-p
+                               :noret t)))
+  (cl-loop for dir in dests
+           do
+           (copy-file file (file-name-as-directory dir) t)))
 
 ;;; move-to-window-line 
 ;;
