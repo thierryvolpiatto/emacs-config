@@ -893,7 +893,7 @@ With a prefix arg remove new lines."
 
 ;; Stollen somewhere.
 ;;;###autoload
-(defun tv/kill-key-name (key)
+(defun tv/generate-kbd (key)
   (interactive "kGenerate and kill `kbd' form for key: ")
   (kill-new (message "(kbd \"%s\")" (help-key-description key nil))))
 
