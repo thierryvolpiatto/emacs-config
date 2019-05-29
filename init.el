@@ -681,8 +681,8 @@ With a prefix arg decrease transparency."
                                     (?ç . shrink-window)
                                     (?{ . shrink-window-horizontally))
                                   (propertize "^:Enl.ver, }:Enl.hor, ç:Shr.ver, {:Shr.hor" 'face 'minibuffer-prompt)))
-    :bind (("C-x C-²" . delete-other-windows)
-           ("C-x C-&" . delete-window)
+    :bind (("C-x C-²" . delete-window)
+           ("C-x C-&" . delete-other-windows)
            ("C-x C-é" . split-window-vertically)
            ("C-x C-\"" . split-window-horizontally)))
 
