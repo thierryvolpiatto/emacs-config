@@ -35,7 +35,7 @@
 	     "~/elisp/desktop-file-utils"
 	     "~/elisp/emacs-wget"
 	     "~/elisp/tex-utils"
-	     "~/elisp/ledger"
+	     "~/elisp/ledger-mode"
              "~/elisp/helm-extensions"
              "~/elisp/google-maps.el"
              "~/.emacs.d/themes/"
@@ -817,7 +817,7 @@ If your system's ping continues until interrupted, you can try setting
 
 ;;; Ledger
 ;;
-(use-package ledger
+(use-package ledger-mode
   :init (setenv "LEDGER_PAGER" "cat")
   :commands (ledger-mode csv2ledger)
   :config (use-package ledger-config))
