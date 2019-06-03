@@ -461,6 +461,10 @@ First call indent, second complete symbol, third complete fname."
                                      ("translate.reference.com fr->en" .
                                       "http://translate.reference.com/translate?query=%s&src=fr&dst=en")))
 
+;;; helm-occur/grep-mode
+;;
+(add-hook 'helm-occur-mode-hook 'hl-line-mode)
+(add-hook 'helm-grep-mode-hook 'hl-line-mode)
 
 (provide 'init-helm)
 
