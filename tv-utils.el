@@ -486,8 +486,7 @@ Can be used from any place in the line."
             (forward-line 1) (end-of-line))
           (tv/eval-last-sexp))
       (unless (re-search-forward "^$" (point-at-eol) t)
-        (while (not (looking-at ")")) (forward-sexp))
-        (forward-char 1)
+        (end-of-defun)
         (tv/eval-last-sexp)))))
 ;; TESTS
 ;; foo
