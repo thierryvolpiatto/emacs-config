@@ -247,8 +247,8 @@ So far, F can only be a symbol, not a lambda expression."))
 (when (= emacs-major-version 26)
   (setq x-wait-for-event-timeout nil))
 
-;; Don't beep (debian)
-(setq visible-bell t)
+;; Don't beep even with visible-bell (debian)
+(setq ring-bell-function 'ignore)
 
 
 ;;; Use package declarations
