@@ -468,17 +468,48 @@ Can be used from any place in the line."
   (when (eq (point-at-bol) (point-at-eol))
     (delete-blank-lines) (skip-chars-forward " ")))
 
+;;;###autoload
+(defun tv/eval-sexp-at-point ()
+  (interactive)
+  (save-excursion
+    (if (save-excursion (end-of-line) (nth 4 (syntax-ppss)))
+        (let (bcomment)
+          (end-of-line)
+          (while (and (setq bcomment (and (comment-beginning) (point)))
+                      ;; Move to end of paren if some and exit loop.
+                      (or (not (re-search-forward ")" (point-at-eol) t))
+                          ;; If this is called point have moved at end
+                          ;; of a paren, verify it is not a paren
+                          ;; embeded inside a comment.
+                          (save-excursion
+                            (re-search-backward ";" bcomment t))))
+            (forward-line 1) (end-of-line))
+          (tv/eval-last-sexp))
+      (unless (re-search-forward "^$" (point-at-eol) t)
+        (while (not (looking-at ")")) (forward-sexp))
+        (forward-char 1)
+        (tv/eval-last-sexp)))))
+;; TESTS
+;; foo
+;; foo (+
+;;      1
+;;      2 ; comment
+;;      3) bar
+;; foo
+;; foo (+
+;;      1
+;;      2
+;;      3) bar
 
-;; (defun tv-eval-sexp-at-point ()
-;;   (interactive)
-;;   (save-excursion
-;;     (if (nth 4 (syntax-ppss))
-;;         (progn
-;;           (while (and (comment-beginning) (not (re-search-forward ")" (point-at-eol) t)))
-;;             (forward-line 1))
-;;           (call-interactively 'eval-last-sexp))
-;;       (forward-sexp)
-;;       (call-interactively 'eval-last-sexp))))
+;; (+
+;; 1
+;; 2 ; 1) (comment with embeded parens)
+;; 3) bar
+
+;; (+
+;; 1
+;; 2 ; 1) (comment with embeded parens)
+;; 3) ; bar
 
 ;; (message "hello") ;; test
 

@@ -802,7 +802,7 @@ If your system's ping continues until interrupted, you can try setting
          ("C-M-)"                 . tv-insert-pair-and-close-forward)
          ("<f5> c"                . tv-toggle-calendar)
          ([remap kill-whole-line] . tv-kill-whole-line)
-         ;; ("M-e"                   . tv-eval-last-sexp-at-eol)
+         ("M-e"                   . tv/eval-sexp-at-point)
          ([remap delete-char]     . tv-delete-char)
          ([remap c-electric-delete-forward] . tv-delete-char)
          ("C-x C-'"               . tv/split-windows)
