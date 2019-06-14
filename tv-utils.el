@@ -495,8 +495,12 @@ Can be used from any place in the line."
     (save-excursion
       (forward-line -1) (end-of-line)
       (while (and (comment-beginning) (not bsexp))
-        (setq bsexp (save-excursion
-                      (re-search-forward "(" (point-at-eol) t)))
+        (setq bsexp (unless (save-excursion
+                              ;; Ignore nested comments that may
+                              ;; contain a paren.
+                              (re-search-forward ";+" (point-at-eol) t))
+                      (save-excursion
+                        (re-search-forward "(" (point-at-eol) t))))
         (let ((line (buffer-substring-no-properties
                      (or (and bsexp (1- bsexp)) (point))
                      (point-at-eol))))
