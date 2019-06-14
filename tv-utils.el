@@ -468,16 +468,72 @@ Can be used from any place in the line."
   (when (eq (point-at-bol) (point-at-eol))
     (delete-blank-lines) (skip-chars-forward " ")))
 
-;; Similar to what eev does
-;;;###autoload
-(defun tv-eval-last-sexp-at-eol ()
-  (interactive)
-  (save-excursion
-    (end-of-line)
-    (when (search-backward ")" (point-at-bol) t)
-      (forward-char 1)
-      (call-interactively 'eval-last-sexp))))
+
+;; (defun tv-eval-sexp-at-point ()
+;;   (interactive)
+;;   (save-excursion
+;;     (if (nth 4 (syntax-ppss))
+;;         (progn
+;;           (while (and (comment-beginning) (not (re-search-forward ")" (point-at-eol) t)))
+;;             (forward-line 1))
+;;           (call-interactively 'eval-last-sexp))
+;;       (forward-sexp)
+;;       (call-interactively 'eval-last-sexp))))
+
 ;; (message "hello") ;; test
+
+(defun tv/last-sexp ()
+  (let ((temp-buffer (generate-new-buffer " *temp*"))
+        (lline (buffer-substring-no-properties (save-excursion
+                                                 (comment-beginning)
+                                                 (point))
+                                               (point)))
+        sexp bsexp)
+    (with-current-buffer temp-buffer
+      (erase-buffer) (insert lline)
+      (setq sexp (buffer-string)))
+    (save-excursion
+      (forward-line -1) (end-of-line)
+      (while (and (comment-beginning) (not bsexp))
+        (setq bsexp (save-excursion
+                      (re-search-forward "(" (point-at-eol) t)))
+        (let ((line (buffer-substring-no-properties
+                     (or (and bsexp (1- bsexp)) (point))
+                     (point-at-eol))))
+          (with-current-buffer temp-buffer
+            (goto-char (point-min))
+            (insert line ?\n)
+            (setq sexp (buffer-string)))
+          (forward-line -1) (end-of-line)))
+      sexp)))
+
+;; TESTS
+;; foo
+;; foo (+
+;;      1
+;;      2 ; comment
+;;      3) bar
+
+;; (+
+;; 1
+;; 2 ; comment
+;; 3)
+
+;; foo
+;; (+ 1 2 3)
+
+;; foo (+ 1 2 3)
+
+;;;###autoload
+(defun tv/eval-last-sexp ()
+  (interactive)
+  (if (nth 4 (syntax-ppss))
+      (let ((sexp (tv/last-sexp)))
+        (with-temp-buffer
+          (emacs-lisp-mode)
+          (insert sexp)
+          (call-interactively 'pp-eval-last-sexp)))
+    (call-interactively 'pp-eval-last-sexp)))
 
 ;; Delete-char-or-region
 ;;;###autoload

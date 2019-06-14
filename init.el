@@ -802,7 +802,7 @@ If your system's ping continues until interrupted, you can try setting
          ("C-M-)"                 . tv-insert-pair-and-close-forward)
          ("<f5> c"                . tv-toggle-calendar)
          ([remap kill-whole-line] . tv-kill-whole-line)
-         ("M-e"                   . tv-eval-last-sexp-at-eol)
+         ;; ("M-e"                   . tv-eval-last-sexp-at-eol)
          ([remap delete-char]     . tv-delete-char)
          ([remap c-electric-delete-forward] . tv-delete-char)
          ("C-x C-'"               . tv/split-windows)
@@ -1840,13 +1840,13 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
          ("<next>" . forward-page)
          ("<prior>" . backward-page)
          ("C-M-j" . backward-kill-sexp)
-         ("C-x C-e" . pp-eval-last-sexp)
+         ("C-x C-e" . tv/eval-last-sexp)
          ("C-x C-m e" . pp-macroexpand-last-sexp)
          :map
          lisp-interaction-mode-map
          ("RET" . newline-and-indent)
          ("C-M-j" . backward-kill-sexp)
-         ("C-x C-e" . pp-eval-last-sexp)
+         ("C-x C-e" . tv/eval-last-sexp)
          ("C-j" . tv/eval-print-last-sexp)
          ("C-x C-m e" . pp-macroexpand-last-sexp)
          :map
