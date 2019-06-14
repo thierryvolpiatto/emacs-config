@@ -520,27 +520,30 @@ Can be used from any place in the line."
                                                  (point))
                                                (point)))
         sexp bsexp)
-    (with-current-buffer temp-buffer
-      (erase-buffer) (insert lline)
-      (setq sexp (buffer-string)))
-    (save-excursion
-      (forward-line -1) (end-of-line)
-      (while (and (comment-beginning) (not bsexp))
-        (setq bsexp (unless (save-excursion
-                              ;; Ignore nested comments that may
-                              ;; contain a paren.
-                              (re-search-forward ";+" (point-at-eol) t))
-                      (save-excursion
-                        (re-search-forward "(" (point-at-eol) t))))
-        (let ((line (buffer-substring-no-properties
-                     (or (and bsexp (1- bsexp)) (point))
-                     (point-at-eol))))
-          (with-current-buffer temp-buffer
-            (goto-char (point-min))
-            (insert line ?\n)
-            (setq sexp (buffer-string)))
-          (forward-line -1) (end-of-line)))
-      sexp)))
+    (unwind-protect
+         (progn
+           (with-current-buffer temp-buffer
+             (erase-buffer) (insert lline)
+             (setq sexp (buffer-string)))
+           (save-excursion
+             (forward-line -1) (end-of-line)
+             (while (and (comment-beginning) (not bsexp))
+               (setq bsexp (unless (save-excursion
+                                     ;; Ignore nested comments that may
+                                     ;; contain a paren.
+                                     (re-search-forward ";+" (point-at-eol) t))
+                             (save-excursion
+                               (re-search-forward "(" (point-at-eol) t))))
+               (let ((line (buffer-substring-no-properties
+                            (or (and bsexp (1- bsexp)) (point))
+                            (point-at-eol))))
+                 (with-current-buffer temp-buffer
+                   (goto-char (point-min))
+                   (insert line ?\n)
+                   (setq sexp (buffer-string)))
+                 (forward-line -1) (end-of-line)))
+             sexp))
+      (kill-buffer temp-buffer))))
 
 ;; TESTS
 ;; foo
