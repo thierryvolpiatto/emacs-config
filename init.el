@@ -796,7 +796,7 @@ If your system's ping continues until interrupted, you can try setting
           (bind-key "C-M-!" 'tv-eval-region emacs-lisp-mode-map))
   :config (advice-add 'view-echo-area-messages :around 'tv/view-echo-area-messages)
   :bind (("M-\""                  . tv-insert-double-quote)
-         ("C-M-\`"                . tv-insert-double-backquote)
+         ("C-M-`"                . tv-insert-double-backquote)
          ("C-M-("                 . tv-move-pair-forward)
          ("C-M-\""                . tv-insert-double-quote-and-close-forward)
          ("C-M-)"                 . tv-insert-pair-and-close-forward)
