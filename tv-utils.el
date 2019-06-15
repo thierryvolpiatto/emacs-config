@@ -36,7 +36,7 @@
 (declare-function helm-basename                 "ext:helm-lib.el")
 (declare-function helm-read-file-name           "ext:helm-mode.el")
 (declare-function common-lisp-indent-function-1 "cl-indent.el")
-(declare-function tv-get-disk-info              "ext:dired-extension.el")
+(declare-function tv/get-disk-info              "ext:dired-extension.el")
 (declare-function iterator:circular             "ext:iterator.el")
 (declare-function iterator:next                 "ext:iterator.el")
 (declare-function helm-fast-remove-dups         "ext:helm-lib.el")
@@ -114,7 +114,7 @@
              (car (last (assoc 'body (assoc 'html data))))))))))
 
 ;; network-info 
-(defun tv-network-info (network)
+(defun tv/network-info (network)
   (let ((info (cl-loop for (i . n) in (network-interface-list)
                        when (string= network i)
                        return (network-interface-info i))))
@@ -125,15 +125,15 @@
               :netmask netmask :mac (cdr mac) :state state)))))
 
 ;;;###autoload
-(defun tv-network-state (network &optional arg)
+(defun tv/network-state (network &optional arg)
   (interactive (list (read-string "Network: " "wlan0")
                      "\np"))
-  (let* ((info (car (last (cl-getf (tv-network-info network) :state))))
+  (let* ((info (car (last (cl-getf (tv/network-info network) :state))))
          (state (if info (symbol-name info) "down")))
     (if arg (message "%s is %s" network state) state)))
 
 ;; Benchmark
-(defmacro tv-time (&rest body)
+(defmacro tv/time (&rest body)
   "Return a list (time result) of time execution of BODY and result of BODY."
   (declare (indent 0))
   `(let ((tm (float-time)))
@@ -234,7 +234,7 @@ depending the value of N is positive or negative."
 ;;
 ;;
 ;;;###autoload
-(defun tv-eval-region (beg end)
+(defun tv/eval-region (beg end)
   (interactive "r")
   (let ((str (buffer-substring beg end))
         expr
@@ -254,7 +254,7 @@ depending the value of N is positive or negative."
                         "\n- "))))
 
 ;;; Time-functions 
-(cl-defun tv-time-date-in-n-days (days &key (separator "-") french)
+(cl-defun tv/time-date-in-n-days (days &key (separator "-") french)
   "Return the date in string form in n +/-DAYS."
   (let* ((days-in-sec       (* 3600 (* (+ days) 24)))
          (interval-days-sec (if (< days 0)
@@ -289,7 +289,7 @@ depending the value of N is positive or negative."
 
 ;; Send current buffer htmlized to web browser.
 ;;;###autoload
-(defun tv-htmlize-buffer-to-browser ()
+(defun tv/htmlize-buffer-to-browser ()
   (interactive)
   (let* ((fname           (concat "/tmp/" (symbol-name (cl-gensym "emacs2browser"))))
          (html-fname      (concat fname ".html"))
@@ -302,47 +302,47 @@ depending the value of N is positive or negative."
     (browse-url (format "file://%s" html-fname))))
 
 ;; key-for-calendar 
-(defvar tv-calendar-alive nil)
+(defvar tv/calendar-alive nil)
 ;;;###autoload
-(defun tv-toggle-calendar ()
+(defun tv/toggle-calendar ()
   (interactive)
-  (if tv-calendar-alive
+  (if tv/calendar-alive
       (when (get-buffer "*Calendar*")
         (with-current-buffer "diary" (save-buffer)) 
         (calendar-exit)) ; advice reset win conf
       ;; In case calendar were called without toggle command
       (unless (get-buffer-window "*Calendar*")
-        (setq tv-calendar-alive (current-window-configuration))
+        (setq tv/calendar-alive (current-window-configuration))
         (calendar))))
 
 (defadvice calendar-exit (after reset-win-conf activate)
-  (when tv-calendar-alive
-    (set-window-configuration tv-calendar-alive)
-    (setq tv-calendar-alive nil)))
+  (when tv/calendar-alive
+    (set-window-configuration tv/calendar-alive)
+    (setq tv/calendar-alive nil)))
 
 ;;; Insert-pairs 
 ;;
 (setq parens-require-spaces t)
 
 ;;;###autoload
-(defun tv-insert-double-quote (&optional arg)
+(defun tv/insert-double-quote (&optional arg)
   (interactive "P")
   (insert-pair arg ?\" ?\"))
 
 ;;;###autoload
-(defun tv-insert-double-backquote (&optional arg)
+(defun tv/insert-double-backquote (&optional arg)
   (interactive "P")
   (insert-pair arg ?\` (if (or (eq major-mode 'emacs-lisp-mode)
                                (eq major-mode 'lisp-interaction-mode))
                            ?\' ?\`)))
 
 ;;;###autoload
-(defun tv-insert-vector (&optional arg)
+(defun tv/insert-vector (&optional arg)
   (interactive "P")
   (insert-pair arg ?\[ ?\]))
 
 ;;;###autoload
-(defun tv-move-pair-forward (beg end)
+(defun tv/move-pair-forward (beg end)
   (interactive "r")
   (if (region-active-p)
       (progn (goto-char beg) (insert "(")
@@ -368,7 +368,7 @@ depending the value of N is positive or negative."
                  (throw 'break nil))))))))
 
 ;;;###autoload
-(defun tv-insert-pair-and-close-forward (beg end)
+(defun tv/insert-pair-and-close-forward (beg end)
   (interactive "r")
   (if (region-active-p)
       (progn (goto-char beg) (insert "(")
@@ -398,7 +398,7 @@ depending the value of N is positive or negative."
                  (throw 'break nil))))))))
 
 ;;;###autoload
-(defun tv-insert-double-quote-and-close-forward (beg end)
+(defun tv/insert-double-quote-and-close-forward (beg end)
   (interactive "r")
   (if (region-active-p)
       (progn (goto-char beg) (insert "\"")
@@ -428,7 +428,7 @@ depending the value of N is positive or negative."
 
 ;;; Insert-an-image-at-point
 ;;;###autoload
-(defun tv-insert-image-at-point (image)
+(defun tv/insert-image-at-point (image)
   (interactive (list (read-file-name "Image: " "~/Images")))
   (let* ((win (selected-window))
          (img (save-match-data
@@ -439,11 +439,11 @@ depending the value of N is positive or negative."
     (insert-image img)))
 
 ;;;###autoload
-(defun tv-show-img-from-fname-at-point ()
+(defun tv/show-img-from-fname-at-point ()
   (interactive)
   (let ((img (thing-at-point 'sexp)))
     (forward-line)
-    (tv-insert-image-at-point img)))
+    (tv/insert-image-at-point img)))
 
 (defun tv/view-echo-area-messages (old--fn &rest args)
   (let ((win (get-buffer-window (messages-buffer) 'visible)))
@@ -453,7 +453,7 @@ depending the value of N is positive or negative."
 
 ;; Kill-backward
 ;;;###autoload
-(defun tv-kill-whole-line ()
+(defun tv/kill-whole-line ()
   "Similar to `kill-whole-line' but don't kill new line.
 Also alow killing whole line in a shell prompt without trying
 to kill prompt.
@@ -574,7 +574,7 @@ Can be used from any place in the line."
 
 ;; Delete-char-or-region
 ;;;###autoload
-(defun tv-delete-char (arg)
+(defun tv/delete-char (arg)
   (interactive "p")
   (if (helm-region-active-p)
       (delete-region (region-beginning) (region-end))
@@ -620,7 +620,7 @@ Can be used from any place in the line."
 
 ;; Insert-log-from-patch
 ;;;###autoload
-(defun tv-insert-log-from-patch (patch)
+(defun tv/insert-log-from-patch (patch)
   (interactive (list (helm-read-file-name
                       "Patch: "
                       :preselect ".*[Pp]atch.*")))
@@ -652,7 +652,7 @@ Can be used from any place in the line."
 ;; C-mode conf
 (defvar c-mode-map)
 ;;;###autoload
-(defun tv-cc-this-file ()
+(defun tv/cc-this-file ()
   (interactive)
   (when (eq major-mode 'c-mode)
     (let* ((iname (buffer-file-name (current-buffer)))
@@ -660,11 +660,11 @@ Can be used from any place in the line."
       (compile (format "make -k %s" oname)))))
 (add-hook 'c-mode-hook #'(lambda ()
                            (declare (special c-mode-map))
-                           (define-key c-mode-map (kbd "C-c C-c") 'tv-cc-this-file)))
+                           (define-key c-mode-map (kbd "C-c C-c") 'tv/cc-this-file)))
 
 ;; Insert line numbers in region
 ;;;###autoload
-(defun tv-insert-lineno-in-region (beg end)
+(defun tv/insert-lineno-in-region (beg end)
   (interactive "r")
   (save-restriction
     (narrow-to-region beg end)
@@ -703,7 +703,7 @@ Can be used from any place in the line."
 
 ;; Verlan.
 ;;;###autoload
-(defun tv-reverse-chars-in-region (beg end)
+(defun tv/reverse-chars-in-region (beg end)
   "Verlan region. Unuseful but funny"
   (interactive "r")
   (save-restriction
@@ -728,8 +728,8 @@ If a prefix arg is given choose directory, otherwise use `default-directory'."
                          (helm-read-file-name
                           "Directory: " :test 'file-directory-p)
                          default-directory)))
-  (require 'dired-extension) ; for tv-get-disk-info
-  (let ((df-info (tv-get-disk-info directory t)))
+  (require 'dired-extension) ; for tv/get-disk-info
+  (let ((df-info (tv/get-disk-info directory t)))
     (pop-to-buffer (get-buffer-create "*df info*"))
     (erase-buffer)
     (insert (format "*Volume Info for `%s'*\n\nDevice: %s\nMaxSize: \
@@ -819,7 +819,7 @@ If a prefix arg is given choose directory, otherwise use `default-directory'."
 
 ;; Just an example to use `url-retrieve'
 ;;;###autoload
-(defun tv-download-file-async (url &optional noheaders to)
+(defun tv/download-file-async (url &optional noheaders to)
   (let ((noheaders noheaders) (to to))
     (url-retrieve url #'(lambda (status)
                           (if (plist-get status :error)
@@ -840,7 +840,7 @@ If a prefix arg is given choose directory, otherwise use `default-directory'."
 ;; Tool to take all sexps matching regexps in buffer and bring
 ;; them at point. Useful to reorder defvar, defcustoms etc...
 ;;;###autoload
-(defun tv-group-sexp-matching-regexp-at-point (arg regexp)
+(defun tv/group-sexp-matching-regexp-at-point (arg regexp)
   "Take all sexps matching REGEXP and put them at point.
 The sexps are searched after point, unless ARG.
 In this case, sexps are searched before point."
@@ -868,7 +868,7 @@ In this case, sexps are searched before point."
 
 ;; Check paren errors
 ;;;###autoload
-(defun tv-check-paren-error ()
+(defun tv/check-paren-error ()
   (interactive)
   (let (pos-err)
     (save-excursion
@@ -961,7 +961,7 @@ the password will be of length (floor LIMIT)."
 (global-set-key (kbd "C-c -") 'tv/rotate-windows)
 
 ;;;###autoload
-(defun tv-delete-duplicate-lines (beg end &optional arg)
+(defun tv/delete-duplicate-lines (beg end &optional arg)
   "Delete duplicate lines in region omiting new lines.
 With a prefix arg remove new lines."
   (interactive "r\nP")
@@ -975,7 +975,7 @@ With a prefix arg remove new lines."
         (cl-loop for l in lines do (insert (concat l "\n")))))))
 
 ;;;###autoload
-(defun tv-break-long-string-list-at-point (arg)
+(defun tv/break-long-string-list-at-point (arg)
   (interactive "p")
   (when (and (looking-at "(")
              (> (point-at-eol) (+ (point) 50)))
@@ -1127,19 +1127,19 @@ Arg `host' is machine in auth-info file."
             (error rcode-msg))))))
 
 ;;; Scroll functions
-(defun tv-scroll-down ()
+(defun tv/scroll-down ()
   (interactive)
   (scroll-down -1))
 
-(defun tv-scroll-up ()
+(defun tv/scroll-up ()
   (interactive)
   (scroll-down 1))
 
-(defun tv-scroll-other-down ()
+(defun tv/scroll-other-down ()
   (interactive)
   (scroll-other-window 1))
 
-(defun tv-scroll-other-up ()
+(defun tv/scroll-other-up ()
   (interactive)
   (scroll-other-window -1))
 
@@ -1160,7 +1160,7 @@ Arg `host' is machine in auth-info file."
     (when (re-search-forward "[0-9]\\{1,6\\}" (min (+ (point) 6) (point-at-eol)) t)
       (string-to-number (match-string-no-properties 0)))))
 
-(defun tv-find-or-kill-gnu-bug-number (bug-number arg)
+(defun tv/find-or-kill-gnu-bug-number (bug-number arg)
   "Browse url corresponding to emacs gnu bug number or kill it."
   (interactive (list (read-number "Bug number: " (tv/thing-at-point-number))
                      current-prefix-arg))
@@ -1171,7 +1171,7 @@ Arg `host' is machine in auth-info file."
           (message "Bug `#%d' url's copied to kill-ring" bug-number))
         (browse-url url))))
 
-(defun tv-find-or-kill-helm-bug-number (bug-number arg)
+(defun tv/find-or-kill-helm-bug-number (bug-number arg)
   "Browse url corresponding to helm bug number or kill it."
   (interactive (list (read-number "Bug number: " (tv/thing-at-point-number))
                      current-prefix-arg))
@@ -1183,7 +1183,7 @@ Arg `host' is machine in auth-info file."
         (browse-url url))))
 
 ;;;###autoload
-(defun tv-restore-scratch-buffer ()
+(defun tv/restore-scratch-buffer ()
   (unless (buffer-file-name (get-buffer "*scratch*"))
     (and (get-buffer "*scratch*") (kill-buffer "*scratch*")))
   (with-current-buffer (find-file-noselect "~/.emacs.d/save-scratch.el")

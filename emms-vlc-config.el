@@ -42,7 +42,7 @@
                       (emms-track-description
                        (emms-playlist-current-selected-track)))))
 
-(defun tv-emms-mode-line-icon-function ()
+(defun tv/emms-mode-line-icon-function ()
   (setq emms-mode-line-icon-image-cache
         `(image :type xpm :ascent center :data ,(concat "/* XPM */
 static char *note[] = {
@@ -68,7 +68,7 @@ static char *note[] = {
           (emms-propertize "NP:" 'display emms-mode-line-icon-image-cache)
           (emms-mode-line-playlist-current)))
 
-(setq emms-mode-line-mode-line-function 'tv-emms-mode-line-icon-function)
+(setq emms-mode-line-mode-line-function 'tv/emms-mode-line-icon-function)
 
 (emms-mode-line 1)
 
@@ -92,7 +92,7 @@ static char *note[] = {
 
 ;; «Update-mpd-directory» (to ".Update-mpd-directory")
 
-(defun tv-emms-update-and-clean-cache ()
+(defun tv/emms-update-and-clean-cache ()
   (interactive)
   (when emms-cache-db
     (clrhash emms-cache-db)

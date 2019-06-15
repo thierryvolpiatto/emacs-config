@@ -70,18 +70,18 @@
 (global-set-key (kbd "C-z")   nil) ; Disable `suspend-frame'.
 (global-set-key (kbd "<f11>") nil)
 (global-set-key (kbd "C-c R") (lambda () (interactive) (revert-buffer t t)))
-(global-set-key [remap save-buffers-kill-terminal] 'tv-stop-emacs) ; C-x C-c
+(global-set-key [remap save-buffers-kill-terminal] 'tv/stop-emacs) ; C-x C-c
 
 ;; y-or-n-p
 (fset 'yes-or-no-p 'y-or-n-p)
 
 ;; Stop/restart emacs
-(defun tv-stop-emacs-1 ()
+(defun tv/stop-emacs-1 ()
   (if (daemonp)
       (save-buffers-kill-emacs)
     (save-buffers-kill-terminal)))
 
-(defun tv-stop-emacs (arg)
+(defun tv/stop-emacs (arg)
   "Close emacs, with a prefix arg restart it.
 Restart works only on graphic display."
   (interactive "P")
@@ -106,7 +106,7 @@ Restart works only on graphic display."
                                     t))))
                      kill-emacs-query-functions)
            kill-emacs-query-functions)))
-    (tv-stop-emacs-1)))
+    (tv/stop-emacs-1)))
 
 ;; Kill buffer and windows
 (defun tv/kill-buffer-and-windows (buffer)
@@ -147,9 +147,9 @@ Restart works only on graphic display."
 (prefer-coding-system 'utf-8)
 
 ;; Themes
-(defvar tv-theme-directory "~/.emacs.d/themes/")
+(defvar tv/theme-directory "~/.emacs.d/themes/")
 (unless (< emacs-major-version 24)
-  (setq custom-theme-directory tv-theme-directory))
+  (setq custom-theme-directory tv/theme-directory))
 
 ;; Load my favourite theme.
 (add-hook 'emacs-startup-hook (lambda () (load-theme 'naquadah)))
@@ -265,13 +265,13 @@ So far, F can only be a symbol, not a lambda expression."))
     (add-to-list 'Info-directory-list "~/elisp/info/eshell-doc")
     (add-to-list 'Info-directory-list "/home/thierry/elisp/magit/Documentation")
     ;; Fancy faces in info.
-    (defface tv-info-ref-item
+    (defface tv/info-ref-item
       '((((background dark)) :background "DimGray" :foreground "Gold")
         (((background light)) :background "firebrick" :foreground "LightGray"))
       "Face for item stating with -- in info." :group 'Info :group 'faces)
 
-    (defvar tv-info-title-face 'tv-info-ref-item)
-    (defvar tv-info-underline 'underline)
+    (defvar tv/info-title-face 'tv/info-ref-item)
+    (defvar tv/info-underline 'underline)
     (defvar info-unicode-quote-start (string 8216))
     (defvar info-unicode-quote-end (string 8217))
     (defvar info-unicode-quoted-regexp (format "[%s]\\([^%s%s]+\\)[%s]"
@@ -280,12 +280,12 @@ So far, F can only be a symbol, not a lambda expression."))
                                                info-unicode-quote-end
                                                info-unicode-quote-end
                                                ))
-    (defun tv-font-lock-doc-rules ()
+    (defun tv/font-lock-doc-rules ()
       (font-lock-add-keywords
        nil `(("[^][\\s`]\\([^[](`'+\\)`']?[^][\\s']?" 1 font-lock-type-face)
              (,info-unicode-quoted-regexp 1 font-lock-type-face)
-             ("^ --.*$" . tv-info-title-face)
-             ("[_]\\([^_]+\\)[_]" 1 tv-info-underline)
+             ("^ --.*$" . tv/info-title-face)
+             ("[_]\\([^_]+\\)[_]" 1 tv/info-underline)
              ("[\"]\\([^\"]*\\)[\"]" . font-lock-string-face)
              ("\\*Warning:\\*" . font-lock-warning-face)
              ("^ *\\([*•]\\) " 1 font-lock-variable-name-face)
@@ -293,7 +293,7 @@ So far, F can only be a symbol, not a lambda expression."))
              ("^[[:upper]][a-z- ]*:" . font-lock-variable-name-face)
              )))
 
-    (add-hook 'Info-mode-hook 'tv-font-lock-doc-rules)
+    (add-hook 'Info-mode-hook 'tv/font-lock-doc-rules)
     (define-key Info-mode-map [remap Info-index] 'helm-info-at-point)))
 
 ;;; Helm
@@ -308,7 +308,7 @@ So far, F can only be a symbol, not a lambda expression."))
     ;; Kill buffer after C-d in ansi-term.
     (defadvice term-sentinel (after kill-buffer activate)
       (kill-buffer))
-    (defun tv-term ()
+    (defun tv/term ()
       (interactive)
       (ansi-term "/bin/bash"))
     (defadvice term-command-hook (before decode-string)
@@ -319,7 +319,7 @@ So far, F can only be a symbol, not a lambda expression."))
                (boundp 'term-char-mode-point-at-process-mark))
       (setq term-char-mode-point-at-process-mark nil
             term-char-mode-buffer-read-only nil)))
-  :bind ("<f11> t" . tv-term))
+  :bind ("<f11> t" . tv/term))
 
 ;; Browse url
 ;;
@@ -566,14 +566,14 @@ So far, F can only be a symbol, not a lambda expression."))
 (use-package frame
   :config
   (progn
-    (defvar tv-default-font (if (string= (invocation-name) "remacs")
+    (defvar tv/default-font (if (string= (invocation-name) "remacs")
                                 "-*-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1"
                               ;; Use .Xdefaults config
                               (assoc-default 'font (frame-parameters))))
     (setq-default frame-background-mode 'dark)
     (setq initial-frame-alist '((fullscreen . maximized)))
     (setq frame-auto-hide-function 'delete-frame)
-    (defun tv-transparency-modify (arg)
+    (defun tv/transparency-modify (arg)
       "Increase Emacs frame transparency.
 With a prefix arg decrease transparency."
       (interactive "P")
@@ -609,7 +609,7 @@ With a prefix arg decrease transparency."
                                                     emacs-version))
                                   (tool-bar-lines . 0)
                                   (menu-bar-lines . 0)
-                                  (font . ,tv-default-font)
+                                  (font . ,tv/default-font)
                                   (cursor-color . "red")
                                   (fullscreen . nil)
                                   )))
@@ -663,7 +663,7 @@ With a prefix arg decrease transparency."
                                                  (alpha . nil)
                                                  (fullscreen . nil))
                                                 )))))
-  :bind ("C-8" . tv-transparency-modify))
+  :bind ("C-8" . tv/transparency-modify))
 
 (use-package window
   :no-require t
@@ -790,30 +790,30 @@ If your system's ping continues until interrupted, you can try setting
 ;;; tv-utils fns
 ;;
 (use-package tv-utils
-  :commands (tv-eval-region tv-restore-scratch-buffer)
+  :commands (tv/eval-region tv/restore-scratch-buffer)
   :init (progn
-          (bind-key "C-M-!" 'tv-eval-region lisp-interaction-mode-map) 
-          (bind-key "C-M-!" 'tv-eval-region emacs-lisp-mode-map))
+          (bind-key "C-M-!" 'tv/eval-region lisp-interaction-mode-map) 
+          (bind-key "C-M-!" 'tv/eval-region emacs-lisp-mode-map))
   :config (advice-add 'view-echo-area-messages :around 'tv/view-echo-area-messages)
-  :bind (("M-\""                  . tv-insert-double-quote)
-         ("C-M-`"                . tv-insert-double-backquote)
-         ("C-M-("                 . tv-move-pair-forward)
-         ("C-M-\""                . tv-insert-double-quote-and-close-forward)
-         ("C-M-)"                 . tv-insert-pair-and-close-forward)
-         ("<f5> c"                . tv-toggle-calendar)
-         ([remap kill-whole-line] . tv-kill-whole-line)
+  :bind (("M-\""                  . tv/insert-double-quote)
+         ("C-M-`"                . tv/insert-double-backquote)
+         ("C-M-("                 . tv/move-pair-forward)
+         ("C-M-\""                . tv/insert-double-quote-and-close-forward)
+         ("C-M-)"                 . tv/insert-pair-and-close-forward)
+         ("<f5> c"                . tv/toggle-calendar)
+         ([remap kill-whole-line] . tv/kill-whole-line)
          ("M-e"                   . tv/eval-sexp-at-point)
-         ([remap delete-char]     . tv-delete-char)
-         ([remap c-electric-delete-forward] . tv-delete-char)
+         ([remap delete-char]     . tv/delete-char)
+         ([remap c-electric-delete-forward] . tv/delete-char)
          ("C-x C-'"               . tv/split-windows)
          ("C-<"                   . other-window-backward)
          ("C->"                   . other-window-forward)
          ([C-left]                . screen-top)
          ([C-right]               . screen-bottom)
-         ("<M-down>"              . tv-scroll-down)
-         ("<M-up>"                . tv-scroll-up)
-         ("<C-M-down>"            . tv-scroll-other-down)
-         ("<C-M-up>"              . tv-scroll-other-up)))
+         ("<M-down>"              . tv/scroll-down)
+         ("<M-up>"                . tv/scroll-up)
+         ("<C-M-down>"            . tv/scroll-other-down)
+         ("<C-M-up>"              . tv/scroll-other-up)))
 
 ;;; Ledger
 ;;
@@ -1200,7 +1200,7 @@ are returned unchanged."
   
   :config
   (progn
-    (defun tv-insert-python-header ()
+    (defun tv/insert-python-header ()
       "insert python header at point"
       (interactive)
       (insert "#!/usr/bin/env python\n"
@@ -2070,6 +2070,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 
 
 ;; Link now scratch buffer to file
-(tv-restore-scratch-buffer)
+(tv/restore-scratch-buffer)
 
 ;;; init.el ends here
