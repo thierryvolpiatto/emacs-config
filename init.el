@@ -802,7 +802,6 @@ If your system's ping continues until interrupted, you can try setting
          ("C-M-)"                 . tv/insert-pair-and-close-forward)
          ("<f5> c"                . tv/toggle-calendar)
          ([remap kill-whole-line] . tv/kill-whole-line)
-         ("M-e"                   . tv/eval-sexp-at-point)
          ([remap delete-char]     . tv/delete-char)
          ([remap c-electric-delete-forward] . tv/delete-char)
          ("C-x C-'"               . tv/split-windows)
@@ -951,35 +950,6 @@ If your system's ping continues until interrupted, you can try setting
                 emamux:show-buffers-with-index nil)
   :bind (("C-c y" . emamux:yank-from-list-buffers)
          ("C-c s" . emamux:send-command)))
-
-;;; Undo-tree
-;;
-(use-package undo-tree
-  :ensure t
-  :diminish undo-tree-mode
-  :config
-  (progn
-    (defun git-gutter:undo-tree-undo (&rest _args)
-      (when git-gutter-mode
-        (run-with-idle-timer 0.1 nil 'git-gutter)))
-
-    (defun git-gutter:undo-tree-redo (&rest _args)
-      (when git-gutter-mode
-        (run-with-idle-timer 0.1 nil 'git-gutter)))
-
-    (advice-add 'undo-tree-undo :after 'git-gutter:undo-tree-undo)
-    (advice-add 'undo-tree-redo :after 'git-gutter:undo-tree-undo)
-    (setq undo-tree-enable-undo-in-region nil)
-    ;; (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree-history")))
-    ;; (setq undo-tree-auto-save-history t)
-    (global-undo-tree-mode 1)))
-
-;;; Zoom-window
-;;
-(use-package zoom-window
-  :ensure t
-  :init (setq zoom-window-mode-line-color "DarkGreen")
-  :bind ("C-x C-z" . zoom-window-zoom))
 
 ;;; Eldoc
 ;;
