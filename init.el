@@ -1794,12 +1794,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
     ;; Maybe turn on auto-fill-mode when a comment or docstring field
     ;; is detected. Ensure the hook is appended otherwise things like
     ;; eldoc-eval will not work.
-    (add-hook 'post-command-hook #'tv/turn-on-auto-fill-mode-maybe t)
-
-    (defun tv/eval-print-last-sexp ()
-      (interactive)
-      (insert "\n")
-      (pp-eval-last-sexp 'print)))
+    (add-hook 'post-command-hook #'tv/turn-on-auto-fill-mode-maybe t))
 
   :bind (("<f11> s c" . goto-scratch)
          ("<S-f12>" . cancel-debug-on-entry)
@@ -1810,14 +1805,11 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
          ("<next>" . forward-page)
          ("<prior>" . backward-page)
          ("C-M-j" . backward-kill-sexp)
-         ("C-x C-e" . tv/eval-last-sexp)
          ("C-x C-m e" . pp-macroexpand-last-sexp)
          :map
          lisp-interaction-mode-map
          ("RET" . newline-and-indent)
          ("C-M-j" . backward-kill-sexp)
-         ("C-x C-e" . tv/eval-last-sexp)
-         ("C-j" . tv/eval-print-last-sexp)
          ("C-x C-m e" . pp-macroexpand-last-sexp)
          :map
          lisp-mode-map
