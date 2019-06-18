@@ -8,19 +8,14 @@
 
 ;;; Melpa/Elpa
 ;;
-(when (and (= emacs-major-version 24)
-           (not (version< emacs-version "24.4.1")))
-  (add-to-list 'load-path "~/.emacs.d/emacs-config/")
-  ;; Load my own package.el adapted to emacs-24.
-  (load "package-24"))
-
-;; This have been already set in early-init.el with emacs-26+
+;; Emacs-26
 (unless (boundp 'package-quickstart)
   (load-file (expand-file-name "early-init.el" user-emacs-directory))
   ;; Initialize packages after setting package-archives
   ;; to feed package-archive-contents with all archives.
   (package-initialize))
 
+;; Emacs-27
 (when (boundp 'package-quickstart)
   (setq package-quickstart t))
 
