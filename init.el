@@ -2025,12 +2025,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   (bind-key "C-x p d" 'psession-delete-winconf)
   (bind-key "C-x p j" 'psession-restore-winconf))
 
-;;; Gnus
-;;
-(use-package gnus
-  :config
-  (setq gnus-init-file "~/.emacs.d/.gnus")
-  :bind ("<f7> m" . gnus))
 
 ;; Link now scratch buffer to file
 (tv/restore-scratch-buffer)
