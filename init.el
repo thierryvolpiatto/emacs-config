@@ -33,6 +33,7 @@
 	     "~/elisp/ledger-mode"
              "~/elisp/helm-extensions"
              "~/elisp/google-maps.el"
+             "~/elisp/sly-master"
              "~/.emacs.d/themes/"
 	     "~/.emacs.d/emacs-config/"
 	     ))
@@ -1999,10 +2000,12 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
           slime-scratch-file "~/.emacs.d/slime-scratch.lisp")
     ;; common-lisp-info
     (require 'cl-info)
-    (add-to-list 'Info-additional-directory-list "~/elisp/info/gcl-info/")
-    (bind-key "<f11> l r" 'slime)
-    (bind-key "<f11> l s" 'slime-scratch)
-    (bind-key "<f11> l l" 'helm-slime-list-connections)))
+    (add-to-list 'Info-additional-directory-list "~/elisp/info/gcl-info/"))
+    :bind (("<f11> l r" . slime)
+           ("<f11> l s" . slime-scratch)
+           ("<f11> l l" . helm-slime-list-connections)
+           :map slime-repl-mode-map
+           ("C-i" . helm-slime-complete)))
 
 ;;; Geiser
 ;;
