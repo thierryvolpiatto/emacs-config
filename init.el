@@ -1991,7 +1991,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Slime
 ;;
 (use-package slime
-    :disabled t
     :ensure t
     :init
   (progn
@@ -2017,7 +2016,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Sly
 ;;
 (use-package sly
-    ;; :disabled t
+    :disabled t
     :config
   (and (fboundp 'sly-symbol-completion-mode)
        (sly-symbol-completion-mode -1))
