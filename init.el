@@ -2007,22 +2007,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
            :map slime-repl-mode-map
            ("C-i" . helm-slime-complete)))
 
-;; Slime add this hook in its autoload file and later in slime-setup
-;; which is enough, remove it here to not conflict with slime.  For
-;; some reasons use-package load the autoload file even when :disabled
-;; is non nil.
-(remove-hook 'lisp-mode-hook 'slime-lisp-mode-hook)
-
-;;; Sly
-;;
-(use-package sly
-    :disabled t
-    :config
-  (and (fboundp 'sly-symbol-completion-mode)
-       (sly-symbol-completion-mode -1))
-  (setq inferior-lisp-program "/usr/bin/sbcl")
-  (setq sly-completing-read-function 'completing-read))
-
 ;;; Geiser
 ;;
 (use-package geiser
