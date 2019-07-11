@@ -2005,6 +2005,8 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
            ("<f11> l s" . slime-scratch)
            ("<f11> l l" . helm-slime-list-connections)
            :map slime-repl-mode-map
+           ("C-i" . helm-slime-complete)
+           :map slime-scratch-mode-map
            ("C-i" . helm-slime-complete)))
 
 ;;; Geiser
