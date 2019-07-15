@@ -281,6 +281,8 @@ First call indent, second complete symbol, third complete fname."
       helm-find-noerrors t
       )
 
+(customize-set-variable 'helm-ff-lynx-style-map t)
+
 ;; find-file-hook
 (add-hook 'find-file-hook 'helm-save-current-pos-to-mark-ring)
 
