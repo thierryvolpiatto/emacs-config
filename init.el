@@ -1603,8 +1603,7 @@ are returned unchanged."
     (with-eval-after-load "em-term"
       (dolist (i '("tmux" "htop" "ipython" "alsamixer" "git-log" "w3mman"))
         (add-to-list 'eshell-visual-commands i))))
-  :config
-  (global-set-key (kbd "C-!") 'eshell-command))
+  :bind ("C-!" . eshell-command))
 
 ;;; linum-relative
 ;;

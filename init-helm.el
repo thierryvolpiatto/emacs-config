@@ -47,6 +47,12 @@
   :bind (:map helm-kill-ring-map
               ("C-d" . helm-kill-ring-run-persistent-delete)))
 
+(use-package helm-recoll
+    :commands helm-recoll
+    :init (customize-set-variable 'helm-recoll-directories
+                                  '(("confdir" . "~/.recoll-.emacs.d")
+                                    ("lisp sources" . "~/.recoll-elisp")
+                                    ("work" . "~/.recoll-labo"))))
 
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
@@ -279,6 +285,8 @@ First call indent, second complete symbol, third complete fname."
       helm-candidate-number-limit 200
       helm-ff-allow-non-existing-file-at-point t
       helm-find-noerrors t
+      helm-describe-variable-function 'helpful-variable
+      helm-describe-function-function 'helpful-callable
       )
 
 (customize-set-variable 'helm-ff-lynx-style-map t)
@@ -323,6 +331,25 @@ First call indent, second complete symbol, third complete fname."
   (cl-loop for cand in (helm-marked-candidates)
            always (string-match "\\.el$" cand)))
 
+(defun helm-ff-recoll-index-directory (directory)
+  "Create a recoll index directory from DIRECTORY.
+Add the new created directory to `helm-recoll-directories' using the
+basename of DIRECTORY as name.
+By using `customize-set-variable', a new source is created for this
+new directory."
+  (cl-assert (boundp 'helm-recoll-directories) nil
+             "Package helm-recoll not installed or configured")
+  (let* ((bn (helm-basename (expand-file-name directory)))
+         (index-dir (format "~/.recoll-%s" bn))
+         (conf-file (expand-file-name "recoll.conf" index-dir))) 
+    (mkdir index-dir)
+    (with-current-buffer (find-file-noselect conf-file)
+      (insert (format "topdirs = %s" (expand-file-name directory)))
+      (save-buffer)
+      (kill-buffer))
+    (customize-set-variable 'helm-recoll-directories
+                            (append `((,bn . ,index-dir)) helm-recoll-directories))
+    (message "Don't forget to index config directory with 'recollindex -c %s'" index-dir)))
 
 ;;; Modify source attributes
 ;;
@@ -406,7 +433,13 @@ First call indent, second complete symbol, third complete fname."
    (lambda (candidate)
      (and (file-directory-p candidate)
           (string= (helm-basename candidate) ".")))
-   1))
+   1)
+  (helm-source-add-action-to-source-if
+   "Recoll index directory"
+   'helm-ff-recoll-index-directory
+   source
+   'file-directory-p
+   3))
 
 (defmethod helm-setup-user-source ((source helm-ls-git-source))
   (helm-source-add-action-to-source-if
