@@ -350,6 +350,13 @@ new directory."
     (customize-set-variable 'helm-recoll-directories
                             (append `((,bn . ,index-dir)) helm-recoll-directories))
     (message "Don't forget to index config directory with 'recollindex -c %s'" index-dir)))
+
+(defun helm-ff-recoll-index-directories (_candidate)
+  (let ((dirs (helm-marked-candidates)))
+    (cl-loop for dir in dirs
+             when (file-directory-p dir)
+             do (helm-ff-recoll-index-directory dir))))
+
 
 ;;; Modify source attributes
 ;;
@@ -436,7 +443,7 @@ new directory."
    1)
   (helm-source-add-action-to-source-if
    "Recoll index directory"
-   'helm-ff-recoll-index-directory
+   'helm-ff-recoll-index-directories
    source
    'file-directory-p
    3))
