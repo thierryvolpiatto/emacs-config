@@ -50,9 +50,9 @@
 (use-package helm-recoll
     :commands helm-recoll
     :init (customize-set-variable 'helm-recoll-directories
-                                  '(("confdir" . "~/.recoll-.emacs.d")
-                                    ("lisp sources" . "~/.recoll-elisp")
-                                    ("work" . "~/.recoll-labo"))))
+                                  '(("confdir" . "~/.recoll-config")
+                                    ("lisp sources" . "~/.recoll-sources")
+                                    ("work" . "~/.recoll-work"))))
 
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
