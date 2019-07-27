@@ -53,6 +53,10 @@
                                   '(("confdir" . "~/.recoll-config")
                                     ("lisp sources" . "~/.recoll-sources")
                                     ("work" . "~/.recoll-work"))))
+
+(use-package helm-github-stars
+    :commands helm-github-stars
+    :config (setq helm-github-stars-username "thierryvolpiatto"))
 
 ;;;; Test Sources or new helm code. 
 ;;   !!!WARNING EXPERIMENTAL!!!
