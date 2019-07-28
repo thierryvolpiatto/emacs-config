@@ -2044,11 +2044,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
     (defun git-gutter:undo-tree-undo (&rest _args)
       (when git-gutter-mode
         (run-with-idle-timer 0.1 nil 'git-gutter)))
-    
-    (defun git-gutter:undo-tree-redo (&rest _args)
-      (when git-gutter-mode
-        (run-with-idle-timer 0.1 nil 'git-gutter)))
-    
     (advice-add 'undo-tree-undo :after 'git-gutter:undo-tree-undo)
     (advice-add 'undo-tree-redo :after 'git-gutter:undo-tree-undo)
 
