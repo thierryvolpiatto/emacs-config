@@ -289,8 +289,6 @@ First call indent, second complete symbol, third complete fname."
       helm-candidate-number-limit 200
       helm-ff-allow-non-existing-file-at-point t
       helm-find-noerrors t
-      helm-describe-variable-function 'helpful-variable
-      helm-describe-function-function 'helpful-callable
       )
 
 (customize-set-variable 'helm-ff-lynx-style-map t)
