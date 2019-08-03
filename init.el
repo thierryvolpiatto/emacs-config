@@ -19,6 +19,11 @@
 (when (boundp 'package-quickstart)
   (setq package-quickstart t))
 
+(defun tv/fix-selected-packages ()
+  (interactive)
+  (package-initialize)
+  (package--save-selected-packages (package--find-non-dependencies)))
+
 
 ;;; load-path
 ;;
@@ -2032,6 +2037,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Gnus
 ;;
 (use-package gnus
+  :disabled t  
   :config
   (setq gnus-init-file "~/.emacs.d/.gnus")
   :bind ("<f7> m" . gnus))
