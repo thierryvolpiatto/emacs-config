@@ -223,6 +223,7 @@ If entries are already pointed, skip."
       (helm-aif (overlays-at (point))
           (cond ((eq (overlay-start (car it)) (point))
                  (goto-char (next-overlay-change (point)))
+                 (goto-char (next-single-char-property-change (point) 'face))
                  (forward-line -1))
                 (t
                  (goto-char (previous-overlay-change (point)))))
