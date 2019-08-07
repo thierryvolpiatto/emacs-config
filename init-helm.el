@@ -17,9 +17,9 @@
   (setq helm-adaptive-history-file nil)
   (helm-adaptive-mode 1))
 
-(use-package helm-utils
-  ;; Popup buffer-name or filename in grep/moccur/imenu-all etc...
-  :config (helm-popup-tip-mode 1))
+;; (use-package helm-utils
+;;   ;; Popup buffer-name or filename in grep/moccur/imenu-all etc...
+;;   :config (helm-popup-tip-mode 1))
 
 (use-package helm-sys
   :commands (helm-top)
