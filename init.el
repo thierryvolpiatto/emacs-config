@@ -38,7 +38,6 @@
 	     "~/elisp/ledger-mode"
              "~/elisp/helm-extensions"
              "~/elisp/google-maps.el"
-             "~/elisp/sly"
              "~/.emacs.d/themes/"
 	     "~/.emacs.d/emacs-config/"
 	     ))

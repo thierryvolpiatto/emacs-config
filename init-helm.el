@@ -146,6 +146,16 @@
 (define-key ctl-x-5-map (kbd "M-g a")   'helm-do-grep-ag-in-frame)
 (define-key ctl-x-5-map (kbd "M-g g")   'helm-do-git-grep-in-frame)
 
+(defun helm/insert-date-in-minibuffer ()
+  (interactive)
+  (with-selected-window (or (active-minibuffer-window)
+                            (minibuffer-window))
+    (unless (or (helm-follow-mode-p)
+                helm--temp-follow-flag)
+      (goto-char (point-max))
+      (insert (format-time-string "%Y-%m-%d")))))
+(define-key helm-find-files-map (kbd "C-c y") 'helm/insert-date-in-minibuffer)
+
 
 ;;; Helm-command-map
 ;;
@@ -277,8 +287,6 @@ First call indent, second complete symbol, third complete fname."
       helm-mini-default-sources '(helm-source-buffers-list helm-source-buffer-not-found)
       helm-debug-root-directory "/home/thierry/tmp/helm-debug"
       helm-follow-mode-persistent t
-      helm-browse-project-ag-find-files-cmd           "rg --files --hidden -g '*' %s"
-      helm-browse-project-default-find-files-fn       'helm-browse-project-ag-find-files
       helm-emms-use-track-description-function        nil
       helm-buffer-max-length            22
       helm-buffers-end-truncated-string "…"
