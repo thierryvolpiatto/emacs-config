@@ -16,7 +16,11 @@
       w3m-output-coding-system 'utf-8
       w3m-input-coding-system 'utf-8
       w3m-terminal-coding-system 'utf-8
-      w3m-default-display-inline-images nil)
+      w3m-default-display-inline-images nil
+      ;; Set these variables manually as `w3m-display-mode' is sucking.
+      w3m-use-tab t
+      w3m-pop-up-frames nil
+      w3m-pop-up-windows nil)
 
 ;; `w3m-bookmark-save-buffer' is backing up bookmark file by renaming,
 ;; so that when `w3m-bookmark-file' is a symlink the symlink is
@@ -63,8 +67,6 @@
     (if (region-active-p)
         (call-interactively #'fill-region)
       (call-interactively #'fill-paragraph))))
-
-(define-key w3m-lynx-like-map [(shift right)] 'w3m-view-this-url-new-session)
 
 (provide 'config-w3m)
 

@@ -1413,7 +1413,9 @@ are returned unchanged."
    ("M-<left>" . w3m-previous-buffer)
    ("V" . helm-w3m-bookmarks)
    ("M" . w3m-view-url-with-browse-url)
-   ("M-q" . tv/w3m-fill-region-or-paragraph)))
+   ("M-q" . tv/w3m-fill-region-or-paragraph)
+   :map w3m-lynx-like-map
+   ("S-<right>" . w3m-view-this-url-new-session)))
 
 ;;; Mu4e
 ;;
