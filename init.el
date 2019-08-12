@@ -548,8 +548,8 @@ So far, F can only be a symbol, not a lambda expression."))
            (and time-zone " (") time-zone (and time-zone ")")
            "]")
           ;; cpu load average
-          ;; (if (and load (not (string= load "")))
-          ;;     (format " [Cpu:%s%%%%] " load) "")
+          (if (and load (not (string= load "")))
+              (format " [Cpu:%s%%%%] " load) "")
           ""
           ;; mail
           ""))

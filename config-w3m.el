@@ -64,6 +64,8 @@
         (call-interactively #'fill-region)
       (call-interactively #'fill-paragraph))))
 
+(define-key w3m-lynx-like-map [(shift right)] 'w3m-view-this-url-new-session)
+
 (provide 'config-w3m)
 
 ;;; .emacs-config-w3m.el ends here
