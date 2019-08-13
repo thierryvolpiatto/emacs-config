@@ -389,6 +389,15 @@ new directory."
    source
    'helm/ff-candidates-lisp-p)
   (helm-source-add-action-to-source-if
+   "Recover file"
+   (lambda (candidate)
+     (recover-file candidate))
+   source
+   (lambda (candidate)
+     (file-exists-p (expand-file-name
+                     (format "#%s#" (helm-basename candidate))
+                     (helm-basedir candidate)))))
+  (helm-source-add-action-to-source-if
    "Byte recompile directory (async)"
    'async-byte-recompile-directory
    source
