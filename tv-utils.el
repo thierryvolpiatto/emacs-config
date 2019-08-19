@@ -283,7 +283,7 @@ depending the value of N is positive or negative."
      (mapc #'(lambda (x)
                (progress-reporter-update progress-reporter count)
                (funcall ,func x)
-               (incf count))
+               (cl-incf count))
            ,seq)
      (progress-reporter-done progress-reporter)))
 

@@ -205,7 +205,7 @@ AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk\\ Mail" "Messages with im
         (setq mu4e-get-mail-command tv/mu4e-get-mail-command-full)
         (setq tv/mu4e-counter 0))
     (setq mu4e-get-mail-command tv/mu4e-get-mail-command-quick)
-    (incf tv/mu4e-counter)))
+    (cl-incf tv/mu4e-counter)))
 (add-hook 'mu4e-update-pre-hook #'tv/mu4e-update-mail-quick-or-full)
 
 ;;; Attempt to show images when viewing messages
