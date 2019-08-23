@@ -432,19 +432,51 @@ So far, F can only be a symbol, not a lambda expression."))
 		      (if (< (+ (length print-rep) (point) (- line-beg)) 68)
 		          (insert " " print-rep)
 		        (terpri)
-                        ;; >>>>>>>>>>>adviced block 
-                        (if (listp val)
-                            (cl-loop for sexp in val do (pp sexp))
-                          (let ((buf (current-buffer)))
-                            (with-temp-buffer
-                              (insert print-rep)
-                              (pp-buffer)
-                              (let ((pp-buffer (current-buffer)))
-                                (with-current-buffer buf
-                                  (insert-buffer-substring pp-buffer))))))
-                        ;; >>>>>>>>>>>>>>>>>>>>>>>>>
-                        ;; Remove trailing newline.
-                        (and (= (char-before) ?\n) (delete-char -1)))
+                        ;; >>>>>>>>>>>adviced block
+                        (cl-letf (((symbol-function 'pp)
+                                   (lambda (object &optional stream)
+                                     (let ((fn (lambda (ob &optional stream)
+                                                 (princ (pp-to-string ob)
+                                                        (or stream standard-output))
+                                                 (terpri)))
+                                           (print-circle t)
+                                           prefix suffix map-fn looping)
+                                       (cond ((ring-p object)
+                                              (setq looping nil))
+                                             ((consp object)
+                                              (setq prefix "\n("
+                                                    suffix ")"
+                                                    map-fn 'mapc
+                                                    looping t))
+                                             ((vectorp object)
+                                              (setq prefix "\n["
+                                                    suffix "]"
+                                                    map-fn 'mapc
+                                                    looping t))
+                                             ((hash-table-p object)
+                                              (setq prefix (format "#s(hash-table size %s test %s rehash-size %s rehash-threshold %s data\n"
+                                                                   (hash-table-size object)
+                                                                   (hash-table-test object)
+                                                                   (hash-table-rehash-size object)
+                                                                   (hash-table-rehash-threshold object))
+                                                    suffix ")"
+                                                    map-fn 'maphash
+                                                    fn `(lambda (k v &optional stream)
+                                                          (funcall ,fn k stream)
+                                                          (funcall ,fn v stream))
+                                                    looping t)))
+                                       (if looping
+                                           (progn
+                                             (insert prefix)
+                                             (funcall map-fn fn object)
+                                             (cl-letf (((point) (1- (point))))
+                                               (insert suffix)))
+                                         (funcall fn object stream))))))
+
+                          (pp val))
+                          ;; >>>>>>>>>>>>>>>>>>>>>>>>>
+                          ;; Remove trailing newline.
+                          (and (= (char-before) ?\n) (delete-char -1)))
 		      (let* ((sv (get variable 'standard-value))
 			     (origval (and (consp sv)
 				           (condition-case nil
