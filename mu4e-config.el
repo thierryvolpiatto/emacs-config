@@ -248,9 +248,10 @@ AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk\\ Mail" "Messages with im
   (interactive "P")
   (require 'helm-net)
   (let ((url (w3m-active-region-or-url-at-point)))
-    (if (string-match "\\.\\(patch\\|diff\\)\\'" url)
-        (tv/mu4e-show-patch-other-frame (if arg (concat url "?w=1") url))
-      (browse-url url))))
+    (when url
+      (if (string-match "\\.\\(patch\\|diff\\)\\'" url)
+          (tv/mu4e-show-patch-other-frame (if arg (concat url "?w=1") url))
+        (browse-url url)))))
 (define-key mu4e-view-mode-map (kbd "C-c C-c") 'tv/mu4e-browse-url-or-show-patch)
 
 (defadvice w3m-goto-next-anchor (before go-to-end-of-anchor activate)
