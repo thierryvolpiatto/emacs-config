@@ -109,10 +109,14 @@ Restart works only on graphic display."
     (tv/stop-emacs-1)))
 
 ;; Kill buffer and windows
-(defun tv/kill-buffer-and-windows (buffer)
-  "Kill BUFFER and delete its windows."
-  (interactive (list (read-buffer "Kill buffer: " (current-buffer) t)))
-  (let ((windows (get-buffer-window-list buffer nil t)))
+(defun tv/kill-buffer-and-windows (arg)
+  "Kill current-buffer and delete its window.
+With a prefix arg ask with completion which buffer to kill."
+  (interactive "P")
+  (let* ((buffer (if arg
+                     (read-buffer "Kill buffer: " (current-buffer) t)
+                   (current-buffer)))
+         (windows (get-buffer-window-list buffer nil t)))
     (when (kill-buffer buffer)
       (dolist (win windows)
         (when (window-live-p win)
