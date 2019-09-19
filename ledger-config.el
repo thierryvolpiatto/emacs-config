@@ -2,6 +2,9 @@
 
 ;; Code:
 
+(eval-when-compile
+  (require 'ledger-mode))
+
 (define-key ledger-mode-map (kbd "C-c a l") 'ledger-align-device)
 (defvar ledger-default-device "€")
 
