@@ -913,8 +913,8 @@ file-local variable.\n")
            (and time-zone " (") time-zone (and time-zone ")")
            "]")
           ;; cpu load average
-          (if (and load (not (string= load "")))
-              (format " [Cpu:%s%%%%] " load) "")
+          ;; (if (and load (not (string= load "")))
+          ;;     (format " [Cpu:%s%%%%] " load) "")
           ""
           ;; mail
           ""))
