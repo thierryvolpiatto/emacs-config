@@ -152,6 +152,7 @@
       (goto-char (point-max))
       (insert (format-time-string "%Y-%m-%d")))))
 (define-key helm-find-files-map (kbd "C-c y") 'helm/insert-date-in-minibuffer)
+(define-key helm-read-file-map (kbd "C-c y") 'helm/insert-date-in-minibuffer)
 
 
 ;;; Helm-command-map
