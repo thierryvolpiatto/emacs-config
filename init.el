@@ -1988,31 +1988,23 @@ are returned unchanged."
 	        replace (buffer-substring-no-properties (point) end))
           (goto-char (1+ end))
           (if repeat
-	      `(lambda (lst)
-	         (mapcar
-	          (function
-	           (lambda (str)
-	            (let ((i 0))
-		      (while (setq i (string-match ,match str i))
-		        (setq str (replace-match ,replace t nil str))))
-	            str))
-                  lst))
-            `(lambda (lst)
-	       (mapcar
-	        (function
+	      (lambda (lst)
+	        (mapcar
 	         (lambda (str)
-	          (if (string-match ,match str)
-		      (setq str (replace-match ,replace t nil str)))
-	          str))
-                lst)))))
+	           (let ((i 0))
+		     (while (setq i (string-match match str i))
+		       (setq str (replace-match replace t nil str))))
+	           str)
+                 lst))
+            (lambda (lst)
+	      (mapcar
+               (lambda (str)
+	         (if (string-match match str)
+		     (setq str (replace-match replace t nil str)))
+	         str)
+               lst)))))
       ;; Allow empty string in substitution e.g. echo foo.el(:gs/.el//)
-      (advice-add 'eshell-pred-substitute :override #'tv/advice--eshell-pred-substitute)
-      ;; basename sans extension.
-      (add-to-list 'eshell-modifier-alist
-                   '(?T . '(lambda (lst) (mapcar (lambda (f)
-                                                   (file-name-sans-extension
-                                                    (file-name-nondirectory f)))
-                                          lst))))))
+      (advice-add 'eshell-pred-substitute :override #'tv/advice--eshell-pred-substitute)))
   :bind ("C-!" . eshell-command))
 
 ;;; linum-relative
