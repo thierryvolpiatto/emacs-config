@@ -1973,7 +1973,46 @@ are returned unchanged."
     (setq eshell-term-name "eterm-color")
     (with-eval-after-load "em-term"
       (dolist (i '("tmux" "htop" "ipython" "alsamixer" "git-log" "w3mman"))
-        (add-to-list 'eshell-visual-commands i))))
+        (add-to-list 'eshell-visual-commands i)))
+    ;; Eshell modifiers
+    (with-eval-after-load "em-pred"
+      (defun tv/advice--eshell-pred-substitute (&optional repeat)
+        "Return a modifier function that will substitute matches."
+        (let ((delim (char-after))
+	      match replace end)
+          (forward-char)
+          (setq end (eshell-find-delimiter delim delim nil nil t)
+	        match (buffer-substring-no-properties (point) end))
+          (goto-char (1+ end))
+          (setq end (or (eshell-find-delimiter delim delim nil nil t) (point))
+	        replace (buffer-substring-no-properties (point) end))
+          (goto-char (1+ end))
+          (if repeat
+	      `(lambda (lst)
+	         (mapcar
+	          (function
+	           (lambda (str)
+	            (let ((i 0))
+		      (while (setq i (string-match ,match str i))
+		        (setq str (replace-match ,replace t nil str))))
+	            str))
+                  lst))
+            `(lambda (lst)
+	       (mapcar
+	        (function
+	         (lambda (str)
+	          (if (string-match ,match str)
+		      (setq str (replace-match ,replace t nil str)))
+	          str))
+                lst)))))
+      ;; Allow empty string in substitution e.g. echo foo.el(:gs/.el//)
+      (advice-add 'eshell-pred-substitute :override #'tv/advice--eshell-pred-substitute)
+      ;; basename sans extension.
+      (add-to-list 'eshell-modifier-alist
+                   '(?T . '(lambda (lst) (mapcar (lambda (f)
+                                                   (file-name-sans-extension
+                                                    (file-name-nondirectory f)))
+                                          lst))))))
   :bind ("C-!" . eshell-command))
 
 ;;; linum-relative
