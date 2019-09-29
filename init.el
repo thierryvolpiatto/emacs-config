@@ -2004,7 +2004,9 @@ are returned unchanged."
 	         str)
                lst)))))
       ;; Allow empty string in substitution e.g. echo foo.el(:gs/.el//)
-      (advice-add 'eshell-pred-substitute :override #'tv/advice--eshell-pred-substitute)))
+      (advice-add 'eshell-pred-substitute :override #'tv/advice--eshell-pred-substitute)
+      ;; Fix echo, perhaps using as alias *echo is even better.
+      (setq eshell-plain-echo-behavior t)))
   :bind ("C-!" . eshell-command))
 
 ;;; linum-relative
