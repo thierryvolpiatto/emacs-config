@@ -119,10 +119,12 @@
 ;;; Html rendering
 (setq mu4e-view-prefer-html t)
 (setq mu4e-html2text-command (cond ((fboundp 'w3m)
-                                    (lambda ()          ; Use emacs-w3m
+                                    ;; Use emacs-w3m
+                                    (lambda ()
                                       (w3m-region (point-min) (point-max))))
                                    ((executable-find "w3m")
-                                    "w3m -T text/html") ; Use w3m shell-command
+                                    ;; Use w3m shell-command
+                                    "w3m -T text/html")
                                    (t 'html2text)))
 
 (setq mail-user-agent      'mu4e-user-agent
@@ -266,9 +268,10 @@ AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk\\ Mail" "Messages with im
                 (point) 'w3m-anchor-sequence)))
       (and pos (goto-char pos)))))
 
-(defun tv/w3m-next-anchor ()
+(defun tv/mu4e-next-anchor ()
   (interactive)
   (require 'w3m)
+  (setq w3m-max-anchor-sequence 123)
   (or (stringp (w3m-next-anchor))
       (let ((pos (point)))
         (when (eq (get-text-property (point) 'face)
@@ -283,10 +286,11 @@ AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk\\ Mail" "Messages with im
                                   'face 'mu4e-link-face)))))
           (and next-url (goto-char next-url))))))
 
-(defun tv/w3m-previous-anchor ()
+(defun tv/mu4e-previous-anchor ()
   (interactive)
   (require 'helm-lib)
   (require 'w3m)
+  (setq w3m-max-anchor-sequence 123)
   (or (stringp (w3m-previous-anchor))
       (let ((prev-url (save-excursion
                         (helm-awhile (re-search-backward
@@ -299,9 +303,9 @@ AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk\\ Mail" "Messages with im
                           (goto-char it)))))
         (and prev-url (goto-char prev-url)))))
 
-(define-key mu4e-view-mode-map (kbd "<C-tab>")   'tv/w3m-next-anchor)
-(define-key mu4e-view-mode-map (kbd "<backtab>") 'tv/w3m-previous-anchor)
-(define-key mu4e-view-mode-map (kbd "X") 'mu4e-view-save-attachment-multi)
+(define-key mu4e-view-mode-map (kbd "<C-tab>")   'tv/mu4e-next-anchor)
+(define-key mu4e-view-mode-map (kbd "<backtab>") 'tv/mu4e-previous-anchor)
+(define-key mu4e-view-mode-map (kbd "X")         'mu4e-view-save-attachment-multi)
 
 ;;; A simplified and more efficient version of `article-translate-strings'.
 ;;
