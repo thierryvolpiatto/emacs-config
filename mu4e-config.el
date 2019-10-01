@@ -272,7 +272,7 @@ AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk\\ Mail" "Messages with im
   (interactive)
   (require 'w3m)
   (setq w3m-max-anchor-sequence 123)
-  (or (stringp (w3m-next-anchor))
+  (or (w3m-next-anchor)
       (let ((pos (point)))
         (when (eq (get-text-property (point) 'face)
                   'mu4e-link-face)
@@ -291,7 +291,7 @@ AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk\\ Mail" "Messages with im
   (require 'helm-lib)
   (require 'w3m)
   (setq w3m-max-anchor-sequence 123)
-  (or (stringp (w3m-previous-anchor))
+  (or (w3m-previous-anchor)
       (let ((prev-url (save-excursion
                         (helm-awhile (re-search-backward
                                       ffap-url-regexp nil t)

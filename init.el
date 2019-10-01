@@ -38,6 +38,7 @@
 	     "~/elisp/ledger-mode"
              "~/elisp/helm-extensions"
              "~/elisp/google-maps.el"
+             "~/elisp/emacs-w3m"
              "~/.emacs.d/themes/"
 	     "~/.emacs.d/emacs-config/"
 	     ))
@@ -1814,7 +1815,6 @@ are returned unchanged."
 ;;; W3m
 ;;
 (use-package w3m
-  :ensure t
   :commands (w3m-toggle-inline-image w3m-region w3m-browse-url)
   :init (require 'config-w3m)
   :bind
