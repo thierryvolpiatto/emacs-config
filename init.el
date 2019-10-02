@@ -109,21 +109,6 @@ Restart works only on graphic display."
            kill-emacs-query-functions)))
     (tv/stop-emacs-1)))
 
-;; Kill buffer and windows
-(defun tv/kill-buffer-and-windows (arg)
-  "Kill current-buffer and delete its window.
-With a prefix arg ask with completion which buffer to kill."
-  (interactive "P")
-  (let* ((buffer (if arg
-                     (read-buffer "Kill buffer: " (current-buffer) t)
-                   (current-buffer)))
-         (windows (get-buffer-window-list buffer nil t)))
-    (when (kill-buffer buffer)
-      (dolist (win windows)
-        (when (window-live-p win)
-          (ignore-errors (delete-window win)))))))
-(global-set-key [remap kill-buffer] 'tv/kill-buffer-and-windows)
-
 ;; Add-newline-at-end-of-files
 (setq require-final-newline t)
 
@@ -2499,6 +2484,22 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
     (advice-add 'undo-tree-redo :after 'git-gutter:undo-tree-undo)
 
     (global-undo-tree-mode 1))
+
+;; Kill buffer and windows
+(defun tv/kill-buffer-and-windows (arg)
+  "Kill current-buffer and delete its window.
+With a prefix arg ask with completion which buffer to kill."
+  (interactive "P")
+  (let* ((buffer (if arg
+                     (read-buffer "Kill buffer: " (current-buffer) t)
+                   (current-buffer)))
+         (windows (get-buffer-window-list buffer nil t)))
+    (when (kill-buffer buffer)
+      (dolist (win windows)
+        (when (window-live-p win)
+          (ignore-errors (delete-window win)))))))
+(helm-define-key-with-subkeys global-map (kbd "C-x k") ?k 'tv/kill-buffer-and-windows)
+
 
 ;; Link now scratch buffer to file
 (tv/restore-scratch-buffer)
