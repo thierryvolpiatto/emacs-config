@@ -296,6 +296,7 @@ First call indent, second complete symbol, third complete fname."
       helm-ff-allow-non-existing-file-at-point t
       helm-find-noerrors t
       helm-window-show-buffers-function #'helm-window-mosaic-fn
+      helm-buffers-maybe-switch-to-tab t
       )
 
 (customize-set-variable 'helm-ff-lynx-style-map t)
