@@ -1966,26 +1966,13 @@ are returned unchanged."
                                   ;; Helm completion on eshell history.
                                   (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)
                                   ;; Eshell prompt
-                                  (set-face-attribute 'eshell-prompt nil :foreground "DeepSkyBlue")))
+                                  (set-face-attribute 'eshell-prompt nil :foreground "Green2")))
 
     ;; Eshell history size
     (setq eshell-history-size 1000) ; Same as env var HISTSIZE.
 
     ;; Eshell-banner
-    (setq eshell-banner-message (format "%s %s\nwith Emacs %s on %s"
-                                        (propertize
-                                         "Eshell session started on"
-                                         'face '((:foreground "Goldenrod")))
-                                        (propertize
-                                         (format-time-string "%c")
-                                         'face '((:foreground "magenta")))
-                                        (propertize emacs-version
-                                                    'face '((:foreground "magenta")))
-                                        (propertize
-                                         (with-temp-buffer
-                                           (call-process "uname" nil t nil "-r")
-                                           (buffer-string))
-                                         'face '((:foreground "magenta")))))
+    (setq eshell-banner-message "")
 
     ;; Eshell-et-ansi-color
     (ignore-errors
