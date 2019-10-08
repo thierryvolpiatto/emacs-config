@@ -1390,18 +1390,6 @@ If your system's ping continues until interrupted, you can try setting
     (add-hook 'python-mode-hook
               (lambda ()
                 (define-key python-mode-map (kbd "C-m") 'newline-and-indent))))
-  
-  :config
-  (progn
-    (defun tv/insert-python-header ()
-      "insert python header at point"
-      (interactive)
-      (insert "#!/usr/bin/env python\n"
-              "# -*- coding: utf-8 -*-\n\n"
-              "## Title: \n"
-              "## Description: \n"
-              "## Author:Thierry Volpiatto<thierry dot volpiatto FROM gmail DOT com>\n"
-              "## Commentary:\n\n")))
   :bind ("<f11> p" . python-shell-switch-to-shell))
 
 ;;; Tramp-config
