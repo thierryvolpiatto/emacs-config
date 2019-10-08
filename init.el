@@ -1150,7 +1150,6 @@ If your system's ping continues until interrupted, you can try setting
          ([remap kill-whole-line] . tv/kill-whole-line)
          ([remap delete-char]     . tv/delete-char)
          ([remap c-electric-delete-forward] . tv/delete-char)
-         ("C-x C-'"               . tv/split-windows)
          ("C-<"                   . other-window-backward)
          ("C->"                   . other-window-forward)
          ([C-left]                . screen-top)

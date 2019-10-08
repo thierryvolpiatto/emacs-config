@@ -654,19 +654,6 @@ If a prefix arg is given choose directory, otherwise use `default-directory'."
     (if (called-interactively-p 'interactive) 
         (message "%s" result) result)))
 
-;;;###autoload
-(defun tv/split-windows (arg)
-  (interactive "P")
-  (let ((bufs (cdr (cl-loop for w being the windows
-                            collect (window-buffer w)))))
-    (when bufs
-      (delete-other-windows)
-      (cl-loop for b in bufs do
-               (with-selected-window (if arg
-                                         (split-window-vertically)
-                                         (split-window-horizontally))
-                 (switch-to-buffer b))))))
-
 ;; Euro million
 ;;;###autoload
 (defun euro-million ()
