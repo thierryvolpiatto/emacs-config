@@ -1080,7 +1080,7 @@ If your system's ping continues until interrupted, you can try setting
     ;; Byte compilation async.
     (use-package async-bytecomp
       :config
-      (setq async-bytecomp-allowed-packages '(all)))))
+      (setq async-bytecomp-allowed-packages 'all))))
 
 ;;; Firefox protocol
 ;;
