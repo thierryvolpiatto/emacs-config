@@ -1082,11 +1082,6 @@ If your system's ping continues until interrupted, you can try setting
       :config
       (setq async-bytecomp-allowed-packages 'all))))
 
-;;; Firefox protocol
-;;
-(use-package firefox-protocol
-  :commands 'firefox-protocol-installer-install)
-
 ;;; Org
 ;;
 (use-package org
