@@ -297,6 +297,7 @@ First call indent, second complete symbol, third complete fname."
       helm-find-noerrors t
       helm-window-show-buffers-function #'helm-window-mosaic-fn
       helm-buffers-maybe-switch-to-tab t
+      helm-use-frame-when-dedicated-window t
       )
 
 (customize-set-variable 'helm-ff-lynx-style-map t)
