@@ -259,6 +259,7 @@ First call indent, second complete symbol, third complete fname."
                                                         helm-imenu-in-all-buffers)
       helm-actions-inherit-frame-settings             t
       helm-use-frame-when-more-than-two-windows       t
+      helm-use-frame-when-dedicated-window t
       helm-frame-background-color                     "DarkSlateGray"
       helm-show-action-window-other-window            'left
       helm-buffers-favorite-modes                     (append helm-buffers-favorite-modes '(picture-mode artist-mode))
@@ -297,7 +298,6 @@ First call indent, second complete symbol, third complete fname."
       helm-find-noerrors t
       helm-window-show-buffers-function #'helm-window-mosaic-fn
       helm-buffers-maybe-switch-to-tab t
-      helm-use-frame-when-dedicated-window t
       )
 
 (customize-set-variable 'helm-ff-lynx-style-map t)
