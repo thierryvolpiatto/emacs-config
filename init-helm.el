@@ -1,4 +1,4 @@
-;;; init-helm.el --- My startup file for helm. -*- lexical-binding: t -*- 
+;;; init-helm.el --- My startup file for helm. -*- lexical-binding: t -*-
 ;;; Code:
 
 ;;; Load all autoloads for helm and its extensions
@@ -55,7 +55,7 @@
                                     ("work" . "~/.recoll-work"))))
 
 
-;;;; Test Sources or new helm code. 
+;;;; Test Sources or new helm code.
 ;;   !!!WARNING EXPERIMENTAL!!!
 
 (defun helm/turn-on-header-line ()
@@ -212,7 +212,30 @@ First call indent, second complete symbol, third complete fname."
   0.3)
 
 ;; Indent or complete with completion-at-point
-(setq tab-always-indent 'complete)
+;; (setq tab-always-indent 'complete)
+
+(if (and (boundp 'tab-always-indent)
+         (eq tab-always-indent 'complete)
+         (boundp 'completion-in-region-function))
+    (progn
+      (define-key lisp-interaction-mode-map [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
+      (define-key emacs-lisp-mode-map       [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
+
+      ;; lisp complete. (Rebind M-<tab>)
+      (define-key lisp-interaction-mode-map [remap completion-at-point] 'helm-lisp-completion-at-point)
+      (define-key emacs-lisp-mode-map       [remap completion-at-point] 'helm-lisp-completion-at-point))
+
+  (define-key lisp-interaction-mode-map [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
+  (define-key emacs-lisp-mode-map       [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
+
+  ;; lisp complete. (Rebind M-<tab>)
+  (define-key lisp-interaction-mode-map [remap completion-at-point] 'helm-lisp-completion-at-point)
+  (define-key emacs-lisp-mode-map       [remap completion-at-point] 'helm-lisp-completion-at-point))
+
+(unless (boundp 'completion-in-region-function)
+  (add-hook 'ielm-mode-hook
+            #'(lambda ()
+                (define-key ielm-map [remap completion-at-point] 'helm-lisp-completion-at-point))))
 
 ;; helm find files
 (define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
@@ -352,7 +375,7 @@ new directory."
              "Package helm-recoll not installed or configured")
   (let* ((bn (helm-basename (expand-file-name directory)))
          (index-dir (format "~/.recoll-%s" bn))
-         (conf-file (expand-file-name "recoll.conf" index-dir))) 
+         (conf-file (expand-file-name "recoll.conf" index-dir)))
     (mkdir index-dir)
     (with-current-buffer (find-file-noselect conf-file)
       (insert (format "topdirs = %s" (expand-file-name directory)))
