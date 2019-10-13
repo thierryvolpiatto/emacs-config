@@ -326,7 +326,8 @@ So far, F can only be a symbol, not a lambda expression."))
   :config
   (progn
     (setq ediff-window-setup-function 'ediff-setup-windows-plain
-          ediff-split-window-function 'split-window-horizontally)))
+          ediff-split-window-function 'split-window-horizontally
+          ediff-show-ancestor         nil)))
 
 ;;; Help
 ;;
