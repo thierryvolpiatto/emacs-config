@@ -2016,9 +2016,7 @@ If your system's ping continues until interrupted, you can try setting
         (lisp-indent-function indent-point state)))
     
     ;; Fix indentation in CL loop.
-    (setq lisp-indent-function (if (<= emacs-major-version 24)
-                                   #'tv/common-lisp-indent-function
-                                 #'common-lisp-indent-function-1)
+    (setq lisp-indent-function #'tv/common-lisp-indent-function
           lisp-simple-loop-indentation 1
           lisp-loop-keyword-indentation 6
           lisp-loop-forms-indentation 6)
