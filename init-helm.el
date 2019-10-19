@@ -212,30 +212,30 @@ First call indent, second complete symbol, third complete fname."
   0.3)
 
 ;; Indent or complete with completion-at-point
-;; (setq tab-always-indent 'complete)
+(setq tab-always-indent 'complete)
 
-(if (and (boundp 'tab-always-indent)
-         (eq tab-always-indent 'complete)
-         (boundp 'completion-in-region-function))
-    (progn
-      (define-key lisp-interaction-mode-map [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
-      (define-key emacs-lisp-mode-map       [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
+;; (if (and (boundp 'tab-always-indent)
+;;          (eq tab-always-indent 'complete)
+;;          (boundp 'completion-in-region-function))
+;;     (progn
+;;       (define-key lisp-interaction-mode-map [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
+;;       (define-key emacs-lisp-mode-map       [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
 
-      ;; lisp complete. (Rebind M-<tab>)
-      (define-key lisp-interaction-mode-map [remap completion-at-point] 'helm-lisp-completion-at-point)
-      (define-key emacs-lisp-mode-map       [remap completion-at-point] 'helm-lisp-completion-at-point))
+;;       ;; lisp complete. (Rebind M-<tab>)
+;;       (define-key lisp-interaction-mode-map [remap completion-at-point] 'helm-lisp-completion-at-point)
+;;       (define-key emacs-lisp-mode-map       [remap completion-at-point] 'helm-lisp-completion-at-point))
 
-  (define-key lisp-interaction-mode-map [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
-  (define-key emacs-lisp-mode-map       [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
+;;   (define-key lisp-interaction-mode-map [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
+;;   (define-key emacs-lisp-mode-map       [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
 
-  ;; lisp complete. (Rebind M-<tab>)
-  (define-key lisp-interaction-mode-map [remap completion-at-point] 'helm-lisp-completion-at-point)
-  (define-key emacs-lisp-mode-map       [remap completion-at-point] 'helm-lisp-completion-at-point))
+;;   ;; lisp complete. (Rebind M-<tab>)
+;;   (define-key lisp-interaction-mode-map [remap completion-at-point] 'helm-lisp-completion-at-point)
+;;   (define-key emacs-lisp-mode-map       [remap completion-at-point] 'helm-lisp-completion-at-point))
 
-(unless (boundp 'completion-in-region-function)
-  (add-hook 'ielm-mode-hook
-            #'(lambda ()
-                (define-key ielm-map [remap completion-at-point] 'helm-lisp-completion-at-point))))
+;; (unless (boundp 'completion-in-region-function)
+;;   (add-hook 'ielm-mode-hook
+;;             #'(lambda ()
+;;                 (define-key ielm-map [remap completion-at-point] 'helm-lisp-completion-at-point))))
 
 ;; helm find files
 (define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
@@ -295,7 +295,6 @@ First call indent, second complete symbol, third complete fname."
       helm-apropos-fuzzy-match                        t
       helm-M-x-fuzzy-match                            t
       helm-lisp-fuzzy-completion                      t
-      helm-completion-in-region-fuzzy-match           t
       helm-buffers-fuzzy-matching                     t
       helm-locate-fuzzy-match                         t
       helm-move-to-line-cycle-in-source               t
