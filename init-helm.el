@@ -213,29 +213,7 @@ First call indent, second complete symbol, third complete fname."
 
 ;; Indent or complete with completion-at-point
 (setq tab-always-indent 'complete)
-
-;; (if (and (boundp 'tab-always-indent)
-;;          (eq tab-always-indent 'complete)
-;;          (boundp 'completion-in-region-function))
-;;     (progn
-;;       (define-key lisp-interaction-mode-map [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
-;;       (define-key emacs-lisp-mode-map       [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
-
-;;       ;; lisp complete. (Rebind M-<tab>)
-;;       (define-key lisp-interaction-mode-map [remap completion-at-point] 'helm-lisp-completion-at-point)
-;;       (define-key emacs-lisp-mode-map       [remap completion-at-point] 'helm-lisp-completion-at-point))
-
-;;   (define-key lisp-interaction-mode-map [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
-;;   (define-key emacs-lisp-mode-map       [remap indent-for-tab-command] 'helm-multi-lisp-complete-at-point)
-
-;;   ;; lisp complete. (Rebind M-<tab>)
-;;   (define-key lisp-interaction-mode-map [remap completion-at-point] 'helm-lisp-completion-at-point)
-;;   (define-key emacs-lisp-mode-map       [remap completion-at-point] 'helm-lisp-completion-at-point))
-
-;; (unless (boundp 'completion-in-region-function)
-;;   (add-hook 'ielm-mode-hook
-;;             #'(lambda ()
-;;                 (define-key ielm-map [remap completion-at-point] 'helm-lisp-completion-at-point))))
+(customize-set-variable 'helm-completion-style 'helm-fuzzy)
 
 ;; helm find files
 (define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
