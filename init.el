@@ -2346,6 +2346,14 @@ With a prefix arg ask with completion which buffer to kill."
           (ignore-errors (delete-window win)))))))
 (helm-define-key-with-subkeys global-map (kbd "C-x k") ?k 'tv/kill-buffer-and-windows)
 
+;; Disable the new :extend face attribute in emacs-27
+(when (>= emacs-major-version 27)
+  (cl-loop for f in (face-list)
+           for face = (symbol-name f)
+           when (and (string-match "\\`helm" face)
+                     (ignore-errors
+                       (face-attribute f :extend t)))
+           do (set-face-attribute f nil :extend t)))
 
 ;; Link now scratch buffer to file
 (tv/restore-scratch-buffer)
