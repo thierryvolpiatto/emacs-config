@@ -1165,7 +1165,10 @@ If your system's ping continues until interrupted, you can try setting
 (use-package ledger-mode
   :init (setenv "LEDGER_PAGER" "cat")
   :commands (ledger-mode csv2ledger)
-  :config (use-package ledger-config))
+  :config (use-package ledger-config
+            :init
+            (require 'helm-lib)
+            (require 'helm-mode)))
 
 ;;; Rectangle
 ;;
