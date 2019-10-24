@@ -2349,14 +2349,21 @@ With a prefix arg ask with completion which buffer to kill."
           (ignore-errors (delete-window win)))))))
 (helm-define-key-with-subkeys global-map (kbd "C-x k") ?k 'tv/kill-buffer-and-windows)
 
-;; Disable the new :extend face attribute in emacs-27
-(when (>= emacs-major-version 27)
+;; Fix issue with the new :extend face attribute in emacs-27
+;; Prefer to extend to EOL as in previous emacs.
+(defun tv/extend-faces-matching (regexp)
   (cl-loop for f in (face-list)
            for face = (symbol-name f)
-           when (and (string-match "\\`helm" face)
-                     (ignore-errors
-                       (face-attribute f :extend t)))
+           when (and (string-match regexp face)
+                     (eq (face-attribute f :extend t 'default)
+                         'unspecified))
            do (set-face-attribute f nil :extend t)))
+
+(when (fboundp 'set-face-extend)
+  (with-eval-after-load "magit"
+    (tv/extend-faces-matching "\\`magit"))
+  (with-eval-after-load "helm"
+    (tv/extend-faces-matching "\\`helm")))
 
 ;; Link now scratch buffer to file
 (tv/restore-scratch-buffer)
