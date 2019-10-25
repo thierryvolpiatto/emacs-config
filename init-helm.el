@@ -213,7 +213,7 @@ First call indent, second complete symbol, third complete fname."
 
 ;; Indent or complete with completion-at-point
 (setq tab-always-indent 'complete)
-(customize-set-variable 'helm-completion-style 'helm-fuzzy)
+(customize-set-variable 'helm-completion-style 'emacs)
 
 ;; helm find files
 (define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
