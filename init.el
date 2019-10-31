@@ -1770,7 +1770,8 @@ If your system's ping continues until interrupted, you can try setting
                        (proc (process-file
                               "git" nil t nil
                               "symbolic-ref" "HEAD" "--short"))
-                       (id (if (= (user-uid) 0) " # " " $ "))
+                       (id (propertize (if (= (user-uid) 0) " # " " $ ")
+                                       'face 'default))
                        detached branch status)
                   (unless (= proc 0)
                     (erase-buffer)
@@ -1830,7 +1831,7 @@ If your system's ping continues until interrupted, you can try setting
                                   ;; Helm completion on eshell history.
                                   (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)
                                   ;; Eshell prompt
-                                  (set-face-attribute 'eshell-prompt nil :foreground "Green2")))
+                                  (set-face-attribute 'eshell-prompt nil :foreground "DodgerBlue")))
 
     ;; Eshell history size
     (setq eshell-history-size 1000) ; Same as env var HISTSIZE.
