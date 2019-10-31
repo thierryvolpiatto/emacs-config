@@ -1791,8 +1791,9 @@ If your system's ping continues until interrupted, you can try setting
                                                              (= proc 0))))
                                         (if (string-match "\\`[?]" str) "?" "*"))
                                        (_ "")))
-                        (format "%s:(%s%s)%s"
-                                (abbreviate-file-name pwd)
+                        (format "%s@%s:%s(%s%s)%s"
+                                (getenv "USER") (system-name)
+                                (propertize (abbreviate-file-name pwd) 'face 'italic)
                                 (propertize (format
                                              "%s%s"
                                              (if detached "detached@" "")
@@ -1805,7 +1806,8 @@ If your system's ping continues until interrupted, you can try setting
                                 id))
                     (format "%s@%s:%s%s"
                             (getenv "USER") (system-name)
-                            (abbreviate-file-name pwd) id)))))))
+                            (propertize (abbreviate-file-name pwd) 'face 'italic)
+                            id)))))))
     (setq eshell-password-prompt-regexp
       "\\(\\(?:adgangskode\\|contrase\\(?:\\(?:ny\\|ñ\\)a\\)\\|geslo\\|h\\(?:\\(?:asł\\|esl\\)o\\)\\|iphasiwedi\\|jelszó\\|l\\(?:ozinka\\|ösenord\\)\\|[Mm]\\(?:ot de passe\\|ật khẩu\\)\\|pa\\(?:rola\\|s\\(?:ahitza\\|s\\(?: phrase\\|code\\|ord\\|phrase\\|wor[dt]\\)\\|vorto\\)\\)\\|s\\(?:alasana\\|enha\\|laptažodis\\)\\|wachtwoord\\|лозинка\\|пароль\\|ססמה\\|كلمة السر\\|गुप्तशब्द\\|शब्दकूट\\|গুপ্তশব্দ\\|পাসওয়ার্ড\\|ਪਾਸਵਰਡ\\|પાસવર્ડ\\|ପ୍ରବେଶ ସଙ୍କେତ\\|கடவுச்சொல்\\|సంకేతపదము\\|ಗುಪ್ತಪದ\\|അടയാളവാക്ക്\\|රහස්පදය\\|ពាក្យសម្ងាត់\\|パスワード\\|密[码碼]\\|암호\\)\\).*:.*\\'")
 
