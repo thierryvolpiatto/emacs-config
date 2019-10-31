@@ -292,7 +292,7 @@ First call indent, second complete symbol, third complete fname."
       helm-grep-git-grep-command
       "git --no-pager grep -n%cH --color=always --exclude-standard --no-index --full-name -e %p -- %f"
       helm-dwim-target 'next-window
-      helm-candidate-number-limit 200
+      helm-candidate-number-limit 500
       helm-ff-allow-non-existing-file-at-point t
       helm-find-noerrors t
       helm-window-show-buffers-function #'helm-window-mosaic-fn
