@@ -1812,9 +1812,11 @@ If your system's ping continues until interrupted, you can try setting
       "\\(\\(?:adgangskode\\|contrase\\(?:\\(?:ny\\|ñ\\)a\\)\\|geslo\\|h\\(?:\\(?:asł\\|esl\\)o\\)\\|iphasiwedi\\|jelszó\\|l\\(?:ozinka\\|ösenord\\)\\|[Mm]\\(?:ot de passe\\|ật khẩu\\)\\|pa\\(?:rola\\|s\\(?:ahitza\\|s\\(?: phrase\\|code\\|ord\\|phrase\\|wor[dt]\\)\\|vorto\\)\\)\\|s\\(?:alasana\\|enha\\|laptažodis\\)\\|wachtwoord\\|лозинка\\|пароль\\|ססמה\\|كلمة السر\\|गुप्तशब्द\\|शब्दकूट\\|গুপ্তশব্দ\\|পাসওয়ার্ড\\|ਪਾਸਵਰਡ\\|પાસવર્ડ\\|ପ୍ରବେଶ ସଙ୍କେତ\\|கடவுச்சொல்\\|సంకేతపదము\\|ಗುಪ್ತಪದ\\|അടയാളവാക്ക്\\|රහස්පදය\\|ពាក្យសម្ងាត់\\|パスワード\\|密[码碼]\\|암호\\)\\).*:.*\\'")
 
     ;; Compatibility 24.2/24.3
-    (unless (fboundp 'eshell-pcomplete)
+    (unless (or (fboundp 'eshell-pcomplete)
+                (>= emacs-major-version 27))
       (defalias 'eshell-pcomplete 'pcomplete))
-    (unless (fboundp 'eshell-complete-lisp-symbol)
+    (unless (or (fboundp 'eshell-complete-lisp-symbol)
+                (>= emacs-major-version 27))
       (defalias 'eshell-complete-lisp-symbol 'lisp-complete-symbol))
 
     (add-hook 'eshell-mode-hook (lambda ()
@@ -1827,11 +1829,12 @@ If your system's ping continues until interrupted, you can try setting
                                   (setq eshell-cmpl-ignore-case t
                                         eshell-hist-ignoredups t)
                                   (eshell-cmpl-initialize)
-                                  (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
-                                  ;; Helm lisp completion
-                                  (define-key eshell-mode-map [remap eshell-complete-lisp-symbol] 'helm-lisp-completion-at-point)
-                                  ;; Helm completion on eshell history.
-                                  (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)
+                                  (unless (>= emacs-major-version 27)
+                                    (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
+                                    ;; Helm lisp completion
+                                    (define-key eshell-mode-map [remap eshell-complete-lisp-symbol] 'helm-lisp-completion-at-point)
+                                    ;; Helm completion on eshell history.
+                                    (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history))
                                   ;; Eshell prompt
                                   (set-face-attribute 'eshell-prompt nil :foreground "Green")))
 
