@@ -297,7 +297,32 @@ First call indent, second complete symbol, third complete fname."
       helm-find-noerrors t
       helm-window-show-buffers-function #'helm-window-mosaic-fn
       helm-buffers-maybe-switch-to-tab t
-      )
+      helm-completing-read-handlers-alist
+      '((xref-find-references . helm-completing-read-default-find-tag)
+        (write-file . helm-read-file-name-handler-1)
+        (basic-save-buffer . helm-read-file-name-handler-1)
+        (find-tag . helm-completing-read-default-find-tag)
+        (xref-find-definitions . helm-completing-read-default-find-tag)
+        (xref-find-references . helm-completing-read-default-find-tag)
+        (ffap-alternate-file)
+        (tmm-menubar)
+        (find-file . ido)
+        (execute-extended-command)
+        (mu4e-view-save-attachment-multi . helm-read-file-name-handler-1)
+        (mu4e-view-save-attachment-single . helm-read-file-name-handler-1)
+        (cancel-debug-on-entry)
+        (find-file-at-point . helm-completing-read-sync-default-handler)
+        (ffap . helm-completing-read-sync-default-handler)
+        (org-capture . helm-org-completing-read-tags)
+        (org-set-tags . helm-org-completing-read-tags)
+        (dired-do-rename . helm-read-file-name-handler-1)
+        (dired-do-copy . helm-read-file-name-handler-1)
+        (dired-do-symlink . helm-read-file-name-handler-1)
+        (dired-do-relsymlink . helm-read-file-name-handler-1)
+        (dired-do-hardlink . helm-read-file-name-handler-1)
+        (basic-save-buffer . helm-read-file-name-handler-1)
+        (write-file . helm-read-file-name-handler-1)
+        (write-region . helm-read-file-name-handler-1)))
 
 (customize-set-variable 'helm-ff-lynx-style-map t)
 
