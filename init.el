@@ -2371,7 +2371,8 @@ With a prefix arg ask with completion which buffer to kill."
 
 ;; Use flex completion style
 (when (>= emacs-major-version 27)
-  (add-to-list 'completion-styles 'flex t))
+  (add-to-list 'completion-styles 'flex t)
+  (add-to-list 'completion-styles 'initials t))
 
 ;; Link now scratch buffer to file
 (tv/restore-scratch-buffer)
