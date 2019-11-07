@@ -2361,6 +2361,14 @@ With a prefix arg ask with completion which buffer to kill."
   (with-eval-after-load "helm"
     (tv/extend-faces-matching "\\`helm")))
 
+;; Fix unreadable diff/ediff in emacs-27
+(when (>= emacs-major-version 27)
+  (set-face-attribute 'diff-refine-added nil :background nil)
+  (set-face-attribute 'diff-refine-removed nil :background nil)
+  (set-face-attribute 'diff-refine-changed nil :background nil)
+  (set-face-attribute 'ediff-fine-diff-A nil :background nil)
+  (set-face-attribute 'ediff-fine-diff-B nil :background nil))
+
 ;; Use flex completion style
 (when (>= emacs-major-version 27)
   (add-to-list 'completion-styles 'flex t))
