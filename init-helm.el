@@ -174,7 +174,7 @@
 (global-set-key (kbd "M-y")                          'helm-show-kill-ring)
 (global-set-key (kbd "C-x C-f")                      'helm-find-files)
 (global-set-key (kbd "C-c <SPC>")                    'helm-all-mark-rings)
-(global-set-key (kbd "C-x r b")                      'helm-filtered-bookmarks)
+(global-set-key [remap bookmark-jump]                'helm-filtered-bookmarks)
 (global-set-key (kbd "C-:")                          'helm-eval-expression-with-eldoc)
 (global-set-key (kbd "C-,")                          'helm-calcul-expression)
 (global-set-key (kbd "C-h d")                        'helm-info-at-point)
