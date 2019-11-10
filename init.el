@@ -1120,14 +1120,6 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'htmlize-many-files "htmlize" nil t)
 (autoload 'htmlize-many-files-dired "htmlize" nil t)
 
-;;; Ioccur
-;;
-(use-package ioccur
-  :commands (ioccur)
-  :init
-  (add-hook 'ioccur-save-pos-before-jump-hook 'ioccur-save-current-pos-to-mark-ring)
-  :bind ([remap occur] . ioccur)) ; M-s o
-
 ;;; google-maps
 ;;
 (use-package google-maps
