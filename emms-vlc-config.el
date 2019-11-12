@@ -13,9 +13,12 @@
 
 (setq emms-player-list '(emms-player-vlc-playlist
                          emms-player-vlc
-                         emms-player-mplayer
+                         emms-player-mpv
                          emms-player-mpg321
                          emms-player-ogg123))
+
+(setq emms-player-mpv-parameters
+      '("--no-terminal" "--force-window=no" "--audio-display=no"))
 
 ;; «enable-emms-scoring» (to ".enable-emms-scoring")
 (setq emms-score-enabled-p t)
