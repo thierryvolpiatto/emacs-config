@@ -187,6 +187,7 @@
 (global-set-key (kbd "<f5> s")                       'helm-find)
 (global-set-key (kbd "S-<f2>")                       'helm-execute-kmacro)
 (global-set-key (kbd "C-c i")                        'helm-imenu-in-all-buffers)
+(global-set-key (kbd "C-c C-i")                      'helm-imenu)
 (global-set-key (kbd "<f11>")                        nil)
 (global-set-key (kbd "<f11> o")                      'helm-org-agenda-files-headings)
 (global-set-key (kbd "C-s")                          'helm-occur)
