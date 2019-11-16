@@ -2357,15 +2357,13 @@ With a prefix arg ask with completion which buffer to kill."
 
 ;; Fix unreadable diff/ediff in emacs-27
 (when (>= emacs-major-version 27)
-  (add-hook 'diff-mode-hook
-            (lambda ()
-              (set-face-attribute 'diff-refine-added nil :background nil)
-              (set-face-attribute 'diff-refine-removed nil :background nil)
-              (set-face-attribute 'diff-refine-changed nil :background nil)))
-  (add-hook 'ediff-mode-hook
-            (lambda ()
-              (set-face-attribute 'ediff-fine-diff-A nil :background nil)
-              (set-face-attribute 'ediff-fine-diff-B nil :background nil)))
+  (with-eval-after-load 'diff-mode
+    (set-face-attribute 'diff-refine-added nil :background 'unspecified)
+    (set-face-attribute 'diff-refine-removed nil :background 'unspecified)
+    (set-face-attribute 'diff-refine-changed nil :background 'unspecified))
+  (with-eval-after-load 'ediff-init
+    (set-face-attribute 'ediff-fine-diff-A nil :background 'unspecified)
+    (set-face-attribute 'ediff-fine-diff-B nil :background 'unspecified))
   (set-face-attribute 'region nil :extend t))
 
 ;; Use flex completion style
