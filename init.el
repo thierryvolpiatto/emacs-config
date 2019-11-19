@@ -2364,6 +2364,8 @@ With a prefix arg ask with completion which buffer to kill."
   (with-eval-after-load 'ediff-init
     (set-face-attribute 'ediff-fine-diff-A nil :background 'unspecified)
     (set-face-attribute 'ediff-fine-diff-B nil :background 'unspecified))
+  (with-eval-after-load 'hl-line
+    (set-face-attribute 'hl-line nil :extend t))
   (set-face-attribute 'region nil :extend t))
 
 ;; Use flex completion style
