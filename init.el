@@ -2372,6 +2372,10 @@ With a prefix arg ask with completion which buffer to kill."
 (when (>= emacs-major-version 27)
   (setq completion-styles '(flex)))
 
+(with-eval-after-load 'helm-mode
+  (when (assq 'helm-flex completion-styles-alist)
+    (setq completion-styles '(helm-flex))))
+
 ;; Link now scratch buffer to file
 (tv/restore-scratch-buffer)
 
