@@ -144,7 +144,8 @@
              for j in values
              append (list i j))))
 
-(advice-add 'get-free-disk-space :override 'tv/-advice-get-free-disk-space)
+(when (< emacs-major-version 27)
+  (advice-add 'get-free-disk-space :override 'tv/-advice-get-free-disk-space))
 
 
 (provide 'dired-extension)

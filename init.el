@@ -2222,20 +2222,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;; No subcommands completion with pcmpl in eshell though.
 (use-package pcmpl-git :ensure t)
 
-;;; Flycheck
-;;
-(use-package flycheck
-  :ensure t
-  :config
-  ;; Need shellcheck as dependency.
-  (add-hook 'sh-mode-hook 'flycheck-mode))
-
-(use-package flycheck-checkbashisms
-  :ensure t
-  :config
-  ;; Needs devscripts as dependency.
-  (flycheck-checkbashisms-setup))
-
 ;;; Real-gud
 ;;
 (use-package realgud :ensure t :defer t)
