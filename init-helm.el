@@ -10,7 +10,16 @@
 ;;; Enable Modes (helm-mode is loading nearly everything).
 ;;
 (use-package helm-mode
-  :config (helm-mode 1))
+  :init
+  (add-hook 'helm-mode-hook
+          (lambda ()
+            (setq completion-styles
+                  (cond ((assq 'helm-flex completion-styles-alist)
+                         '(helm-flex))
+                        ((assq 'flex completion-styles-alist)
+                         '(flex))))))
+  :config
+  (helm-mode 1))
 
 (use-package helm-adaptive
   :config
