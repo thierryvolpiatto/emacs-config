@@ -15,9 +15,9 @@
           (lambda ()
             (setq completion-styles
                   (cond ((assq 'helm-flex completion-styles-alist)
-                         '(helm-flex))
+                         (append '(helm-flex) completion-styles))
                         ((assq 'flex completion-styles-alist)
-                         '(flex))))))
+                         (append '(flex) completion-styles))))))
   :config
   (helm-mode 1))
 
