@@ -2354,6 +2354,8 @@ With a prefix arg ask with completion which buffer to kill."
     (set-face-attribute 'hl-line nil :extend t))
   (set-face-attribute 'region nil :extend t))
 
+;; diff buffers read-only
+(setq diff-default-read-only t)
 
 ;; Link now scratch buffer to file
 (tv/restore-scratch-buffer)
