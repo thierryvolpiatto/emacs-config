@@ -1,37 +1,5 @@
 ;;; org-config.el --- My config for org
 ;; 
-;; Author: Thierry Volpiatto
-;; Maintainer: Thierry Volpiatto
-;; 
-;; Created: jeu. avril  2 14:10:06 2009 (+0200)
-;; Version: 
-;; URL: 
-;; Keywords: 
-;; Compatibility: 
-;; 
-;; This program is free software; you can redistribute it and/or
-;; modify it under the terms of the GNU General Public License as
-;; published by the Free Software Foundation; either version 3, or
-;; (at your option) any later version.
-;; 
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;; General Public License for more details.
-;; 
-;; You should have received a copy of the GNU General Public License
-;; along with this program; see the file COPYING.  If not, write to
-;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
-;; Floor, Boston, MA 02110-1301, USA.
-;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;; 
-;;; Commentary: 
-;; 
-;; 
-;; 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Code:
 
@@ -206,6 +174,11 @@
 (define-key org-mode-map (kbd "<C-M-up>") 'tv/scroll-other-up)
 (define-key org-mode-map (kbd "<C-M-down>") 'tv/scroll-other-down)
 (define-key org-mode-map (kbd "C-d") 'tv/delete-char)
+
+;; Hide leading stars
+;;
+(setq org-hide-leading-stars t)
+(set-face-attribute 'org-hide nil 'face 'invisible)
 
 (provide 'org-config)
 
