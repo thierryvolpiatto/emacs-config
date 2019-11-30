@@ -178,7 +178,6 @@
 ;; Hide leading stars
 ;;
 (setq org-hide-leading-stars t)
-(set-face-attribute 'org-hide nil 'face 'invisible)
 
 (provide 'org-config)
 
