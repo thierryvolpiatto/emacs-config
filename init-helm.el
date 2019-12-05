@@ -12,12 +12,12 @@
 (use-package helm-mode
   :init
   (add-hook 'helm-mode-hook
-          (lambda ()
-            (setq completion-styles
-                  (cond ((assq 'helm-flex completion-styles-alist)
-                         '(helm-flex))
-                        ((assq 'flex completion-styles-alist)
-                         '(flex))))))
+            (lambda ()
+              (setq completion-styles
+                    (cond ((assq 'helm-flex completion-styles-alist)
+                           '(helm-flex))
+                          ((assq 'flex completion-styles-alist)
+                           '(flex))))))
   :config
   (helm-mode 1))
 
