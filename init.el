@@ -2272,6 +2272,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 
 ;;; Sly
 (use-package sly
+  :disabled t
   :ensure t
   :config
   (setq sly-completing-read-function 'completing-read)

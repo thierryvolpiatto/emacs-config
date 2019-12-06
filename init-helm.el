@@ -239,6 +239,9 @@ First call indent, second complete symbol, third complete fname."
 ;; sh-mode
 (add-to-list 'helm-sources-using-default-as-input 'helm-source-info-bash)
 
+;; Minibuffer history
+(customize-set-variable 'helm-minibuffer-history-key [remap next-matching-history-element])
+
 
 ;;; Describe key-bindings
 ;;
