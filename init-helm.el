@@ -223,6 +223,7 @@ First call indent, second complete symbol, third complete fname."
 
 ;; Indent or complete with completion-at-point
 ;; (setq tab-always-indent 'complete)
+(define-key global-map (kbd "<backtab>") 'completion-at-point)
 
 ;; helm find files
 (define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
