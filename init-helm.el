@@ -333,6 +333,7 @@ First call indent, second complete symbol, third complete fname."
         (write-region . helm-read-file-name-handler-1)))
 
 (customize-set-variable 'helm-ff-lynx-style-map t)
+(customize-set-variable 'helm-imenu-lynx-style-map t)
 
 ;; find-file-hook
 (add-hook 'find-file-hook 'helm-save-current-pos-to-mark-ring)
