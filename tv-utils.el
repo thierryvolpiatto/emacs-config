@@ -848,12 +848,14 @@ With a prefix arg remove new lines."
 ;;;###autoload
 (defun tv/generate-kbd (key)
   (interactive "kGenerate and kill `kbd' form for key: ")
-  (kill-new (message "(kbd \"%s\")" (help-key-description key nil))))
+  (kill-new (message "(kbd \"%s\")" (help-key-description key nil)))
+  (message nil))
 
 ;;;###autoload
 (defun tv/insert-key-name-at-point (key)
   (interactive "kGenerate and kill `kbd' form for key: ")
-  (insert (format "(kbd \"%s\")" (help-key-description key nil))))
+  (insert (format "(kbd \"%s\")" (help-key-description key nil)))
+  (message nil))
 
 ;; some tar fn to use in eshell aliases.
 ;;;###autoload
