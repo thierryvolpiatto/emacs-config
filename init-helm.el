@@ -278,13 +278,11 @@ First call indent, second complete symbol, third complete fname."
       helm-show-action-window-other-window            'left
       helm-buffers-favorite-modes                     (append helm-buffers-favorite-modes '(picture-mode artist-mode))
       helm-ls-git-status-command                      'magit-status-internal
-      helm-M-x-requires-pattern                       0
       helm-surfraw-duckduckgo-url                     "https://duckduckgo.com/?q=%s&ke=-1&kf=fw&kl=fr-fr&kr=b&k1=-1&k4=-1"
       helm-google-suggest-search-url                  helm-surfraw-duckduckgo-url
       helm-buffer-skip-remote-checking                t
       helm-allow-mouse                                t
       helm-apropos-fuzzy-match                        t
-      helm-M-x-fuzzy-match                            t
       helm-lisp-fuzzy-completion                      t
       helm-buffers-fuzzy-matching                     t
       helm-locate-fuzzy-match                         t
