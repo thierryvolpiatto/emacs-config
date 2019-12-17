@@ -2310,7 +2310,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
     (advice-add 'undo-tree-redo :after 'git-gutter:undo-tree-undo)
 
     (global-undo-tree-mode 1))
-
+
 ;; Kill buffer and windows
 (defun tv/kill-buffer-and-windows (arg)
   "Kill current-buffer and delete its window.
