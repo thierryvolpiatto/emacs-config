@@ -792,10 +792,30 @@ the password will be of length (floor LIMIT)."
     (kill-new code)
     (message "`%s' copied to kill-ring" code)))
 
+;;; Toggle split window vertically/horizontally
+;;
+(defvar helm-alive-p)
+;;;###autoload
+(defun tv/toggle-window-split ()
+  (interactive)
+  (unless helm-alive-p
+    (if (= (length (window-list)) 2)
+        (let ((buf (current-buffer))
+              before-height) 
+          (with-current-buffer buf
+            (setq before-height (window-height))
+            (delete-window)
+            (set-window-buffer
+             (select-window (if (= (window-height) before-height)
+                                (split-window-vertically)
+                              (split-window-horizontally)))
+             buf)))
+      (user-error "Can toggle split only with two windows"))))
+(global-set-key (kbd "C-x C-'") 'tv/toggle-window-split)
+
 ;;; Rotate windows
 ;;
 ;;
-(defvar helm-alive-p)
 ;;;###autoload
 (defun tv/rotate-windows ()
   (interactive)
