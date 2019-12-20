@@ -510,10 +510,21 @@ new directory."
      (with-helm-current-buffer (eq major-mode 'magit-log-mode)))
    1))
 
+(defun helm-buffers-diff-buffers (_candidate)
+  (let ((mkd (helm-marked-candidates)))
+    (cl-assert (<= (length mkd) 2) nil "Too much buffers specified for diff")
+    (if (cdr mkd)
+        (diff (car mkd) (cadr mkd))
+      (diff (car mkd) helm-current-buffer))))
+
 (defmethod helm-setup-user-source ((source helm-source-buffers))
   "Adds additional actions to `helm-source-buffers-list'.
 - Magit status."
   (setf (slot-value source 'candidate-number-limit) 300)
+  (setf (slot-value source 'action)
+        (helm-append-at-nth  (symbol-value
+                              (slot-value source 'action))
+                             '(("Diff buffers" . helm-buffers-diff-buffers)) 4))
   (helm-source-add-action-to-source-if
    "Magit status"
    (lambda (candidate)
