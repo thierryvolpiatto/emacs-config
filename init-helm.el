@@ -507,7 +507,7 @@ new directory."
      (magit-find-file (magit-branch-or-commit-at-point) candidate))
    source
    (lambda (_candidate)
-     (with-helm-current-buffer (eq major-mode 'magit-log-mode)))
+     (with-helm-current-buffer (magit-branch-or-commit-at-point)))
    1))
 
 (defun helm-buffers-diff-buffers (_candidate)
@@ -521,10 +521,12 @@ new directory."
   "Adds additional actions to `helm-source-buffers-list'.
 - Magit status."
   (setf (slot-value source 'candidate-number-limit) 300)
-  (setf (slot-value source 'action)
-        (helm-append-at-nth  (symbol-value
-                              (slot-value source 'action))
-                             '(("Diff buffers" . helm-buffers-diff-buffers)) 4))
+  (helm-aif (slot-value source 'action)
+      (setf (slot-value source 'action)
+        (helm-append-at-nth  (if (symbolp it)
+                                 (symbol-value it)
+                               it)
+                             '(("Diff buffers" . helm-buffers-diff-buffers)) 4)))
   (helm-source-add-action-to-source-if
    "Magit status"
    (lambda (candidate)
