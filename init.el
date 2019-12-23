@@ -2302,7 +2302,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Undo-fu
 ;;
 (use-package undo-fu
-  :bind (("C-_" . undo-fu-only-undo)
+  :bind (([remap undo] . undo-fu-only-undo)
          ("M-_" . undo-fu-only-redo)))
 
 ;; Kill buffer and windows
