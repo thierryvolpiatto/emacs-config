@@ -430,19 +430,19 @@ depending the value of N is positive or negative."
 
 ;; Kill-backward
 ;;;###autoload
-(defun tv/kill-whole-line ()
+(defun tv/kill-whole-line (&optional arg)
   "Similar to `kill-whole-line' but don't kill new line.
 Also alow killing whole line in a shell prompt without trying
 to kill prompt.
 Can be used from any place in the line."
-  (interactive)
+  (interactive "p")
   (end-of-line)
   (let ((end (point)) beg)
     (forward-line 0)
     (while (get-text-property (point) 'read-only)
       (forward-char 1))
     (setq beg (point)) (kill-region beg end))
-  (when (eq (point-at-bol) (point-at-eol))
+  (when (and arg (eq (point-at-bol) (point-at-eol)))
     (delete-blank-lines) (skip-chars-forward " ")))
 
 ;; Kill-line
