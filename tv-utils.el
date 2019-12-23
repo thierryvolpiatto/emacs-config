@@ -445,6 +445,16 @@ Can be used from any place in the line."
   (when (eq (point-at-bol) (point-at-eol))
     (delete-blank-lines) (skip-chars-forward " ")))
 
+;; Kill-line
+;;;###autoload
+(defun tv/kill-line ()
+  "Like kill-line but when at eol delete whole line.
+Ignore text read-only at bol i.e. prompts."
+  (interactive)
+  (if (eolp)
+      (tv/kill-whole-line)
+    (kill-line)))
+
 ;; Delete-char-or-region
 ;;;###autoload
 (defun tv/delete-char (arg)
