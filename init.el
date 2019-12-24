@@ -2299,11 +2299,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   (setq gnus-init-file "~/.emacs.d/.gnus")
   :bind ("<f7> m" . gnus))
 
-;;; Undo-fu
-;;
-(use-package undo-fu
-  :bind (([remap undo] . undo-fu-only-undo)
-         ("M-_" . undo-fu-only-redo)))
 
 ;; Kill buffer and windows
 (defun tv/kill-buffer-and-windows (arg)
