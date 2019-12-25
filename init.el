@@ -2129,7 +2129,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   :config
   (progn
     (use-package helm-ls-git)
-    ;; Will appear in mode-line once helm-ls-git is loaded
+    ;; Will appear in face0 once helm-ls-git is loaded
     (defpowerline powerline-git
       (when (and (buffer-file-name (current-buffer))
                  (fboundp 'helm-ls-git--branch)
@@ -2151,6 +2151,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
                        (let* ((active (powerline-selected-window-active))
                               (mode-line-buffer-id (if active 'mode-line-buffer-id 'mode-line-buffer-id-inactive))
                               (mode-line (if active 'mode-line 'mode-line-inactive))
+                              (face0 (if active 'powerline-active0 'powerline-inactive0))
                               (face1 (if active 'powerline-active1 'powerline-inactive1))
                               (face2 (if active 'powerline-active2 'powerline-inactive2))
                               (separator-left (intern (format "powerline-%s-%s"
@@ -2159,24 +2160,24 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
                               (separator-right (intern (format "powerline-%s-%s"
                                                                (powerline-current-separator)
                                                                (cdr powerline-default-separator-dir))))
-                              (lhs (list (powerline-raw mode-line-remote mode-line 'l)
-                                         (powerline-raw "%*" mode-line 'l)
+                              (lhs (list (powerline-raw mode-line-remote face0 'l)
+                                         (powerline-raw "%*" face0 'l)
                                          (when powerline-display-buffer-size
-                                           (powerline-buffer-size mode-line 'l))
+                                           (powerline-buffer-size face0 'l))
                                          (when powerline-display-mule-info
-                                           (powerline-raw mode-line-mule-info mode-line 'l))
+                                           (powerline-raw mode-line-mule-info face0 'l))
                                          (powerline-buffer-id mode-line-buffer-id 'l)
                                          (when (and (boundp 'which-func-mode) which-func-mode)
                                            (powerline-raw which-func-format nil 'l))
-                                         (powerline-raw " ")
-                                         (funcall separator-left mode-line face1)
+                                         (powerline-raw " " face0)
+                                         ;; (funcall separator-left face0 face1)
                                          (powerline-raw "%4l" face1 'l)
                                          (powerline-raw ":" face1 'l)
                                          (powerline-raw "%3c" face1 'r)
-                                         (funcall separator-left face1 mode-line)
-                                         (powerline-raw " ")
-                                         (powerline-raw "%6p" mode-line 'r)
-                                         (funcall separator-left mode-line face1)
+                                         ;; (funcall separator-left face0 face1)
+                                         (powerline-raw " " face0)
+                                         (powerline-raw "%6p" face0 'r)
+                                         ;; (funcall separator-left face0 face1)
                                          (when (and (boundp 'erc-track-minor-mode) erc-track-minor-mode)
                                            (powerline-raw erc-modified-channels-object face1 'l))
                                          (powerline-major-mode face1 'l)
@@ -2184,7 +2185,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
                                          (powerline-minor-modes face1 'l)
                                          (powerline-narrow face1 'l)
                                          (powerline-raw " " face1)
-                                         (funcall separator-left face1 face2)
+                                         ;; (funcall separator-left face1 face2)
                                          (powerline-git face2 'r)
                                          (when (bound-and-true-p nyan-mode)
                                            (powerline-raw (list (nyan-create)) face2 'l))))
