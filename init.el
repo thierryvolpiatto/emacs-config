@@ -2140,7 +2140,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
                   (char-to-string #x2221) ; MEASURED ANGLE (∡)
                   (format-mode-line '(:eval (helm-ls-git--branch)))))))
 
-    (setq powerline-gui-use-vcs-glyph t)
+    (setq powerline-gui-use-vcs-glyph nil)
     
     (defun tv/powerline-default-theme ()
       "Setup the default mode-line."
