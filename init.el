@@ -804,21 +804,6 @@ file-local variable.\n")
   (add-to-list 'auto-mode-alist
                '("\\.desktop\\(\\.in\\)?$" . desktop-entry-mode)))
 
-;;; Lua-mode
-;;
-(use-package lua-mode
-  :commands 'lua-mode
-  :config
-  (add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-mode))
-  (setq lua-default-application "/usr/bin/lua"))
-
-;;; Cmake
-;;
-(use-package cmake-mode
-  :config
-  (add-to-list 'auto-mode-alist '("CMakeLists\\.txt\\'" . cmake-mode))
-  (add-to-list 'auto-mode-alist '("\\.cmake\\'" . cmake-mode)))
-
 ;;; Wget
 ;;
 ;;
@@ -2223,10 +2208,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;; Seems that bash-completion and pcmpl can cohabit.
 ;; No subcommands completion with pcmpl in eshell though.
 (use-package pcmpl-git :ensure t)
-
-;;; Real-gud
-;;
-(use-package realgud :ensure t :defer t)
 
 ;;; Log-view
 ;;
