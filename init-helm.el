@@ -507,6 +507,8 @@ new directory."
      (magit-find-file (magit-branch-or-commit-at-point) candidate))
    source
    (lambda (_candidate)
+     ;; For `magit-branch-or-commit-at-point'.
+     (require 'magit-git)
      (with-helm-current-buffer (magit-branch-or-commit-at-point)))
    1))
 
