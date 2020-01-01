@@ -434,6 +434,7 @@ depending the value of N is positive or negative."
   "Similar to `kill-whole-line' but don't kill new line.
 Also alow killing whole line in a shell prompt without trying
 to kill prompt.
+When called non interactively, do not delete empty line.
 Can be used from any place in the line."
   (interactive "p")
   (end-of-line)
