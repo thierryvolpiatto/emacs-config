@@ -17,7 +17,8 @@
                     (cond ((assq 'helm-flex completion-styles-alist)
                            '(helm-flex))
                           ((assq 'flex completion-styles-alist)
-                           '(flex))))))
+                           '(flex))))
+              (setq helm-completion-styles-alist '((gud-mode . helm)))))
   :config
   (helm-mode 1))
 
