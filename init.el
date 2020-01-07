@@ -168,6 +168,7 @@ Restart works only on graphic display."
 (require 'server)
 (add-hook 'after-init-hook (lambda ()
                              (unless (or (daemonp) (server-running-p))
+                               (setq server-name (format "emacs-%s" emacs-version))
                                (server-start)
                                (setq server-raise-frame t))))
 
@@ -1655,6 +1656,8 @@ If your system's ping continues until interrupted, you can try setting
    ("V" . helm-w3m-bookmarks)
    ("M" . w3m-view-url-with-browse-url)
    ("M-q" . tv/w3m-fill-region-or-paragraph)
+   ("<down>" . next-line)
+   ("<up>" . previous-line)
    :map w3m-lynx-like-map
    ("S-<right>" . w3m-view-this-url-new-session)))
 
