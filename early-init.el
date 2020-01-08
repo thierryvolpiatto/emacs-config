@@ -1,7 +1,7 @@
 ;;; early-init.el --evaluated before init.el
 
 (setq package-archives        '(("melpa"        . "https://melpa.org/packages/")
-                                ("melpa-stable" . "https://stable.melpa.org/packages/")
+                                ;; ("melpa-stable" . "https://stable.melpa.org/packages/")
                                 ("gnu"          . "https://elpa.gnu.org/packages/")
                                 )
       package-pinned-packages '(
