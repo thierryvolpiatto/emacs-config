@@ -1664,8 +1664,9 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Mu4e
 ;;
 (use-package mu4e
-  :init (progn (require 'mu4e-config)
-               (addressbook-turn-on-mail-completion))
+  :config
+  (progn (require 'mu4e-config)
+         (addressbook-turn-on-mail-completion))
   :commands (mu4e compose-mail)
   :bind ("<f8>" . mu4e))
 
