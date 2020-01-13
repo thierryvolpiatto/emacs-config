@@ -7,11 +7,11 @@
 (setq inhibit-startup-echo-area-message "thierry")
 
 ;; Xsessionrc, Xsession, Xinit etc..., none of those works anymore to
-;; run xmodmap when starting session, so do it here until i found a
+;; run xmodmap when starting session, so do it here until i find a
 ;; better solution.
 (when (and (executable-find "xmodmap")
            (file-exists-p "~/.Xmodmap"))
-  (shell-command "xmodmap ~/.Xmodmap"))
+  (call-process "xmodmap" nil nil nil "~/.Xmodmap"))
 
 ;;; Melpa/Elpa
 ;;
