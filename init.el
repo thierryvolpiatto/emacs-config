@@ -176,7 +176,7 @@ Restart works only on graphic display."
 (setq select-active-regions t)
 (setq x-select-enable-clipboard-manager nil
       select-enable-clipboard t
-      select-enable-primary nil)
+      select-enable-primary t)
 
 ;; Enable-commands-disabled-by-default
 (put 'narrow-to-region 'disabled nil)          ; C-x n n
