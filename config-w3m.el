@@ -68,6 +68,47 @@
         (call-interactively #'fill-region)
       (call-interactively #'fill-paragraph))))
 
+(defun tv/advice--w3m-view-this-url (&optional arg new-session)
+  "Display the page pointed to by the link under point.
+If ARG is the number 2 or the list of the number 16 (you may produce
+this by typing `C-u' twice) or NEW-SESSION is non-nil and the link is
+an anchor, this function makes a copy of the current buffer in advance.
+Otherwise, if ARG is non-nil, it forces to reload the url at point."
+  (interactive (if (member current-prefix-arg '(2 (16)))
+		   (list nil t)
+		 (list current-prefix-arg nil)))
+  ;; Store the current position in the history structure.
+  (w3m-history-store-position)
+  (let ((w3m-prefer-cache
+	 (or w3m-prefer-cache
+	     (and (stringp w3m-current-url)
+		  (string-match "\\`about://\\(?:db-\\)?history/"
+				w3m-current-url))))
+	act url)
+    (cond
+     ((setq act (w3m-action))
+      (let ((w3m-form-new-session new-session)
+	    (w3m-form-download nil))
+	(ignore w3m-form-new-session w3m-form-download)
+	(eval act)))
+     ((setq url (w3m-url-valid (w3m-anchor)))
+      (if new-session
+	  (w3m-goto-url-new-session url arg)
+	(w3m-goto-url url arg)))
+     ((w3m-url-valid (w3m-image))
+      (if (display-images-p)
+	  (w3m-toggle-inline-image)
+	(w3m-view-image)))
+     ((setq url (w3m-active-region-or-url-at-point 'never))
+      (unless (eq 'quit (setq url (w3m-input-url nil url 'quit nil
+						 'feeling-searchy 'no-initial)))
+	(if new-session
+	    (w3m-goto-url-new-session url arg)
+	  (w3m-goto-url url arg))))
+     (t (or (w3m-next-anchor)
+            (w3m-message "No URL at point"))))))
+(advice-add 'w3m-view-this-url :override #'tv/advice--w3m-view-this-url)
+
 (provide 'config-w3m)
 
 ;;; .emacs-config-w3m.el ends here
