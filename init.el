@@ -2179,7 +2179,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
                                          (when (bound-and-true-p nyan-mode)
                                            (powerline-raw (list (nyan-create)) face2 'l))))
                               (rhs (list (powerline-raw global-mode-string face2 'r)
-                                         (funcall separator-right face2 face1)
+                                         ;; (funcall separator-right face2 face1)
                                          (unless window-system
                                            (powerline-raw (char-to-string #xe0a1) face1 'l))
                                          (when powerline-display-hud
