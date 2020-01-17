@@ -911,19 +911,6 @@ file-local variable.\n")
     (setq-default frame-background-mode 'dark)
     (setq initial-frame-alist '((fullscreen . maximized)))
     (setq frame-auto-hide-function 'delete-frame)
-    (defun tv/transparency-modify (arg)
-      "Increase Emacs frame transparency.
-With a prefix arg decrease transparency."
-      (interactive "P")
-      (when (window-system)
-        (let* ((ini-alpha (frame-parameter nil 'alpha))
-               (def-alpha (or ini-alpha 80))
-               (mod-alpha (if arg
-                              (min (+ def-alpha 10) 100)
-                            (max (- def-alpha 10)
-                                 frame-alpha-lower-limit)))) ; 20
-          (modify-frame-parameters nil (list (cons 'alpha mod-alpha)))
-          (message "Alpha[%s]" mod-alpha))))
     
     (if (or (daemonp)
             (not (window-system))
@@ -937,8 +924,7 @@ With a prefix arg decrease transparency."
                                     (cursor-color . "red")))
 
       (setq default-frame-alist `((foreground-color . "Wheat")
-                                  (background-color . "black")
-                                  (alpha . 90)
+                                  (background-color . "Gray19")
                                   ;; New frames go in right corner.
                                   (left . ,(- (* (window-width) 8) 160)) ; Chars are 8 bits long.
                                   (vertical-scroll-bars . nil)
@@ -1000,8 +986,7 @@ With a prefix arg decrease transparency."
                                                  (foreground-color . "DarkGoldenrod")
                                                  (alpha . nil)
                                                  (fullscreen . nil))
-                                                )))))
-  :bind ("C-8" . tv/transparency-modify))
+                                                ))))))
 
 (use-package window
   :no-require t
