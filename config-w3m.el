@@ -109,9 +109,6 @@ Otherwise, if ARG is non-nil, it forces to reload the url at point."
             (w3m-message "No URL at point"))))))
 (advice-add 'w3m-view-this-url :override #'tv/advice--w3m-view-this-url)
 
-(define-key w3m-mode-map (kbd "RET") 'tv/scroll-down)
-(define-key w3m-mode-map (kbd "<backspace>") 'tv/scroll-up)
-
 (provide 'config-w3m)
 
 ;;; .emacs-config-w3m.el ends here

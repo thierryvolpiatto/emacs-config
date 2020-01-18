@@ -1643,6 +1643,8 @@ If your system's ping continues until interrupted, you can try setting
    ("M-q" . tv/w3m-fill-region-or-paragraph)
    ("<down>" . next-line)
    ("<up>" . previous-line)
+   ("RET" . tv/scroll-down)
+   ("<backspace>" . tv/scroll-up)
    :map w3m-lynx-like-map
    ("S-<right>" . w3m-view-this-url-new-session)))
 
