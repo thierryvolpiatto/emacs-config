@@ -937,7 +937,7 @@ With a prefix arg decrease transparency."
                                     (cursor-color . "red")))
 
       (setq default-frame-alist `((foreground-color . "Wheat")
-                                  (background-color . "black")
+                                  (background-color . "Gray9")
                                   (alpha . 90)
                                   ;; New frames go in right corner.
                                   (left . ,(- (* (window-width) 8) 160)) ; Chars are 8 bits long.
