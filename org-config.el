@@ -169,11 +169,16 @@
    '((gnuplot . t)
      (emacs-lisp . t))))
 
-(define-key org-mode-map (kbd "<M-up>") 'tv/scroll-up)
-(define-key org-mode-map (kbd "<M-down>") 'tv/scroll-down)
-(define-key org-mode-map (kbd "<C-M-up>") 'tv/scroll-other-up)
+(define-key org-mode-map (kbd "<M-up>")     'tv/scroll-up)
+(define-key org-mode-map (kbd "<M-down>")   'tv/scroll-down)
+(define-key org-mode-map (kbd "<C-M-up>")   'tv/scroll-other-up)
 (define-key org-mode-map (kbd "<C-M-down>") 'tv/scroll-other-down)
-(define-key org-mode-map (kbd "C-d") 'tv/delete-char)
+(define-key org-mode-map (kbd "C-d")        'tv/delete-char)
+(define-key org-mode-map (kbd "<C-return>") nil)
+(define-key org-mode-map (kbd "C-,")        nil)
+(define-key org-mode-map (kbd "<C-return>") nil)
+(define-key org-mode-map (kbd "<M-right>")  nil)
+(define-key org-mode-map (kbd "<M-left>")   nil)
 
 ;; Hide leading stars
 ;;
