@@ -182,8 +182,8 @@
 
 ;; Hide leading stars
 ;;
-(setq org-hide-leading-stars t)
-(setq org-startup-indented t)
+;; (setq org-hide-leading-stars t)
+;; (setq org-startup-indented t)
 
 (provide 'org-config)
 
