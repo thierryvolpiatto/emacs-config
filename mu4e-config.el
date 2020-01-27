@@ -174,8 +174,7 @@ AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk\\ Mail" "Today's messages
 AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk\\ Mail" "Yesterday and today messages" ?y)
         ("date:7d..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam \
 AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk\\ Mail" "Last 7 days" ?w)
-        ("mime:image/* AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam \
-AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk\\ Mail" "Messages with images" ?p)))
+        ))
 
 (add-hook 'mu4e-compose-mode-hook 'tv/message-mode-setup)
 
