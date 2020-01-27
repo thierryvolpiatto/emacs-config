@@ -938,7 +938,7 @@ With a prefix arg decrease transparency."
 
       (setq default-frame-alist `((foreground-color . "Wheat")
                                   (background-color . "Gray20")
-                                  ;; (alpha . 90) ;; Needs compositing manager.
+                                  (alpha . 90) ;; Needs compositing manager.
                                   ;; New frames go in right corner.
                                   (left . ,(- (* (window-width) 8) 160)) ; Chars are 8 bits long.
                                   (vertical-scroll-bars . nil)
