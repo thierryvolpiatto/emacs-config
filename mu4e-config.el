@@ -114,7 +114,7 @@
 (setq mu4e-compose-complete-addresses nil)
 (setq mu4e-completing-read-function 'completing-read)
 (setq mu4e-view-show-addresses t)
-(setq mu4e-headers-include-related nil)
+(setq mu4e-headers-include-related t)
 
 ;;; Html rendering
 (setq mu4e-view-prefer-html t)
