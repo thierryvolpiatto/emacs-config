@@ -110,11 +110,13 @@
 ;;
 
 ;;; Default
-(setq mu4e-maildir "~/Maildir")
-(setq mu4e-compose-complete-addresses nil)
-(setq mu4e-completing-read-function 'completing-read)
-(setq mu4e-view-show-addresses t)
-(setq mu4e-headers-include-related t)
+(setq mu4e-maildir "~/Maildir"
+      mu4e-compose-complete-addresses nil
+      mu4e-completing-read-function 'completing-read
+      mu4e-view-show-addresses t
+      mu4e-headers-include-related t
+      mu4e-cache-maildir-list t
+      mu4e-index-lazy-check t)
 
 ;;; Html rendering
 (setq mu4e-view-prefer-html t)
