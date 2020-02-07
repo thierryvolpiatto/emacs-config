@@ -16,7 +16,7 @@
         "thierry\\.volpiatto@gmail\\.com"
         "thievol05@zoho\\.eu"))
 
-(setq user-mail-address "thievol05@zoho.eu")
+(setq user-mail-address "thierry.volpiatto@gmail.com")
 (setq user-full-name "Thierry Volpiatto")
 
 ;; [smtpmail-async] Experimental, use `smtpmail-send-it' otherwise.
