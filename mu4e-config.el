@@ -116,7 +116,8 @@
       mu4e-view-show-addresses t
       mu4e-headers-include-related t
       mu4e-cache-maildir-list t
-      mu4e-index-lazy-check t)
+      ;; mu4e-index-lazy-check t
+      )
 
 ;;; Html rendering
 (setq mu4e-view-prefer-html t)
