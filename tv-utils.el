@@ -757,31 +757,39 @@ In this case, sexps are searched before point."
 
 ;;; Generate strong passwords.
 ;;
+(defun tv/shuffle-vector (vector)
+  "Shuffle VECTOR."
+  (cl-loop with len = (1- (length vector))
+           while (>= len 0)
+           for rand = (random (1+ len))
+           for old = (aref vector rand)
+           do (progn
+                (aset vector rand (aref vector len))
+                (aset vector len old)
+                (setq len (1- len)))
+           finally return vector))
+
 ;;;###autoload
 (cl-defun genpasswd (&optional (limit 12))
   "Generate strong password of length LIMIT.
 LIMIT should be a number divisible by 2, otherwise
 the password will be of length (floor LIMIT)."
   (cl-loop with alph = ["a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k"
-                            "l" "m" "n" "o" "p" "q" "r" "s" "t" "u" "v"
-                            "w" "x" "y" "z" "A" "B" "C" "D" "E" "F" "G"
-                            "H" "I" "J" "K" "L" "M" "N" "O" "P" "Q" "R"
-                            "S" "T" "U" "V" "W" "X" "Y" "Z" "#" "!" "$"
-                            "&" "~" "-" "_" "@" "%" "*"]
+                        "l" "m" "n" "o" "p" "q" "r" "s" "t" "u" "v"
+                        "w" "x" "y" "z" "A" "B" "C" "D" "E" "F" "G"
+                        "H" "I" "J" "K" "L" "M" "N" "O" "P" "Q" "R"
+                        "S" "T" "U" "V" "W" "X" "Y" "Z" "#" "!" "$"
+                        "&" "~" "-" "_" "@" "%" "*"]
            ;; Divide by 2 because collecting 2 list.
            for i from 1 to (floor (/ limit 2))
            for rand1 = (int-to-string (random 9))
            for alphaindex = (random (length alph))
-           for rand2 = (aref alph alphaindex)
+           for rand2 = (aref (tv/shuffle-vector alph) alphaindex)
            ;; Collect a random number between O-9
-           collect rand1 into ls
+           concat rand1 into ls
            ;; collect a random alpha between a-zA-Z.
-           collect rand2 into ls
-           finally return
-           ;; Now shuffle ls.
-           (cl-loop repeat (length ls)
-                    for elm = (nth (random (length ls)) ls)
-                    concat elm)))
+           concat rand2 into ls
+           finally return ls))
 
 ;;;###autoload
 (defun tv/generate-passwd (arg)
