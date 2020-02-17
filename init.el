@@ -766,17 +766,6 @@ file-local variable.\n")
 (use-package jka-cmpr-hook
   :config (auto-compression-mode 1))
 
-;;; Image file
-;;
-(use-package image-file
-  :config (auto-image-file-mode 1))
-
-;;; Rst-mode
-;;
-(use-package rst
-  :config
-  (add-hook 'rst-mode-hook 'auto-fill-mode))
-
 ;;; Shell script
 ;;
 (use-package sh-script
@@ -1155,12 +1144,6 @@ If your system's ping continues until interrupted, you can try setting
   :bind (("C-x r e"       . rectangle-utils-extend-rectangle-to-end)
          ("C-x r h"       . rectangle-utils-menu)
          ("C-x r <right>" . rectangle-utils-insert-at-right)))
-
-;;; Align-let
-;;
-(use-package align-let
-    :commands (align-let align-let-region)
-    :bind (("C-c C-a" . align-let)))
 
 ;;; Smallurl
 ;;
@@ -1703,20 +1686,6 @@ If your system's ping continues until interrupted, you can try setting
     (put 'helm-set-local-variable 'align-let 'setq))
   :disabled t)
 
-;;; sqlite-dump
-;;
-(use-package sqlite-dump
-  :commands 'sqlite-dump
-  :config (progn
-            (modify-coding-system-alist 'file "\\.sqlite\\'" 'raw-text-unix)
-            (add-to-list 'auto-mode-alist '("\\.sqlite\\'" . sqlite-dump))
-            (setq sql-sqlite-program "sqlite3")))
-
-;;; Checkdoc
-;;
-(use-package checkdoc-batch
-  :commands (checkdoc-batch checkdoc-batch-files))
-
 ;;; markdown-mode
 ;;
 (use-package markdown-mode
@@ -1877,15 +1846,6 @@ If your system's ping continues until interrupted, you can try setting
       (setq eshell-plain-echo-behavior t)))
   :bind ("C-!" . eshell-command))
 
-;;; linum-relative
-;;
-(use-package linum-relative
-    :disabled t
-    :commands (linum-relative-mode
-               helm-linum-relative-mode
-               linum-relative-toggle
-               linum-relative-global-mode))
-
 (use-package display-line-numbers
     :commands (display-line-numbers-mode
                global-display-line-numbers-mode)
@@ -1940,11 +1900,6 @@ If your system's ping continues until interrupted, you can try setting
           (when (fboundp 'helm-autoresize-mode)
             (helm-autoresize-mode -1))))))
   :bind ("C-c @" . tv/toggle-flyspell))
-
-;;; Webjump
-;;
-(use-package webjump
-  :bind ("<f7> j" . webjump))
 
 ;;; Semantic
 ;;
@@ -2085,20 +2040,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 (use-package face-remap
   :bind (("<C-prior>" . text-scale-decrease)
          ("<C-next>" . text-scale-increase)))
-
-;;; Elp instrument
-;;
-(use-package elp
-  :config
-  (progn
-    (defun tv/advice-elp-results (old--fn &rest args)
-      (let ((inhibit-read-only t))
-        (with-current-buffer (if elp-recycle-buffers-p
-                                 (get-buffer-create elp-results-buffer)
-                               (generate-new-buffer elp-results-buffer))
-          (special-mode)
-          (apply old--fn args)))))
-  (advice-add 'elp-results :around 'tv/advice-elp-results))
 
 ;;; Org toc for github
 ;;
