@@ -2253,14 +2253,14 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;           (completion-table-dynamic 'geiser-completion--symbol-list)))
 
 ;;; Sly
-(use-package sly
-  :disabled t
-  :ensure t
-  :config
-  (setq sly-completing-read-function 'completing-read)
-  (setq inferior-lisp-program "/usr/bin/sbcl")
-  (add-hook 'sly-mode-hook (lambda () (sly-symbol-completion-mode -1))))
-  
+;; (use-package sly
+;; :disabled t
+;; :ensure t
+;; :config
+;; (setq sly-completing-read-function 'completing-read)
+;; (setq inferior-lisp-program "/usr/bin/sbcl")
+;; (add-hook 'sly-mode-hook (lambda () (sly-symbol-completion-mode -1))))
+
 ;;; psession
 ;;
 (use-package psession
