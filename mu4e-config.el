@@ -381,6 +381,7 @@ try this wash."
     (let ((logfile (expand-file-name
                     "mu-index.log"
                     user-emacs-directory)))
+      (message "Mu indexing...")
       (if arg                      ; Be asynchronous when interactive.
           (let* ((process-connection-type t)
                  (proc (start-process "mu" nil "mu" "index")))
@@ -391,7 +392,7 @@ try this wash."
                                              (insert (format "%s: Mu index done (status %s)"
                                                              (format-time-string "%d/%m/%Y:<%H:%M:%S>")
                                                              (process-status process))))
-                                           (message "Mu index done")))))
+                                           (message "Mu indexing done")))))
         (with-temp-file logfile
           (goto-char (point-max))
           (let ((status (call-process "mu" nil nil nil "index")))
@@ -399,7 +400,8 @@ try this wash."
                             (format-time-string "%d/%m/%Y:<%H:%M:%S>")
                             (if (= status 0)
                                 (format "Mu index done (status %s)" status)
-                              (format "Mu index fails (status %s)" status))))))))))
+                              (format "Mu index fails (status %s)" status))))))
+        (message "Mu indexing done")))))
 
 (add-hook 'kill-emacs-hook 'tv/mu4e-update-index)
 
