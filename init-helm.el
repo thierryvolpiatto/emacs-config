@@ -329,7 +329,8 @@ First call indent, second complete symbol, third complete fname."
         (dired-do-hardlink . helm-read-file-name-handler-1)
         (basic-save-buffer . helm-read-file-name-handler-1)
         (write-file . helm-read-file-name-handler-1)
-        (write-region . helm-read-file-name-handler-1)))
+        (write-region . helm-read-file-name-handler-1))
+      helm-el-package-autoremove-on-start t)
 
 (customize-set-variable 'helm-ff-lynx-style-map t)
 (customize-set-variable 'helm-imenu-lynx-style-map t)
