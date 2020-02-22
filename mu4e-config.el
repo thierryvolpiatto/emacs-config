@@ -366,41 +366,6 @@ try this wash."
 (require 'org-mu4e)
 (define-key mu4e-view-mode-map (kbd "C-c C-l") 'org-store-link)
 
-;; Index mu
-;; The command `mu4e-update-index' fails to update index permanently
-;; so this command stops mu and update index permanently.
-(defun tv/mu4e-update-index (&optional arg)
-  "Run shell command 'mu index'."
-  (interactive "p")
-  (when (and (fboundp 'mu4e-running-p)
-             (mu4e-running-p))
-    (mu4e~stop)
-    (let ((logfile (expand-file-name
-                    "mu-index.log"
-                    user-emacs-directory)))
-      (message "Mu indexing...")
-      (if arg                      ; Be asynchronous when interactive.
-          (let* ((process-connection-type t)
-                 (proc (start-process "mu" nil "mu" "index")))
-            (set-process-sentinel proc (lambda (process event)
-                                         (when (string= event "finished\n")
-                                           (with-temp-file logfile
-                                             (goto-char (point-max))
-                                             (insert (format "%s: Mu index done (status %s)"
-                                                             (format-time-string "%d/%m/%Y:<%H:%M:%S>")
-                                                             (process-status process))))
-                                           (message "Mu indexing done")))))
-        (with-temp-file logfile
-          (goto-char (point-max))
-          (let ((status (call-process "mu" nil nil nil "index")))
-            (insert (format "%s: %s"
-                            (format-time-string "%d/%m/%Y:<%H:%M:%S>")
-                            (if (= status 0)
-                                (format "Mu index done (status %s)" status)
-                              (format "Mu index fails (status %s)" status))))))
-        (message "Mu indexing done")))))
-
-(add-hook 'kill-emacs-hook 'tv/mu4e-update-index)
 
 (provide 'mu4e-config)
 
