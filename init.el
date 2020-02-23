@@ -168,7 +168,6 @@ Restart works only on graphic display."
 (require 'server)
 (add-hook 'after-init-hook (lambda ()
                              (unless (or (daemonp) (server-running-p))
-                               (setq server-name (format "emacs-%s" emacs-version))
                                (server-start)
                                (setq server-raise-frame t))))
 

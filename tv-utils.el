@@ -1120,34 +1120,41 @@ See <https://github.com/chubin/wttr.in>."
       (set (make-local-variable 'wttr-weather-last-location) place))))
 
 (defun wttr-weather-update (place)
-  (let ((inhibit-read-only t)
-        (data
-         (with-temp-buffer
-           (call-process
-            "curl" nil t nil
-            "-s" (format "fr.wttr.in/~%s?m" (shell-quote-argument place)))
-           (goto-char (point-min))
-           (while (re-search-forward "38;5;\\([0-9]+\\)m" nil t)
-             ;; Need a 256 color ansi library, emacs supports only basic
-             ;; ansi colors as now, so replace all 38;5 foreground
-             ;; specs by simple ansi sequences.
-             (replace-match (pcase (match-string 1)
-                              ("154" "32")
-                              ("190" "31")
-                              ("118" "32")
-                              ("208" "37")
-                              ("202" "34")
-                              ("214" "35")
-                              ("220" "36")
-                              ("226" "33")
-                              (r     r))
-                            t t nil 1))
-           (helm--ansi-color-apply (buffer-string)))))
+  (let* ((inhibit-read-only t)
+         ansi
+         (data
+          (with-temp-buffer
+            (call-process
+             "curl" nil '(t t) nil
+             "-s" (format "fr.wttr.in/~%s?m" (shell-quote-argument place)))
+            (goto-char (point-min))
+            (while (re-search-forward "38;5;\\([0-9]+\\)m" nil t)
+              ;; If we have ansi sequences, that's mean we had weather
+              ;; output, otherwise we have a simple message notifying
+              ;; weather report is not available.
+              (setq ansi t)
+              ;; Need a 256 color ansi library, emacs supports only basic
+              ;; ansi colors as now, so replace all 38;5 foreground
+              ;; specs by simple ansi sequences.
+              (replace-match (pcase (match-string 1)
+                               ("154" "32")
+                               ("190" "31")
+                               ("118" "32")
+                               ("208" "37")
+                               ("202" "34")
+                               ("214" "35")
+                               ("220" "36")
+                               ("226" "33")
+                               (r     r))
+                             t t nil 1))
+            (helm--ansi-color-apply (buffer-string)))))
     (erase-buffer)
     (save-excursion
       (insert data)
       (forward-line -1)
-      (when (re-search-backward "^$" nil t) (delete-region (point) (point-max))))
+      (when (and ansi ; Keep notification when no weather report.
+                 (re-search-backward "^$" nil t))
+        (delete-region (point) (point-max))))
     (while (re-search-forward "\\s\\" (point-at-eol) t) (replace-match ""))
     (goto-char (point-at-eol))
     (insert (format-time-string " le %d/%m/%Y à %H:%M:%S"))))
