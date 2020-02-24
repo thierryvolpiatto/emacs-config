@@ -1150,7 +1150,10 @@ See <https://github.com/chubin/wttr.in>."
             (helm--ansi-color-apply (buffer-string)))))
     (erase-buffer)
     (save-excursion
-      (insert data)
+      (if data
+          (insert data)
+        ;; Probaly check error status instead (it is 52).
+        (insert "Empy reply from server"))
       (forward-line -1)
       (when (and ansi ; Keep notification when no weather report.
                  (re-search-backward "^$" nil t))
