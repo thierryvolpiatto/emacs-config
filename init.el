@@ -1950,19 +1950,21 @@ If your system's ping continues until interrupted, you can try setting
 (use-package lisp-mode
   :config
   (progn
-    ;; Try to have same indentation in both 24, 25 and 26.
-    (defun tv/common-lisp-indent-function (indent-point state)
-      ;; Use cl indent just for cl-loop.
-      (if (save-excursion (goto-char (elt state 1))
-                          (looking-at "(cl-\\([Ll][Oo][Oo][Pp]\\)"))
-          (common-lisp-indent-function-1 indent-point state)
-        (lisp-indent-function indent-point state)))
-    
-    ;; Fix indentation in CL loop.
-    (setq lisp-indent-function #'tv/common-lisp-indent-function
-          lisp-simple-loop-indentation 1
-          lisp-loop-keyword-indentation 6
-          lisp-loop-forms-indentation 6)
+    (use-package cl-indent
+      :config
+      ;; Try to have same indentation in both 24, 25 and 26.
+      (defun tv/common-lisp-indent-function (indent-point state)
+        ;; Use cl indent just for cl-loop.
+        (if (save-excursion (goto-char (elt state 1))
+                            (looking-at "(cl-\\([Ll][Oo][Oo][Pp]\\)"))
+            (common-lisp-indent-function-1 indent-point state)
+          (lisp-indent-function indent-point state)))
+      
+      ;; Fix indentation in CL loop.
+      (setq lisp-indent-function #'tv/common-lisp-indent-function
+            lisp-simple-loop-indentation 1
+            lisp-loop-keyword-indentation 6
+            lisp-loop-forms-indentation 6))
 
     (defun goto-scratch ()
       (interactive)
