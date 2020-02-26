@@ -1952,6 +1952,7 @@ If your system's ping continues until interrupted, you can try setting
   (progn
     ;; Try to have same indentation in both 24, 25 and 26.
     (defun tv/common-lisp-indent-function (indent-point state)
+      ;; Use cl indent just for cl-loop.
       (if (save-excursion (goto-char (elt state 1))
                           (looking-at "(cl-\\([Ll][Oo][Oo][Pp]\\)"))
           (common-lisp-indent-function-1 indent-point state)
@@ -1966,21 +1967,6 @@ If your system's ping continues until interrupted, you can try setting
     (defun goto-scratch ()
       (interactive)
       (switch-to-buffer "*scratch*"))
-
-    ;; Fix indentation in cl-flet and cl-labels
-    (use-package cl-indent
-      :config (let ((l '((flet ((&whole 4 &rest (&whole 1 &lambda &body)) &body))
-                         (cl-flet* . flet)
-                         (labels . flet)
-                         (cl-flet . flet)
-                         (cl-labels . flet)
-                         (cl-macrolet . flet)
-                         )))
-                (dolist (el l)
-                  (put (car el) 'common-lisp-indent-function
-                       (if (symbolp (cdr el))
-                           (get (cdr el) 'common-lisp-indent-function)
-                         (car (cdr el)))))))
 
     ;; Add fontification to some functions
     (cl-dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
