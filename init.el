@@ -2025,8 +2025,8 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; face-remap - font size <C-fn-up/down>.
 ;;
 (use-package face-remap
-  :bind (("<C-prior>" . text-scale-decrease)
-         ("<C-next>" . text-scale-increase)))
+  :bind (("C--" . text-scale-decrease)
+         ("C-+" . text-scale-increase)))
 
 ;;; Org toc for github
 ;;
