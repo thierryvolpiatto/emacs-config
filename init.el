@@ -240,6 +240,12 @@ So far, F can only be a symbol, not a lambda expression."))
 ;; Don't beep even with visible-bell (debian)
 (setq ring-bell-function 'ignore)
 
+;; Mu4e is using string-join, not available on emacs-<27.
+(unless (fboundp 'string-join)
+  (defsubst string-join (strings &optional separator)
+  "Join all STRINGS using SEPARATOR."
+  (mapconcat #'identity strings separator)))
+
 
 ;;; Use package declarations
 
