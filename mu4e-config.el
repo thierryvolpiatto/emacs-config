@@ -114,7 +114,7 @@
       mu4e-compose-complete-addresses nil
       mu4e-completing-read-function 'completing-read
       mu4e-view-show-addresses t
-      )
+      mu4e-index-lazy-check t)
 
 ;;; Html rendering
 (setq mu4e-view-prefer-html t)
