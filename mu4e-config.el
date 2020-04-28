@@ -303,6 +303,7 @@ AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk\\ Mail" "Last 7 days" ?w)
 (define-key mu4e-view-mode-map (kbd "<C-tab>")   'tv/mu4e-next-anchor)
 (define-key mu4e-view-mode-map (kbd "<backtab>") 'tv/mu4e-previous-anchor)
 (define-key mu4e-view-mode-map (kbd "X")         'mu4e-view-save-attachment-multi)
+(define-key mu4e-view-mode-map (kbd "C-c v") 'mu4e-view-open-attachment)
 
 ;;; A simplified and more efficient version of `article-translate-strings'.
 ;;
