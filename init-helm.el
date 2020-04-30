@@ -159,7 +159,7 @@
     (unless (or (helm-follow-mode-p)
                 helm--temp-follow-flag)
       (goto-char (point-max))
-      (insert (format-time-string "%Y-%m-%d")))))
+      (insert (format-time-string "%Y-%m-%d-%H:%M")))))
 (define-key helm-find-files-map (kbd "C-c y") 'helm/insert-date-in-minibuffer)
 (define-key helm-read-file-map (kbd "C-c y") 'helm/insert-date-in-minibuffer)
 
