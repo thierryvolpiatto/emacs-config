@@ -57,8 +57,9 @@
               ("C-d" . helm-kill-ring-run-persistent-delete)))
 
 (use-package helm-recoll
-    :commands helm-recoll
-    :init (customize-set-variable 'helm-recoll-directories
+  :disabled t
+  :commands helm-recoll
+  :init (customize-set-variable 'helm-recoll-directories
                                   '(("confdir" . "~/.recoll-config")
                                     ("lisp sources" . "~/.recoll-sources")
                                     ("work" . "~/.recoll-work"))))
