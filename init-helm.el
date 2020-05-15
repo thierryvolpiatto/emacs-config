@@ -221,10 +221,13 @@ First call indent, second complete symbol, third complete fname."
     helm-lisp-completion-at-point
     helm-complete-file-name-at-point)
   0.3)
+(define-key emacs-lisp-mode-map (kbd "TAB") 'helm-multi-lisp-complete-at-point)
+(define-key lisp-interaction-mode-map (kbd "TAB") 'helm-multi-lisp-complete-at-point)
 
 ;; Indent or complete with completion-at-point
 ;; (setq tab-always-indent 'complete)
-(define-key global-map (kbd "<backtab>") 'completion-at-point)
+
+;; (define-key global-map (kbd "<backtab>") 'completion-at-point)
 
 ;; helm find files
 (define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
