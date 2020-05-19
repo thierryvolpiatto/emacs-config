@@ -286,6 +286,12 @@ So far, F can only be a symbol, not a lambda expression."))
     (add-hook 'Info-mode-hook 'tv/font-lock-doc-rules)
     (define-key Info-mode-map [remap Info-index] 'helm-info-at-point)))
 
+;;; Emms
+;;
+(use-package emms
+  :ensure t
+  :config (use-package emms-vlc-config))
+
 ;;; Helm
 ;;
 (require 'init-helm)
@@ -997,6 +1003,7 @@ With a prefix arg decrease transparency."
   :init (setq split-width-threshold nil)
   (use-package helm
     :config
+    (setq fit-window-to-buffer-horizontally 1)
     (helm-define-key-with-subkeys global-map (kbd "C-x ^") ?^ 'enlarge-window
                                   '((?ç . shrink-window)
                                     (?} . enlarge-window-horizontally)
@@ -1063,13 +1070,6 @@ If your system's ping continues until interrupted, you can try setting
   :bind (("C-c a" . org-agenda)
          ("C-c k" . org-capture))
   :config (use-package org-config))
-
-;;; Emms
-;;
-(use-package emms
-  :ensure t
-  :defer t
-  :config (use-package emms-vlc-config))
 
 ;;; Dired
 ;;
