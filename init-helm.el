@@ -38,13 +38,14 @@
   :bind ("C-h r" . helm-info-emacs))
 
 (use-package helm-ipython
-    :config
+  :disabled t
+  :config
   (define-key python-mode-map (kbd "<M-tab>") 'helm-ipython-complete)
   (define-key inferior-python-mode-map (kbd "C-i") 'helm-ipython-complete)
   (define-key python-mode-map (kbd "C-c C-i") 'helm-ipython-import-modules-from-buffer))
 
 (use-package helm-ring
-    :config
+  :config
   ;; Action for helm kill-ring
   (defun helm/emamux:copy-from-kill-ring (candidate)
     (require 'emamux)
@@ -64,6 +65,192 @@
                                     ("lisp sources" . "~/.recoll-sources")
                                     ("work" . "~/.recoll-work"))))
 
+(use-package helm-ls-git
+  :config
+  (setq helm-ls-git-status-command 'magit-status-internal)
+  (defmethod helm-setup-user-source ((source helm-ls-git-source))
+    (helm-source-add-action-to-source-if
+     "Magit find file"
+     (lambda (candidate)
+       (magit-find-file (magit-branch-or-commit-at-point) candidate))
+     source
+     (lambda (_candidate)
+       ;; For `magit-branch-or-commit-at-point'.
+       (require 'magit-git)
+       (with-helm-current-buffer (magit-branch-or-commit-at-point)))
+     1)))
+
+(use-package helm-buffers
+  :config
+  (setq helm-buffers-favorite-modes
+        (append helm-buffers-favorite-modes '(picture-mode artist-mode))
+        helm-buffers-fuzzy-matching       t
+        helm-buffer-skip-remote-checking  t
+        helm-buffer-max-length            22
+        helm-buffers-end-truncated-string "…"
+        helm-buffers-maybe-switch-to-tab  t)
+  
+  (defmethod helm-setup-user-source ((source helm-source-buffers))
+  "Adds additional actions to `helm-source-buffers-list'.
+- Magit status."
+  (setf (slot-value source 'candidate-number-limit) 300)
+  (helm-aif (slot-value source 'action)
+      (setf (slot-value source 'action)
+        (helm-append-at-nth  (if (symbolp it)
+                                 (symbol-value it)
+                               it)
+                             '(("Diff buffers" . helm-buffers-diff-buffers)) 4)))
+  (helm-source-add-action-to-source-if
+   "Magit status"
+   (lambda (candidate)
+     (funcall helm-ls-git-status-command
+              (with-current-buffer candidate default-directory)))
+   source
+   (lambda (candidate)
+     (locate-dominating-file (with-current-buffer candidate default-directory)
+                             ".git"))
+   1)))
+
+(use-package helm-files
+  :config
+  (defun helm/ff-candidates-lisp-p (candidate)
+    (cl-loop for cand in (helm-marked-candidates)
+             always (string-match "\\.el$" cand)))
+
+  (defun helm-ff-recoll-index-directory (directory)
+    "Create a recoll index directory from DIRECTORY.
+Add the new created directory to `helm-recoll-directories' using the
+basename of DIRECTORY as name.
+By using `customize-set-variable', a new source is created for this
+new directory."
+    (cl-assert (boundp 'helm-recoll-directories) nil
+               "Package helm-recoll not installed or configured")
+    (let* ((bn (helm-basename (expand-file-name directory)))
+           (index-dir (format "~/.recoll-%s" bn))
+           (conf-file (expand-file-name "recoll.conf" index-dir)))
+      (mkdir index-dir)
+      (with-current-buffer (find-file-noselect conf-file)
+        (insert (format "topdirs = %s" (expand-file-name directory)))
+        (save-buffer)
+        (kill-buffer))
+      (customize-set-variable 'helm-recoll-directories
+                              (append `((,bn . ,index-dir)) helm-recoll-directories))
+      (message "Don't forget to index config directory with 'recollindex -c %s'" index-dir)))
+
+  (defun helm-ff-recoll-index-directories (_candidate)
+    (let ((dirs (helm-marked-candidates)))
+      (cl-loop for dir in dirs
+               when (file-directory-p dir)
+               do (helm-ff-recoll-index-directory dir))))
+
+  ;; Add actions to `helm-source-find-files' IF:
+  (defmethod helm-setup-user-source ((source helm-source-ffiles))
+    "Adds additional actions to `helm-find-files'.
+    - Byte compile file(s) async
+    - Byte recompile directory
+    - Magit status
+    - Github issues
+    - Patch region on directory
+    - Open in emms
+    - Update directory autoloads"
+    (helm-source-add-action-to-source-if
+     "Byte compile file(s) async"
+     (lambda (_candidate)
+       (cl-loop for file in (helm-marked-candidates)
+                do (async-byte-compile-file file)))
+     source
+     'helm/ff-candidates-lisp-p)
+    (helm-source-add-action-to-source-if
+     "Recover file"
+     (lambda (candidate)
+       (recover-file candidate))
+     source
+     (lambda (candidate)
+       (file-exists-p (expand-file-name
+                       (format "#%s#" (helm-basename candidate))
+                       (helm-basedir candidate)))))
+    (helm-source-add-action-to-source-if
+     "Byte recompile directory (async)"
+     'async-byte-recompile-directory
+     source
+     'file-directory-p)
+    (helm-source-add-action-to-source-if
+     "Magit status"
+     (lambda (_candidate)
+       (funcall helm-ls-git-status-command
+                helm-ff-default-directory))
+     source
+     (lambda (candidate)
+       (and (not (string-match-p ffap-url-regexp candidate))
+            helm-ff-default-directory
+            (locate-dominating-file helm-ff-default-directory ".git")))
+     1)
+    (helm-source-add-action-to-source-if
+     "Patch region on directory"
+     (lambda (_candidate)
+       (with-helm-current-buffer
+         (shell-command-on-region (region-beginning) (region-end)
+                                  (format "patch -d %s -p1"
+                                          helm-ff-default-directory))))
+     source
+     (lambda (_candidate)
+       (with-helm-current-buffer
+         (and (or (eq major-mode 'mu4e-view-mode)
+                  (eq major-mode 'diff-mode))
+              (region-active-p))))
+     1)
+    (helm-source-add-action-to-source-if
+     "Open in emms"
+     (lambda (candidate)
+       (if (file-directory-p candidate)
+           (emms-play-directory candidate)
+         (emms-play-file candidate)))
+     source
+     (lambda (candidate)
+       (or (and (file-directory-p candidate)
+                (directory-files
+                 candidate
+                 nil ".*\\.\\(mp3\\|ogg\\|flac\\)$" t))
+           (string-match-p ".*\\.\\(mp3\\|ogg\\|flac\\)$" candidate)))
+     1)
+    (helm-source-add-action-to-source-if
+     "Update directory autoloads"
+     (lambda (candidate)
+       (require 'autoload)
+       (let ((default-directory helm-ff-default-directory)
+             (generated-autoload-file
+              (read-file-name "Write autoload definitions to file: "
+                              helm-ff-default-directory
+                              nil nil nil
+                              (lambda (f)
+                                (string-match "autoloads\\|loaddefs" f)))))
+         (cl-letf (((symbol-function 'autoload-generated-file)
+                    (lambda ()
+                      (expand-file-name generated-autoload-file default-directory))))
+           (update-directory-autoloads (expand-file-name candidate)))))
+     source
+     (lambda (candidate)
+       (and (file-directory-p candidate)
+            (string= (helm-basename candidate) ".")))
+     1)
+    (helm-source-add-action-to-source-if
+     "Recoll index directory"
+     'helm-ff-recoll-index-directories
+     source
+     'file-directory-p
+     3)))
+
+(use-package helm-dictionary ; Its autoloads are already loaded.
+  :commands helm-dictionary
+  :config
+  (setq helm-dictionary-database
+        '(("en-fr" . "~/helm-dictionary/dic-en-fr.iso")
+          ("fr-en" . "~/helm-dictionary/dic-fr-en.iso"))
+        helm-dictionary-online-dicts
+        '(("translate.reference.com en->fr" .
+           "http://translate.reference.com/translate?query=%s&src=en&dst=fr")
+          ("translate.reference.com fr->en" .
+           "http://translate.reference.com/translate?query=%s&src=fr&dst=en"))))
 
 ;;;; Test Sources or new helm code.
 ;;   !!!WARNING EXPERIMENTAL!!!
@@ -280,15 +467,11 @@ First call indent, second complete symbol, third complete fname."
       helm-use-frame-when-dedicated-window            t
       helm-frame-background-color                     "DarkSlateGray"
       helm-show-action-window-other-window            'left
-      helm-buffers-favorite-modes                     (append helm-buffers-favorite-modes '(picture-mode artist-mode))
-      helm-ls-git-status-command                      'magit-status-internal
       helm-surfraw-duckduckgo-url                     "https://duckduckgo.com/?q=%s&ke=-1&kf=fw&kl=fr-fr&kr=b&k1=-1&k4=-1"
       helm-google-suggest-search-url                  helm-surfraw-duckduckgo-url
-      helm-buffer-skip-remote-checking                t
       helm-allow-mouse                                t
       helm-apropos-fuzzy-match                        t
       helm-lisp-fuzzy-completion                      t
-      helm-buffers-fuzzy-matching                     t
       helm-locate-fuzzy-match                         t
       helm-move-to-line-cycle-in-source               t
       ;; helm-tramp-verbose                              6
@@ -302,8 +485,6 @@ First call indent, second complete symbol, third complete fname."
       helm-debug-root-directory "/home/thierry/tmp/helm-debug"
       helm-follow-mode-persistent t
       helm-emms-use-track-description-function        nil
-      helm-buffer-max-length            22
-      helm-buffers-end-truncated-string "…"
       helm-trash-remote-files           t
       helm-grep-git-grep-command
       "git --no-pager grep -n%cH --color=always --exclude-standard --no-index --full-name -e %p -- %f"
@@ -312,7 +493,6 @@ First call indent, second complete symbol, third complete fname."
       helm-ff-allow-non-existing-file-at-point t
       helm-find-noerrors t
       helm-window-show-buffers-function #'helm-window-mosaic-fn
-      helm-buffers-maybe-switch-to-tab t
       helm-completing-read-handlers-alist
       '((xref-find-references . helm-completing-read-default-find-tag)
         (write-file . helm-read-file-name-handler-1)
@@ -376,185 +556,7 @@ First call indent, second complete symbol, third complete fname."
   (message "Helm Debug is now %s"
            (if helm-debug "Enabled" "Disabled")))
 
-(defun helm/ff-candidates-lisp-p (candidate)
-  (cl-loop for cand in (helm-marked-candidates)
-           always (string-match "\\.el$" cand)))
-
-(defun helm-ff-recoll-index-directory (directory)
-  "Create a recoll index directory from DIRECTORY.
-Add the new created directory to `helm-recoll-directories' using the
-basename of DIRECTORY as name.
-By using `customize-set-variable', a new source is created for this
-new directory."
-  (cl-assert (boundp 'helm-recoll-directories) nil
-             "Package helm-recoll not installed or configured")
-  (let* ((bn (helm-basename (expand-file-name directory)))
-         (index-dir (format "~/.recoll-%s" bn))
-         (conf-file (expand-file-name "recoll.conf" index-dir)))
-    (mkdir index-dir)
-    (with-current-buffer (find-file-noselect conf-file)
-      (insert (format "topdirs = %s" (expand-file-name directory)))
-      (save-buffer)
-      (kill-buffer))
-    (customize-set-variable 'helm-recoll-directories
-                            (append `((,bn . ,index-dir)) helm-recoll-directories))
-    (message "Don't forget to index config directory with 'recollindex -c %s'" index-dir)))
-
-(defun helm-ff-recoll-index-directories (_candidate)
-  (let ((dirs (helm-marked-candidates)))
-    (cl-loop for dir in dirs
-             when (file-directory-p dir)
-             do (helm-ff-recoll-index-directory dir))))
-
 
-;;; Modify source attributes
-;;
-;; Add actions to `helm-source-find-files' IF:
-(defmethod helm-setup-user-source ((source helm-source-ffiles))
-  "Adds additional actions to `helm-find-files'.
-    - Byte compile file(s) async
-    - Byte recompile directory
-    - Magit status
-    - Github issues
-    - Patch region on directory
-    - Open in emms
-    - Update directory autoloads"
-  (helm-source-add-action-to-source-if
-   "Byte compile file(s) async"
-   (lambda (_candidate)
-     (cl-loop for file in (helm-marked-candidates)
-              do (async-byte-compile-file file)))
-   source
-   'helm/ff-candidates-lisp-p)
-  (helm-source-add-action-to-source-if
-   "Recover file"
-   (lambda (candidate)
-     (recover-file candidate))
-   source
-   (lambda (candidate)
-     (file-exists-p (expand-file-name
-                     (format "#%s#" (helm-basename candidate))
-                     (helm-basedir candidate)))))
-  (helm-source-add-action-to-source-if
-   "Byte recompile directory (async)"
-   'async-byte-recompile-directory
-   source
-   'file-directory-p)
-  (helm-source-add-action-to-source-if
-   "Magit status"
-   (lambda (_candidate)
-     (funcall helm-ls-git-status-command
-              helm-ff-default-directory))
-   source
-   (lambda (candidate)
-     (and (not (string-match-p ffap-url-regexp candidate))
-          helm-ff-default-directory
-          (locate-dominating-file helm-ff-default-directory ".git")))
-   1)
-  (helm-source-add-action-to-source-if
-   "Patch region on directory"
-   (lambda (_candidate)
-     (with-helm-current-buffer
-       (shell-command-on-region (region-beginning) (region-end)
-                                (format "patch -d %s -p1"
-                                        helm-ff-default-directory))))
-   source
-   (lambda (_candidate)
-     (with-helm-current-buffer
-       (and (or (eq major-mode 'mu4e-view-mode)
-                (eq major-mode 'diff-mode))
-            (region-active-p))))
-   1)
-  (helm-source-add-action-to-source-if
-   "Open in emms"
-   (lambda (candidate)
-     (if (file-directory-p candidate)
-         (emms-play-directory candidate)
-       (emms-play-file candidate)))
-   source
-   (lambda (candidate)
-     (or (and (file-directory-p candidate)
-              (directory-files
-               candidate
-               nil ".*\\.\\(mp3\\|ogg\\|flac\\)$" t))
-         (string-match-p ".*\\.\\(mp3\\|ogg\\|flac\\)$" candidate)))
-   1)
-  (helm-source-add-action-to-source-if
-   "Update directory autoloads"
-   (lambda (candidate)
-     (require 'autoload)
-     (let ((default-directory helm-ff-default-directory)
-           (generated-autoload-file
-            (read-file-name "Write autoload definitions to file: "
-                            helm-ff-default-directory
-                            nil nil nil
-                            (lambda (f)
-                              (string-match "autoloads\\|loaddefs" f)))))
-       (cl-letf (((symbol-function 'autoload-generated-file)
-                  (lambda ()
-                    (expand-file-name generated-autoload-file default-directory))))
-         (update-directory-autoloads (expand-file-name candidate)))))
-   source
-   (lambda (candidate)
-     (and (file-directory-p candidate)
-          (string= (helm-basename candidate) ".")))
-   1)
-  (helm-source-add-action-to-source-if
-   "Recoll index directory"
-   'helm-ff-recoll-index-directories
-   source
-   'file-directory-p
-   3))
-
-(defmethod helm-setup-user-source ((source helm-ls-git-source))
-  (helm-source-add-action-to-source-if
-   "Magit find file"
-   (lambda (candidate)
-     (magit-find-file (magit-branch-or-commit-at-point) candidate))
-   source
-   (lambda (_candidate)
-     ;; For `magit-branch-or-commit-at-point'.
-     (require 'magit-git)
-     (with-helm-current-buffer (magit-branch-or-commit-at-point)))
-   1))
-
-(defun helm-buffers-diff-buffers (_candidate)
-  (let ((mkd (helm-marked-candidates)))
-    (cl-assert (<= (length mkd) 2) nil "Too much buffers specified for diff")
-    (if (cdr mkd)
-        (diff (car mkd) (cadr mkd))
-      (diff (car mkd) helm-current-buffer))))
-
-(defmethod helm-setup-user-source ((source helm-source-buffers))
-  "Adds additional actions to `helm-source-buffers-list'.
-- Magit status."
-  (setf (slot-value source 'candidate-number-limit) 300)
-  (helm-aif (slot-value source 'action)
-      (setf (slot-value source 'action)
-        (helm-append-at-nth  (if (symbolp it)
-                                 (symbol-value it)
-                               it)
-                             '(("Diff buffers" . helm-buffers-diff-buffers)) 4)))
-  (helm-source-add-action-to-source-if
-   "Magit status"
-   (lambda (candidate)
-     (funcall helm-ls-git-status-command
-              (with-current-buffer candidate default-directory)))
-   source
-   (lambda (candidate)
-     (locate-dominating-file (with-current-buffer candidate default-directory)
-                             ".git"))
-   1))
-
-
-;;; helm dictionary
-;;
-(setq helm-dictionary-database '(("en-fr" . "~/helm-dictionary/dic-en-fr.iso")
-                                 ("fr-en" . "~/helm-dictionary/dic-fr-en.iso")))
-(setq helm-dictionary-online-dicts '(("translate.reference.com en->fr" .
-                                      "http://translate.reference.com/translate?query=%s&src=en&dst=fr")
-                                     ("translate.reference.com fr->en" .
-                                      "http://translate.reference.com/translate?query=%s&src=fr&dst=en")))
 
 ;;; helm-occur/grep-mode
 ;;
