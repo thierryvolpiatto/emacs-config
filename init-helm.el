@@ -89,7 +89,7 @@
         helm-buffer-max-length            22
         helm-buffers-end-truncated-string "…"
         helm-buffers-maybe-switch-to-tab  t)
-  
+
   (defmethod helm-setup-user-source ((source helm-source-buffers))
   "Adds additional actions to `helm-source-buffers-list'.
 - Magit status."
@@ -113,6 +113,15 @@
 
 (use-package helm-files
   :config
+  (setq helm-ff-auto-update-initial-value        t
+        helm-ff-allow-non-existing-file-at-point t)
+  (customize-set-variable 'helm-ff-lynx-style-map t)
+
+  (define-key helm-read-file-map (kbd "RET") 'helm-ff-RET)
+  (define-key helm-find-files-map (kbd "C-i") nil)
+  (define-key helm-find-files-map (kbd "C-/") 'helm-ff-run-find-sh-command)
+  (define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
+
   (defun helm/ff-candidates-lisp-p (candidate)
     (cl-loop for cand in (helm-marked-candidates)
              always (string-match "\\.el$" cand)))
@@ -416,15 +425,6 @@ First call indent, second complete symbol, third complete fname."
 
 ;; (define-key global-map (kbd "<backtab>") 'completion-at-point)
 
-;; helm find files
-(define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
-(define-key helm-buffer-map (kbd "C-d")     'helm-buffer-run-kill-persistent)
-(define-key helm-find-files-map (kbd "C-/") 'helm-ff-run-find-sh-command)
-(define-key helm-find-files-map (kbd "C-i") nil)
-
-;; Read-file-name
-(define-key helm-read-file-map (kbd "RET") 'helm-ff-RET)
-
 ;; Cycle resume
 (helm-define-key-with-subkeys global-map (kbd "C-c n") ?n 'helm-cycle-resume)
 
@@ -451,7 +451,6 @@ First call indent, second complete symbol, third complete fname."
       helm-input-idle-delay                           0.01
       helm-default-external-file-browser              "thunar"
       helm-pdfgrep-default-read-command               "evince --page-label=%p '%f'"
-      helm-ff-auto-update-initial-value               t
       helm-grep-default-command                       "ack-grep -Hn --color --smart-case --no-group %e %p %f"
       helm-grep-default-recurse-command               "ack-grep -H --color --smart-case --no-group %e %p %f"
       helm-grep-ag-command                            "rg --color=always --smart-case --no-heading --line-number %s %s %s"
@@ -490,7 +489,6 @@ First call indent, second complete symbol, third complete fname."
       "git --no-pager grep -n%cH --color=always --exclude-standard --no-index --full-name -e %p -- %f"
       helm-dwim-target 'next-window
       helm-candidate-number-limit 500
-      helm-ff-allow-non-existing-file-at-point t
       helm-find-noerrors t
       helm-window-show-buffers-function #'helm-window-mosaic-fn
       helm-completing-read-handlers-alist
@@ -517,7 +515,6 @@ First call indent, second complete symbol, third complete fname."
       helm-el-package-autoremove-on-start t
       helm-el-package-upgrade-on-start t)
 
-(customize-set-variable 'helm-ff-lynx-style-map t)
 (customize-set-variable 'helm-imenu-lynx-style-map t)
 
 ;; find-file-hook
