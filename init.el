@@ -2001,7 +2001,21 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
     ;; Maybe turn on auto-fill-mode when a comment or docstring field
     ;; is detected. Ensure the hook is appended otherwise things like
     ;; eldoc-eval will not work.
-    (add-hook 'post-command-hook #'tv/turn-on-auto-fill-mode-maybe t))
+    (add-hook 'post-command-hook #'tv/turn-on-auto-fill-mode-maybe t)
+
+    (defun tv/pp-eval-or-expand-last-sexp (&optional arg)
+      "Eval sexp at point, with ARG macroexpand it."
+      (interactive "P")
+      ;; Be sure to have helm loaded for helm-aif.
+      (require 'helm)
+      (helm-aif (or (get-buffer-window "*Pp Eval Output*" 'visible)
+                    (get-buffer-window "*Pp Macroexpand Output*" 'visible))
+          (progn
+            (kill-buffer (window-buffer it))
+            (delete-window it))
+        (if arg
+            (pp-macroexpand-last-sexp nil)
+          (pp-eval-last-sexp nil)))))
 
   :bind (("<f11> s c" . goto-scratch)
          ("<S-f12>" . cancel-debug-on-entry)
@@ -2012,12 +2026,12 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
          ("<next>" . forward-page)
          ("<prior>" . backward-page)
          ("C-M-j" . backward-kill-sexp)
-         ("C-x C-m e" . pp-macroexpand-last-sexp)
+         ("M-e" . tv/pp-eval-or-expand-last-sexp)
          :map
          lisp-interaction-mode-map
          ("RET" . newline-and-indent)
          ("C-M-j" . backward-kill-sexp)
-         ("C-x C-m e" . pp-macroexpand-last-sexp)
+         ("M-e" . tv/pp-eval-or-expand-last-sexp)
          :map
          lisp-mode-map
          ("RET" . newline-and-indent)))
