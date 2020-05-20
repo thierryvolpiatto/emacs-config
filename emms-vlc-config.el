@@ -8,7 +8,7 @@
 (setq emms-cache-file "~/.emacs.d/emms/emms-cache")
 (setq emms-source-file-default-directory "/home/thierry/Musique")
 
-(emms-devel)
+(emms-all)
 (emms-default-players)
 
 (setq emms-player-list '(emms-player-vlc-playlist
