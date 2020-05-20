@@ -19,6 +19,9 @@
 (setq user-mail-address "thierry.volpiatto@gmail.com")
 (setq user-full-name "Thierry Volpiatto")
 
+;; Use Mu4e to compose new mail.
+(define-key global-map [remap compose-mail] 'mu4e-compose-new)
+
 ;; [smtpmail-async] Experimental, use `smtpmail-send-it' otherwise.
 ;; To debug use `smtpmail-send-it'
 (setq message-send-mail-function 'smtpmail-send-it
