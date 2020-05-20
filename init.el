@@ -2,6 +2,8 @@
 
 ;;; Code:
 
+(defvar tv/startup-time (current-time))
+
 (require 'cl-lib)
 
 (setq inhibit-startup-echo-area-message "thierry")
@@ -2273,5 +2275,9 @@ With a prefix arg ask with completion which buffer to kill."
 
 ;; Link now scratch buffer to file
 (tv/restore-scratch-buffer)
+
+(let ((time (float-time (time-subtract (current-time) tv/startup-time))))
+  (message "Emacs config loaded in %s seconds"
+           (format "%.2f" time)))
 
 ;;; init.el ends here
