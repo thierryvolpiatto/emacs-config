@@ -102,17 +102,18 @@
     (call-interactively #'helm-top)))
 
 
-;;; Enable Modes (helm-mode is loading nearly everything).
+;;; Use-package declarations.
 ;;
+;; Helm-mode is loading nearly everything.
 (use-package helm-mode
   :init
   (add-hook 'helm-mode-hook
             (lambda ()
               (setq completion-styles
                     (cond ((assq 'helm-flex completion-styles-alist)
-                           '(helm-flex))
+                           '(helm-flex)) ;; emacs-26.
                           ((assq 'flex completion-styles-alist)
-                           '(flex))))))
+                           '(flex)))))) ;; emacs-27+.
   :config
   (helm-mode 1)
   (setq helm-completing-read-handlers-alist
@@ -143,8 +144,8 @@
   (helm-adaptive-mode 1))
 
 (use-package helm-utils
-  ;; Popup buffer-name or filename in grep/moccur/imenu-all etc...
   :config
+  ;; Popup buffer-name or filename in grep/moccur/imenu-all etc...
   ;(helm-popup-tip-mode 1)
   (setq helm-highlight-matches-around-point-max-lines   30
         helm-window-show-buffers-function #'helm-window-mosaic-fn)
@@ -158,6 +159,8 @@
   :bind ("C-h r" . helm-info-emacs))
 
 (use-package helm-ipython
+  ;; Still useful for some small python editing but really there is
+  ;; much better stuff for python in Melpa.
   :disabled t
   :config
   (define-key python-mode-map (kbd "<M-tab>") 'helm-ipython-complete)
@@ -181,6 +184,8 @@
 (use-package helm-recoll
   :disabled t
   :commands helm-recoll
+  ;; Use the HFF actions to setup directories, then run
+  ;; "recoll index -c DIR" on each directory. 
   :init (customize-set-variable 'helm-recoll-directories
                                 '(("confdir" . "~/.recoll-config")
                                   ("lisp sources" . "~/.recoll-sources")
@@ -188,6 +193,8 @@
 
 (use-package helm-ls-git
   :config
+  ;; Use `magit-status-setup-buffer' instead of
+  ;; `magit-status-internal' with recent magit.
   (setq helm-ls-git-status-command 'magit-status-internal)
   (cl-defmethod helm-setup-user-source ((source helm-ls-git-source))
     (helm-source-add-action-to-source-if
@@ -210,7 +217,8 @@
         helm-buffer-max-length            22
         helm-buffers-end-truncated-string "…"
         helm-buffers-maybe-switch-to-tab  t
-        helm-mini-default-sources '(helm-source-buffers-list helm-source-buffer-not-found))
+        helm-mini-default-sources '(helm-source-buffers-list
+                                    helm-source-buffer-not-found))
 
   (cl-defmethod helm-setup-user-source ((source helm-source-buffers))
   "Adds additional actions to `helm-source-buffers-list'.
@@ -218,10 +226,11 @@
   (setf (slot-value source 'candidate-number-limit) 300)
   (helm-aif (slot-value source 'action)
       (setf (slot-value source 'action)
-        (helm-append-at-nth  (if (symbolp it)
-                                 (symbol-value it)
-                               it)
-                             '(("Diff buffers" . helm-buffers-diff-buffers)) 4)))
+        (helm-append-at-nth
+         (if (symbolp it)
+             (symbol-value it)
+           it)
+         '(("Diff buffers" . helm-buffers-diff-buffers)) 4)))
   (helm-source-add-action-to-source-if
    "Magit status"
    (lambda (candidate)
@@ -398,7 +407,7 @@ new directory."
 
 (use-package helm-descbinds
   :config
-  ;; C-h b, C-x C-h
+  ;; C-h b, C-x C-h etc...
   (helm-descbinds-mode 1))
 
 (use-package helm-lib
@@ -569,7 +578,7 @@ First call indent, second complete symbol, third complete fname."
 
 ;; (define-key global-map (kbd "<backtab>") 'completion-at-point)
 
-;; Minibuffer history
+;; Minibuffer history (Rebind to M-s).
 (customize-set-variable 'helm-minibuffer-history-key [remap next-matching-history-element])
 
 ;; Avoid hitting forbidden directories when using find.
