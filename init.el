@@ -3,6 +3,10 @@
 ;;; Code:
 
 (defvar tv/startup-time (current-time))
+(defun tv/emacs-load-time ()
+  (let ((time (float-time (time-subtract (current-time) tv/startup-time))))
+    (message "Emacs config loaded in %s seconds"
+             (format "%.2f" time))))
 
 (require 'cl-lib)
 
@@ -2276,8 +2280,7 @@ With a prefix arg ask with completion which buffer to kill."
 ;; Link now scratch buffer to file
 (tv/restore-scratch-buffer)
 
-(let ((time (float-time (time-subtract (current-time) tv/startup-time))))
-  (message "Emacs config loaded in %s seconds"
-           (format "%.2f" time)))
+;; Emacs config load time
+(tv/emacs-load-time)
 
 ;;; init.el ends here
