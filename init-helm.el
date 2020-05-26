@@ -220,6 +220,8 @@
         helm-mini-default-sources '(helm-source-buffers-list
                                     helm-source-buffer-not-found))
 
+  (define-key helm-buffer-map (kbd "C-d") 'helm-buffer-run-kill-persistent)
+  
   (cl-defmethod helm-setup-user-source ((source helm-source-buffers))
   "Adds additional actions to `helm-source-buffers-list'.
 - Magit status."
