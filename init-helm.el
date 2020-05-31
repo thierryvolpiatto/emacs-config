@@ -54,13 +54,6 @@
     (when (eq major-mode 'emacs-lisp-mode)
       (message "[%s]" (which-function)))))
 
-;; Show the visibles buffers on top of list (issue #1301)
-
-(defun helm/modify-ido-temp-list ()
-  (let ((bl (mapcar #'buffer-name (buffer-list (selected-frame)))))
-    (setq ido-temp-list (nconc (cdr bl) (list (car bl))))))
-;;(add-hook 'ido-make-buffer-list-hook 'helm/modify-ido-temp-list)
-
 (defun helm-find-files-in-frame ()
   (interactive)
   (with-helm-in-frame
@@ -461,7 +454,9 @@ new directory."
         helm-grep-default-recurse-command
         "ack-grep -H --color --smart-case --no-group %e %p %f"
         helm-grep-ag-command
-        "rg --color=always --smart-case --no-heading --line-number %s %s %s"
+        "rg --color=always --colors 'match:bg:yellow' --colors 'match:fg:black' --smart-case --no-heading --line-number %s %s %s"
+        helm-grep-ag-pipe-cmd-switches
+        '("--colors 'match:bg:yellow' --colors 'match:fg:black'")
         helm-grep-git-grep-command
         "git --no-pager grep -n%cH --color=always --exclude-standard --no-index --full-name -e %p -- %f")
   (add-hook 'helm-grep-mode-hook 'hl-line-mode)
