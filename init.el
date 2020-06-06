@@ -2139,6 +2139,17 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
     (add-hook 'focus-in-hook 'force-mode-line-update))
   :ensure t)
 
+;;; Minibuffer-line
+;;
+(use-package minibuffer-line
+  :disabled t
+  :config
+  (setq minibuffer-line-format '(:eval mode-line-misc-info))
+  (setq minibuffer-line-refresh-interval 1)
+  (setq mode-line-format (delete 'mode-line-misc-info mode-line-format))
+  (custom-set-faces '(minibuffer-line ((t (:inherit default)))))
+  (minibuffer-line-mode t))
+
 ;;; Rectangle edit
 ;;
 (use-package rectangle-edit :commands 'rectangle-edit)
