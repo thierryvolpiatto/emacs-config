@@ -242,7 +242,8 @@
   (setq helm-ff-auto-update-initial-value        t
         helm-ff-allow-non-existing-file-at-point t
         helm-trash-remote-files                  t
-        helm-dwim-target                         'next-window)
+        helm-dwim-target                         'next-window
+        helm-ff-use-dir-locals                   t)
   (customize-set-variable 'helm-ff-lynx-style-map t)
 
   (define-key helm-read-file-map (kbd "RET") 'helm-ff-RET)
