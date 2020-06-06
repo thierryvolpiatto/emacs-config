@@ -2122,12 +2122,14 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
                                          (powerline-git face2 'r)
                                          (when (bound-and-true-p nyan-mode)
                                            (powerline-raw (list (nyan-create)) face2 'l))))
-                              (rhs (list (powerline-raw global-mode-string face2 'r)
-                                         ;; (funcall separator-right face2 face1)
-                                         (unless window-system
-                                           (powerline-raw (char-to-string #xe0a1) face1 'l))
-                                         (when powerline-display-hud
-                                           (powerline-hud face2 face1)))))
+                              (rhs (unless (and (boundp 'minibuffer-line-mode)
+                                                minibuffer-line-mode)
+                                     (list (powerline-raw global-mode-string face2 'r)
+                                           ;; (funcall separator-right face2 face1)
+                                           (unless window-system
+                                             (powerline-raw (char-to-string #xe0a1) face1 'l))
+                                           (when powerline-display-hud
+                                             (powerline-hud face2 face1))))))
                          (concat (powerline-render lhs)
                                  (powerline-fill face2 (powerline-width rhs))
                                  (powerline-render rhs)))))))
@@ -2146,9 +2148,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   :config
   (setq minibuffer-line-format '(:eval mode-line-misc-info))
   (setq minibuffer-line-refresh-interval 1)
-  (setq-default mode-line-format
-                (delete 'mode-line-misc-info mode-line-format))
-  (custom-set-faces '(minibuffer-line ((t (:inherit default)))))
+  (custom-set-faces '(minibuffer-line ((t (:inherit font-lock-warning-face)))))
   (minibuffer-line-mode t))
 
 ;;; Rectangle edit
