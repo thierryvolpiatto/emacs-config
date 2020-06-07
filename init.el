@@ -2144,11 +2144,12 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Minibuffer-line
 ;;
 (use-package minibuffer-line
-  :disabled t
   :config
   (setq minibuffer-line-format '(:eval mode-line-misc-info))
   (setq minibuffer-line-refresh-interval 1)
-  (custom-set-faces '(minibuffer-line ((t (:inherit font-lock-warning-face)))))
+  ;; Only in my own version, allows to use the properties of displayed
+  ;; string.
+  (setq minibuffer-line-default-face nil)
   (minibuffer-line-mode t))
 
 ;;; Rectangle edit
