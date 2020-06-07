@@ -7,6 +7,7 @@
   (let ((time (float-time (time-subtract (current-time) tv/startup-time))))
     (message "Emacs config loaded in %s seconds"
              (format "%.2f" time))))
+(add-hook 'emacs-startup-hook #'tv/emacs-load-time t)
 
 (require 'cl-lib)
 
@@ -2292,8 +2293,5 @@ With a prefix arg ask with completion which buffer to kill."
 
 ;; Link now scratch buffer to file
 (tv/restore-scratch-buffer)
-
-;; Emacs config load time
-(tv/emacs-load-time)
 
 ;;; init.el ends here
