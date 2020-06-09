@@ -1948,11 +1948,6 @@ If your system's ping continues until interrupted, you can try setting
          :map shell-mode-map
          ("M-p" . helm-comint-input-ring)))
 
-;;; Ielm
-;;
-(use-package ielm
-  :bind ("<f11> i" . ielm))
-
 ;;; Elisp/lisp
 ;;
 (use-package lisp-mode
