@@ -2140,6 +2140,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Minibuffer-line
 ;;
 (use-package minibuffer-line
+  :disabled t
   :config
   (setq minibuffer-line-format '(:eval mode-line-misc-info))
   (setq minibuffer-line-refresh-interval 1)
