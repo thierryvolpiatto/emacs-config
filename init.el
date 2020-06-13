@@ -1174,10 +1174,29 @@ If your system's ping continues until interrupted, you can try setting
       (save-restriction
         (narrow-to-defun)
         (iedit-mode arg))))
+
+  (defun iedit-increment-occurences ()
+  "Replace placeholder \"\\#\" by number incremented in each occurrence."
+  (interactive "*")
+  (iedit-barf-if-buffering)
+  (let ((inhibit-modification-hooks t))
+    (save-excursion
+      (cl-loop for occurrence in (reverse iedit-occurrences-overlays)
+               for counter from 1
+               for beg = (overlay-start occurrence)
+               for end = (overlay-end occurrence)
+               for str = (buffer-substring beg end)
+               do (progn
+                    (goto-char beg)
+                    (when (re-search-forward "\\\\#" end t)
+                      (replace-match (format "%03d" counter) t)))))))
+  
   :bind (("C-²" . iedit-narrow-to-defun)
          ("C-;" . iedit-mode)
          :map isearch-mode-map
-         ("C-;" . iedit-mode-from-isearch)))
+         ("C-;" . iedit-mode-from-isearch)
+         :map iedit-mode-occurrence-keymap
+         ("M-V" . iedit-increment-occurences)))
 
 (use-package iedit-rect
   :bind (([C-return] . iedit-rectangle-mode)
