@@ -1185,7 +1185,6 @@ If your system's ping continues until interrupted, you can try setting
                for counter from 1
                for beg = (overlay-start occurrence)
                for end = (overlay-end occurrence)
-               for str = (buffer-substring beg end)
                do (progn
                     (goto-char beg)
                     (when (re-search-forward "\\\\#" end t)
