@@ -1176,7 +1176,7 @@ If your system's ping continues until interrupted, you can try setting
         (iedit-mode arg))))
 
   (defun iedit-increment-occurences ()
-  "Replace placeholder \"\\#\" by number incremented in each occurrence."
+  "Replace placeholder \"\\#\" by incremented number in each occurrence."
   (interactive "*")
   (iedit-barf-if-buffering)
   (let ((inhibit-modification-hooks t))
