@@ -1193,7 +1193,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Iedit
 ;;
 (use-package iedit
-  :straight t
+  :straight (iedit :host github :repo "victorhge/iedit")
   :config
   (defun iedit-narrow-to-defun (arg)
     (interactive "P")
