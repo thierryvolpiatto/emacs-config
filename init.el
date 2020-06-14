@@ -13,6 +13,24 @@
 
 (setq inhibit-startup-echo-area-message "thierry")
 
+;;; Straight.el
+;;
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+(straight-use-package
+  '(iedit :host github :repo "victorhge/iedit"))
+
 ;;; Melpa/Elpa
 ;;
 ;; Emacs-26
@@ -250,6 +268,16 @@ So far, F can only be a symbol, not a lambda expression."))
 
 ;;; Use package declarations
 
+;;; Diminish
+;;
+(straight-use-package
+  '(diminish :host github :repo "myrjola/diminish.el"))
+
+;;; Popup
+;;
+(straight-use-package
+ '(popup :host github :repo "auto-complete/popup-el"))
+
 ;;; Info
 ;;
 (use-package info
@@ -296,7 +324,7 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;; Emms
 ;;
 (use-package emms
-  :ensure t
+  :straight (emms :type git :repo "https://git.savannah.gnu.org/git/emms.git")
   :commands helm-emms
   :config (use-package emms-vlc-config))
 
@@ -1165,7 +1193,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Iedit
 ;;
 (use-package iedit
-  :ensure t
+  :straight t
   :config
   (defun iedit-narrow-to-defun (arg)
     (interactive "P")
@@ -1271,7 +1299,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Emamux
 ;;
 (use-package emamux
-  :ensure t
+  :straight (emamux :host github :repo "emacsorphanage/emamux")
   :init (setq emamux:completing-read-type 'helm)
   :config (setq emamux:get-buffers-regexp
                 "^\\(buffer[0-9]+\\): +\\([0-9]+\\) +\\(bytes\\): +[\"]\\(.*\\)[\"]"
@@ -1711,10 +1739,15 @@ If your system's ping continues until interrupted, you can try setting
 ;;; markdown-mode
 ;;
 (use-package markdown-mode
-  :ensure t
+  :straight (markdown-mode :host github :repo "jrblevin/markdown-mode")
   :mode (("\\.markdown$" . markdown-mode)
          ("\\.md$" . markdown-mode)
          ("\\.mdpp$" . markdown-mode)))
+
+;;; markdown-toc
+;;
+(straight-use-package
+  '(markdown-toc :host github :repo "ardumont/markdown-toc"))
 
 (use-package ffap
   :config
@@ -2064,12 +2097,13 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;
 (use-package toc-org
   :commands (toc-org-insert-toc)  
-  :ensure t
+  :straight (toc-org :host github :repo "snosov1/toc-org")
   :config (add-hook 'org-mode-hook 'toc-org-enable))
 
 ;;; Powerline
 ;;
 (use-package powerline
+  :straight (powerline :host github :repo "milkypostman/powerline")
   :config
   (progn
     (use-package helm-ls-git)
@@ -2083,7 +2117,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
           (format " %s %s"
                   (char-to-string #x21af) ; Needs a one line height char.
                   (format-mode-line '(:eval (helm-ls-git--branch)))))))
-
+    
     (setq powerline-gui-use-vcs-glyph t)
     
     (defun tv/powerline-default-theme ()
@@ -2149,8 +2183,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
     (global-set-key [mode-line mouse-2] 'ignore)
     (global-set-key [mode-line mouse-3] 'ignore)
     (setq mode-line-default-help-echo nil)
-    (add-hook 'focus-in-hook 'force-mode-line-update))
-  :ensure t)
+    (add-hook 'focus-in-hook 'force-mode-line-update)))
 
 ;;; Minibuffer-line
 ;;
@@ -2171,16 +2204,16 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Bash-completion
 ;;
 (use-package bash-completion
+  :straight (bash-completion :host github :repo "szermatt/emacs-bash-completion")
   :commands 'bash-completion-dynamic-complete
   :init
-  (add-hook 'shell-dynamic-complete-functions 'bash-completion-dynamic-complete)
-  :ensure t)
+  (add-hook 'shell-dynamic-complete-functions 'bash-completion-dynamic-complete))
 
 ;;; Pcmpl-git (For Eshell)
 ;;
 ;; Seems that bash-completion and pcmpl can cohabit.
 ;; No subcommands completion with pcmpl in eshell though.
-(use-package pcmpl-git :ensure t)
+(use-package pcmpl-git :straight (pcmpl-git :host github :repo "leoliu/pcmpl-git-el"))
 
 ;;; Log-view
 ;;
@@ -2249,7 +2282,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Gnus
 ;;
 (use-package gnus
-  :disabled t  
+  :disabled t
   :config
   (setq gnus-init-file "~/.emacs.d/.gnus")
   :bind ("<f7> m" . gnus))
@@ -2257,7 +2290,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Undo-fu
 ;;
 (use-package undo-fu
-  :ensure t
+  :straight (undo-fu :host gitlab :repo "ideasman42/emacs-undo-fu")
   :bind (("C-_"  . undo-fu-only-undo)
          ("M-_"  . undo-fu-only-redo)))
 
