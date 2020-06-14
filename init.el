@@ -34,20 +34,20 @@
 ;;; Melpa/Elpa
 ;;
 ;; Emacs-26
-(unless (boundp 'package-quickstart)
-  (load-file (expand-file-name "early-init.el" user-emacs-directory))
-  ;; Initialize packages after setting package-archives
-  ;; to feed package-archive-contents with all archives.
-  (package-initialize))
+;; (unless (boundp 'package-quickstart)
+;;   (load-file (expand-file-name "early-init.el" user-emacs-directory))
+;;   ;; Initialize packages after setting package-archives
+;;   ;; to feed package-archive-contents with all archives.
+;;   (package-initialize))
 
 ;; Emacs-27
-(when (boundp 'package-quickstart)
-  (setq package-quickstart t))
+;; (when (boundp 'package-quickstart)
+;;   (setq package-quickstart t))
 
-(defun tv/fix-selected-packages ()
-  (interactive)
-  (package-initialize)
-  (package--save-selected-packages (package--find-non-dependencies)))
+;; (defun tv/fix-selected-packages ()
+;;   (interactive)
+;;   (package-initialize)
+;;   (package--save-selected-packages (package--find-non-dependencies)))
 
 
 ;;; load-path
