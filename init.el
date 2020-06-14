@@ -28,9 +28,6 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-(straight-use-package
-  '(iedit :host github :repo "victorhge/iedit"))
-
 ;;; Melpa/Elpa
 ;;
 ;; Emacs-26
