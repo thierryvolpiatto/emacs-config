@@ -2232,7 +2232,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Slime
 ;;
 ;; (use-package slime
-;;     :ensure t
 ;;     :init
 ;;   (progn
 ;;     (setq inferior-lisp-program "/usr/bin/sbcl"
@@ -2262,7 +2261,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Sly
 ;; (use-package sly
 ;; :disabled t
-;; :ensure t
 ;; :config
 ;; (setq sly-completing-read-function 'completing-read)
 ;; (setq inferior-lisp-program "/usr/bin/sbcl")
