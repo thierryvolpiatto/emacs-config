@@ -1172,7 +1172,10 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Iedit
 ;;
 (use-package iedit
-  :straight (iedit :host github :repo "victorhge/iedit")
+  :straight (iedit :host github :repo "victorhge/iedit"
+                   :fork (:host github
+                          :repo "thierryvolpiatto/iedit"
+                          :branch "increment_occurences"))
   :config
   (defun iedit-narrow-to-defun (arg)
     (interactive "P")
@@ -1181,21 +1184,6 @@ If your system's ping continues until interrupted, you can try setting
       (save-restriction
         (narrow-to-defun)
         (iedit-mode arg))))
-
-  (defun iedit-increment-occurences ()
-  "Replace placeholder \"\\#\" by incremented number in each occurrence."
-  (interactive "*")
-  (iedit-barf-if-buffering)
-  (let ((inhibit-modification-hooks t))
-    (save-excursion
-      (cl-loop for occurrence in (reverse iedit-occurrences-overlays)
-               for counter from 1
-               for beg = (overlay-start occurrence)
-               for end = (overlay-end occurrence)
-               do (progn
-                    (goto-char beg)
-                    (when (re-search-forward "\\\\#" end t)
-                      (replace-match (format "%03d" counter) t)))))))
   
   :bind (("C-²" . iedit-narrow-to-defun)
          ("C-;" . iedit-mode)
