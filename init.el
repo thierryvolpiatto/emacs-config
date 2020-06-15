@@ -2288,6 +2288,11 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   :straight (undo-fu :host gitlab :repo "ideasman42/emacs-undo-fu")
   :bind (("C-_"  . undo-fu-only-undo)
          ("M-_"  . undo-fu-only-redo)))
+
+;;; Rainbow-mode
+;;
+(straight-use-package 'rainbow-mode)
+
 
 ;; Kill buffer and windows
 (defun tv/kill-buffer-and-windows (arg)
