@@ -28,21 +28,21 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+;;; Use-package
+;;
+(straight-use-package 'use-package)
+
 
 ;;; load-path
 ;;
 (dolist (i '("~/elisp/"
-             "~/elisp/magit/lisp"
-             "~/elisp/with-editor"
              "~/elisp/Emacs-wgrep"
 	     "~/elisp/autoconf-mode"
 	     "~/elisp/desktop-file-utils"
 	     "~/elisp/emacs-wget"
 	     "~/elisp/tex-utils"
-	     "~/elisp/ledger-mode"
              "~/elisp/helm-extensions"
              "~/elisp/google-maps.el"
-             "~/elisp/emacs-w3m"
              "~/.emacs.d/themes/"
 	     "~/.emacs.d/emacs-config/"
 	     ))
@@ -62,11 +62,6 @@
       (format "\\(%s\\)\\|\\(%s\\)"
                    vc-ignore-dir-regexp
               tramp-file-name-regexp))
-
-;;; Use-package.
-;;
-(eval-when-compile (require 'use-package))
-(setq use-package-verbose t)
 
 
 ;;; Global settings
@@ -306,6 +301,23 @@ So far, F can only be a symbol, not a lambda expression."))
   :straight (emms :type git :repo "https://git.savannah.gnu.org/git/emms.git")
   :commands helm-emms
   :config (use-package emms-vlc-config))
+
+;;; Async
+;;
+;; Need to be called before helm config.
+(use-package async
+  :straight (async :host github :repo "jwiegley/emacs-async")
+  :config
+  (progn
+    ;; Dired async.
+    (use-package dired-async :config (dired-async-mode 1))
+    ;; Smtp async.
+    (use-package smtpmail-async
+      :commands 'async-smtpmail-send-it)
+    ;; Byte compilation async.
+    (use-package async-bytecomp
+      :config
+      (setq async-bytecomp-allowed-packages 'all))))
 
 ;;; Helm
 ;;
@@ -1059,21 +1071,6 @@ If your system's ping continues until interrupted, you can try setting
        dig-program
        (list host)))))
 
-;;; Async
-;;
-(use-package async
-  :config
-  (progn
-    ;; Dired async.
-    (use-package dired-async :config (dired-async-mode 1))
-    ;; Smtp async.
-    (use-package smtpmail-async
-      :commands 'async-smtpmail-send-it)
-    ;; Byte compilation async.
-    (use-package async-bytecomp
-      :config
-      (setq async-bytecomp-allowed-packages 'all))))
-
 ;;; Org
 ;;
 (use-package org
@@ -1140,6 +1137,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Ledger
 ;;
 (use-package ledger-mode
+  :straight t
   :init (setenv "LEDGER_PAGER" "cat")
   :commands (ledger-mode csv2ledger)
   :config (use-package ledger-config
@@ -1226,6 +1224,9 @@ If your system's ping continues until interrupted, you can try setting
 ;; git-rebase so no need to install them as dependency.
 ;;
 (use-package magit
+  :straight (magit :host github
+                   :fork "thierryvolpiatto/magit"
+                   :branch "better_shell_command")
   :commands (magit-status magit-status-internal magit-blame)
   :init
   (bind-key "<f2>" 'magit-status)
@@ -1594,6 +1595,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; git-gutter-mode
 ;;
 (use-package git-gutter
+  :straight t
   :init
   (progn
     (customize-set-variable 'git-gutter:update-interval 2) ; Activate live update timer.
@@ -1634,6 +1636,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; W3m
 ;;
 (use-package w3m
+  :straight t
   :commands (w3m-toggle-inline-image w3m-region w3m-browse-url)
   :init (require 'config-w3m)
   :bind
