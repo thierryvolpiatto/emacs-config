@@ -1188,16 +1188,12 @@ If your system's ping continues until interrupted, you can try setting
   :bind (("C-²" . iedit-narrow-to-defun)
          ("C-;" . iedit-mode)
          :map isearch-mode-map
-         ("C-;" . iedit-mode-from-isearch)
-         :map iedit-mode-occurrence-keymap
-         ("M-V" . iedit-increment-occurences)))
+         ("C-;" . iedit-mode-from-isearch)))
 
 (use-package iedit-rect
   :bind (([C-return] . iedit-rectangle-mode)
          :map ctl-x-r-map
-         ("RET" . iedit-rectangle-mode)
-         :map iedit-rect-keymap
-         ("M-V" . iedit-increment-occurences)))
+         ("RET" . iedit-rectangle-mode)))
 
 ;;; Lacarte
 ;;
