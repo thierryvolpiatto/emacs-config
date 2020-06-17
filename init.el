@@ -308,7 +308,6 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;
 ;; Need to be called before helm config.
 (use-package async
-  :straight (async :host github :repo "jwiegley/emacs-async")
   :config
   (progn
     ;; Dired async.
@@ -1226,9 +1225,6 @@ If your system's ping continues until interrupted, you can try setting
 ;; git-rebase so no need to install them as dependency.
 ;;
 (use-package magit
-  ;; :straight (magit :host github
-  ;;                  :fork "thierryvolpiatto/magit"
-  ;;                  :branch "better_shell_command")
   :commands (magit-status magit-status-internal magit-blame)
   :init
   (bind-key "<f2>" 'magit-status)
