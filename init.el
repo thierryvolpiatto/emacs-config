@@ -37,6 +37,8 @@
 ;;
 (dolist (i '("~/elisp/"
              "~/elisp/Emacs-wgrep"
+             "~/elisp/magit/lisp"
+             "~/elisp/with-editor"
 	     "~/elisp/autoconf-mode"
 	     "~/elisp/desktop-file-utils"
 	     "~/elisp/emacs-wget"
@@ -1224,9 +1226,9 @@ If your system's ping continues until interrupted, you can try setting
 ;; git-rebase so no need to install them as dependency.
 ;;
 (use-package magit
-  :straight (magit :host github
-                   :fork "thierryvolpiatto/magit"
-                   :branch "better_shell_command")
+  ;; :straight (magit :host github
+  ;;                  :fork "thierryvolpiatto/magit"
+  ;;                  :branch "better_shell_command")
   :commands (magit-status magit-status-internal magit-blame)
   :init
   (bind-key "<f2>" 'magit-status)
