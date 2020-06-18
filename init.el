@@ -2260,6 +2260,10 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;
 (straight-use-package 'rainbow-mode)
 
+;;; boxquote
+;;
+(use-package boxquote)
+
 
 ;; Kill buffer and windows
 (defun tv/kill-buffer-and-windows (arg)

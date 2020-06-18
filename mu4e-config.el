@@ -2,9 +2,10 @@
 
 ;;; Code:
 
-(require 'mu4e-contrib)
-(require 'config-w3m)
-(require 'mu4e-patch)
+(use-package mu4e-contrib)
+(use-package config-w3m)
+(use-package mu4e-patch)
+
 
 ;;; Message and smtp settings
 ;;
@@ -21,6 +22,11 @@
 
 ;; Use Mu4e to compose new mail.
 (define-key global-map [remap compose-mail] 'mu4e-compose-new)
+
+(use-package mu4e-compose
+  :config
+  (define-key mu4e-compose-mode-map (kbd "C-c q") 'boxquote-region)
+  (define-key mu4e-compose-mode-map (kbd "C-c t") 'boxquote-title))
 
 ;; [smtpmail-async] Experimental, use `smtpmail-send-it' otherwise.
 ;; To debug use `smtpmail-send-it'
