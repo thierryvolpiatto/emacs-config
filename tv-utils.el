@@ -21,7 +21,8 @@
 (declare-function eshell-interactive-process    "esh-cmd.el")
 (declare-function which-function                "which-func.el")
 (declare-function helm--ansi-color-apply        "ext:helm-lib.el")
-
+(declare-function tramp-get-completion-function "tramp")
+(defvar tramp-methods)
 
 ;;; Sshfs
 ;;
@@ -29,6 +30,7 @@
 ;;;###autoload
 (defun tv/mount-sshfs (&optional arg)
   (interactive "P")
+  (require 'tramp)
   (let* ((user (if arg
                   (read-string "User name: ")
                 (getenv "USER")))
@@ -70,19 +72,6 @@
               (message "%s Successfully unmounted" mp)
             (message "Failed to unmount %s" mp))
         (message "No existing remote filesystem to unmount!")))))
-
-;;;###autoload
-(defun sshfs-connect ()
-  "sshfs mount of thievol."
-  (interactive)
-  (mount-sshfs "thievol:" "~/sshfs")
-  (helm-find-files-1 "~/sshfs"))
-
-;;;###autoload
-(defun sshfs-disconnect ()
-  "sshfs umount of thievol."
-  (interactive)
-  (umount-sshfs "~/sshfs"))
 
 ;; get-ip 
 ;; get my external ip
