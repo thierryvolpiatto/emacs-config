@@ -27,44 +27,49 @@
 ;;
 ;;
 ;;;###autoload
-(defun mount-sshfs (fs mp)
-  (interactive (list (completing-read "FileSystem: "
-                                      '("thievol:/home/thierry"
-                                        "thievolrem:/home/thierry"
-                                        "zte:/"))
-                     (expand-file-name
-                      (read-directory-name "MountPoint: "
-                                           "/home/thierry/"
-                                           "/home/thierry/sshfs/"
-                                           t
-                                           "sshfs"))))
-  (if (> (length (directory-files
-                  mp nil directory-files-no-dot-files-regexp)) 0)
-      (message "Directory %s is busy, mountsshfs aborted" mp)
+(defun tv/mount-sshfs (&optional arg)
+  (interactive "P")
+  (let* ((user (if arg
+                  (read-string "User name: ")
+                (getenv "USER")))
+         (host (completing-read
+                "Host: "
+                (cl-loop with all-methods = (mapcar 'car tramp-methods)
+                         for (f . h) in (tramp-get-completion-function "ssh")
+                         append (cl-loop for e in (funcall f (car h))
+                                         for host = (and (consp e) (cadr e))
+                                         ;; On emacs-27 host may be
+                                         ;; ("root" t) in sudo method.
+                                         when (and (stringp host)
+                                                   (not (member host all-methods)))
+                                         collect host))))
+         (fs (concat host ":/home/" user))
+         (mp (concat "~/sshfs/" user)))
+    (unless (file-directory-p mp)
+      (make-directory mp t))
+    (if (> (length (directory-files
+                    mp nil directory-files-no-dot-files-regexp))
+           0)
+        (message "Directory %s is busy, mountsshfs aborted" mp)
       (if (= (call-process-shell-command
               (format "sshfs %s %s" fs mp) nil t nil)
              0)
           (message "%s Mounted successfully on %s" fs mp)
-          (message "Failed to mount remote filesystem %s on %s" fs mp))))
+        (message "Failed to mount remote filesystem %s on %s" fs mp)))))
 
 ;;;###autoload
-(defun umount-sshfs (mp)
-  (interactive (list (expand-file-name
-                      (read-directory-name "MountPoint: "
-                                           "/home/thierry/"
-                                           "/home/thierry/sshfs/"
-                                           t
-                                           "sshfs"))))
-  (if (equal (pwd) (format "Directory %s" mp))
-      (message "Filesystem is busy can't umount!")
-      (progn
-        (if (>= (length (cddr (directory-files mp))) 0)
-            (if (= (call-process-shell-command
-                    (format "fusermount -u %s" mp) nil t nil)
-                   0)
-                (message "%s Successfully unmounted" mp)
-                (message "Failed to unmount %s" mp))
-            (message "No existing remote filesystem to unmount!")))))
+(defun tv/umount-sshfs ()
+  (interactive)
+  (let ((mp (read-directory-name "Mount point: " "~/sshfs")))
+    (if (file-equal-p default-directory mp)
+        (message "Filesystem is busy can't umount!")
+      (if (>= (length (cddr (directory-files mp))) 0)
+          (if (= (call-process-shell-command
+                  (format "fusermount -u %s" mp) nil t nil)
+                 0)
+              (message "%s Successfully unmounted" mp)
+            (message "Failed to unmount %s" mp))
+        (message "No existing remote filesystem to unmount!")))))
 
 ;;;###autoload
 (defun sshfs-connect ()
