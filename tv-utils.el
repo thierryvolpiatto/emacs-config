@@ -54,7 +54,7 @@
            0)
         (message "Directory %s is busy, mountsshfs aborted" mp)
       (if (= (call-process-shell-command
-              (format "sshfs %s %s" fs mp) nil t nil)
+              (format "sshfs %s %s" fs mp))
              0)
           (message "%s Mounted successfully on %s" fs mp)
         (message "Failed to mount remote filesystem %s on %s" fs mp)))))
@@ -67,7 +67,7 @@
         (message "Filesystem is busy can't umount!")
       (if (>= (length (cddr (directory-files mp))) 0)
           (if (= (call-process-shell-command
-                  (format "fusermount -u %s" mp) nil t nil)
+                  (format "fusermount -u %s" mp))
                  0)
               (message "%s Successfully unmounted" mp)
             (message "Failed to unmount %s" mp))
