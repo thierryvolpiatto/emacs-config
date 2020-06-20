@@ -347,7 +347,8 @@ So far, F can only be a symbol, not a lambda expression."))
   :config
   (progn
     (setq browse-url-firefox-program "firefox")
-    (setq browse-url-browser-function 'helm-browse-url-firefox)))
+    ;; (setq browse-url-browser-function 'helm-browse-url-firefox)
+    (setq browse-url-browser-function 'browse-url-epiphany)))
 
 ;;; Ediff
 ;;
