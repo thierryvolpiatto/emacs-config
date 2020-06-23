@@ -243,9 +243,10 @@
         helm-ff-allow-non-existing-file-at-point t
         helm-trash-remote-files                  t
         helm-dwim-target                         'next-window
-        helm-ff-use-dir-locals                   nil)
+        helm-ff-use-dir-locals                   nil
+        helm-ff-keep-cached-candidates           'all)
   (customize-set-variable 'helm-ff-lynx-style-map t)
-
+  (helm-ff-cache-mode (if helm-ff-keep-cached-candidates 1 -1))
   (define-key helm-read-file-map (kbd "RET") 'helm-ff-RET)
   (define-key helm-find-files-map (kbd "C-i") nil)
   (define-key helm-find-files-map (kbd "C-/") 'helm-ff-run-find-sh-command)
