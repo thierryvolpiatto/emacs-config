@@ -244,7 +244,8 @@
         helm-trash-remote-files                  t
         helm-dwim-target                         'next-window
         helm-ff-use-dir-locals                   nil
-        helm-ff-keep-cached-candidates           'all)
+        helm-ff-keep-cached-candidates           'all
+        helm-ff-refresh-cache-delay              0.5)
   (customize-set-variable 'helm-ff-lynx-style-map t)
   (helm-ff-cache-mode (if helm-ff-keep-cached-candidates 1 -1))
   (define-key helm-read-file-map (kbd "RET") 'helm-ff-RET)
