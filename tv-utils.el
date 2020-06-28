@@ -1163,6 +1163,17 @@ See <https://github.com/chubin/wttr.in>."
   (make-local-variable 'wttr-weather-last-location)
   (set (make-local-variable 'revert-buffer-function) 'wttr-weather-revert-fn))
 
+;;;###autoload
+(defun tv/insert-info-command-from-current-node-at-point ()
+  (interactive)
+  (let ((buf (get-buffer "*info*")))
+    (when (and buf (buffer-live-p buf))
+      (insert
+       (with-current-buffer "*info*"
+         (format "(info \"(%s) %s\")"
+                 (file-name-nondirectory Info-current-file)
+                 Info-current-node))))))
+
 (provide 'tv-utils)
 
 ;; Local Variables:
