@@ -2293,8 +2293,9 @@ With a prefix arg ask with completion which buffer to kill."
 (when (fboundp 'set-face-extend)
   (with-eval-after-load "magit"
     (tv/extend-faces-matching "\\`magit"))
-  (with-eval-after-load "helm"
-    (tv/extend-faces-matching "\\`helm")))
+  ;; (with-eval-after-load "helm"
+  ;;   (tv/extend-faces-matching "\\`helm"))
+  )
 
 ;; Fix unreadable diff/ediff in emacs-27
 (when (>= emacs-major-version 27)
