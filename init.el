@@ -142,6 +142,9 @@ Restart works only on graphic display."
 (unless (< emacs-major-version 24)
   (setq custom-theme-directory tv/theme-directory))
 
+(straight-use-package 'modus-vivendi-theme)
+(straight-use-package 'modus-operandi-theme)
+
 ;; Load my favourite theme.
 (add-hook 'emacs-startup-hook (lambda () (load-theme 'naquadah)))
 
@@ -2264,6 +2267,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;
 (use-package boxquote)
 
+;;; Themes
 
 ;; Kill buffer and windows
 (defun tv/kill-buffer-and-windows (arg)

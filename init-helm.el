@@ -439,7 +439,7 @@ new directory."
 
 (use-package helm-net
   :config
-  (setq helm-net-prefer-curl           nil
+  (setq helm-net-prefer-curl           t
         helm-surfraw-duckduckgo-url    "https://duckduckgo.com/?q=%s&ke=-1&kf=fw&kl=fr-fr&kr=b&k1=-1&k4=-1"
         helm-google-suggest-search-url helm-surfraw-duckduckgo-url))
 
