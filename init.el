@@ -1973,6 +1973,15 @@ If your system's ping continues until interrupted, you can try setting
 (use-package lisp-mode
   :config
   (progn
+    (defun tv/set-mode-name (name)
+      (setq-local mode-name name))
+    (defun tv/set-lisp-interaction-name ()
+      (tv/set-mode-name "Ilisp"))
+    (defun tv/set-emacs-lisp-name ()
+      (tv/set-mode-name "Elisp"))
+    (add-hook 'lisp-interaction-mode-hook #'tv/set-lisp-interaction-name)
+    (add-hook 'emacs-lisp-mode-hook #'tv/set-emacs-lisp-name)
+
     (use-package cl-indent
       :config
       ;; Try to have same indentation in both 24, 25 and 26.
