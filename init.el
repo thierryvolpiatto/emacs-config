@@ -1599,14 +1599,19 @@ If your system's ping continues until interrupted, you can try setting
   :straight t
   :init
   (progn
-    (customize-set-variable 'git-gutter:update-interval 2) ; Activate live update timer.
-    (setq git-gutter:hide-gutter t) ; Always a 0 width margin when no changes.
+    ;; Activate live update timer.
+    (customize-set-variable 'git-gutter:update-interval 2)
+    ;; Always a 0 width margin when no changes.
+    (setq git-gutter:hide-gutter t)
+    ;; Not sure why I would like to have git-gutter runs when listing
+    ;; buffers or such, did I miss something?
+    (setq git-gutter:update-commands nil)
     (bind-key [remap vc-dir] 'git-gutter:popup-hunk)
     ;; Stage current hunk
     (bind-key [remap vc-create-tag] 'git-gutter:stage-hunk)
     ;; Revert current hunk
     (bind-key (kbd "C-x v r") 'git-gutter:revert-hunk))
-  :diminish git-gutter-mode
+  :diminish (git-gutter-mode " 🐱")
   :config
   (progn
     (defun tv/git-gutter:popup-diff-quit ()

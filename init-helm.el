@@ -107,6 +107,7 @@
                            '(helm-flex)) ;; emacs-26.
                           ((assq 'flex completion-styles-alist)
                            '(flex)))))) ;; emacs-27+.
+  :diminish (helm-mode " ⎈")
   :config
   (helm-mode 1)
   (setq helm-completing-read-handlers-alist
