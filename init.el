@@ -1291,7 +1291,7 @@ If your system's ping continues until interrupted, you can try setting
                   (prefix (nth 3 args)))
               (apply old--fn args)))
           (advice-add 'elisp--highlight-function-argument
-                      :around #'tv/before-elisp--highlight-function-argument))  
+                      :around #'tv/before-elisp--highlight-function-argument))
 
       (defun tv/advice-elisp--highlight-function-argument (sym args index prefix)
         "Highlight argument INDEX in ARGS list for function SYM.
