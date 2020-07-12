@@ -162,28 +162,27 @@
 ;; the 'All Mail' folder by pressing ``ma''.
 
 (setq mu4e-maildir-shortcuts
-      '(("/drafts"                         . ?d)
-        ("/Gmail/INBOX"                    . ?i)
-        ("/Zoho/INBOX.Github.Emacs-helm"   . ?h)
-        ("/Zoho/INBOX.Github.Emacs-mu4e"   . ?m)
-        ("/Gmail/emacs-helm"               . ?e)
-        ("/Gmail/Friends"                  . ?f)
-        ("/Gmail/[Gmail].Sent Mail"        . ?s)
-        ("/Gmail/[Gmail].Trash"            . ?t)
-        ("/Gmail/[Gmail].Spam"             . ?!)
-        ("/Yahoo/Inbox"                    . ?y)))
+      '(("/drafts"                  . ?d)
+        ("/gmail/inbox"             . ?i)
+        ("/gmail/github-emacs-helm" . ?h)
+        ("/gmail/github-mu"         . ?m)
+        ("/gmail/emacs-helm"        . ?e)
+        ("/gmail/friends"           . ?f)
+        ("/gmail/sent"              . ?s)
+        ("/gmail/trash"             . ?t)
+        ("/gmail/spam"              . ?!)))
 
 (setq mu4e-bookmarks
       '(("date:1w..now helm AND NOT flag:trashed" "Last 7 days helm messages" ?h)
         ("date:1d..now helm AND NOT flag:trashed" "Yesterday and today helm messages" ?b)
         ("flag:unread AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam \
-AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk\\ Mail" "Unread messages" ?u)
+AND NOT maildir:/Zoho/Spam" "Unread messages" ?u)
         ("date:today..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam \
-AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk\\ Mail" "Today's messages" ?t)
+AND NOT maildir:/Zoho/Spam" "Today's messages" ?t)
         ("date:1d..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam \
-AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk\\ Mail" "Yesterday and today messages" ?y)
+AND NOT maildir:/Zoho/Spam" "Yesterday and today messages" ?y)
         ("date:7d..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam \
-AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk\\ Mail" "Last 7 days" ?w)
+AND NOT maildir:/Zoho/Spam" "Last 7 days" ?w)
         ))
 
 (add-hook 'mu4e-compose-mode-hook 'tv/message-mode-setup)
@@ -198,30 +197,12 @@ AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk\\ Mail" "Last 7 days" ?w)
 ;;
 ;;
 ;; allow for updating mail using 'U' in the main view:
-(setq mu4e-get-mail-command "offlineimap -q -u Basic")
+
+;; (setq mu4e-get-mail-command "offlineimap -q -u Basic")
+(setq mu4e-get-mail-command "mbsync -a -V")
 
 ;;; Automatic updates.
 ;(setq mu4e-update-interval 600)
-
-;;; Make a full update all the
-;; `tv/mu4e-max-number-update-before-toggling' mail retrievals.
-(defvar tv/mu4e-counter 10) ; Ensure a full update on startup.
-(defvar tv/mu4e-max-number-update-before-toggling 10)
-(defvar tv/mu4e-get-mail-command-full "offlineimap -u Basic")
-(defvar tv/mu4e-get-mail-command-quick "offlineimap -q -u Basic")
-(defun tv/mu4e-update-mail-quick-or-full ()
-  (if (>= tv/mu4e-counter
-          tv/mu4e-max-number-update-before-toggling)
-      (progn
-        (setq mu4e-get-mail-command tv/mu4e-get-mail-command-full)
-        (setq tv/mu4e-counter 0))
-    (setq mu4e-get-mail-command tv/mu4e-get-mail-command-quick)
-    (cl-incf tv/mu4e-counter)))
-(add-hook 'mu4e-update-pre-hook #'tv/mu4e-update-mail-quick-or-full)
-
-;;; Attempt to show images when viewing messages
-;; (setq mu4e-view-show-images t
-;;       mu4e-view-image-max-width 800)
 
 ;; View html message in firefox (type aV)
 (add-to-list 'mu4e-view-actions
