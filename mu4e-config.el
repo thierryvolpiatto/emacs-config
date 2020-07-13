@@ -25,9 +25,6 @@
 
 (use-package mu4e-compose
   :config
-  (define-key mu4e-compose-mode-map (kbd "C-c q") 'boxquote-region)
-  (define-key mu4e-compose-mode-map (kbd "C-c t") 'boxquote-title))
-
 ;; [smtpmail-async] Experimental, use `smtpmail-send-it' otherwise.
 ;; To debug use `smtpmail-send-it'
 (setq message-send-mail-function 'smtpmail-send-it
