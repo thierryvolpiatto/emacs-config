@@ -36,9 +36,6 @@
 ;;; load-path
 ;;
 (dolist (i '("~/elisp/"
-             "~/elisp/Emacs-wgrep"
-             "~/elisp/magit/lisp"
-             "~/elisp/with-editor"
 	     "~/elisp/autoconf-mode"
 	     "~/elisp/desktop-file-utils"
 	     "~/elisp/emacs-wget"
@@ -266,8 +263,6 @@ So far, F can only be a symbol, not a lambda expression."))
     (add-to-list 'Info-directory-list "/usr/local/share/info")
     (add-to-list 'Info-directory-list "/usr/share/info")
     (add-to-list 'Info-directory-list "~/elisp/info")
-    (add-to-list 'Info-directory-list "~/elisp/emacs-w3m/doc")
-    (add-to-list 'Info-directory-list "~/elisp/magit/Documentation")
     ;; Fancy faces in info.
     (defface tv/info-ref-item
       '((((background dark)) :background "DimGray" :foreground "Gold")
@@ -311,6 +306,7 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;
 ;; Need to be called before helm config.
 (use-package async
+  :straight t
   :config
   (progn
     ;; Dired async.
@@ -1225,6 +1221,7 @@ If your system's ping continues until interrupted, you can try setting
 ;; git-rebase so no need to install them as dependency.
 ;;
 (use-package magit
+  :straight t
   :commands (magit-status magit-status-internal magit-blame)
   :init
   (bind-key "<f2>" 'magit-status)
@@ -2318,6 +2315,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Wgrep
 ;;
 (use-package wgrep-helm
+  :straight t
   :config (setq wgrep-enable-key "\C-x\C-q"))
 
 ;;; Slime
