@@ -1001,7 +1001,7 @@ With a prefix arg decrease transparency."
                                                  (foreground-color . "black")
                                                  (alpha . nil)
                                                  (fullscreen . nil))
-                                                ("\\*Dict"
+                                                ("\\*helm apt show\\*"
                                                  (minibuffer . nil)
                                                  (width . 80)
                                                  (height . 24)
@@ -1013,7 +1013,7 @@ With a prefix arg decrease transparency."
                                                  (top . 24)
                                                  (left . 450)
                                                  (background-color . "LightSteelBlue")
-                                                 (foreground-color . "DarkGoldenrod")
+                                                 (foreground-color . "black")
                                                  (alpha . nil)
                                                  (fullscreen . nil))
                                                 )))))
