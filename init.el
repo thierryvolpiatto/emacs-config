@@ -1012,7 +1012,7 @@ With a prefix arg decrease transparency."
                                                  (unsplittable . t)
                                                  (top . 24)
                                                  (left . 450)
-                                                 (background-color . "LightSteelBlue")
+                                                 (background-color . "Lightsteelblue4")
                                                  (foreground-color . "black")
                                                  (alpha . nil)
                                                  (fullscreen . nil))
@@ -1417,6 +1417,14 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;; Python config
 ;;
 ;;
+
+;;; Jedi
+;;
+;;
+(use-package jedi
+  :straight t
+  :config (setq jedi:complete-on-dot t))
+
 (use-package python
   :no-require t
   :init
@@ -1424,52 +1432,10 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
     (setq
      gud-pdb-command-name "ipdb"
      python-shell-interpreter "ipython"
-     python-shell-interpreter-args "-i --autoindent"
+     python-shell-interpreter-args "-i --autoindent --simple-prompt --InteractiveShell.display_page=True"
      python-shell-prompt-regexp "In \\[[0-9]+\\]: "
      python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: ")
-    (setq python-eldoc-setup-code
-          "def __PYDOC_get_help(obj):
-    try:
-        import inspect
-        try:
-            str_type = basestring
-            argspec_function = inspect.getargspec
-        except NameError:
-            str_type = str
-            argspec_function = inspect.getfullargspec
-        if isinstance(obj, str_type):
-            obj = eval(obj, globals())
-        doc = inspect.getdoc(obj)
-        if callable(obj):
-            try:
-                sig = inspect.formatargspec(*argspec_function(obj))
-            except:
-                sig = None
-        else:
-            sig = None
-        if not doc and callable(obj):
-            target = None
-            if inspect.isclass(obj) and hasattr(obj, '__init__'):
-                target = obj.__init__
-                objtype = 'class'
-            else:
-                target = obj
-                objtype = 'def'
-            if target:
-                args = inspect.formatargspec(*argspec_function(target))
-                name = obj.__name__
-                doc = '{objtype} {name}{args}'.format(
-                    objtype=objtype, name=name, args=args
-                )
-        else:
-            doc = doc.splitlines()[0]
-    except:
-        doc = ''
-        sig = ''
-    if sig:
-        doc = '\\n'.join([sig,doc])
-    return doc
-")
+    (add-hook 'python-mode-hook 'jedi:setup)
     (add-hook 'python-mode-hook
               (lambda ()
                 (define-key python-mode-map (kbd "C-m") 'newline-and-indent))))

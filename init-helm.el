@@ -153,9 +153,6 @@
   :bind ("C-h r" . helm-info-emacs))
 
 (use-package helm-ipython
-  ;; Still useful for some small python editing but really there is
-  ;; much better stuff for python in Melpa.
-  :disabled t
   :config
   (define-key python-mode-map (kbd "<M-tab>") 'helm-ipython-complete)
   (define-key inferior-python-mode-map (kbd "C-i") 'helm-ipython-complete)
@@ -513,6 +510,13 @@ First call indent, second complete symbol, third complete fname."
   :config
   (customize-set-variable 'helm-imenu-lynx-style-map t))
 
+(use-package helm-apt
+  :config
+  (defun helm-apt/show-mode-hook-fn ()
+    (font-lock-add-keywords nil '(("^\\(.*: \\).*" 1 '((:foreground "Darkslategray1")))))
+    (font-lock-add-keywords nil '(("^\\(.*: \\)\\(.*\\)" 2 '((:foreground "DarkOrange")))))
+    (font-lock-add-keywords nil '(("\\(https?://\\)\\(.*\\)" 0 '((:foreground "#73d216" :weight bold :underline t))))))
+  (add-hook 'helm-apt-show-mode-hook 'helm-apt/show-mode-hook-fn))
 
 ;;; Ctl-x-5 map
 ;;
