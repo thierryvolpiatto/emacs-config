@@ -1436,6 +1436,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
      python-shell-prompt-regexp "In \\[[0-9]+\\]: "
      python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: ")
     (add-hook 'python-mode-hook 'jedi:setup)
+    (add-hook 'python-mode-hook 'flymake-mode) ;; Install pyflakes.
     (add-hook 'python-mode-hook
               (lambda ()
                 (define-key python-mode-map (kbd "C-m") 'newline-and-indent))))
