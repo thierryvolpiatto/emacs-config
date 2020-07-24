@@ -1417,9 +1417,6 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;; Python config
 ;;
 ;;
-(use-package flycheck
-  :straight t)
-
 (use-package python
   :no-require t
   :init
