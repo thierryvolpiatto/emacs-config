@@ -1417,13 +1417,8 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;; Python config
 ;;
 ;;
-
-;;; Jedi
-;;
-;;
-(use-package jedi
-  :straight t
-  :config (setq jedi:complete-on-dot t))
+(use-package flycheck
+  :straight t)
 
 (use-package python
   :no-require t
@@ -1435,8 +1430,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
      python-shell-interpreter-args "-i --autoindent --simple-prompt --InteractiveShell.display_page=True"
      python-shell-prompt-regexp "In \\[[0-9]+\\]: "
      python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: ")
-    (add-hook 'python-mode-hook 'jedi:setup)
-    (add-hook 'python-mode-hook 'flymake-mode) ;; Install pyflakes.
+    (add-hook 'python-mode-hook 'flycheck-mode)
     (add-hook 'python-mode-hook
               (lambda ()
                 (define-key python-mode-map (kbd "C-m") 'newline-and-indent))))
