@@ -159,8 +159,7 @@
     (defun tv/bind-tab-in-inf-python ()
       (define-key inferior-python-mode-map (kbd "C-i") 'helm-ipython-complete))
     (define-key python-mode-map (kbd "<M-tab>") 'helm-ipython-complete)
-    (add-hook 'inferior-python-mode-hook 'tv/bind-tab-in-inf-python)
-    (define-key python-mode-map (kbd "C-c C-i") 'helm-ipython-import-modules-from-buffer)))
+    (add-hook 'inferior-python-mode-hook 'tv/bind-tab-in-inf-python)))
 
 (use-package helm-ring
   :config
