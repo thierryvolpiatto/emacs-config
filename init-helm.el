@@ -412,7 +412,8 @@ new directory."
 
 (use-package helm-lib
   :config
-  (setq helm-scroll-amount 4))
+  (setq helm-scroll-amount 4)
+  (helm-help-define-key "C-x" 'exchange-point-and-mark))
 
 (use-package helm
   :config
