@@ -246,8 +246,8 @@
         helm-dwim-target                         'next-window
         helm-ff-cache-mode-post-delay            0.3
         helm-ff-refresh-cache-delay              0.3
-        helm-ff-cache-mode-lighter-sleep         " 💡"
-        helm-ff-cache-mode-lighter-updating      " 💀"
+        ;; helm-ff-cache-mode-lighter-sleep         " 💡"
+        ;; helm-ff-cache-mode-lighter-updating      " 💀"
         )
   (customize-set-variable 'helm-ff-lynx-style-map t)
   (define-key helm-read-file-map (kbd "RET") 'helm-ff-RET)
