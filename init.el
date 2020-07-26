@@ -1418,7 +1418,8 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;
 ;;
 (use-package anaconda-mode
-  :straight t)
+  :straight t
+  :diminish " 🐍")
 
 (use-package python
   :no-require t

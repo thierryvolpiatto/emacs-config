@@ -1,9 +1,38 @@
 ;;; init-helm.el --- My startup file for helm. -*- lexical-binding: t -*-
 ;;; Code:
 
-;;; Load all autoloads for helm and its extensions
+;;; Set up helm first (will load helm-autoloads.el)
 ;;
-(require 'helm-config)
+;;
+(use-package helm
+  :straight (helm :type git :host github :repo "emacs-helm/helm" :branch "devel")
+  :config
+  (setq helm-input-idle-delay                     0.01
+        helm-reuse-last-window-split-state        t
+        helm-always-two-windows                   t
+        helm-split-window-inside-p                nil
+        helm-commands-using-frame                 '(completion-at-point
+                                                    helm-apropos
+                                                    helm-eshell-prompts helm-imenu
+                                                    helm-imenu-in-all-buffers)
+        helm-actions-inherit-frame-settings       t
+        helm-use-frame-when-more-than-two-windows t
+        helm-use-frame-when-dedicated-window      t
+        helm-frame-background-color               "DarkSlateGray"
+        helm-show-action-window-other-window      'left
+        helm-allow-mouse                          t
+        helm-move-to-line-cycle-in-source         t
+        helm-autoresize-max-height                80 ; it is %.
+        helm-autoresize-min-height                20 ; it is %.
+        helm-debug-root-directory                 "/home/thierry/tmp/helm-debug"
+        helm-follow-mode-persistent               t
+        helm-candidate-number-limit               500)
+  (add-to-list 'helm-sources-using-default-as-input 'helm-source-info-bash)
+  (helm-define-key-with-subkeys global-map (kbd "C-c n") ?n 'helm-cycle-resume))
+
+;;; Load all autoloads for helm extensions
+;;
+;;
 (load "/home/thierry/elisp/helm-extensions/helm-extensions-autoloads.el")
 
 
@@ -416,31 +445,6 @@ new directory."
   (helm-help-define-key "C-x" 'exchange-point-and-mark)
   (helm-help-define-key "C-l" 'recenter-top-bottom))
 
-(use-package helm
-  :config
-  (setq helm-input-idle-delay                     0.01
-        helm-reuse-last-window-split-state        t
-        helm-always-two-windows                   t
-        helm-split-window-inside-p                nil
-        helm-commands-using-frame                 '(completion-at-point
-                                                    helm-apropos
-                                                    helm-eshell-prompts helm-imenu
-                                                    helm-imenu-in-all-buffers)
-        helm-actions-inherit-frame-settings       t
-        helm-use-frame-when-more-than-two-windows t
-        helm-use-frame-when-dedicated-window      t
-        helm-frame-background-color               "DarkSlateGray"
-        helm-show-action-window-other-window      'left
-        helm-allow-mouse                          t
-        helm-move-to-line-cycle-in-source         t
-        helm-autoresize-max-height                80 ; it is %.
-        helm-autoresize-min-height                20 ; it is %.
-        helm-debug-root-directory                 "/home/thierry/tmp/helm-debug"
-        helm-follow-mode-persistent               t
-        helm-candidate-number-limit               500)
-  (add-to-list 'helm-sources-using-default-as-input 'helm-source-info-bash)
-  (helm-define-key-with-subkeys global-map (kbd "C-c n") ?n 'helm-cycle-resume))
-
 (use-package helm-net
   :config
   (setq helm-net-prefer-curl           t
@@ -530,6 +534,12 @@ First call indent, second complete symbol, third complete fname."
          (match-beginning 0) (match-end 0)
          `(keymap ,map help-echo "Browse url")))))
   (add-hook 'helm-apt-show-mode-hook 'helm-apt/show-mode-hook-fn))
+
+(use-package helm-misc
+  :config
+  ;; Minibuffer history (Rebind to M-s).
+  (customize-set-variable 'helm-minibuffer-history-key [remap next-matching-history-element]))
+
 
 ;;; Ctl-x-5 map
 ;;
@@ -596,9 +606,6 @@ First call indent, second complete symbol, third complete fname."
 ;; (setq tab-always-indent 'complete)
 
 ;; (define-key global-map (kbd "<backtab>") 'completion-at-point)
-
-;; Minibuffer history (Rebind to M-s).
-(customize-set-variable 'helm-minibuffer-history-key [remap next-matching-history-element])
 
 ;; Avoid hitting forbidden directories when using find.
 (add-to-list 'completion-ignored-extensions ".gvfs/")
