@@ -46,7 +46,6 @@
 	     "~/elisp/emacs-wget"
 	     "~/elisp/tex-utils"
              "~/elisp/helm-extensions"
-             "~/elisp/google-maps.el"
              "~/.emacs.d/themes/"
 	     "~/.emacs.d/emacs-config/"
 	     ))
@@ -311,7 +310,9 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;
 ;; Need to be called before helm config.
 (use-package async
-  :straight t
+  :straight (async :local-repo "/home/thierry/labo/github/emacs-async"
+                   :files ("async.el" "dired-async.el"
+                           "async-bytecomp.el" "smtpmail-async.el"))
   :config
   (progn
     ;; Dired async.
@@ -1109,6 +1110,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; google-maps
 ;;
 (use-package google-maps
+  :straight t
   :init (setq google-maps-static-default-zoom 10)
   :bind ("<f5> g m" . google-maps))
 
