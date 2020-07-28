@@ -1418,8 +1418,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;
 ;;
 (use-package anaconda-mode
-  :straight t
-  :diminish " 🐍")
+  :straight t)
 
 (use-package python
   :no-require t
@@ -1436,6 +1435,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
     (add-hook 'python-mode-hook 'flymake-mode) ;; Needs pyflakes
     (add-hook 'python-mode-hook
               (lambda ()
+                (setq-local mode-name " 🐍")
                 (define-key python-mode-map (kbd "C-m") 'newline-and-indent)
                 (define-key python-mode-map (kbd "C-c '") 'flymake-goto-next-error))))
   :bind ("<f11> p" . python-shell-switch-to-shell))
@@ -2323,6 +2323,8 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; psession
 ;;
 (use-package psession
+  :straight (psession :local-repo "/home/thierry/labo/github/psession"
+                      :files ("psession.el"))
   :config
   (psession-savehist-mode 1)
   (psession-mode 1)
