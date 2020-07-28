@@ -1107,13 +1107,6 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'htmlize-many-files "htmlize" nil t)
 (autoload 'htmlize-many-files-dired "htmlize" nil t)
 
-;;; google-maps
-;;
-(use-package google-maps
-  :straight t
-  :init (setq google-maps-static-default-zoom 10)
-  :bind ("<f5> g m" . google-maps))
-
 ;;; tv-utils fns
 ;;
 (use-package tv-utils
