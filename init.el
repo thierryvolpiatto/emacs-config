@@ -28,6 +28,11 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+(cl-dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
+  (font-lock-add-keywords
+   mode
+   '(("(\\<\\(straight-use-package\\)\\>" 1 font-lock-keyword-face))))
+
 ;;; Use-package
 ;;
 (straight-use-package 'use-package)
