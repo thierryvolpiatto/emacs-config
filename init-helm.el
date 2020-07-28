@@ -6,7 +6,8 @@
 ;; Use my local repo "/home/thierry/labo/github/helm" to develop helm
 ;; but install helm with straight from this local repo, like this each
 ;; time a change is make in my local repo helm is recompiled by
-;; straight, no need to use Makefile.
+;; straight, no need to use make install. (note that make is still needed to
+;; detect compilation errors).
 ;; The helm-core repo needs to be declared local to prevent straight
 ;; to install it locally.
 
