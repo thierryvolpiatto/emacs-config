@@ -2,34 +2,10 @@
 ;;; Code:
 
 ;;; Set up helm first (will load helm-autoloads.el)
-;;
-;; Use my local repo "/home/thierry/labo/github/helm" to develop helm
-;; but install helm with straight from this local repo, like this each
-;; time a change is make in my local repo helm is recompiled by
-;; straight, no need to use make install. (note that make is still needed to
-;; detect compilation errors).
-;; The helm-core repo needs to be declared local to prevent straight
-;; to install it locally.
-
-(use-package helm-core
-  :straight (helm-core :local-repo "/home/thierry/labo/github/helm"
-                       :files ("helm-core-pkg.el"
-                               "helm.el" "helm-lib.el"
-                               "helm-source.el"
-                               "helm-multi-match.el"))
-  ;; Prevent use-package trying to load a helm-core.el file that
-  ;; doesn't exists.
-  :no-require t)
 
 (use-package helm
-  :straight (helm :local-repo "/home/thierry/labo/github/helm"
-                  :files ("*.el"
-                          (:exclude "helm.el"
-                                    "helm-lib.el"
-                                    "helm-source.el"
-                                    "helm-multi-match.el"
-                                    "helm-core-pkg.el")))
   :config
+  (require 'helm-config)
   (setq helm-input-idle-delay                     0.01
         helm-reuse-last-window-split-state        t
         helm-always-two-windows                   t
