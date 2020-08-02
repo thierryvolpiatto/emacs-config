@@ -310,9 +310,8 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;
 ;; Need to be called before helm config.
 (use-package async
-  :straight (async :local-repo "/home/thierry/labo/github/emacs-async"
-                   :files ("async.el" "dired-async.el"
-                           "async-bytecomp.el" "smtpmail-async.el"))
+  ;; Use built-in work for packages installed in site-lisp/.
+  :straight (async :type built-in)
   :config
   (progn
     ;; Dired async.
@@ -2323,8 +2322,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; psession
 ;;
 (use-package psession
-  :straight (psession :local-repo "/home/thierry/labo/github/psession"
-                      :files ("psession.el"))
   :config
   (psession-savehist-mode 1)
   (psession-mode 1)
