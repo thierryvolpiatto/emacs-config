@@ -1435,6 +1435,8 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
     (add-hook 'python-mode-hook
               (lambda ()
                 (setq-local mode-name " 🐍")
+                (semantic-mode 1)
+                (define-key python-mode-map (kbd "C-c C-i") 'helm-semantic)
                 (define-key python-mode-map (kbd "C-m") 'newline-and-indent)
                 (define-key python-mode-map (kbd "C-c '") 'flymake-goto-next-error))))
   :bind ("<f11> p" . python-shell-switch-to-shell))
@@ -2004,6 +2006,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 (use-package semantic
   :config
   (progn
+    ;; Don't use this with elisp, prefer native imenu.
     (add-hook 'semantic-mode-hook
               ;; My patched lisp/cedet/semantic/bovine/el.el.
               (lambda ()
