@@ -516,6 +516,7 @@ First call indent, second complete symbol, third complete fname."
 
 (use-package helm-imenu
   :config
+  (add-to-list 'helm-imenu-type-faces '("^Use package$" . font-lock-keyword-face))
   (customize-set-variable 'helm-imenu-lynx-style-map t))
 
 (use-package helm-apt

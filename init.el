@@ -2356,7 +2356,17 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;
 (use-package boxquote)
 
-;;; Themes
+;;; Imenu
+;;
+(use-package imenu
+  :defer t
+  :config
+  ;; Allow browsing use-package definitions in init files.
+  (defun imenu-add-use-package-generic-expr ()
+    (add-to-list
+     'imenu-generic-expression
+     '("Use package" "^\\s-*(\\(?:straight-\\)?use-package\\s-+'?\\(\\(?:\\sw\\|\\s_\\|\\\\.\\)+\\)[[:space:]\n]*[^)]*" 1)))
+  (add-hook 'emacs-lisp-mode-hook #'imenu-add-use-package-generic-expr))
 
 ;; Kill buffer and windows
 (defun tv/kill-buffer-and-windows (arg)
