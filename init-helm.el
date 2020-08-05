@@ -204,14 +204,11 @@
               ("C-d" . helm-kill-ring-run-persistent-delete)))
 
 (use-package helm-recoll
-  :disabled t
   :commands helm-recoll
   ;; Use the HFF actions to setup directories, then run
   ;; "recoll index -c DIR" on each directory. 
   :init (customize-set-variable 'helm-recoll-directories
-                                '(("confdir" . "~/.recoll-config")
-                                  ("lisp sources" . "~/.recoll-sources")
-                                  ("work" . "~/.recoll-work"))))
+                                '(("work" . "~/.recoll-labo"))))
 
 (use-package helm-ls-git
   :config
