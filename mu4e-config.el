@@ -17,7 +17,7 @@
         "thierry\\.volpiatto@gmail\\.com"
         "thievol05@zoho\\.eu"))
 
-(setq user-mail-address "thierry.volpiatto@gmail.com")
+(setq user-mail-address "thievol@posteo.net")
 (setq user-full-name "Thierry Volpiatto")
 
 ;; Use Mu4e to compose new mail.
@@ -26,15 +26,15 @@
 ;; [smtpmail-async] Experimental, use `smtpmail-send-it' otherwise.
 ;; To debug use `smtpmail-send-it'
 (setq message-send-mail-function 'smtpmail-send-it
-      ;; smtpmail-debug-info t        ; Uncomment to debug
+      smtpmail-debug-info t        ; Uncomment to debug
       ;; smtpmail-debug-verb t        ; Uncomment to debug on server
       mail-specify-envelope-from t ; Use from field to specify sender name.
       mail-envelope-from 'header)  ; otherwise `user-mail-address' is used. 
 
 ;; Default settings.
-(setq smtpmail-default-smtp-server "smtp.zoho.eu"
+(setq smtpmail-default-smtp-server "posteo.de"
       smtpmail-smtp-user user-mail-address
-      smtpmail-smtp-server "smtp.zoho.eu"
+      smtpmail-smtp-server "posteo.de"
       smtpmail-smtp-service 587)
 
 ;; Passage à la ligne automatique
@@ -51,6 +51,21 @@
       mu4e-context-policy 'pick-first
       mu4e-contexts
       `(,(make-mu4e-context
+           :name "Posteo"
+           :enter-func (lambda () (mu4e-message "Switch to Posteo"))
+           ;; leave-func not defined
+           :match-func (lambda (msg)
+                         (when msg
+                           (string-match-p "^/Posteo" (mu4e-message-field msg :maildir))))
+           :vars '((smtpmail-smtp-user           . "thievol@posteo.net")
+                   (smtpmail-default-smtp-server . "posteo.de")
+                   (smtpmail-smtp-server         . "posteo.de")
+                   (smtpmail-smtp-service        . 587)
+                   (mail-reply-to                . "thievol@posteo.net")
+                   (user-mail-address            . "thievol@posteo.net")
+                   (user-full-name               . "Thierry Volpiatto")
+                   (mu4e-compose-signature       . t)))
+        ,(make-mu4e-context
            :name "Gmail"
            :enter-func (lambda () (mu4e-message "Switch to Gmail"))
            ;; leave-func not defined
