@@ -15,7 +15,8 @@
       '("notifications@github\\.com"
         ".*@noreply\\.github\\.com"
         "thierry\\.volpiatto@gmail\\.com"
-        "thievol05@zoho\\.eu"))
+        "thievol05@zoho\\.eu"
+        "thievol@posteo\\.net"))
 
 (setq user-mail-address "thievol@posteo.net")
 (setq user-full-name "Thierry Volpiatto")
@@ -173,6 +174,7 @@
 
 (setq mu4e-maildir-shortcuts
       '(("/drafts"                         . ?d)
+        ("/Posteo/INBOX"                   . ?p)
         ("/Gmail/INBOX"                    . ?i)
         ("/Zoho/INBOX.Github.Emacs-helm"   . ?h)
         ("/Zoho/INBOX.Github.Emacs-mu4e"   . ?m)
