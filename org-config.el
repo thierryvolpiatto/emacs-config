@@ -151,7 +151,7 @@
     :config
   (progn
     (org-crypt-use-before-save-magic)
-    (setq org-crypt-key "59F29997")
+    (setq org-crypt-key "7433A7F2")
     (setq org-crypt-disable-auto-save t) ;'encrypt)
     (define-key org-mode-map (kbd "C-c e") 'org-encrypt-entry)
     (define-key org-mode-map (kbd "C-c d") 'org-decrypt-entry)))
