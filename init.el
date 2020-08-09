@@ -318,11 +318,7 @@ So far, F can only be a symbol, not a lambda expression."))
     (use-package dired-async :config (dired-async-mode 1))
     ;; Smtp async.
     (use-package smtpmail-async
-      :commands 'async-smtpmail-send-it)
-    ;; Byte compilation async.
-    (use-package async-bytecomp
-      :config
-      (setq async-bytecomp-allowed-packages 'all))))
+      :commands 'async-smtpmail-send-it)))
 
 ;;; Helm
 ;;
