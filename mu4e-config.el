@@ -176,14 +176,12 @@
       '(("/drafts"                         . ?d)
         ("/Posteo/INBOX"                   . ?p)
         ("/Gmail/INBOX"                    . ?i)
-        ("/Zoho/INBOX.Github.Emacs-helm"   . ?h)
-        ("/Zoho/INBOX.Github.Emacs-mu4e"   . ?m)
+        ("/Posteo/github-helm"             . ?h)
         ("/Gmail/emacs-helm"               . ?e)
         ("/Gmail/Friends"                  . ?f)
         ("/Gmail/[Gmail].Sent Mail"        . ?s)
         ("/Gmail/[Gmail].Trash"            . ?t)
-        ("/Gmail/[Gmail].Spam"             . ?!)
-        ("/Yahoo/Inbox"                    . ?y)))
+        ("/Gmail/[Gmail].Spam"             . ?!)))
 
 (setq mu4e-bookmarks
       '(("date:1w..now helm AND NOT flag:trashed" "Last 7 days helm messages" ?h)
