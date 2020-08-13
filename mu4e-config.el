@@ -138,6 +138,24 @@
       mu4e-headers-include-related nil) ; Can be toggled with "W".
 
 ;;; Html rendering
+(setq mu4e-view-use-gnus t)
+
+(when mu4e-view-use-gnus
+  ;; Disable crap gnus shr rendering.
+  (cond ((fboundp 'w3m)
+         ;; Emacs-w3m
+         (setq mm-text-html-renderer 'w3m))
+        ((executable-find "w3m")
+         ;; W3m (Don't need emacs-w3m)
+         (setq mm-text-html-renderer 'w3m-standalone))
+        (t                              ; Fall back to shr.
+         (setq shr-color-visible-luminance-min 75)
+         (setq shr-width nil)           ; Use all window width.
+         (setq mm-text-html-renderer 'shr)))
+  (setq mm-inline-text-html-with-w3m-keymap nil
+        mm-html-inhibit-images t
+        gnus-inhibit-images t))
+
 (setq mu4e-view-prefer-html t)
 (setq mu4e-html2text-command (cond ((fboundp 'w3m)
                                     ;; Use emacs-w3m
