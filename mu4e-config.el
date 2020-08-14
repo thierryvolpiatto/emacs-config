@@ -99,21 +99,7 @@
                   ;; gmail doesn't add such headers when sending from webmail.
                   ;; (message-default-headers      "User-Agent: Zoho Mail\nX-Mailer: Zoho Mail\n")
                   (user-full-name               . "Thierry Volpiatto")
-                  (mu4e-compose-signature       . t)))
-         ,(make-mu4e-context
-           :name "Yahoo"
-           :enter-func (lambda () (mu4e-message "Switch to Yahoo"))
-           :match-func (lambda (msg)
-                         (when msg
-                           (string-match-p "^/Yahoo" (mu4e-message-field msg :maildir))))
-           :vars '((smtpmail-smtp-user           . "tvolpiatto@yahoo.fr")
-                   (smtpmail-default-smtp-server . "smtp.mail.yahoo.com")
-                   (smtpmail-smtp-server         . "smtp.mail.yahoo.com")
-                   (smtpmail-smtp-service        . 587)
-                   (mail-reply-to                . "tvolpiatto@yahoo.fr")
-                   (user-mail-address            . "tvolpiatto@yahoo.fr")
-                   (user-full-name               . "Thierry Volpiatto")
-                   (mu4e-compose-signature       . t)))))
+                  (mu4e-compose-signature       . t)))))
 
 (setq mu4e-user-mail-address-list
       (delq nil
@@ -195,8 +181,6 @@
         ("/Posteo/INBOX"                   . ?p)
         ("/Gmail/INBOX"                    . ?i)
         ("/Posteo/github-helm"             . ?h)
-        ("/Gmail/emacs-helm"               . ?e)
-        ("/Gmail/Friends"                  . ?f)
         ("/Gmail/[Gmail].Sent Mail"        . ?s)
         ("/Gmail/[Gmail].Trash"            . ?t)
         ("/Gmail/[Gmail].Spam"             . ?!)))
@@ -205,13 +189,13 @@
       '(("date:1w..now helm AND NOT flag:trashed" "Last 7 days helm messages" ?h)
         ("date:1d..now helm AND NOT flag:trashed" "Yesterday and today helm messages" ?b)
         ("flag:unread AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam \
-AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk\\ Mail" "Unread messages" ?u)
+AND NOT maildir:/Zoho/Spam" "Unread messages" ?u)
         ("date:today..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam \
-AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk\\ Mail" "Today's messages" ?t)
+AND NOT maildir:/Zoho/Spam" "Today's messages" ?t)
         ("date:1d..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam \
-AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk\\ Mail" "Yesterday and today messages" ?y)
+AND NOT maildir:/Zoho/Spam" "Yesterday and today messages" ?y)
         ("date:7d..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam \
-AND NOT maildir:/Zoho/Spam AND NOT maildir:/Yahoo/Bulk\\ Mail" "Last 7 days" ?w)
+AND NOT maildir:/Zoho/Spam" "Last 7 days" ?w)
         ))
 
 (add-hook 'mu4e-compose-mode-hook 'tv/message-mode-setup)
