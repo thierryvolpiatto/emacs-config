@@ -331,7 +331,8 @@ new directory."
     - Github issues
     - Patch region on directory
     - Open in emms
-    - Update directory autoloads"
+    - Update directory autoloads
+    - Recoll directory creation"
     (helm-source-add-action-to-source-if
      "Byte compile file(s) async"
      (lambda (_candidate)
@@ -415,6 +416,16 @@ new directory."
     (helm-source-add-action-to-source-if
      "Recoll index directory"
      'helm-ff-recoll-index-directories
+     source
+     'file-directory-p
+     3)
+    (helm-source-add-action-to-source-if
+     "Epa encrypt file"
+     (lambda (candidate)
+       (epa-encrypt-file candidate
+                         (epa-select-keys (epg-make-context epa-protocol)
+			  "Select recipients for encryption.
+If no one is selected, symmetric encryption will be performed.  ")))
      source
      'file-directory-p
      3)))
