@@ -10,6 +10,11 @@
 ;;; Message and smtp settings
 ;;
 ;;
+
+;; As all my messages come encrypted I don't want to reply with
+;; signature or encryption as I have not the keys.
+(setq mu4e-compose-crypto-policy nil)
+
 ;; Don't send to these address in wide reply.
 (setq mu4e-compose-reply-ignore-address
       '("notifications@github\\.com"
