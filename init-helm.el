@@ -422,12 +422,14 @@ new directory."
     (helm-source-add-action-to-source-if
      "Epa encrypt file"
      (lambda (candidate)
+       (require 'epg) (require 'epa)
        (epa-encrypt-file candidate
-                         (epa-select-keys (epg-make-context epa-protocol)
-			  "Select recipients for encryption.
-If no one is selected, symmetric encryption will be performed.  ")))
+                         (helm :sources (helm-build-sync-source
+                                            "Select recipient for encryption: "
+                                          :persistent-action 'ignore
+                                          :candidates 'helm-epg-get-key-list))))
      source
-     'file-directory-p
+     'file-exists-p
      3)))
 
 (use-package helm-dictionary ; Its autoloads are already loaded.
