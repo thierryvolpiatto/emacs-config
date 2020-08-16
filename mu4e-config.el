@@ -11,8 +11,7 @@
 ;;
 ;;
 
-;; As all my messages come encrypted I don't want to reply with
-;; signature or encryption as I have not the keys.
+;; Posteo encrypt all incoming messages with my key.
 (setq mu4e-compose-crypto-policy nil)
 
 ;; Don't send to these address in wide reply.
@@ -48,7 +47,8 @@
 (defun tv/message-mode-setup ()
   (setq fill-column 72)
   (turn-on-auto-fill)
-  (epa-mail-mode 1))
+  (epa-mail-mode 1)
+  (define-key epa-mail-mode-map (kbd "C-c C-e l") 'helm-list-epg-keys))
 (add-hook 'message-mode-hook 'tv/message-mode-setup)
 
 ;; Contexts (setup smtp servers)
@@ -186,8 +186,8 @@
         ("/Posteo/INBOX"                   . ?p)
         ("/Gmail/INBOX"                    . ?i)
         ("/Posteo/github-helm"             . ?h)
-        ("/Gmail/[Gmail].Sent Mail"        . ?s)
-        ("/Gmail/[Gmail].Trash"            . ?t)
+        ("/Posteo/Sent"                    . ?s)
+        ("/Posteo/Trash"                   . ?t)
         ("/Gmail/[Gmail].Spam"             . ?!)))
 
 (setq mu4e-bookmarks
