@@ -427,7 +427,7 @@ new directory."
                          (helm :sources (helm-build-sync-source
                                             "Select recipient for encryption: "
                                           :persistent-action 'ignore
-                                          :candidates 'helm-epg-get-key-list))))
+                                          :candidates 'helm-epa-get-key-list))))
      source
      'file-exists-p
      3)))
