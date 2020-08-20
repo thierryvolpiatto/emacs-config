@@ -1174,7 +1174,7 @@ If your system's ping continues until interrupted, you can try setting
       (save-restriction
         (narrow-to-defun)
         (iedit-mode arg))))
-  
+  (setq iedit-increment-format-string "%03d")
   :bind (("C-²" . iedit-narrow-to-defun)
          ("C-;" . iedit-mode)
          :map isearch-mode-map
