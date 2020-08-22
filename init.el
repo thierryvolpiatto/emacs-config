@@ -1181,6 +1181,8 @@ If your system's ping continues until interrupted, you can try setting
          ("C-;" . iedit-mode-from-isearch)))
 
 (use-package iedit-rect
+  :config
+  (setq iedit-increment-format-string "%03d")
   :bind (([C-return] . iedit-rectangle-mode)
          :map ctl-x-r-map
          ("RET" . iedit-rectangle-mode)))
