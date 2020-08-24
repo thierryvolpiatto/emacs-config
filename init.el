@@ -2336,13 +2336,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   (setq gnus-init-file "~/.emacs.d/.gnus")
   :bind ("<f7> m" . gnus))
 
-;;; Undo-fu
-;;
-(use-package undo-fu
-  :straight (undo-fu :host gitlab :repo "ideasman42/emacs-undo-fu")
-  :bind (("C-_"  . undo-fu-only-undo)
-         ("M-_"  . undo-fu-only-redo)))
-
 ;;; Rainbow-mode
 ;;
 (straight-use-package 'rainbow-mode)
