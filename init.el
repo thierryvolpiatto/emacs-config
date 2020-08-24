@@ -2285,23 +2285,24 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 
 ;;; Slime
 ;;
-;; (use-package slime
-;;     :init
-;;   (progn
-;;     (setq inferior-lisp-program "/usr/bin/sbcl"
-;;           slime-net-coding-system 'utf-8-unix
-;;           slime-contribs '(slime-fancy)
-;;           slime-scratch-file "~/.emacs.d/slime-scratch.lisp")
-;;     ;; common-lisp-info
-;;     (require 'cl-info)
-;;     (add-to-list 'Info-additional-directory-list "~/elisp/info/gcl-info/"))
-;;     :bind (("<f11> l r" . slime)
-;;            ("<f11> l s" . slime-scratch)
-;;            ("<f11> l l" . helm-slime-list-connections)
-;;            :map slime-repl-mode-map
-;;            ("C-i" . helm-slime-complete)
-;;            :map slime-scratch-mode-map
-;;            ("C-i" . helm-slime-complete)))
+(use-package slime
+  :straight t
+  :init
+  (progn
+    (setq inferior-lisp-program "/usr/bin/sbcl"
+          slime-net-coding-system 'utf-8-unix
+          slime-contribs '(slime-fancy)
+          slime-scratch-file "~/.emacs.d/slime-scratch.lisp")
+    ;; common-lisp-info
+    (require 'cl-info)
+    (add-to-list 'Info-additional-directory-list "~/elisp/info/gcl-info/"))
+  :bind (("<f11> l r" . slime)
+         ("<f11> l s" . slime-scratch)
+         ("<f11> l l" . helm-slime-list-connections)
+         :map slime-repl-mode-map
+         ("C-i" . helm-slime-complete)
+         :map slime-scratch-mode-map
+         ("C-i" . helm-slime-complete)))
 
 ;;; Geiser
 ;;
