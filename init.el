@@ -143,9 +143,6 @@ Restart works only on graphic display."
 (unless (< emacs-major-version 24)
   (setq custom-theme-directory tv/theme-directory))
 
-(straight-use-package 'modus-vivendi-theme)
-(straight-use-package 'modus-operandi-theme)
-
 ;; Load my favourite theme.
 (add-hook 'emacs-startup-hook (lambda () (load-theme 'naquadah)))
 
