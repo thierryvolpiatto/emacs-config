@@ -1871,11 +1871,11 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                                   (setq eshell-cmpl-ignore-case t
                                         eshell-hist-ignoredups t)
                                   (eshell-cmpl-initialize)
-                                  ;; Use completion-at-point in emacs-27
-                                  (unless (>= emacs-major-version 27)
-                                    (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
-                                    ;; Helm lisp completion
-                                    (define-key eshell-mode-map [remap eshell-complete-lisp-symbol] 'helm-lisp-completion-at-point))
+                                  ;; emacs-27 use completion-at-point
+                                  ;; which sucks.
+                                  (if (>= emacs-major-version 27)
+                                      (define-key eshell-mode-map (kbd "TAB") 'helm-esh-pcomplete)
+                                    (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete))
                                   ;; Helm completion on eshell history.
                                   (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)
                                   ;; Eshell prompt
