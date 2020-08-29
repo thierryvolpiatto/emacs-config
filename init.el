@@ -2280,36 +2280,8 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   :straight t
   :config (setq wgrep-enable-key "\C-x\C-q"))
 
-;;; Slime
-;;
-;; (use-package slime
-;;     :init
-;;   (progn
-;;     (setq inferior-lisp-program "/usr/bin/sbcl"
-;;           slime-net-coding-system 'utf-8-unix
-;;           slime-contribs '(slime-fancy)
-;;           slime-scratch-file "~/.emacs.d/slime-scratch.lisp")
-;;     ;; common-lisp-info
-;;     (require 'cl-info)
-;;     (add-to-list 'Info-additional-directory-list "~/elisp/info/gcl-info/"))
-;;     :bind (("<f11> l r" . slime)
-;;            ("<f11> l s" . slime-scratch)
-;;            ("<f11> l l" . helm-slime-list-connections)
-;;            :map slime-repl-mode-map
-;;            ("C-i" . helm-slime-complete)
-;;            :map slime-scratch-mode-map
-;;            ("C-i" . helm-slime-complete)))
-
-;;; Geiser
-;;
-;; (use-package geiser
-;;     :config
-;;     (setq geiser-completion--module-list-func
-;;           (completion-table-dynamic 'geiser-completion--module-list)
-;;           geiser-completion--symbol-list-func
-;;           (completion-table-dynamic 'geiser-completion--symbol-list)))
-
 ;;; Sly
+;;
 (use-package sly
   :straight t
   :config
