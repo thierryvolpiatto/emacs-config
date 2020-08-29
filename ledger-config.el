@@ -216,7 +216,7 @@ If entries are already pointed, skip."
       (ledger-mode)
       (remove-overlays)
       (setq ov (make-overlay beg (point-max)))
-      (overlay-put ov 'face '((:background "DarkSlateGray"))))
+      (overlay-put ov 'face '((:background "DarkSlateGray" :extend t))))
     (switch-to-buffer obuf)
     (ledger-reverse-date-to-us)))
 
