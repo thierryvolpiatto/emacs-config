@@ -238,7 +238,10 @@
         helm-buffers-end-truncated-string "…"
         helm-buffers-maybe-switch-to-tab  t
         helm-mini-default-sources '(helm-source-buffers-list
-                                    helm-source-buffer-not-found))
+                                    helm-source-buffer-not-found)
+        helm-boring-buffer-regexp-list
+        '("\\` " "\\`\\*helm" "\\`\\*Echo Area" "\\`\\*Minibuf"
+          "\\`\\*Messages" "\\`\\*Magit" "\\`\\*git-gutter" "\\`\\*Help"))
 
   (define-key helm-buffer-map (kbd "C-d") 'helm-buffer-run-kill-persistent)
   
