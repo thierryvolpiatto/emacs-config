@@ -2280,17 +2280,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   :straight t
   :config (setq wgrep-enable-key "\C-x\C-q"))
 
-;;; Sly
-;;
-(use-package sly
-  :straight t
-  :config
-  (setq sly-completing-read-function 'completing-read)
-  (setq inferior-lisp-program "/usr/bin/sbcl")
-  (add-hook 'sly-mode-hook (lambda () (sly-symbol-completion-mode -1)))
-  :bind (("<f11> l r" . sly)
-         ("<f11> l s" . sly-scratch)))
-
 ;;; psession
 ;;
 (use-package psession
