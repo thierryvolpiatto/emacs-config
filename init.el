@@ -918,10 +918,16 @@ file-local variable.\n")
 (use-package frame
   :config
   (progn
-    (defvar tv/default-font (if (string= (invocation-name) "remacs")
-                                "-*-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1"
-                              ;; Use .Xdefaults config
-                              (assoc-default 'font (frame-parameters))))
+    (defvar tv/default-font (cond ((string= (invocation-name) "remacs")
+                                   "-*-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
+                                  ((and (>= emacs-major-version 27)
+                                        (condition-case nil
+                                            (font-info "-CTDB-Fira Code-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1")
+                                          (error nil)))
+                                   "-CTDB-Fira Code-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1")
+                                  (t
+                                   ;; Use .Xdefaults config (Dejavu).
+                                   (assoc-default 'font (frame-parameters)))))
     (setq-default frame-background-mode 'dark)
     (setq initial-frame-alist '((fullscreen . maximized)))
     (setq frame-auto-hide-function 'delete-frame)
@@ -2318,6 +2324,32 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
      'imenu-generic-expression
      '("Use package" "^\\s-*(\\(?:straight-\\)?use-package\\s-+'?\\(\\(?:\\sw\\|\\s_\\|\\\\.\\)+\\)[[:space:]\n]*[^)]*" 1)))
   (add-hook 'emacs-lisp-mode-hook #'imenu-add-use-package-generic-expr))
+
+;;; Ligatures
+;;
+(when (>= emacs-major-version 27)
+  (use-package ligature
+    :straight (ligature :host github :repo "mickeynp/ligature.el"
+                        :fork (:host github :repo "thierryvolpiatto/ligature.el" :branch "Fix_cl_error"))
+    :config
+    ;; Enable all Fira Code ligatures in programming modes
+    (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
+                                         ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
+                                         "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
+                                         "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
+                                         "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
+                                         "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~="
+                                         "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
+                                         "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
+                                         ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
+                                         "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
+                                         "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
+                                         "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
+                                         "\\" "://"))
+    ;; Enables ligature checks globally in all buffers.  You can also do it
+    ;; per mode with `ligature-mode'.
+    (global-ligature-mode t)))
+
 
 ;; Kill buffer and windows
 (defun tv/kill-buffer-and-windows (arg)
