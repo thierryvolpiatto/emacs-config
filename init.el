@@ -914,7 +914,13 @@ file-local variable.\n")
 ;; Choose a font:        [EVAL]: (progn (when (require 'helm-font) (helm 'helm-source-xfonts)))
 ;; Choose a color:       [EVAL]: (progn (when (require 'helm-color) (helm 'helm-source-colors)))
 ;; To reload .Xresources [EVAL]: (shell-command xrdb "~/.Xresources")
-
+;; For ligatures use either
+;; "-SAJA-Cascadia Code-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1"
+;; or
+;; "-CTDB-Fira Code-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1".
+;; Cascadia is available at
+;; https://github.com/microsoft/cascadia-code/releases and Fira is
+;; available in linuxmint.
 (use-package frame
   :config
   (progn
@@ -922,9 +928,9 @@ file-local variable.\n")
                                    "-*-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
                                   ((and (>= emacs-major-version 27)
                                         (condition-case nil
-                                            (font-info "-CTDB-Fira Code-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1")
+                                            (font-info "-SAJA-Cascadia Code-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1")
                                           (error nil)))
-                                   "-CTDB-Fira Code-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1")
+                                   "-SAJA-Cascadia Code-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1")
                                   (t
                                    ;; Use .Xdefaults config (Dejavu).
                                    (assoc-default 'font (frame-parameters)))))
