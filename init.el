@@ -2336,7 +2336,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 (when (>= emacs-major-version 27)
   (use-package ligature
     :straight (ligature :host github :repo "mickeynp/ligature.el"
-                        :fork (:host github :repo "thierryvolpiatto/ligature.el" :branch "Fix_cl_error"))
+                        :fork (:host github :repo "thierryvolpiatto/ligature.el" :branch "fix_minor_mode"))
     :config
     ;; Enable all Fira Code ligatures in programming modes
     (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
