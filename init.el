@@ -928,9 +928,9 @@ file-local variable.\n")
                                    "-*-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
                                   ((and (>= emacs-major-version 27)
                                         (condition-case nil
-                                            (font-info "-SAJA-Cascadia Code-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1")
+                                            (font-info "-CTDB-Fira Code-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1")
                                           (error nil)))
-                                   "-SAJA-Cascadia Code-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1")
+                                   "-CTDB-Fira Code-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1")
                                   (t
                                    ;; Use .Xdefaults config (Dejavu).
                                    (assoc-default 'font (frame-parameters)))))
