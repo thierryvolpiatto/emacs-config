@@ -1790,7 +1790,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;; markdown-mode
 ;;
 (use-package markdown-mode
-  :straight (markdown-mode :host github :repo "jrblevin/markdown-mode")
+  :straight t
   :mode (("\\.markdown$" . markdown-mode)
          ("\\.md$" . markdown-mode)
          ("\\.mdpp$" . markdown-mode)))
