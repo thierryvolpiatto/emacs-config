@@ -913,7 +913,7 @@ file-local variable.\n")
 ;; My current-font:      [EVAL]: (assoc-default 'font (frame-parameters))
 ;; Choose a font:        [EVAL]: (progn (when (require 'helm-font) (helm 'helm-source-xfonts)))
 ;; Choose a color:       [EVAL]: (progn (when (require 'helm-color) (helm 'helm-source-colors)))
-;; To reload .Xresources [EVAL]: (shell-command xrdb "~/.Xresources")
+;; To reload .Xresources [EVAL]: (shell-command "xrdb ~/.Xdefaults")
 ;; For ligatures use either
 ;; "-SAJA-Cascadia Code-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1"
 ;; or
