@@ -1430,7 +1430,10 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                          (require 'lsp-python-ms)
                          (lsp-deferred))))
 
-(use-package lsp-ui :straight t)
+(use-package lsp-ui :straight t
+  :config
+  ;; Make docstrings less invasive.
+  (setq lsp-ui-doc-use-childframe nil))
 
 (use-package python
   :no-require t
