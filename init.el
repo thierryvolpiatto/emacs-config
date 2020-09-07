@@ -1430,23 +1430,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                          (require 'lsp-python-ms)
                          (lsp-deferred))))
 
-(use-package lsp-ui :straight t
-  :config
-  (defun tv/advice--lsp-ui-doc--handle-scroll (_win _new-start)
-    (let ((frame (lsp-ui-doc--get-frame)))
-      (and frame
-           (eq lsp-ui-doc-position 'at-point)
-           (frame-visible-p frame)
-           (if (and lsp-ui-doc--bounds
-                    ;; Fix error when launching helm on a child frame.
-                    (not (minibufferp (window-buffer)))
-                    (>= (point) (car lsp-ui-doc--bounds))
-                    (<= (point) (cdr lsp-ui-doc--bounds)))
-               (lsp-ui-doc--move-frame frame)
-             ;; The point might have changed if the window was scrolled
-             ;; too far
-             (lsp-ui-doc--hide-frame)))))
-  (advice-add 'lsp-ui-doc--handle-scroll :override #'tv/advice--lsp-ui-doc--handle-scroll))
+(use-package lsp-ui :straight t)
 
 (use-package python
   :no-require t
