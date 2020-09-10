@@ -146,9 +146,6 @@ Restart works only on graphic display."
 ;; Load my favourite theme.
 (add-hook 'emacs-startup-hook (lambda () (load-theme 'naquadah)))
 
-;; Pas-de-dialog-gtk
-(setq use-file-dialog nil)
-
 ;;; emacs-backup-config
 ;;
 (setq backup-directory-alist '(("" . "~/.emacs.d/emacs_backup"))
