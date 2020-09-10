@@ -44,12 +44,20 @@
 
 ;; Passage à la ligne automatique
 ;;
+(defvar tv/message-pre-winconf nil)
 (defun tv/message-mode-setup ()
+  (setq tv/message-pre-winconf (current-window-configuration))
   (setq fill-column 72)
   (turn-on-auto-fill)
   (epa-mail-mode 1)
   (define-key epa-mail-mode-map (kbd "C-c C-e l") 'helm-list-epg-keys))
 (add-hook 'message-mode-hook 'tv/message-mode-setup)
+
+(defun tv/after-send-hook ()
+  (when tv/message-pre-winconf
+    (set-window-configuration tv/message-pre-winconf))
+  (setq tv/message-pre-winconf nil))
+(add-hook 'message-sent-hook 'tv/after-send-hook)
 
 ;; Contexts (setup smtp servers)
 ;;
