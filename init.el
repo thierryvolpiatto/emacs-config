@@ -297,7 +297,7 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;
 (use-package emms
   :straight (emms :type git :repo "https://git.savannah.gnu.org/git/emms.git")
-  :commands helm-emms
+  :commands 'helm-emms
   :config (use-package emms-vlc-config))
 
 ;;; Async
@@ -1420,6 +1420,13 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;; Python config
 ;;
 ;;
+(use-package lsp-mode :straight t
+  :config
+  (setq lsp-enable-snippet nil)
+  ;; Disable yasnippet, even with it installed there is an error.
+  (unless (fboundp 'yas-expand-snippet)
+    (defun yas-expand-snippet (&rest args) (ignore))))
+
 (use-package lsp-python-ms
   :straight t
   :init (setq lsp-python-ms-auto-install-server t)
