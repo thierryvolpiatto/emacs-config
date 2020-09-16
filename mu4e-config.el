@@ -18,8 +18,6 @@
 (setq mu4e-compose-reply-ignore-address
       '("notifications@github\\.com"
         ".*@noreply\\.github\\.com"
-        "thierry\\.volpiatto@gmail\\.com"
-        "thievol05@zoho\\.eu"
         "thievol@posteo\\.net"))
 
 (setq user-mail-address "thievol@posteo.net")
@@ -78,41 +76,7 @@
                    (mail-reply-to                . "thievol@posteo.net")
                    (user-mail-address            . "thievol@posteo.net")
                    (user-full-name               . "Thierry Volpiatto")
-                   (mu4e-compose-signature       . t)))
-        ,(make-mu4e-context
-           :name "Gmail"
-           :enter-func (lambda () (mu4e-message "Switch to Gmail"))
-           ;; leave-func not defined
-           :match-func (lambda (msg)
-                         (when msg
-                           (string-match-p "^/Gmail" (mu4e-message-field msg :maildir))))
-           :vars '((smtpmail-smtp-user           . "thierry.volpiatto@gmail.com")
-                   (smtpmail-default-smtp-server . "smtp.gmail.com")
-                   (smtpmail-smtp-server         . "smtp.gmail.com")
-                   (smtpmail-smtp-service        . 587)
-                   (mail-reply-to                . "thierry.volpiatto@gmail.com")
-                   (user-mail-address            . "thierry.volpiatto@gmail.com")
-                   (user-full-name               . "Thierry Volpiatto")
-                   (mu4e-compose-signature       . t)))
-         ,(make-mu4e-context
-          :name "Zoho"
-          :enter-func (lambda () (mu4e-message "Switch to Zoho"))
-          :match-func (lambda (msg)
-                        (when msg
-                          (string-match-p "^/Zoho" (mu4e-message-field msg :maildir))))
-          :vars '((smtpmail-smtp-user           . "thievol05@zoho.eu")
-                  (smtpmail-default-smtp-server . "smtp.zoho.eu")
-                  (smtpmail-smtp-server         . "smtp.zoho.eu")
-                  (smtpmail-smtp-service        . 587)
-                  (mail-reply-to                . "thievol05@zoho.eu")
-                  (user-mail-address            . "thievol05@zoho.eu")
-                  ;; Not sure that works, once sending once from
-                  ;; webmail, it seems I am allowed to send from any
-                  ;; VPN but perhaps this may be needed? Note that
-                  ;; gmail doesn't add such headers when sending from webmail.
-                  ;; (message-default-headers      "User-Agent: Zoho Mail\nX-Mailer: Zoho Mail\n")
-                  (user-full-name               . "Thierry Volpiatto")
-                  (mu4e-compose-signature       . t)))))
+                   (mu4e-compose-signature       . t)))))
 
 (setq mu4e-user-mail-address-list
       (delq nil
@@ -191,24 +155,16 @@
 
 (setq mu4e-maildir-shortcuts
       '(("/drafts"                         . ?d)
-        ("/Posteo/INBOX"                   . ?p)
-        ("/Gmail/INBOX"                    . ?i)
-        ("/Posteo/github-helm"             . ?h)
+        ("/Posteo/INBOX"                   . ?i)
         ("/Posteo/Sent"                    . ?s)
         ("/Posteo/Trash"                   . ?t)
-        ("/Gmail/[Gmail].Spam"             . ?!)))
+        ))
 
 (setq mu4e-bookmarks
-      '(("date:1w..now helm AND NOT flag:trashed" "Last 7 days helm messages" ?h)
-        ("date:1d..now helm AND NOT flag:trashed" "Yesterday and today helm messages" ?b)
-        ("flag:unread AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam \
-AND NOT maildir:/Zoho/Spam" "Unread messages" ?u)
-        ("date:today..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam \
-AND NOT maildir:/Zoho/Spam" "Today's messages" ?t)
-        ("date:1d..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam \
-AND NOT maildir:/Zoho/Spam" "Yesterday and today messages" ?y)
-        ("date:7d..now AND NOT flag:trashed AND NOT maildir:/Gmail/[Gmail].Spam \
-AND NOT maildir:/Zoho/Spam" "Last 7 days" ?w)
+      '(("flag:unread AND NOT flag:trashed" "Unread messages" ?u)
+        ("date:today..now AND NOT flag:trashed" "Today's messages" ?t)
+        ("date:1d..now AND NOT flag:trashed" "Yesterday and today messages" ?y)
+        ("date:7d..now AND NOT flag:trashed" "Last 7 days" ?w)
         ))
 
 (add-hook 'mu4e-compose-mode-hook 'tv/message-mode-setup)
