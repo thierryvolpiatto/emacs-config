@@ -8,8 +8,6 @@
 
 
 ;;; Message and smtp settings
-;;
-;;
 
 ;; Posteo encrypt all incoming messages with my key.
 (setq mu4e-compose-crypto-policy nil)
@@ -137,9 +135,6 @@
 (define-key mu4e-main-mode-map "Q"   'mu4e-quit)
 (define-key mu4e-main-mode-map "\C-s" 'helm-mu)
 
-;;; Don't save message to Sent Messages, Gmail/IMAP takes care of this
-(setq mu4e-sent-messages-behavior 'delete)
-
 (setq mu4e-headers-skip-duplicates t)
 
 ;;; Signature
@@ -148,11 +143,7 @@
 ;;; encryption
 (define-key mu4e-view-mode-map [remap mu4e-view-verify-msg-popup] 'epa-mail-verify)
 
-;;; Setup some handy shortcuts
-;; you can quickly switch to your Inbox -- press ``ji''
-;; then, when you want archive some messages, move them to
-;; the 'All Mail' folder by pressing ``ma''.
-
+;;; Shortcuts
 (setq mu4e-maildir-shortcuts
       '(("/drafts"                         . ?d)
         ("/Posteo/INBOX"                   . ?i)
@@ -160,11 +151,24 @@
         ("/Posteo/Trash"                   . ?t)
         ))
 
+;;; Bookmarks
 (setq mu4e-bookmarks
-      '(("flag:unread AND NOT flag:trashed" "Unread messages" ?u)
-        ("date:today..now AND NOT flag:trashed" "Today's messages" ?t)
-        ("date:1d..now AND NOT flag:trashed" "Yesterday and today messages" ?y)
-        ("date:7d..now AND NOT flag:trashed" "Last 7 days" ?w)
+      '((:name
+         "Unread messages"
+         :query "flag:unread AND NOT flag:trashed"
+         :key ?u)
+        (:name
+         "Today's messages"
+         :query "date:today..now AND NOT flag:trashed"
+         :key ?t)
+        (:name
+         "Yesterday and today messages"
+         :query "date:1d..now AND NOT flag:trashed"
+         :key ?y)
+        (:name
+         "Last 7 days"
+         :query "date:7d..now AND NOT flag:trashed"
+         :key ?w)
         ))
 
 (add-hook 'mu4e-compose-mode-hook 'tv/message-mode-setup)
