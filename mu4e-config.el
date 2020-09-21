@@ -214,7 +214,6 @@
 
 ;;; Setup queue mail dir
 ;;
-;; `smtpmail-queue-mail' is set by NetworkManager.el.
 (setq smtpmail-queue-dir "~/Maildir/queue/")
 
 ;;; Handle quoted text added with `message-mark-inserted-region' (`C-c M-m')

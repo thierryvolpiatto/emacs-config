@@ -158,9 +158,7 @@
           (dired-do-hardlink . helm-read-file-name-handler-1)
           (basic-save-buffer . helm-read-file-name-handler-1)
           (write-file . helm-read-file-name-handler-1)
-          (write-region . helm-read-file-name-handler-1)))
-  ;; Fix CAP with LSP in python.
-  (add-to-list 'helm-completion-styles-alist '(python-mode . helm-fuzzy)))
+          (write-region . helm-read-file-name-handler-1))))
 
 (use-package helm-adaptive
   :config
