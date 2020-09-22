@@ -188,6 +188,8 @@ Restart works only on graphic display."
 ;; setup-minibuffer
 (setq enable-recursive-minibuffers t)
 (minibuffer-depth-indicate-mode 1)
+(when (boundp 'minibuffer-message-clear-timeout) ; Emacs-27+
+  (setq minibuffer-message-clear-timeout 1.5))
 
 ;; History variables
 (setq history-delete-duplicates t)
