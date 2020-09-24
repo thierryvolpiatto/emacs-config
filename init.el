@@ -189,7 +189,9 @@ Restart works only on graphic display."
 (setq enable-recursive-minibuffers t)
 (minibuffer-depth-indicate-mode 1)
 (when (boundp 'minibuffer-message-clear-timeout) ; Emacs-27+
-  (setq minibuffer-message-clear-timeout 1.5))
+  ;; (setq minibuffer-message-clear-timeout 1.5)
+  (setq set-message-function nil
+        clear-message-function nil))
 
 ;; History variables
 (setq history-delete-duplicates t)
