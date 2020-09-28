@@ -74,7 +74,10 @@
                    (mail-reply-to                . "thievol@posteo.net")
                    (user-mail-address            . "thievol@posteo.net")
                    (user-full-name               . "Thierry Volpiatto")
-                   (mu4e-compose-signature       . t)))))
+                   (mu4e-compose-signature       . t)
+                   (mu4e-sent-folder             . "/Posteo/Sent")
+                   (mu4e-trash-folder            . "/Posteo/Trash")
+                   (mu4e-drafts-folder           . "/Posteo/Drafts")))))
 
 (setq mu4e-user-mail-address-list
       (delq nil
@@ -145,7 +148,7 @@
 
 ;;; Shortcuts
 (setq mu4e-maildir-shortcuts
-      '(("/drafts"                         . ?d)
+      '(("/Posteo/Drafts"                  . ?d)
         ("/Posteo/INBOX"                   . ?i)
         ("/Posteo/Sent"                    . ?s)
         ("/Posteo/Trash"                   . ?t)
