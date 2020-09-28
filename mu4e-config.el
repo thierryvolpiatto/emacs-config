@@ -349,6 +349,15 @@ try this wash."
             (replace-match "" t t)
             (replace-match "\n" t t))))))
 
+(defun mu4e-view-remove-ctrl-arobase-chars ()
+  "Delete \" \" characters in mu4e-view buffer."
+  (save-excursion
+    (let ((inhibit-read-only t))
+      (message-goto-body)
+      (while (re-search-forward " " nil t)
+        (replace-match "")))))
+(add-hook 'mu4e-view-mode-hook 'mu4e-view-remove-ctrl-arobase-chars)
+
 ;; Refresh main buffer when sending queued mails
 (defun tv/advice-smtpmail-send-queued-mail ()
   (when (and mu4e~main-buffer-name
