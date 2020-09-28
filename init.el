@@ -2306,7 +2306,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Gnus
 ;;
 (use-package gnus
-  :disabled t
   :config
   (setq gnus-init-file "~/.emacs.d/.gnus")
   :bind ("<f7> m" . gnus))
