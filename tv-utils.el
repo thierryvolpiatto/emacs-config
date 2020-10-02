@@ -1177,6 +1177,40 @@ See <https://github.com/chubin/wttr.in>."
                  (file-name-nondirectory Info-current-file)
                  Info-current-node))))))
 
+(defun tv/get-headers-from-string (str)
+  "Return a list of headers from a mailto link."
+  (with-temp-buffer
+    (let (result
+          (beg 1))
+      (save-excursion
+        (insert
+         (url-unhex-string str)))
+      (while (re-search-forward "\\?\\|&" nil t)
+        (push (buffer-substring-no-properties beg (match-beginning 0))
+              result)
+        (setq beg (match-end 0)))
+      (unless (eobp)
+        (push (buffer-substring-no-properties beg (point-max))
+              result))
+      (nreverse result))))
+
+(defun tv/insert-headers-from-string (str)
+  "Add headers from STR in message buffer.
+Used by the Mailto script used from firefox."
+  (require 'message)
+  (cl-loop for header in (tv/get-headers-from-string str)
+           for h = (split-string header "=")
+           if (cdr h)
+           do (let ((fn   (intern (format "message-goto-%s" (car h)))))
+                (if (fboundp fn)
+                    (progn (funcall fn)
+                           (insert (format "%s" (cadr h))))
+                  (message-insert-header (intern (car h)) (format "%s\n" (cadr h)))))
+           else
+           do (progn (message-goto-to)
+                     (insert (format "%s" (car h)))))
+  (message-goto-body))
+
 (provide 'tv-utils)
 
 ;; Local Variables:
