@@ -1194,6 +1194,12 @@ See <https://github.com/chubin/wttr.in>."
               result))
       (nreverse result))))
 
+(defun message-goto-in-reply-to ()
+  "Move point to the In-Reply-To header."
+  (interactive)
+  (push-mark)
+  (message-position-on-field "In-Reply-To" "Subject"))
+
 (defun tv/insert-headers-from-string (str)
   "Add headers from STR in message buffer.
 Used by the Mailto script used from firefox."
@@ -1201,11 +1207,12 @@ Used by the Mailto script used from firefox."
   (cl-loop for header in (tv/get-headers-from-string str)
            for h = (split-string header "=")
            if (cdr h)
-           do (let ((fn   (intern (format "message-goto-%s" (car h)))))
+           do (let ((fn (intern (format "message-goto-%s" (car h)))))
                 (if (fboundp fn)
                     (progn (funcall fn)
                            (insert (format "%s" (cadr h))))
-                  (message-insert-header (intern (car h)) (format "%s\n" (cadr h)))))
+                  (insert "\n")
+                  (message-insert-header (intern (car h)) (format "%s" (cadr h)))))
            else
            do (progn (message-goto-to)
                      (insert (format "%s" (car h)))))
