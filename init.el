@@ -265,6 +265,12 @@ So far, F can only be a symbol, not a lambda expression."))
     (add-to-list 'Info-directory-list "/usr/local/share/info")
     (add-to-list 'Info-directory-list "/usr/share/info")
     (add-to-list 'Info-directory-list "~/elisp/info")
+    (add-to-list 'Info-directory-list "~/.emacs.d/straight/build/magit")
+    (add-to-list 'Info-directory-list "~/.emacs.d/straight/build/emms")
+    (add-to-list 'Info-directory-list "~/.emacs.d/straight/build/transient")
+    (add-to-list 'Info-directory-list "~/.emacs.d/straight/build/use-package")
+    (add-to-list 'Info-directory-list "~/.emacs.d/straight/build/with-editor")
+    (add-to-list 'Info-directory-list "~/.emacs.d/straight/build/w3m")
     ;; Fancy faces in info.
     (defface tv/info-ref-item
       '((((background dark)) :background "DimGray" :foreground "Gold")
@@ -1721,7 +1727,12 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;; W3m
 ;;
 (use-package w3m
-  :straight t
+  :straight (w3m
+             :host github
+             :repo "emacs-w3m/emacs-w3m"
+             ;; Need to set VERSION directly in emacs-w3m.texi.
+             :files (:defaults "icons" "doc/emacs-w3m.texi"
+                     (:exclude "octet.el" "mew-w3m.el" "w3m-xmas.el" "doc/emacs-w3m-ja.texi")))
   :commands (w3m-toggle-inline-image w3m-region w3m-browse-url)
   :init (require 'config-w3m)
   :bind
