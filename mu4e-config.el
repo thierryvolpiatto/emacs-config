@@ -110,6 +110,21 @@
       mu4e-index-lazy-check t
       mu4e-headers-include-related nil) ; Can be toggled with "W".
 
+;; See (info "(mu4e) Refiling messages")
+(defvar tv/mu4e-subject-alist '(("\\[djcb/mu\\]" . "/Posteo/github-mu"))
+  "List of subjects and their respective refile folders.")
+
+(defun tv/mu4e-refile-folder-function (msg)
+  "Set the refile folder for MSG."
+  (let ((subject (mu4e-message-field msg :subject))
+        (maildir (mu4e-message-field msg :maildir)))
+    (cl-loop for (reg . dir) in tv/mu4e-subject-alist
+             when (string-match reg subject)
+             return dir
+             finally return "/archive")))
+
+(setq mu4e-refile-folder 'tv/mu4e-refile-folder-function)
+
 ;;; Html rendering
 (setq mu4e-view-use-gnus t)
 
