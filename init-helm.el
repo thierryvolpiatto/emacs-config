@@ -280,7 +280,7 @@
   (customize-set-variable 'helm-ff-lynx-style-map t)
   (define-key helm-read-file-map (kbd "RET") 'helm-ff-RET)
   (define-key helm-find-files-map (kbd "C-i") nil)
-  (define-key helm-find-files-map (kbd "C-/") 'helm-ff-run-find-sh-command)
+  ;; (define-key helm-find-files-map (kbd "C-/") 'helm-ff-run-find-sh-command)
   (define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
 
   (defun helm/insert-date-in-minibuffer ()
@@ -432,7 +432,55 @@ new directory."
                                           :candidates 'helm-epa-get-key-list))))
      source
      'file-exists-p
-     3)))
+     3))
+
+  (defun helm-ff-fd (_candidate)
+    (let ((default-directory helm-ff-default-directory))
+      (helm :sources (helm-build-async-source "fd"
+                       :candidate-number-limit 20000
+                       :requires-pattern 2
+                       :nohighlight t
+                       :candidates-process
+                       (lambda ()
+                         (let* (process-connection-type
+                                (switches '("--hidden" "--type" "f" "--type" "d" "--color" "always"))
+                                (proc (apply #'start-process "fd" nil "fd" (append switches (list helm-pattern))))
+                                (start-time (float-time)))
+                           (prog1
+                               proc
+                             (set-process-sentinel
+                              proc (lambda (process event)
+                                     (when (string= event "finished\n")
+                                       (with-helm-window
+                                         (setq mode-line-format
+                                               `(" " mode-line-buffer-identification " "
+                                                 (:eval (format "L%s" (helm-candidate-number-at-point))) " "
+                                                 (:eval (propertize
+                                                         (format
+                                                          "[fd process finished in %.2fs - (%s results)] "
+                                                          ,(- (float-time) start-time)
+                                                          (helm-get-candidate-number))
+                                                         'face 'helm-grep-finish))))
+                                         (force-mode-line-update)
+                                         (when (and helm-allow-mouse helm-selection-point)
+                                           (helm--bind-mouse-for-selection helm-selection-point)))))))))
+                       :filtered-candidate-transformer
+                       (lambda (candidates _source)
+                         (cl-loop for i in candidates
+                                  collect (helm--ansi-color-apply i)))
+                       :action 'helm-type-file-actions
+                       :keymap helm-find-map)
+            :buffer "*helm fd*")))
+
+  (setq helm-find-files-actions (helm-append-at-nth helm-find-files-actions '(("Fd command (C-/)" . helm-ff-fd)) 17))
+
+  (defun helm-ff-run-fd ()
+    "Run fd shell command action with key from `helm-find-files'."
+    (interactive)
+    (with-helm-alive-p
+      (helm-exit-and-execute-action 'helm-ff-fd)))
+  (define-key helm-find-files-map (kbd "C-/") 'helm-ff-run-fd) 
+  )
 
 (use-package helm-dictionary ; Its autoloads are already loaded.
   :commands helm-dictionary
