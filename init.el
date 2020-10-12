@@ -2379,6 +2379,25 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 
   (global-undo-tree-mode 1))
 
+(use-package slime
+  :straight t
+  :init
+  (progn
+    (setq inferior-lisp-program "/usr/bin/sbcl"
+          slime-net-coding-system 'utf-8-unix
+          slime-contribs '(slime-fancy slime-scratch slime-autodoc)
+          slime-scratch-file "~/.emacs.d/slime-scratch.lisp")
+    ;; common-lisp-info
+    (require 'cl-info)
+    (add-to-list 'Info-additional-directory-list "~/elisp/info/gcl-info/"))
+  :config
+  (use-package slime-repl
+    :config (define-key slime-repl-mode-map (kbd "C-i")  'helm-slime-complete))
+  (use-package slime-scratch
+  :config (define-key slime-scratch-mode-map (kbd "C-i") 'helm-slime-complete))
+  :bind (("<f11> l r" . slime)
+         ("<f11> l s" . slime-scratch)
+         ("<f11> l l" . helm-slime-list-connections)))
 
 ;; Kill buffer and windows
 (defun tv/kill-buffer-and-windows (arg)

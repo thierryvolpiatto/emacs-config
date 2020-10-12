@@ -434,51 +434,59 @@ new directory."
      'file-exists-p
      3))
 
+  (defvar helm-fd-switches '("--hidden" "--type" "f" "--type" "d" "--color" "always"))
+
+  (defclass helm-fd-class (helm-source-async)
+    ((candidates-process :initform 'helm-fd-process)
+     (requires-pattern :initform 2)
+     (candidate-number-limit :initform 20000)
+     (nohighlight :initform t)
+     (filtered-candidate-transformer :initform 'helm-fd-fct)
+     (action :initform 'helm-type-file-actions)
+     (keymap :initform helm-find-map)))
+
+  (defun helm-fd-process ()
+    (let (process-connection-type
+          (proc (apply #'start-process
+                       "fd" nil "fd"
+                       (append helm-fd-switches (list helm-pattern))))
+          (start-time (float-time)))
+      (prog1
+          proc
+        (set-process-sentinel
+         proc (lambda (process event)
+                (when (string= event "finished\n")
+                  (with-helm-window
+                    (setq mode-line-format
+                          `(" " mode-line-buffer-identification " "
+                            (:eval (format "L%s" (helm-candidate-number-at-point))) " "
+                            (:eval (propertize
+                                    (format
+                                     "[fd process finished in %.2fs - (%s results)] "
+                                     ,(- (float-time) start-time)
+                                     (helm-get-candidate-number))
+                                    'face 'helm-grep-finish))))
+                    (force-mode-line-update)
+                    (when (and helm-allow-mouse helm-selection-point)
+                      (helm--bind-mouse-for-selection helm-selection-point)))))))))
+
+  (defun helm-fd-fct (candidates _source)
+    (cl-loop for i in candidates
+             collect (helm--ansi-color-apply i)))
+
   (defun helm-ff-fd (_candidate)
     (let ((default-directory helm-ff-default-directory))
-      (helm :sources (helm-build-async-source "fd"
-                       :candidate-number-limit 20000
-                       :requires-pattern 2
-                       :nohighlight t
-                       :candidates-process
-                       (lambda ()
-                         (let* (process-connection-type
-                                (switches '("--hidden" "--type" "f" "--type" "d" "--color" "always"))
-                                (proc (apply #'start-process "fd" nil "fd" (append switches (list helm-pattern))))
-                                (start-time (float-time)))
-                           (prog1
-                               proc
-                             (set-process-sentinel
-                              proc (lambda (process event)
-                                     (when (string= event "finished\n")
-                                       (with-helm-window
-                                         (setq mode-line-format
-                                               `(" " mode-line-buffer-identification " "
-                                                 (:eval (format "L%s" (helm-candidate-number-at-point))) " "
-                                                 (:eval (propertize
-                                                         (format
-                                                          "[fd process finished in %.2fs - (%s results)] "
-                                                          ,(- (float-time) start-time)
-                                                          (helm-get-candidate-number))
-                                                         'face 'helm-grep-finish))))
-                                         (force-mode-line-update)
-                                         (when (and helm-allow-mouse helm-selection-point)
-                                           (helm--bind-mouse-for-selection helm-selection-point)))))))))
-                       :filtered-candidate-transformer
-                       (lambda (candidates _source)
-                         (cl-loop for i in candidates
-                                  collect (helm--ansi-color-apply i)))
-                       :action 'helm-type-file-actions
-                       :keymap helm-find-map)
+      (helm :sources (helm-make-source "fd" 'helm-fd-class)
             :buffer "*helm fd*")))
-
-  (setq helm-find-files-actions (helm-append-at-nth helm-find-files-actions '(("Fd command (C-/)" . helm-ff-fd)) 17))
 
   (defun helm-ff-run-fd ()
     "Run fd shell command action with key from `helm-find-files'."
     (interactive)
     (with-helm-alive-p
       (helm-exit-and-execute-action 'helm-ff-fd)))
+
+  (setq helm-find-files-actions (helm-append-at-nth helm-find-files-actions '(("Fd command (C-/)" . helm-ff-fd)) 17))
+
   (define-key helm-find-files-map (kbd "C-/") 'helm-ff-run-fd) 
   )
 
