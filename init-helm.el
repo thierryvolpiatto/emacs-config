@@ -274,6 +274,7 @@
         helm-dwim-target                         'next-window
         helm-ff-cache-mode-post-delay            0.3
         helm-ff-refresh-cache-delay              0.3
+        helm-locate-recursive-dirs-command "fd --hidden --type d --glob '*%s*' %s"
         ;; helm-ff-cache-mode-lighter-sleep         " 💡"
         ;; helm-ff-cache-mode-lighter-updating      " 💀"
         )
