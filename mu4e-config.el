@@ -163,6 +163,7 @@
 (define-key mu4e-main-mode-map "q"   'quit-window)
 (define-key mu4e-main-mode-map "Q"   'mu4e-quit)
 (define-key mu4e-main-mode-map "\C-s" 'helm-mu)
+(define-key mu4e-main-mode-map "u" 'mu4e-update-index)
 
 (setq mu4e-headers-skip-duplicates t)
 
