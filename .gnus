@@ -174,7 +174,8 @@ This will run in `message-send-hook'."
 (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
 
 ;; Scoring 
-;; The scoring system sorts articles and authors you read often to the beginning of the available mails.
+;; The scoring system sorts articles and authors you read often to the
+;; beginning of the available mails.
 ;; Less interesting stuff is located at the end.
 (setq gnus-use-adaptive-scoring t)
 (setq gnus-score-expiry-days 14)
