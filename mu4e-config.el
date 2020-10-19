@@ -47,8 +47,6 @@
       smtpmail-smtp-server "posteo.de"
       smtpmail-smtp-service 587)
 
-;; Passage à la ligne automatique
-;;
 (defvar tv/message-pre-winconf nil)
 (defun tv/message-mode-setup ()
   (setq tv/message-pre-winconf (current-window-configuration))
@@ -213,26 +211,10 @@
 ;;
 ;;
 ;; allow for updating mail using 'U' in the main view:
-(setq mu4e-get-mail-command "offlineimap -q -u Basic")
+(setq mu4e-get-mail-command "mbsync -a")
 
 ;;; Automatic updates.
 ;(setq mu4e-update-interval 600)
-
-;;; Make a full update all the
-;; `tv/mu4e-max-number-update-before-toggling' mail retrievals.
-(defvar tv/mu4e-counter 10) ; Ensure a full update on startup.
-(defvar tv/mu4e-max-number-update-before-toggling 10)
-(defvar tv/mu4e-get-mail-command-full "offlineimap -u Basic")
-(defvar tv/mu4e-get-mail-command-quick "offlineimap -q -u Basic")
-(defun tv/mu4e-update-mail-quick-or-full ()
-  (if (>= tv/mu4e-counter
-          tv/mu4e-max-number-update-before-toggling)
-      (progn
-        (setq mu4e-get-mail-command tv/mu4e-get-mail-command-full)
-        (setq tv/mu4e-counter 0))
-    (setq mu4e-get-mail-command tv/mu4e-get-mail-command-quick)
-    (cl-incf tv/mu4e-counter)))
-(add-hook 'mu4e-update-pre-hook #'tv/mu4e-update-mail-quick-or-full)
 
 ;;; Attempt to show images when viewing messages
 ;; (setq mu4e-view-show-images t
