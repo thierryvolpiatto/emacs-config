@@ -2380,6 +2380,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   (global-undo-tree-mode 1))
 
 (use-package slime
+  :disabled t
   :straight t
   :init
   (progn
