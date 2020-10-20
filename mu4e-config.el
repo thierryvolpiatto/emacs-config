@@ -211,7 +211,7 @@
 ;;
 ;;
 ;; allow for updating mail using 'U' in the main view:
-(setq mu4e-get-mail-command "mbsync -a")
+(setq mu4e-get-mail-command "mbsync -a -V")
 
 ;;; Automatic updates.
 ;(setq mu4e-update-interval 600)
