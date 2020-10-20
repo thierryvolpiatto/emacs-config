@@ -23,6 +23,8 @@
 (setq gnus-select-method '(nntp "news.gmane.io"
                            (nnir-search-engine gmane)))
 
+(setq gnus-thread-sort-functions '((not gnus-thread-sort-by-number)))
+
 ;;; To add a mail account:
 ;;
 ;;  1) Add an nnimap entry in `gnus-secondary-select-methods'.
