@@ -2320,6 +2320,19 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 (use-package gnus
   :config
   (setq gnus-init-file "~/.emacs.d/.gnus")
+  (setq mail-user-agent 'gnus-user-agent)
+  (setq read-mail-command 'gnus)
+  (setq send-mail-command 'gnus-msg-mail)
+  (defvar tv/gnus-loaded-p nil)
+  (defun tv/gnus-init-hook ()
+    (unless tv/gnus-loaded-p
+      (load gnus-init-file)
+      (addressbook-turn-on-mail-completion)
+      (setq tv/gnus-loaded-p t)))
+  
+  (add-hook 'message-mode-hook 'tv/gnus-init-hook)
+  (add-hook 'gnus-before-startup-hook 'tv/gnus-init-hook)
+
   :bind ("<f7> m" . gnus))
 
 ;;; Rainbow-mode
