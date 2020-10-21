@@ -1,4 +1,4 @@
-;;; .gnus.el -- Laptop
+;;; gnus-config.el -- Laptop
 
 ;; Set `gnus-init-file' to the path of this file in init.el before
 ;; calling `gnus'.
@@ -307,5 +307,5 @@ This will run in `message-send-hook'."
 ;; Default directory to save attached files 
 (setq mm-default-directory "~/download/")
 
-;;; .gnus.el ends here
+;;; gnus-config.el ends here
 
