@@ -1760,6 +1760,19 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
   :commands (mu4e compose-mail)
   :bind ("<f8>" . mu4e))
 
+;;; Autocrypt
+;;
+(use-package autocrypt
+  :straight t
+  :hook ((mu4e-main-mode . autocrypt-mode)
+         (gnus-mode . autocrypt-mode)
+         (message-mode . autocrypt-mode))
+  :config
+  (setq autocrypt-accounts
+        '(("thievol@posteo.net"
+           "23DB707D137BAF79E283FC700EC56D141D16EF93"
+           mutual))))
+
 ;;; Auth-source
 ;;
 (use-package auth-source
@@ -2334,19 +2347,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   (add-hook 'gnus-before-startup-hook 'tv/gnus-init-hook)
 
   :bind ("<f7> m" . gnus))
-
-;;;
-;;
-(use-package autocrypt
-  :straight t
-  :hook (;; (mu4e-main-mode . autocrypt-mode)
-         (gnus-mode . autocrypt-mode)
-         (message-mode . autocrypt-mode))
-  :config
-  (setq autocrypt-accounts
-        '(("thievol@posteo.net"
-           "23DB707D137BAF79E283FC700EC56D141D16EF93"
-           mutual))))
 
 ;;; Rainbow-mode
 ;;
