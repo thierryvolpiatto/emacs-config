@@ -290,7 +290,7 @@ This will run in `message-send-hook'."
 
 ;; Verify/Decrypt automatically
 ;; only if mml knows about the protocol used.
-(setq mm-verify-option 'known)
+(setq mm-verify-option 'never)
 (setq mm-decrypt-option 'known)
 
 (setq gnus-inhibit-mime-unbuttonizing nil)
