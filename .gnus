@@ -280,7 +280,7 @@ This will run in `message-send-hook'."
        (setq mm-text-html-renderer 'shr)))
 
 ;; Try to inline images
-(setq mm-inline-text-html-with-images t)
+;; (setq mm-inline-text-html-with-images t)
 
 ;;; Mail encryption.
 ;;
