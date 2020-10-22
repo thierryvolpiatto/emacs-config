@@ -258,9 +258,9 @@ If entries are already pointed, skip."
              do (progn
                   (goto-char (point-min))
                   (while (re-search-forward regexp nil t)
-                    (when (re-search-forward (format "\\(%s:?[^ ]*\\)\\( *\\)\\(€ *[0-9.]*\\)$" entry) nil t)
+                    (when (re-search-forward (format "\\(%s:?[^ \n]*\\)\\( *\\)\\(€? *[0-9.]*\\)$" entry) nil t)
                       (unless (save-match-data (string= tag (match-string 1)))
-                        (replace-match tag nil nil nil 1))))))))
+                        (replace-match tag t nil nil 1))))))))
 
 (provide 'ledger-config)
 
