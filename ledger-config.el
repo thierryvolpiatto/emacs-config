@@ -245,6 +245,7 @@ If entries are already pointed, skip."
 
 (defvar ledger/associations '(("PRELEVEMENT A LA SOURCE REVENUS" . "Expenses:impot:prelevement_source")
                               ("CARAC" . "Expenses:carac")
+                              ("MOTIF: DECLIC" . "Expenses:codevi")
                               ("IMMOB PATRIMOINE ET FINANCES" . "Income:loyers:immovar")
                               ("VIR GIE AFER" . "Income:afer:racp")
                               ("SCPI PIERVAL SANTE" . "Income:scpi:pierval")
