@@ -243,25 +243,28 @@ If entries are already pointed, skip."
 (defadvice ledger-reconcile-quit (after restore-winconf activate)
   (set-window-configuration ledger-previous-window-configuration))
 
-(defvar ledger/associations '(("PRELEVEMENT A LA SOURCE REVENUS" . "Expenses:impot:prelevement_source")
-                              ("CARAC" . "Expenses:carac")
-                              ("MOTIF: DECLIC" . "Expenses:codevi")
-                              ("IMMOB PATRIMOINE ET FINANCES" . "Income:loyers:immovar")
-                              ("VIR GIE AFER" . "Income:afer:racp")
-                              ("SCPI PIERVAL SANTE" . "Income:scpi:pierval")
-                              ("LFREM DISTRI SCPI" . "Income:scpi:lfrem")))
+(defvar ledger/associations '(("PRELEVEMENT A LA SOURCE REVENUS" . ":impot:prelevement_source")
+                              ("MOTIF: CARAC" . ":carac")
+                              ("MOTIF: DECLIC" . ":codevi")
+                              ("IMMOB PATRIMOINE ET FINANCES" . ":loyers:immovar")
+                              ("VIR GIE AFER" . ":afer:racp")
+                              ("SCPI PIERVAL SANTE" . ":scpi:pierval")
+                              ("LFREM DISTRI SCPI" . ":scpi:lfrem")
+                              ("AMAZON PAYMENTS COMMERCE ELECTRONIQUE" . ":shopping:amazon")
+                              ("LES QUATRE VALLEES" . ":vétérinaire")))
+
 ;;;###autoload
 (defun ledger/update-associations ()
   (interactive)
   (with-current-buffer (find-file-noselect (getenv "LEDGER_FILE"))
-    (cl-loop for (regexp . tag) in ledger/associations
-             for entry = (car (split-string tag ":"))
-             do (progn
-                  (goto-char (point-min))
-                  (while (re-search-forward regexp nil t)
-                    (when (re-search-forward (format "\\(%s:?[^ \n]*\\)\\( *\\)\\(€? *[0-9.]*\\)$" entry) nil t)
-                      (unless (save-match-data (string= tag (match-string 1)))
-                        (replace-match tag t nil nil 1))))))))
+    (save-excursion
+      (cl-loop for (regexp . tag) in ledger/associations
+               do (progn
+                    (goto-char (point-min))
+                    (while (re-search-forward regexp nil t)
+                      (when (re-search-forward "\\(Expenses\\|Income\\)\\(:?[^ \n]*\\)\\( *€? *[0-9.]*\\)$" nil t)
+                        (unless (string= tag (match-string 2))
+                          (replace-match tag t nil nil 2)))))))))
 
 (provide 'ledger-config)
 
