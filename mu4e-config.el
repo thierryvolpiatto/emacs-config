@@ -204,6 +204,8 @@
 ;;
 ;; allow for updating mail using 'U' in the main view:
 ;; (setq mu4e-get-mail-command "mbsync -a -V")
+;; (setq mu4e-change-filenames-when-moving t) ;; Use only with mbsync!
+
 (setq mu4e-get-mail-command "offlineimap -q -u Basic")
 
 ;;; Make a full update all the
