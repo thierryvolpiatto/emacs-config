@@ -188,10 +188,13 @@ Restart works only on graphic display."
 ;; setup-minibuffer
 (setq enable-recursive-minibuffers t)
 (minibuffer-depth-indicate-mode 1)
+;; Remove message and error popping up at end of active minibuffer in
+;; emacs-27.
 (when (boundp 'minibuffer-message-clear-timeout) ; Emacs-27+
   ;; (setq minibuffer-message-clear-timeout 1.5)
   (setq set-message-function nil
-        clear-message-function nil))
+        clear-message-function nil)
+  (remove-hook 'minibuffer-setup-hook 'minibuffer-error-initialize))
 
 ;; History variables
 (setq history-delete-duplicates t)
