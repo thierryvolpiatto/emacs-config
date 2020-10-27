@@ -1218,13 +1218,14 @@ Used by the Mailto script used from firefox."
                      (insert (format "%s" (car h)))))
   (message-goto-body))
 
-(defun tv/diametre-plateau (trous dist)
-  "Return the diameter of crankset with HOLES number separated by DIST.
+(defun tv/diametre-plateau (holes dist)
+  "Return the diameter of crankset with HOLES number separated by DIST mm.
   E.g. TROUS=5 and DIST=64.7 => 110"
   (let ((L2 (/ dist 2)))
-    (* 2 (sqrt
-          (+ (expt L2 2)
-             (expt (/ L2 (tan (degrees-to-radians (/ 180 trous)))) 2))))))
+    (floor
+     (* 2 (sqrt
+           (+ (expt L2 2)
+              (expt (/ L2 (tan (degrees-to-radians (/ 180 holes)))) 2)))))))
 
 (provide 'tv-utils)
 
