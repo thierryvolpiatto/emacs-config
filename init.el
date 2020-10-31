@@ -9,6 +9,10 @@
              (format "%.2f" time))))
 (add-hook 'emacs-startup-hook #'tv/emacs-load-time t)
 
+(setq comp-deferred-compilation
+      (and (fboundp 'native-comp-available-p)
+           (native-comp-available-p)))
+
 (require 'cl-lib)
 
 (setq inhibit-startup-echo-area-message "thierry")
@@ -122,7 +126,8 @@ Restart works only on graphic display."
 (setq gc-cons-threshold 20000000)
 
 ;; Disable bidi
-(setq-default bidi-display-reordering nil)
+;; (setq-default bidi-display-reordering nil)
+(setq-default bidi-paragraph-direction 'left-to-right)
 
 ;; column-number in mode-line.
 (column-number-mode 1)

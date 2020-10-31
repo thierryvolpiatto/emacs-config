@@ -556,6 +556,15 @@ First call indent, second complete symbol, third complete fname."
   (customize-set-variable 'helm-minibuffer-history-key [remap next-matching-history-element])
   (helm-epa-mode 1))
 
+(use-package helm-fd
+  :config
+  (defun helm-fd-pa (candidate)
+  (with-helm-buffer
+    (helm-ff-kill-or-find-buffer-fname
+     (expand-file-name candidate))))
+  (cl-defmethod helm-setup-user-source ((source helm-fd-class))
+    (setf (slot-value source 'persistent-action) 'helm-fd-pa)))
+
 
 ;;; Ctl-x-5 map
 ;;
