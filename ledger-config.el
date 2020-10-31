@@ -248,10 +248,11 @@ If entries are already pointed, skip."
                               ("MOTIF: DECLIC" . ":codevi")
                               ("IMMOB PATRIMOINE ET FINANCES" . ":loyers:immovar")
                               ("VIR GIE AFER" . ":afer:racp")
-                              ("SCPI PIERVAL SANTE" . ":scpi:pierval")
+                              ("PIERVAL SANTE" . ":scpi:pierval")
                               ("LFREM DISTRI SCPI" . ":scpi:lfrem")
                               ("AMAZON PAYMENTS COMMERCE ELECTRONIQUE" . ":shopping:amazon")
-                              ("LES QUATRE VALLEES" . ":vétérinaire")))
+                              ("LES QUATRE VALLEES" . ":vétérinaire")
+                              ("CERUTI PONS" . ":vétérinaire")))
 
 ;;;###autoload
 (defun ledger/update-associations ()
