@@ -113,6 +113,9 @@
 
 (setq mu4e-refile-folder 'tv/mu4e-refile-folder-function)
 
+(setq mm-verify-option 'never
+      mm-decrypt-option 'known)
+
 ;;; Html rendering
 (setq mu4e-view-use-gnus t)
 

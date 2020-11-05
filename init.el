@@ -1762,6 +1762,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;; Mu4e
 ;;
 (use-package mu4e
+  :disabled t
   :config
   (progn (require 'mu4e-config)
          (addressbook-turn-on-mail-completion))
@@ -1771,6 +1772,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;; Autocrypt
 ;;
 (use-package autocrypt
+  :disabled t
   :straight t
   :hook ((mu4e-main-mode . autocrypt-mode)
          (gnus-mode . autocrypt-mode)
