@@ -1772,7 +1772,6 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;; Autocrypt
 ;;
 (use-package autocrypt
-  :disabled t
   :straight t
   :hook ((mu4e-main-mode . autocrypt-mode)
          (gnus-mode . autocrypt-mode)
@@ -2340,7 +2339,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Gnus
 ;;
 (use-package gnus
-  :disabled t
   :config
   (setq gnus-init-file "~/.emacs.d/.gnus")
   (setq mail-user-agent 'gnus-user-agent)
