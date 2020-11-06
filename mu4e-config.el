@@ -113,6 +113,9 @@
 
 (setq mu4e-refile-folder 'tv/mu4e-refile-folder-function)
 
+;; Using 'known for `mm-verify-option' may hang mu4e or gnus forever
+;; if the key is not found.  However if mail have an autocrypt header
+;; we import this key so that mu4e can verify mail.
 (setq mm-verify-option 'never
       mm-decrypt-option 'known)
 
@@ -374,6 +377,49 @@ try this wash."
         (if (eolp)
             (replace-match "" t t)
             (replace-match "\n" t t))))))
+
+(defun tv/gnus-remove-ctrl-arobase-chars ()
+  "Delete C-@ characters in gnus article buffer."
+  (save-excursion
+    (let ((inhibit-read-only t))
+      (message-goto-body)
+      ;; WARNING: (emacs bug)
+      ;; Using ^@ instead of \0 corrupt emacs-lisp buffers
+      ;; containing special characters such as "à" and may be
+      ;; others (unicode), this doesn't happen in lisp-interaction
+      ;; buffers i.e. scratch.
+      (while (re-search-forward "\0" nil t)
+        (replace-match "")))))
+(add-hook 'gnus-part-display-hook 'tv/gnus-remove-ctrl-arobase-chars)
+
+(defun tv/epg-import-keys-region (start end)
+  "Same as `epa-import-keys-region' but less verbose and BTW faster."
+  (let ((context (epg-make-context epa-protocol)))
+    (message "Autocrypt importing gpg key...")
+    (condition-case err
+	(progn
+	  (epg-import-keys-from-string context (buffer-substring start end))
+          (message "Autocrypt importing gpg key done"))
+      (error "Importing from autocrypt failed: %s" (cadr err)))))
+
+(defun tv/autocrypt-import-key ()
+  "Mu4e and Gnus hang forever when a key is not found and mail is
+signed. When this happen, importing the key from the autocrypt header,
+if one may help. "
+  (interactive)
+  (require 'epg)
+  ;; `message-fetch-field' removes the newlines, so use `mail-fetch-field'.
+  (let ((data (mail-fetch-field "Autocrypt" nil t)))
+    (when data
+      (with-temp-buffer
+        (insert data)
+        (goto-char (point-min))
+        (delete-region (point-at-bol) (point-at-eol))
+        (insert "-----BEGIN PGP PUBLIC KEY BLOCK-----\n")
+        (goto-char (point-max))
+        (insert "\n-----END PGP PUBLIC KEY BLOCK-----")
+        (tv/epg-import-keys-region (point-min) (point-max))))))
+(add-hook 'gnus-article-decode-hook 'tv/autocrypt-import-key)
 
 ;; Refresh main buffer when sending queued mails
 (defun tv/advice-smtpmail-send-queued-mail ()

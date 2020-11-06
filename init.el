@@ -1762,7 +1762,6 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;; Mu4e
 ;;
 (use-package mu4e
-  :disabled t
   :config
   (progn (require 'mu4e-config)
          (addressbook-turn-on-mail-completion))
@@ -2339,6 +2338,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Gnus
 ;;
 (use-package gnus
+  :disabled t
   :config
   (use-package gnus-article-treat-patch
     :config
