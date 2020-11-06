@@ -2342,7 +2342,20 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   :config
   (use-package gnus-article-treat-patch
     :config
-    (add-hook 'gnus-part-display-hook 'ft/gnus-article-treat-patch))
+    (add-hook 'gnus-part-display-hook 'ft/gnus-article-treat-patch)
+    (defun tv/gnus-remove-ctrl-arobase-chars ()
+      "Delete C-@ characters in gnus article buffer."
+      (save-excursion
+        (let ((inhibit-read-only t))
+          (message-goto-body)
+          ;; WARNING: (emacs bug)
+          ;; Using ^@ instead of \0 corrupt emacs-lisp buffers
+          ;; containing special characters such as "à" and may be
+          ;; others (unicode), this doesn't happen in lisp-interaction
+          ;; buffers i.e. scratch.
+          (while (re-search-forward "\0" nil t)
+            (replace-match "")))))
+    (add-hook 'gnus-part-display-hook 'tv/gnus-remove-ctrl-arobase-chars))
   (setq gnus-init-file "~/.emacs.d/.gnus")
   (setq mail-user-agent 'gnus-user-agent)
   (setq read-mail-command 'gnus)
