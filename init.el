@@ -2340,6 +2340,9 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;
 (use-package gnus
   :config
+  (use-package gnus-article-treat-patch
+    :config
+    (add-hook 'gnus-part-display-hook 'ft/gnus-article-treat-patch))
   (setq gnus-init-file "~/.emacs.d/.gnus")
   (setq mail-user-agent 'gnus-user-agent)
   (setq read-mail-command 'gnus)

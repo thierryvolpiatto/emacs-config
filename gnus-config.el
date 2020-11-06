@@ -307,5 +307,34 @@ This will run in `message-send-hook'."
 ;; Default directory to save attached files 
 (setq mm-default-directory "~/download/")
 
+;; Show github patchs in other frame
+(defun tv/curl-url-retrieve (url)
+  (with-temp-buffer
+    (call-process "curl" nil t nil "-s" "-L" url)
+    (buffer-string)))
+
+(defun tv/gnus-show-patch-other-frame (url)
+  (let ((contents "")
+        (bufname (file-name-nondirectory url)))
+    (if (buffer-live-p (get-buffer bufname))
+        (progn (switch-to-buffer-other-frame bufname)
+               (view-mode))
+      (setq contents (tv/curl-url-retrieve url))
+      (switch-to-buffer-other-frame (get-buffer-create bufname))
+      (erase-buffer)
+      (save-excursion (insert contents))
+      (diff-mode)
+      (view-mode))))
+
+(defun tv/gnus-browse-url-or-show-patch (arg)
+  (interactive "P")
+  (require 'helm-net)
+  (let ((url (w3m-active-region-or-url-at-point)))
+    (when url
+      (if (string-match "\\.\\(patch\\|diff\\)\\'" url)
+          (tv/gnus-show-patch-other-frame (if arg (concat url "?w=1") url))
+        (browse-url url)))))
+(define-key gnus-article-mode-map (kbd "C-c C-c") 'tv/gnus-browse-url-or-show-patch)
+
 ;;; gnus-config.el ends here
 
