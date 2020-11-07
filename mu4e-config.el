@@ -370,8 +370,11 @@ try this wash."
             (replace-match "" t t)
             (replace-match "\n" t t))))))
 
-(defun tv/gnus-remove-ctrl-arobase-chars ()
-  "Delete C-@ characters in gnus article buffer."
+(defun tv/delete-null-chars-from-gnus ()
+  "Delete null characters in gnus article buffer.
+Such characters are represented by \"^@\" chars.
+They are often at end of signature in encrypted mails (or not?).
+See https://en.wikipedia.org/wiki/Null_character."
   (save-excursion
     (let ((inhibit-read-only t))
       (message-goto-body)
@@ -382,7 +385,7 @@ try this wash."
       ;; buffers i.e. scratch.
       (while (re-search-forward "\0" nil t)
         (replace-match "")))))
-(add-hook 'gnus-part-display-hook 'tv/gnus-remove-ctrl-arobase-chars)
+(add-hook 'gnus-part-display-hook 'tv/delete-null-chars-from-gnus)
 
 (defun tv/epg-import-keys-region (start end)
   "Same as `epa-import-keys-region' but less verbose and BTW faster."
