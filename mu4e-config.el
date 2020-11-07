@@ -113,12 +113,6 @@
 
 (setq mu4e-refile-folder 'tv/mu4e-refile-folder-function)
 
-;; Using 'known for `mm-verify-option' may hang mu4e or gnus forever
-;; if the key is not found.  However if mail have an autocrypt header
-;; we import this key so that mu4e can verify mail.
-(setq mm-verify-option 'never
-      mm-decrypt-option 'known)
-
 ;;; Html rendering
 (setq mu4e-view-use-gnus t)
 
@@ -418,6 +412,12 @@ if one may help. "
         (insert "\n-----END PGP PUBLIC KEY BLOCK-----")
         (tv/epg-import-keys-region (point-min) (point-max))))))
 (add-hook 'gnus-article-decode-hook 'tv/autocrypt-import-key)
+
+;; Using 'known for `mm-verify-option' may hang mu4e or gnus forever
+;; if the key is not found.  However if mail have an autocrypt header
+;; we import this key so that mu4e can verify mail.
+(setq mm-verify-option 'never
+      mm-decrypt-option 'known)
 
 ;; Refresh main buffer when sending queued mails
 (defun tv/advice-smtpmail-send-queued-mail ()
