@@ -9,9 +9,6 @@
 
 ;;; Message and smtp settings
 
-;; Posteo encrypt all incoming messages with my key.
-(setq mu4e-compose-crypto-policy nil)
-
 ;; Don't send to these address in wide reply.
 (setq mu4e-compose-reply-ignore-address
       '("notifications@github\\.com"
@@ -386,6 +383,11 @@ See https://en.wikipedia.org/wiki/Null_character."
       (while (re-search-forward "\0" nil t)
         (replace-match "")))))
 (add-hook 'gnus-part-display-hook 'tv/delete-null-chars-from-gnus)
+
+;; Crypto
+;; Posteo encrypt all incoming messages with my key.
+(setq mu4e-compose-crypto-policy nil) ;;'(encrypt-encrypted-replies sign-encrypted-replies))
+;; (setq mm-encrypt-option 'guided)
 
 (defun tv/epg-import-keys-region (start end)
   "Same as `epa-import-keys-region' but less verbose and BTW faster."
