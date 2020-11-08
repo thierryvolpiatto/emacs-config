@@ -385,8 +385,8 @@ See https://en.wikipedia.org/wiki/Null_character."
 (add-hook 'gnus-part-display-hook 'tv/delete-null-chars-from-gnus)
 
 ;; Crypto
-;; Posteo encrypt all incoming messages with my key.
-(setq mu4e-compose-crypto-policy nil) ;;'(encrypt-encrypted-replies sign-encrypted-replies))
+;; Autocrypt will decide if encrypting or not.
+(setq mu4e-compose-crypto-policy nil)
 ;; (setq mm-encrypt-option 'guided)
 
 (defun tv/epg-import-keys-region (start end)
