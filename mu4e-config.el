@@ -399,15 +399,23 @@ See https://en.wikipedia.org/wiki/Null_character."
           (message "Autocrypt importing gpg key done"))
       (error "Importing from autocrypt failed: %s" (cadr err)))))
 
-(defun tv/autocrypt-import-key ()
-  "Mu4e and Gnus hang forever when a key is not found and mail is
+(defun tv/autocrypt-import-key (&optional arg)
+  "Import key from autocrypt header to gpg keyring.
+Try to import the key only if an autocrypt header is found and if
+sender is not one of `autocrypt-peers'.  Called interactively with a
+prefix arg import the key even if sender is member of
+`autocrypt-peers'.
+
+Mu4e and Gnus hang forever when a key is not found and mail is
 signed. When this happen, importing the key from the autocrypt header,
-if one may help. "
-  (interactive)
+if one may help."
+  (interactive "P")
   (require 'epg)
+  (require 'autocrypt)
   ;; `message-fetch-field' removes the newlines, so use `mail-fetch-field'.
-  (let ((data (mail-fetch-field "Autocrypt" nil t)))
-    (when data
+  (let ((data (mail-fetch-field "Autocrypt" nil t))
+        (from (message-sendmail-envelope-from)))
+    (when (and data (or arg (not (assoc from autocrypt-peers))))
       (with-temp-buffer
         (insert data)
         (goto-char (point-min))
