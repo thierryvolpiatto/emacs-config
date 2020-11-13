@@ -388,6 +388,8 @@ See https://en.wikipedia.org/wiki/Null_character."
 ;; Autocrypt will decide if encrypting or not.
 (setq mu4e-compose-crypto-policy nil)
 ;; (setq mm-encrypt-option 'guided)
+;; encrypt-to gnupg option is already used in ~/.gnupg/gpg.conf.
+;; (setq mml-secure-openpgp-encrypt-to-self '("0EC56D141D16EF93"))
 
 (defun tv/epg-import-keys-region (start end)
   "Same as `epa-import-keys-region' but less verbose and BTW faster."
