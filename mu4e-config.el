@@ -387,9 +387,15 @@ See https://en.wikipedia.org/wiki/Null_character."
 ;; Crypto
 ;; Autocrypt will decide if encrypting or not.
 (setq mu4e-compose-crypto-policy nil)
-;; (setq mm-encrypt-option 'guided) ; -> force choosing key (completion).
+
+;; force choosing key (completion).
+;; (setq mm-encrypt-option 'guided)
+
 ;; See also encrypt-to and hidden-encrypt-to gnupg options.
-(setq mml-secure-openpgp-encrypt-to-self '("0EC56D141D16EF93"))
+(setq mml-secure-openpgp-encrypt-to-self '("E6F697C8ED3C46FC") ; pub
+      mml-secure-openpgp-sign-with-sender t
+      ;; mml-secure-openpgp-signers '("0EC56D141D16EF93") ; priv
+      )
 
 (defun tv/epg-import-keys-region (start end)
   "Same as `epa-import-keys-region' but less verbose and BTW faster."
