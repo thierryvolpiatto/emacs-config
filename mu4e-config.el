@@ -179,9 +179,13 @@
          :query "date:1d..now AND NOT flag:trashed"
          :key ?y)
         (:name
-         "Last 7 days"
+         "Last week messages"
          :query "date:7d..now AND NOT flag:trashed"
          :key ?w)
+        (:name
+         "Last month messages"
+         :query "date:1m..now AND NOT flag:trashed"
+         :key ?m)
         ))
 
 (add-hook 'mu4e-compose-mode-hook 'tv/message-mode-setup)
