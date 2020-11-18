@@ -394,7 +394,7 @@ See https://en.wikipedia.org/wiki/Null_character."
 ;; See also encrypt-to and hidden-encrypt-to gnupg options.
 (setq mml-secure-openpgp-encrypt-to-self '("E6F697C8ED3C46FC") ; pub
       mml-secure-openpgp-sign-with-sender t
-      ;; mml-secure-openpgp-signers '("0EC56D141D16EF93") ; priv
+      mml-secure-openpgp-signers '("0EC56D141D16EF93") ; priv
       )
 
 (defun tv/epg-import-keys-region (start end)
