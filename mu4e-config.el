@@ -399,6 +399,11 @@ See https://en.wikipedia.org/wiki/Null_character."
       mml-secure-openpgp-signers '("0EC56D141D16EF93") ; priv
       )
 
+;; Using 'known for `mm-verify-option' may hang mu4e or gnus forever
+;; if the key is not found.
+(setq mm-verify-option 'known
+      mm-decrypt-option 'known)
+
 (defun tv/epg-import-keys-region (start end)
   "Same as `epa-import-keys-region' but less verbose and BTW faster."
   (let ((context (epg-make-context epa-protocol)))
@@ -435,12 +440,6 @@ if one may help."
         (insert "\n-----END PGP PUBLIC KEY BLOCK-----")
         (tv/epg-import-keys-region (point-min) (point-max))))))
 (add-hook 'gnus-article-decode-hook 'tv/autocrypt-import-key)
-
-;; Using 'known for `mm-verify-option' may hang mu4e or gnus forever
-;; if the key is not found.  However if mail have an autocrypt header
-;; we import this key so that mu4e can verify mail.
-(setq mm-verify-option 'never
-      mm-decrypt-option 'known)
 
 ;; Refresh main buffer when sending queued mails
 (defun tv/advice-smtpmail-send-queued-mail ()
