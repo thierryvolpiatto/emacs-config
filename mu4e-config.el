@@ -127,7 +127,9 @@
          (setq mm-text-html-renderer 'shr)))
   (setq mm-inline-text-html-with-w3m-keymap nil
         mm-html-inhibit-images t
-        gnus-inhibit-images t))
+        gnus-inhibit-images t)
+  (use-package gnus-art
+    :config (fset 'gnus-article-press-button 'mu4e-scroll-up)))
 
 (setq mu4e-view-prefer-html t)
 (setq mu4e-html2text-command (cond ((fboundp 'w3m)
