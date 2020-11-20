@@ -1771,13 +1771,14 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;; Autocrypt
 ;;
 (use-package autocrypt
-  :straight (autocrypt :local-repo "/home/thierry/labo/autocrypt"
-                       :branch "mu4e_fix" 
-                       :files ("autocrypt.el"
-                               "autocrypt-mu4e.el"
-                               "autocrypt-message.el"
-                               "autocrypt-gnus.el"
-                               "autocrypt-rmail.el"))
+  :straight t
+  ;; (autocrypt :local-repo "/home/thierry/labo/autocrypt"
+  ;;            :branch "mu4e_fix" 
+  ;;            :files ("autocrypt.el"
+  ;;                    "autocrypt-mu4e.el"
+  ;;                    "autocrypt-message.el"
+  ;;                    "autocrypt-gnus.el"
+  ;;                    "autocrypt-rmail.el"))
   :hook ((mu4e-main-mode . autocrypt-mode)
          (gnus-mode . autocrypt-mode)
          (message-mode . autocrypt-mode))
