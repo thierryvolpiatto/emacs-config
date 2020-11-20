@@ -1785,7 +1785,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
   :config
   (setq autocrypt-accounts
         '(("thievol@posteo.net"
-           "23DB707D137BAF79E283FC700EC56D141D16EF93"
+           "E6F697C8ED3C46FC"
            mutual))))
 
 ;;; Auth-source
