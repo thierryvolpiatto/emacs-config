@@ -553,7 +553,10 @@ First call indent, second complete symbol, third complete fname."
 (use-package helm-misc
   :config
   ;; Minibuffer history (Rebind to M-s).
-  (customize-set-variable 'helm-minibuffer-history-key [remap next-matching-history-element])
+  (customize-set-variable 'helm-minibuffer-history-key [remap next-matching-history-element]))
+
+(use-package helm-epa
+  :config
   (helm-epa-mode 1))
 
 (use-package helm-fd
