@@ -2422,7 +2422,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
                                          "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
                                          "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
                                          "?=" "?." "??" ";;" ";;;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
-                                         "\\" "://"))
+                                         "://"))
     ;; Enables ligature checks globally in all buffers.  You can also do it
     ;; per mode with `ligature-mode'.
     (global-ligature-mode t)))
