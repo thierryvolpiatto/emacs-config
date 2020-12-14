@@ -38,10 +38,10 @@
    '(("(\\<\\(straight-use-package\\)\\>" 1 font-lock-keyword-face))))
 
 (with-eval-after-load 'async
-  (defun tv/straight-pull-all-async ()
+  (defun tv/straight-pull-all-async (&optional arg)
     "Same as `straight-pull-all' but async.
 Assume straight is already installed and works properly."
-    (interactive)
+    (interactive "P")
     (message "Updating straight packages...")
     (async-start
      (lambda ()
@@ -54,7 +54,7 @@ Assume straight is already installed and works properly."
          (if (file-exists-p bootstrap-file)
              (load bootstrap-file nil 'nomessage)
            (error "Straight not already installed")))
-       (straight-pull-all))
+       (straight-pull-all arg))
      (lambda (_result)
        (message "Updating straight packages done, restart now Emacs")))))
 
