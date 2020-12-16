@@ -1295,10 +1295,6 @@ If your system's ping continues until interrupted, you can try setting
   (add-to-list 'magit-process-find-password-functions
                (lambda (key)
                  (tv/get-passwd-from-auth-sources key :port "sudo")))
-  (remove-hook 'magit-status-sections-hook 'magit-insert-unpushed-to-pushremote)
-  (remove-hook 'magit-status-sections-hook 'magit-insert-unpulled-from-pushremote)
-  (remove-hook 'magit-status-sections-hook 'magit-insert-unpulled-from-upstream)
-  (remove-hook 'magit-status-sections-hook 'magit-insert-unpushed-to-upstream-or-recent)
   :no-require t)
 
 ;;; Emamux

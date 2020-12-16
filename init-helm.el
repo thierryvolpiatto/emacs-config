@@ -272,16 +272,11 @@
         helm-ff-allow-non-existing-file-at-point t
         helm-trash-remote-files                  t
         helm-dwim-target                         'next-window
-        helm-ff-cache-mode-post-delay            0.1
-        helm-ff-refresh-cache-delay              0.1
         helm-locate-recursive-dirs-command "fd --hidden --type d --glob '*%s*' %s"
-        ;; helm-ff-cache-mode-lighter-sleep         " 💡"
-        ;; helm-ff-cache-mode-lighter-updating      " 💀"
         )
   (customize-set-variable 'helm-ff-lynx-style-map t)
   (define-key helm-read-file-map (kbd "RET") 'helm-ff-RET)
   (define-key helm-find-files-map (kbd "C-i") nil)
-  ;; (define-key helm-find-files-map (kbd "C-/") 'helm-ff-run-find-sh-command)
   (define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
 
   (defun helm/insert-date-in-minibuffer ()
