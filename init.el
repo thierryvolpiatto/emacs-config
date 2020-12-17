@@ -1976,7 +1976,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
     ;; Eshell-visual
     (setq eshell-term-name "eterm-color")
     (with-eval-after-load "em-term"
-      (dolist (i '("tmux" "htop" "ipython" "alsamixer" "git-log" "w3mman" "mutt"))
+      (dolist (i '("tmux" "htop" "ipython" "alsamixer" "git-log" "tig" "w3mman" "mutt"))
         (add-to-list 'eshell-visual-commands i)))
     ;; Eshell modifiers
     (with-eval-after-load "em-pred"
