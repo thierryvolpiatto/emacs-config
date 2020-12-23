@@ -1216,7 +1216,7 @@ Used by the Mailto script used from firefox."
            else
            do (progn (message-goto-to)
                      (insert (format "%s" (car h)))))
-  (message-goto-body))
+  (message-goto-subject))
 
 (defun tv/diametre-plateau (holes dist)
   "Return the diameter of crankset with HOLES number separated by DIST mm.
