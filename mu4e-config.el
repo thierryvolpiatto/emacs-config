@@ -113,40 +113,6 @@
 ;;; Html rendering
 (setq mu4e-view-use-gnus t)
 
-(defun tv/mu4e-view-gnus-save-mime-parts (&optional arg)
-  "Save mime parts from current mu4e view buffer."
-  (interactive "P")
-  (cl-assert (eq major-mode 'mu4e-view-mode))
-  (let ((handles '())
-        (files '())
-        (helm-comp-read-use-marked t)
-        (compfn (if helm-mode
-                    #'completing-read
-                  ;; Fallback to `completing-read-multiple' with poor
-                  ;; completion systems.
-                  #'completing-read-multiple))
-        dir)
-    (save-excursion
-      (goto-char (point-min))
-      (while (not (eobp))
-        (let ((handle (get-text-property (point) 'gnus-data)))
-          (when handle
-            (let ((fname (cdr (assoc 'filename (assoc "attachment" (cdr handle))))))
-              (when fname
-                (push `(,fname . ,handle) handles)
-                (push fname files)))))
-        (forward-line 1)))
-    (if files
-        (progn
-          (setq files (funcall compfn "Save part(s): " files)
-                dir (if arg
-                        (read-directory-name "Save to directory: ")
-                      mu4e-attachment-dir))
-          (cl-loop for (f . h) in handles
-                   when (member f files)
-                   do (mm-save-part-to-file h (expand-file-name f dir))))
-      (message "No attached files found"))))
-
 (when mu4e-view-use-gnus
   ;; Disable crap gnus shr rendering.
   (cond ((fboundp 'w3m)
@@ -164,9 +130,7 @@
         gnus-inhibit-images t)
   (use-package gnus-art
     :config (fset 'gnus-article-press-button 'mu4e-scroll-up))
-  (add-hook 'mu4e-view-mode-hook (lambda ()
-                                   (define-key mu4e-view-mode-map (kbd "X") nil)
-                                   (define-key mu4e-view-mode-map (kbd "X") 'tv/mu4e-view-gnus-save-mime-parts))))
+  (define-key mu4e-view-mode-map (kbd "X") 'mu4e-view-save-attachment))
 
 (setq mu4e-view-prefer-html t)
 (setq mu4e-html2text-command (cond ((fboundp 'w3m)
@@ -355,7 +319,6 @@
 
 (define-key mu4e-view-mode-map (kbd "<C-tab>")   'tv/mu4e-next-anchor)
 (define-key mu4e-view-mode-map (kbd "<backtab>") 'tv/mu4e-previous-anchor)
-(define-key mu4e-view-mode-map (kbd "X")         'mu4e-view-save-attachment-multi)
 (define-key mu4e-view-mode-map (kbd "C-c v") 'mu4e-view-open-attachment)
 
 ;;; A simplified and more efficient version of `article-translate-strings'.
