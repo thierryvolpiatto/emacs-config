@@ -2325,11 +2325,11 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 
 ;;; Bash-completion
 ;;
-(use-package bash-completion
-  :straight (bash-completion :host github :repo "szermatt/emacs-bash-completion")
-  :commands 'bash-completion-dynamic-complete
-  :init
-  (add-hook 'shell-dynamic-complete-functions 'bash-completion-dynamic-complete))
+;; (use-package bash-completion
+;;   :straight (bash-completion :host github :repo "szermatt/emacs-bash-completion")
+;;   :commands 'bash-completion-dynamic-complete
+;;   :init
+;;   (add-hook 'shell-dynamic-complete-functions 'bash-completion-dynamic-complete))
 
 ;;; Pcmpl-git (For Eshell)
 ;;
