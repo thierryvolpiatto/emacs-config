@@ -1227,6 +1227,21 @@ Used by the Mailto script used from firefox."
            (+ (expt L2 2)
               (expt (/ L2 (tan (degrees-to-radians (/ 180 holes)))) 2)))))))
 
+(defun tv/sum-region (beg end)
+  (interactive "r")
+  (let ((data (buffer-substring beg end))
+        result)
+    (with-temp-buffer
+      (save-excursion (insert data))
+      (setq result
+            (cl-loop while (re-search-forward "\\([0-9]+[.]?[0-9]*\\)" nil t)
+                     concat (concat (replace-regexp-in-string " " "" (match-string 0)) "+") into op
+                     finally return (calc-eval (replace-regexp-in-string "+$" "" op))
+                     )))
+    (kill-new result)
+    (message "result: %s" result)))
+(global-set-key (kbd "C-M-+") 'tv/sum-region)
+
 (provide 'tv-utils)
 
 ;; Local Variables:
