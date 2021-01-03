@@ -1258,6 +1258,26 @@ If your system's ping continues until interrupted, you can try setting
         magit-uniquify-buffer-names   nil)
   (add-hook 'git-commit-setup-hook (lambda () (setq-local adaptive-fill-mode nil)))
   :config
+  (use-package magit-sequence
+    :config
+    (defun tv/magit-am-apply-patches (&optional files args)
+      "Apply the patches FILES."
+      (interactive (list (or (magit-region-values 'file)
+                             (let ((default (magit-file-at-point))
+                                   (helm-comp-read-use-marked t)
+                                   (fn (if helm-mode #'identity #'list)))
+                               (funcall fn
+                                        (read-file-name
+                                         (if default
+                                             (format "Apply patch (%s): " default)
+                                           "Apply patch: ")
+                                         nil default))))
+                         (magit-am-arguments)))
+      (magit-run-git-sequencer "am" args "--"
+                               (--map (magit-convert-filename-for-git
+                                       (expand-file-name it))
+                                      files)))
+    (fset 'magit-am-apply-patches 'tv/magit-am-apply-patches))
   (bind-key "C"    'magit-commit-add-log magit-diff-mode-map)
   (bind-key "C-]"  'magit-toggle-margin magit-log-mode-map)
   ;; Press RET while in branch manager to checkout branches as
