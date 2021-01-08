@@ -2457,6 +2457,8 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 
   (global-undo-tree-mode 1))
 
+;;; Slime
+;;
 (use-package slime
   :disabled t
   :straight t
@@ -2477,6 +2479,10 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   :bind (("<f11> l r" . slime)
          ("<f11> l s" . slime-scratch)
          ("<f11> l l" . helm-slime-list-connections)))
+;;; Isearch
+;;
+(use-package isearch-light
+  :bind ("C-z" . isl))
 
 ;; Kill buffer and windows
 (defun tv/kill-buffer-and-windows (arg)
