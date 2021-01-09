@@ -2479,10 +2479,12 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   :bind (("<f11> l r" . slime)
          ("<f11> l s" . slime-scratch)
          ("<f11> l l" . helm-slime-list-connections)))
-;;; Isearch
+
+;;; Isearch-light
 ;;
 (use-package isearch-light
-  :bind ("C-z" . isl))
+  :bind (("C-z" . isl)
+         ("M-z" . isl-narrow-to-defun)))
 
 ;; Kill buffer and windows
 (defun tv/kill-buffer-and-windows (arg)
