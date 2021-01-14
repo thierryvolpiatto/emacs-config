@@ -449,6 +449,7 @@ new directory."
 
 (use-package helm-lib
   :config
+  (use-package isearch-light)
   (setq helm-scroll-amount 4)
   (helm-help-define-key "C-x" 'exchange-point-and-mark)
   (helm-help-define-key "C-l" 'recenter-top-bottom))
@@ -612,7 +613,8 @@ First call indent, second complete symbol, third complete fname."
 (global-set-key (kbd "C-c C-i")                      'helm-imenu)
 (global-set-key (kbd "<f11>")                        nil)
 (global-set-key (kbd "<f11> o")                      'helm-org-agenda-files-headings)
-(global-set-key (kbd "C-s")                          'helm-occur-visible-buffers)
+(global-set-key (kbd "M-s")                          nil)
+(global-set-key (kbd "M-s")                          'helm-occur-visible-buffers)
 (global-set-key (kbd "<f6> h")                       'helm-emms)
 (define-key global-map [remap jump-to-register]      'helm-register)
 (define-key global-map [remap list-buffers]          'helm-mini)
