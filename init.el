@@ -2483,6 +2483,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Isearch-light
 ;;
 (use-package isearch-light
+  :straight (isearch-light :host github :repo "thierryvolpiatto/isearch-light")
   :bind (("C-s" . isl)
          ("C-z" . isl-narrow-to-defun)))
 

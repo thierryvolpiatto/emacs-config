@@ -449,10 +449,14 @@ new directory."
 
 (use-package helm-lib
   :config
-  (use-package isearch-light)
+  (use-package isearch-light
+    :straight (isearch-light :host github :repo "thierryvolpiatto/isearch-light"))
   (setq helm-scroll-amount 4)
   (helm-help-define-key "C-x" 'exchange-point-and-mark)
-  (helm-help-define-key "C-l" 'recenter-top-bottom))
+  (helm-help-define-key "C-l" 'recenter-top-bottom)
+  (helm-help-define-key "C-s" nil)
+  (helm-help-define-key "C-r" nil)
+  (helm-help-define-key "C-s" 'isl))
 
 (use-package helm-net
   :config
