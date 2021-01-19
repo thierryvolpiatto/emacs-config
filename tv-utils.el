@@ -1055,28 +1055,6 @@ Arg `host' is machine in auth-info file."
     (when (re-search-forward "[0-9]\\{1,6\\}" (min (+ (point) 6) (point-at-eol)) t)
       (string-to-number (match-string-no-properties 0)))))
 
-(defun tv/find-or-kill-gnu-bug-number (bug-number arg)
-  "Browse url corresponding to emacs gnu bug number or kill it."
-  (interactive (list (read-number "Bug number: " (tv/thing-at-point-number))
-                     current-prefix-arg))
-  (let ((url (format "http://debbugs.gnu.org/cgi/bugreport.cgi?bug=%s" bug-number)))
-    (if arg
-        (progn
-          (kill-new url)
-          (message "Bug `#%d' url's copied to kill-ring" bug-number))
-        (browse-url url))))
-
-(defun tv/find-or-kill-helm-bug-number (bug-number arg)
-  "Browse url corresponding to helm bug number or kill it."
-  (interactive (list (read-number "Bug number: " (tv/thing-at-point-number))
-                     current-prefix-arg))
-  (let ((url (format "https://github.com/emacs-helm/helm/issues/%s" bug-number)))
-    (if arg
-        (progn
-          (kill-new url)
-          (message "Bug `#%d' url's copied to kill-ring" bug-number))
-        (browse-url url))))
-
 ;;;###autoload
 (defun tv/restore-scratch-buffer ()
   (unless (buffer-file-name (get-buffer "*scratch*"))
