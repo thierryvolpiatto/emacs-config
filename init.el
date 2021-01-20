@@ -2348,7 +2348,9 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Wgrep
 ;;
 (use-package wgrep-helm
-  :straight t
+  :straight (wgrep-helm :local-repo "/home/thierry/labo/github/Emacs-wgrep"
+                        :branch "fix_helm_occur"
+                        :files ("wgrep-helm.el" "wgrep.el"))
   :config (setq wgrep-enable-key "\C-x\C-q"))
 
 ;;; psession
@@ -2483,7 +2485,8 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Isearch-light
 ;;
 (use-package isearch-light
-  :straight (isearch-light :host github :repo "thierryvolpiatto/isearch-light")
+  :straight (isearch-light :local-repo "/home/thierry/labo/github/isearch-light"
+                           :files ("isearch-light.el"))
   :config (setq isl-before-position-string "≤"
                 isl-after-position-string "≥")
   :bind (("C-s" . isl)
