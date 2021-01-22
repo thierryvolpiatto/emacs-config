@@ -220,6 +220,16 @@ Restart works only on graphic display."
 ;; Disable indent-tabs-mode
 (setq-default indent-tabs-mode nil)
 
+;; Disable all isearch bindings
+(global-set-key [remap isearch-forward] 'undefined)
+(global-set-key [remap isearch-backward] 'undefined)
+(global-set-key [remap isearch-forward-regexp] 'undefined)
+(global-set-key [remap isearch-backward-regexp] 'undefined)
+(global-set-key (kbd "C-r") nil)
+(global-set-key (kbd "C-s") nil)
+(global-set-key (kbd "C-M-s") nil)
+(global-set-key (kbd "C-M-r") nil)
+
 
 ;;; Compatibility
 ;;
