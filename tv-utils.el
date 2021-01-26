@@ -1220,6 +1220,10 @@ Used by the Mailto script used from firefox."
     (message "result: %s" result)))
 (global-set-key (kbd "C-M-+") 'tv/sum-region)
 
+(defun tv/get-group-prefix (group)
+  "Extract :prefix value from defgroup GROUP definition."
+  (get (intern-soft group) 'custom-prefix))
+
 (provide 'tv-utils)
 
 ;; Local Variables:
