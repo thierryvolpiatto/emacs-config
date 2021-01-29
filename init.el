@@ -2357,11 +2357,13 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 
 ;;; Wgrep
 ;;
-(use-package wgrep-helm
-  :straight (wgrep-helm :local-repo "/home/thierry/labo/github/Emacs-wgrep"
-                        :branch "fix_helm_occur"
-                        :files ("wgrep-helm.el" "wgrep.el"))
-  :config (setq wgrep-enable-key "\C-x\C-q"))
+(use-package wgrep
+  :straight (wgrep :fork "thierryvolpiatto/Emacs-wgrep"
+                   :branch "fix_helm_occur"
+                   :files ("wgrep-helm.el" "wgrep.el"))
+  :config
+  (use-package wgrep-helm)
+  (setq wgrep-enable-key "\C-x\C-q"))
 
 ;;; psession
 ;;
