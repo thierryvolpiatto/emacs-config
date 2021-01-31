@@ -449,9 +449,7 @@ new directory."
 
 (use-package helm-lib
   :config
-  (use-package isearch-light
-    :straight (isearch-light :local-repo "/home/thierry/labo/github/isearch-light"
-                             :files ("isearch-light.el")))
+  (use-package isearch-light)
   (setq helm-scroll-amount 4)
   (helm-help-define-key "C-x" 'exchange-point-and-mark)
   (helm-help-define-key "C-l" 'recenter-top-bottom)
