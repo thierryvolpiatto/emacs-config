@@ -2493,10 +2493,41 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Isearch-light
 ;;
 (use-package isearch-light
-  :config (setq isl-before-position-string "≤"
-                isl-after-position-string "≥")
+  :config
+  (setq isl-before-position-string "≤"
+        isl-after-position-string "≥")
+
+  (defun tv/iedit-mode-from-isl ()
+    "Start Iedit mode from `isl' using last search string as the regexp."
+    (interactive)
+    (require 'iedit)
+    (let ((regexp (if (eq isl-search-function 'search-forward)
+                      (regexp-quote isl-pattern)
+                    isl-pattern))
+          (pos (with-current-buffer isl-current-buffer
+                 (overlay-end isl--last-overlay))))
+      (run-at-time 0.1 nil (lambda ()
+                             (let ((iedit-case-sensitive (not (isl-set-case-fold-search regexp)))
+	                           result)
+                               (setq mark-active nil)
+                               (run-hooks 'deactivate-mark-hook)
+                               (when iedit-mode
+                                 (iedit-lib-cleanup))
+                               (setq result
+	                             (catch 'not-same-length
+	                               (iedit-start regexp (point-min) (point-max))))
+                               (cond ((not iedit-occurrences-overlays)
+                                      (message "No matches found for %s" regexp)
+                                      (iedit-done))
+                                     ((equal result 'not-same-length)
+                                      (message "Matches are not the same length.")
+                                      (iedit-done)))
+                               (goto-char pos))))
+      (abort-recursive-edit)))
   :bind (("C-s" . isl)
-         ("C-z" . isl-narrow-to-defun)))
+         ("C-z" . isl-narrow-to-defun)
+         :map isl-map
+         ("C-;" . tv/iedit-mode-from-isl)))
 
 ;; Kill buffer and windows
 (defun tv/kill-buffer-and-windows (arg)
