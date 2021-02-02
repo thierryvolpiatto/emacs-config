@@ -2496,7 +2496,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   :config
   (setq isl-before-position-string "≤"
         isl-after-position-string "≥")
-  :bind (("C-s" . isl)
+  :bind (("C-s" . isl-search)
          ("C-z" . isl-narrow-to-defun)))
 
 ;; Kill buffer and windows

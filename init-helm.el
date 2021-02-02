@@ -455,7 +455,7 @@ new directory."
   (helm-help-define-key "C-l" 'recenter-top-bottom)
   (helm-help-define-key "C-s" nil)
   (helm-help-define-key "C-r" nil)
-  (helm-help-define-key "C-s" 'isl))
+  (helm-help-define-key "C-s" 'isl-search))
 
 (use-package helm-net
   :config
