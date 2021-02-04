@@ -168,7 +168,7 @@
 (use-package helm-utils
   :config
   ;; Popup buffer-name or filename in grep/moccur/imenu-all etc...
-  ;(helm-popup-tip-mode 1)
+  (helm-popup-tip-mode 1)
   (setq helm-highlight-matches-around-point-max-lines   '(30 . 30)
         helm-window-show-buffers-function #'helm-window-mosaic-fn)
   (add-hook 'find-file-hook 'helm-save-current-pos-to-mark-ring))
@@ -533,22 +533,7 @@ First call indent, second complete symbol, third complete fname."
   (add-to-list 'helm-imenu-type-faces '("^Use package$" . font-lock-keyword-face))
   (customize-set-variable 'helm-imenu-lynx-style-map t))
 
-(use-package helm-apt
-  :config
-  ;; (defun helm-apt/show-mode-hook-fn ()
-  ;;   (font-lock-add-keywords nil '(("^\\(.*: \\).*" 1 '((:foreground "Darkslategray1")))))
-  ;;   (font-lock-add-keywords nil '(("^\\(.*: \\)\\(.*\\)" 2 '((:foreground "DarkOrange")))))
-  ;;   (font-lock-add-keywords nil '(("\\(https?://\\)\\(.*\\)" 0 '((:foreground "#73d216" :weight bold :underline t)))))
-  ;;   (goto-char (point-min))
-  ;;   (let ((map (make-sparse-keymap))
-  ;;         (inhibit-read-only t))
-  ;;     (define-key map (kbd "RET") 'browse-url-at-point)
-  ;;     (while (re-search-forward "https?://.*" nil t)
-  ;;       (add-text-properties
-  ;;        (match-beginning 0) (match-end 0)
-  ;;        `(keymap ,map help-echo "Browse url")))))
-  ;; (add-hook 'helm-apt-show-mode-hook 'helm-apt/show-mode-hook-fn)
-  )
+(use-package helm-apt :commands 'helm-apt)
 
 (use-package helm-misc
   :config
@@ -562,9 +547,9 @@ First call indent, second complete symbol, third complete fname."
 (use-package helm-fd
   :config
   (defun helm-fd-pa (candidate)
-  (with-helm-buffer
-    (helm-ff-kill-or-find-buffer-fname
-     (expand-file-name candidate))))
+    (with-helm-buffer
+      (helm-ff-kill-or-find-buffer-fname
+       (expand-file-name candidate))))
   (cl-defmethod helm-setup-user-source ((source helm-fd-class))
     (setf (slot-value source 'persistent-action) 'helm-fd-pa)))
 
