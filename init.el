@@ -153,7 +153,12 @@ Restart works only on graphic display."
 
 ;;; emacs-backup-config
 ;;
+(defun tv/backup-file-p (file)
+  (or (normal-backup-enable-predicate file)
+      (and (locate-dominating-file file ".git") t)))
+
 (setq backup-directory-alist '(("" . "~/.emacs.d/emacs_backup"))
+      backup-enable-predicate #'tv/backup-file-p
       backup-by-copying t
       version-control t
       kept-old-versions 2
@@ -1550,6 +1555,8 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
       '((t (:background "ForestGreen")))
       "Face used to highlight diary blocks in calendar."
       :group 'calendar)
+    ;; Add a different face in diary entry like this:
+    ;; %%(diary-block 8 2 2021 13 2 2021 'tv/calendar-blocks-1)
     (defface tv/calendar-blocks-1
       '((t (:background "DarkOliveGreen")))
       "Face used to highlight diary blocks in calendar."
