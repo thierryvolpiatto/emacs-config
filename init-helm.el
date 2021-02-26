@@ -185,7 +185,7 @@
   (use-package python
     :config
     (defun tv/bind-tab-in-inf-python ()
-      (define-key inferior-python-mode-map (kbd "C-i") 'helm-ipython-complete))
+      (define-key inferior-python-mode-map (kbd "<M-tab>") 'helm-ipython-complete))
     (define-key python-mode-map (kbd "<M-tab>") 'helm-ipython-complete)
     (add-hook 'inferior-python-mode-hook 'tv/bind-tab-in-inf-python)))
 

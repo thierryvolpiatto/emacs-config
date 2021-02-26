@@ -454,6 +454,9 @@ if one may help."
 (require 'org-mu4e)
 (define-key mu4e-view-mode-map (kbd "C-c C-l") 'org-store-link)
 
+(setq mu4e-headers-thread-last-child-prefix '("L" . "╰► "))
+
+(define-key mu4e-view-mode-map (kbd "X") 'mu4e-view-gnus-save-mime-parts)
 
 (provide 'mu4e-config)
 
