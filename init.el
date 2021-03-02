@@ -1548,6 +1548,9 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 (use-package calendar
   :config
   (progn
+    ;; Disable the fucking org bindings in emacs-28
+    (when (fboundp 'org--setup-calendar-bindings)
+      (fset 'org--setup-calendar-bindings 'ignore))
     (setq diary-file "~/.emacs.d/diary")
     (unless (fboundp 'fancy-diary-display) ; Fix emacs-25.
       (defalias 'fancy-diary-display 'diary-fancy-display))
