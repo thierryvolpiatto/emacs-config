@@ -2405,7 +2405,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Gnus
 ;;
 (use-package gnus
-  :disabled t
   :config
   (use-package gnus-article-treat-patch
     :config
