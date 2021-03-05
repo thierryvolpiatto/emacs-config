@@ -235,6 +235,16 @@ Restart works only on graphic display."
 (global-set-key (kbd "C-M-s") nil)
 (global-set-key (kbd "C-M-r") nil)
 
+;; `while-no-input-ignore-events' is not set in emacs-27+ (bug#46940).
+(unless (and (boundp 'while-no-input-ignore-events)
+             while-no-input-ignore-events)
+  (setq while-no-input-ignore-events
+        '(focus-in
+          focus-out
+          help-echo
+          iconify-frame
+          make-frame-visible
+          selection-request)))
 
 ;;; Compatibility
 ;;
