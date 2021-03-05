@@ -1494,7 +1494,17 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                 (define-key python-mode-map (kbd "C-c C-i") 'helm-semantic-or-imenu)
                 (define-key python-mode-map (kbd "C-m") 'newline-and-indent)
                 (define-key python-mode-map (kbd "C-c '") 'flymake-goto-next-error))))
-  :bind ("<f11> p" . python-shell-switch-to-shell))
+  :config
+  (defun tv/run-or-switch-to-python-shell ()
+    (interactive)
+    (let* ((buf (ignore-errors (python-shell-get-process-or-error t)))
+           (proc-buf (and buf (process-buffer buf)))
+           (win (and proc-buf (get-buffer-window proc-buf 'visible))))
+      (cond ((and proc-buf win)
+             (quit-window nil win))
+            (proc-buf (pop-to-buffer proc-buf nil t))
+            (t (call-interactively #'run-python)))))
+  :bind ("<f11> p" . tv/run-or-switch-to-python-shell))
 
 ;;; Tramp-config
 ;;
