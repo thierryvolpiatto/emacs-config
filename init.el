@@ -913,9 +913,9 @@ file-local variable.\n")
          (propertize (format " %s" (all-the-icons-alltheicon "git")) 'face `(:height 1.2) 'display '(raise -0.1))
          " · "
          (propertize (format "%s" (all-the-icons-octicon "git-branch"))
-                     'face `(:height 1.3 :family ,(all-the-icons-octicon-family))
+                     'face `(:height 1.3 :family ,(all-the-icons-octicon-family) :foreground "SkyBlue")
                      'display '(raise -0.1))
-         (propertize (format " %s" branch) 'face `(:height 0.9))))))
+         (propertize (format " %s" branch) 'face `(:height 0.9 :foreground "yellow"))))))
   
   (setq-default mode-line-format '("%e"
                                    mode-line-front-space
