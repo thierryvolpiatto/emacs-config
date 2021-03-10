@@ -970,7 +970,7 @@ file-local variable.\n")
   (add-to-list 'display-time-world-list '("Indian/Reunion" "Reunion"))
   
   (setq display-time-24hr-format   t
-        display-time-day-and-date  nil
+        display-time-day-and-date  (null (display-graphic-p))
         display-time-use-mail-icon t
         display-time-string-forms
         '( ;; date
