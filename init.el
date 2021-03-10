@@ -897,9 +897,9 @@ file-local variable.\n")
     (when (and (buffer-file-name (current-buffer))
                (fboundp 'helm-ls-git--branch)
                (helm-ls-git-root-dir))
-      (format " %s %s"
-              (char-to-string #x21af)  ; Needs a one line height char.
-              (helm-ls-git--branch))))
+      (format " (%s %s)"
+              (char-to-string #x29a9) ; (⦩) Needs a one line height char.
+              (propertize (helm-ls-git--branch) 'face '(:foreground "yellow")))))
 
   (setq-default mode-line-format '("%e"
                                    mode-line-front-space
