@@ -887,6 +887,8 @@ file-local variable.\n")
                                 ))
   (winner-mode 1))
 
+;;; All-the-icons and mode-line
+;;
 (use-package all-the-icons
   :straight t
   :config
