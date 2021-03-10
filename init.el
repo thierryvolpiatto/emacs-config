@@ -887,11 +887,9 @@ file-local variable.\n")
                                 ))
   (winner-mode 1))
 
-;;; Time
-;;
-(use-package time
+(use-package all-the-icons
+  :straight t
   :config
-  ;; Mode-line
   (defun tv/git-branch-in-mode-line ()
     (require 'helm-ls-git)
     (when (and (buffer-file-name (current-buffer))
@@ -901,6 +899,22 @@ file-local variable.\n")
               (char-to-string #x29a9) ; (⦩) Needs a one line height char.
               (propertize (helm-ls-git--branch) 'face '(:foreground "yellow")))))
 
+  (defun tv/custom-modeline-github-vc ()
+    (require 'helm-ls-git)
+    (let ((branch     
+           (when (and (buffer-file-name (current-buffer))
+                      (fboundp 'helm-ls-git--branch)
+                      (helm-ls-git-root-dir))
+             (helm-ls-git--branch))))
+      (when branch
+        (concat
+         (propertize (format " %s" (all-the-icons-alltheicon "git")) 'face `(:height 1.2) 'display '(raise -0.1))
+         " · "
+         (propertize (format "%s" (all-the-icons-octicon "git-branch"))
+                     'face `(:height 1.3 :family ,(all-the-icons-octicon-family))
+                     'display '(raise -0.1))
+         (propertize (format " %s" branch) 'face `(:height 0.9))))))
+  
   (setq-default mode-line-format '("%e"
                                    mode-line-front-space
                                    mode-line-mule-info
@@ -913,11 +927,16 @@ file-local variable.\n")
                                    mode-line-position
                                    " "
                                    mode-line-modes
-                                   (:eval (tv/git-branch-in-mode-line))
+                                   (:eval ;; (tv/git-branch-in-mode-line)
+                                    (tv/custom-modeline-github-vc))
                                    " "
                                    mode-line-misc-info
-                                   mode-line-end-spaces))
+                                   mode-line-end-spaces)))
 
+;;; Time
+;;
+(use-package time
+  :config
   ;; World-time
   (when (eq display-time-world-list t) ; emacs-26+
     (setq display-time-world-list
