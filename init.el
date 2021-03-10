@@ -2424,18 +2424,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 
   (global-undo-tree-mode 1))
 
-;;; Sly
-;;
-(use-package sly
-  :straight t
-  :config
-  (setq sly-completing-read-function 'completing-read)
-  (setq inferior-lisp-program "/usr/bin/sbcl")
-  (setq sly-scratch-file "~/.emacs.d/sly-scratch.lisp")
-  (add-hook 'sly-mode-hook (lambda () (sly-symbol-completion-mode -1)))
-  :bind (("<f11> l r" . sly)
-         ("<f11> l s" . sly-scratch)))
-
 ;;; Isearch-light
 ;;
 (use-package isearch-light
