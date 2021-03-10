@@ -970,12 +970,12 @@ file-local variable.\n")
   (add-to-list 'display-time-world-list '("Indian/Reunion" "Reunion"))
   
   (setq display-time-24hr-format   t
-        display-time-day-and-date  t
+        display-time-day-and-date  nil
         display-time-use-mail-icon t
         display-time-string-forms
         '( ;; date
           (if (and (not display-time-format) display-time-day-and-date)
-              (format-time-string "[%a%e %b " now)
+              (format-time-string " %a%e %b " now)
             "")
           ;; time
           (concat
@@ -985,8 +985,7 @@ file-local variable.\n")
                                 now)
             'face '((:foreground "green"))
             'help-echo (format-time-string " %a %b %e, %Y" now))
-           (and time-zone " (") time-zone (and time-zone ")")
-           "]")
+           (and time-zone " (") time-zone (and time-zone ")"))
           ;; cpu load average
           ;; (if (and load (not (string= load "")))
           ;;     (format " [Cpu:%s%%%%] " load) "")
