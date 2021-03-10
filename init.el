@@ -984,7 +984,7 @@ file-local variable.\n")
                                     (if display-time-24hr-format " %H:%M" " %-I:%M%p"))
                                 now)
             'face '((:foreground "green"))
-            'help-echo (format-time-string " %a %b %e, %Y" now))
+            'help-echo (format-time-string " %A %e %b, %Y" now))
            (and time-zone " (") time-zone (and time-zone ")"))
           ;; cpu load average
           ;; (if (and load (not (string= load "")))
