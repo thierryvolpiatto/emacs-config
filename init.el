@@ -891,6 +891,33 @@ file-local variable.\n")
 ;;
 (use-package time
   :config
+  ;; Mode-line
+  (defun tv/git-branch-in-mode-line ()
+    (require 'helm-ls-git)
+    (when (and (buffer-file-name (current-buffer))
+               (fboundp 'helm-ls-git--branch)
+               (helm-ls-git-root-dir))
+      (format " %s %s"
+              (char-to-string #x21af)  ; Needs a one line height char.
+              (helm-ls-git--branch))))
+
+  (setq-default mode-line-format '("%e"
+                                   mode-line-front-space
+                                   mode-line-mule-info
+                                   mode-line-client
+                                   mode-line-modified
+                                   mode-line-remote
+                                   mode-line-frame-identification
+                                   mode-line-buffer-identification
+                                   " "
+                                   mode-line-position
+                                   " "
+                                   mode-line-modes
+                                   (:eval (tv/git-branch-in-mode-line))
+                                   " "
+                                   mode-line-misc-info
+                                   mode-line-end-spaces))
+
   ;; World-time
   (when (eq display-time-world-list t) ; emacs-26+
     (setq display-time-world-list
