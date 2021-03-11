@@ -925,12 +925,11 @@ file-local variable.\n")
                                    mode-line-remote
                                    mode-line-frame-identification
                                    mode-line-buffer-identification
-                                   " "
-                                   mode-line-position
-                                   " "
                                    mode-line-modes
-                                   (:eval ;; (tv/git-branch-in-mode-line)
-                                    (tv/custom-modeline-github-vc))
+                                   " "
+                                   "%p %l/%c"
+                                   " "
+                                   (:eval (tv/custom-modeline-github-vc))
                                    " "
                                    mode-line-misc-info
                                    mode-line-end-spaces)))
