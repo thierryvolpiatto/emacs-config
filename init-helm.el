@@ -136,16 +136,26 @@
                              "-alist\\'" ""
                              (cadr (split-string (symbol-name data) "/")))
       :candidates (lambda ()
-                    (cl-loop for (name . _icon) in (symbol-value data)
+                    (cl-loop for (name . icon) in (symbol-value data)
                              for fmt-icon = (funcall fn name)
                              collect (cons (concat name
                                                    (make-string
                                                     (1+ (- max-len (length name))) ? )
                                                    (format "%s" fmt-icon))
-                                           (format "%s" fmt-icon))))
-      :action '(("insert icon" . (lambda (candidate) (insert candidate)))
+                                           (cons name icon))))
+      :action `(("insert icon" . (lambda (candidate)
+                                   (let ((fmt-icon (funcall ',fn (car candidate))))
+                                     (insert (format "%s" fmt-icon)))))
+                ("insert code for icon" . (lambda (candidate)
+                                            (insert (format "(%s \"%s\")" ',fn (car candidate)))))
+                ("insert name" . (lambda (candidate)
+                                   (insert (car candidate))))
+                ("insert raw icon" . (lambda (candidate)
+                                       (insert (cdr candidate))))
                 ;; FIXME: yank is inserting the raw icon, not the display.
-                ("kill icon" . (lambda (candidate) (kill-new candidate)))))))
+                ("kill icon" . (lambda (candidate)
+                                 (let ((fmt-icon (funcall ',fn (car candidate))))
+                                   (kill-new (format "%s" fmt-icon)))))))))
 
 (defun helm/all-the-icons-sources ()
   (cl-loop for (db . fn) in helm/all-the-icons-alist
