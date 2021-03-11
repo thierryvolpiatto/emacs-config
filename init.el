@@ -1351,6 +1351,7 @@ If your system's ping continues until interrupted, you can try setting
                                        (expand-file-name it))
                                       files)))
     (fset 'magit-am-apply-patches 'tv/magit-am-apply-patches))
+  (diminish 'auto-revert-mode "AR")
   (bind-key "C"    'magit-commit-add-log magit-diff-mode-map)
   (bind-key "C-]"  'magit-toggle-margin magit-log-mode-map)
   ;; Press RET while in branch manager to checkout branches as
