@@ -122,6 +122,41 @@
   (with-helm-in-frame
     (call-interactively #'helm-top)))
 
+(defvar helm/all-the-icons-alist '((all-the-icons-data/alltheicons-alist . all-the-icons-alltheicon)
+                                   (all-the-icons-data/fa-icon-alist . all-the-icons-faicon)
+                                   (all-the-icons-data/file-icon-alist . all-the-icons-fileicon)
+                                   (all-the-icons-data/octicons-alist . all-the-icons-octicon)
+                                   (all-the-icons-data/material-icons-alist . all-the-icons-material)
+                                   (all-the-icons-data/weather-icons-alist . all-the-icons-wicon)))
+
+(defun helm/all-the-icons-build-source (data fn)
+  (let ((max-len (cl-loop for (s . _i) in (symbol-value data)
+                          maximize (length s))))
+    (helm-build-sync-source (replace-regexp-in-string
+                             "-alist\\'" ""
+                             (cadr (split-string (symbol-name data) "/")))
+      :candidates (lambda ()
+                    (cl-loop for (name . _icon) in (symbol-value data)
+                             for fmt-icon = (funcall fn name)
+                             collect (cons (concat name
+                                                   (make-string
+                                                    (1+ (- max-len (length name))) ? )
+                                                   (format "%s" fmt-icon))
+                                           (format "%s" fmt-icon))))
+      :action '(("insert icon" . (lambda (candidate) (insert candidate)))
+                ;; FIXME: yank is inserting the raw icon, not the display.
+                ("kill icon" . (lambda (candidate) (kill-new candidate)))))))
+
+(defun helm/all-the-icons-sources ()
+  (cl-loop for (db . fn) in helm/all-the-icons-alist
+           collect (helm/all-the-icons-build-source db fn)))
+
+(defun helm/all-the-icons ()
+  (interactive)
+  (require 'all-the-icons)
+  (helm :sources (helm/all-the-icons-sources)
+        :buffer "*helm all the icons*"))
+
 
 ;;; Use-package declarations.
 ;;
