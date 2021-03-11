@@ -939,6 +939,22 @@ file-local variable.\n")
 ;;
 (use-package time
   :config
+  (defun tv/round-time-to-nearest-hour (time-string)
+    (let* ((split (split-string time-string ":"))
+           (hour (string-to-number (car split)))
+           (min (cadr split)))
+       (if (<= (string-to-number min) 30)
+           hour
+         (1+ hour))))
+
+  (defun tv/custom-modeline-time ()
+    (let* ((time (format-time-string " %I:%M "))
+           (hour (tv/round-time-to-nearest-hour time))
+           (icon (all-the-icons-wicon (format "time-%s" hour) :height 1.3 :v-adjust 0.0)))
+      (concat
+       (propertize (format-time-string " %H:%M ") 'face `(:height 0.9 :foreground "green"))
+       (propertize (format "%s " icon) 'face `(:height 1.3 :family ,(all-the-icons-wicon-family)) 'display '(raise -0.0)))))
+
   ;; World-time
   (when (eq display-time-world-list t) ; emacs-26+
     (setq display-time-world-list
@@ -979,13 +995,7 @@ file-local variable.\n")
             "")
           ;; time
           (concat
-           (propertize
-            (format-time-string (or display-time-format
-                                    (if display-time-24hr-format " %H:%M" " %-I:%M%p"))
-                                now)
-            'face '((:foreground "green"))
-            'help-echo (format "%s\n Mouse-1: display calendar" (format-time-string " %A %e %b, %Y" now))
-            'local-map (make-mode-line-mouse-map 'mouse-1 'tv/toggle-calendar))
+           (tv/custom-modeline-time)
            (and time-zone " (") time-zone (and time-zone ")"))
           ;; cpu load average
           ;; (if (and load (not (string= load "")))
