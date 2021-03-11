@@ -389,7 +389,7 @@ See https://en.wikipedia.org/wiki/Null_character."
 
 ;; Crypto
 ;; Autocrypt will decide if encrypting or not.
-(setq mu4e-compose-crypto-policy '(sign-new-messages))
+(setq mu4e-compose-crypto-policy '(sign-all-messages))
 
 ;; force choosing key (completion).
 ;; (setq mm-encrypt-option 'guided)
