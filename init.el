@@ -925,6 +925,7 @@ file-local variable.\n")
                                    mode-line-remote
                                    mode-line-frame-identification
                                    mode-line-buffer-identification
+                                   " "
                                    mode-line-modes
                                    " "
                                    "%p %l/%c"
@@ -953,8 +954,14 @@ file-local variable.\n")
     (let* ((hour (tv/round-time-to-nearest-hour))
            (icon (all-the-icons-wicon (format "time-%s" hour) :height 1.3 :v-adjust 0.0)))
       (concat
-       (propertize (format-time-string " %H:%M ") 'face `(:height 0.9 :foreground "green"))
-       (propertize (format "%s " icon) 'face `(:height 1.3 :family ,(all-the-icons-wicon-family)) 'display '(raise -0.0)))))
+       (propertize (format-time-string " %H:%M ")
+                   'face `(:height 0.9 :foreground "green")
+                   'help-echo (format "%s\n Mouse-1: display calendar"
+                                      (format-time-string " %A %e %b, %Y" now))
+                   'local-map (make-mode-line-mouse-map 'mouse-1 'tv/toggle-calendar))
+       (propertize (format "%s " icon)
+                   'face `(:height 1.3 :family ,(all-the-icons-wicon-family))
+                   'display '(raise -0.0)))))
 
   ;; World-time
   (when (eq display-time-world-list t) ; emacs-26+
