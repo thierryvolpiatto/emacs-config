@@ -2048,8 +2048,11 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                                   (if (>= emacs-major-version 27)
                                       (define-key eshell-mode-map (kbd "TAB") 'helm-esh-pcomplete)
                                     (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete))
-                                  ;; Helm completion on eshell history.
+                                  ;; Helm completion on eshell
+                                  ;; history.
                                   (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)
+                                  (when (boundp 'eshell-hist-mode-map)
+                                    (define-key eshell-hist-mode-map (kbd "M-p") 'helm-eshell-history))
                                   ;; Eshell prompt
                                   (set-face-attribute 'eshell-prompt nil :foreground "Gold1")))
 
