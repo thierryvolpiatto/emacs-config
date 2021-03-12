@@ -938,17 +938,19 @@ file-local variable.\n")
 ;;
 (use-package time
   :config
-  (defun tv/round-time-to-nearest-hour (time-string)
-    (let* ((split (split-string time-string ":"))
+  (defun tv/round-time-to-nearest-hour ()
+    (let* ((time-string (format-time-string " %I:%M "))
+           (split (split-string time-string ":"))
            (hour (string-to-number (car split)))
            (min (cadr split)))
        (if (<= (string-to-number min) 30)
            hour
-         (1+ hour))))
+         (pcase (1+ hour)
+           (13 1)
+           (time time )))))
 
   (defun tv/custom-modeline-time ()
-    (let* ((time (format-time-string " %I:%M "))
-           (hour (tv/round-time-to-nearest-hour time))
+    (let* ((hour (tv/round-time-to-nearest-hour))
            (icon (all-the-icons-wicon (format "time-%s" hour) :height 1.3 :v-adjust 0.0)))
       (concat
        (propertize (format-time-string " %H:%M ") 'face `(:height 0.9 :foreground "green"))
