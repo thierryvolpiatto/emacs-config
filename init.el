@@ -986,7 +986,6 @@ file-local variable.\n")
   
   (setq display-time-24hr-format   t
         display-time-day-and-date  (null (display-graphic-p))
-        display-time-use-mail-icon t
         display-time-string-forms
         '( ;; date
           (if (and (not display-time-format) display-time-day-and-date)
@@ -995,13 +994,8 @@ file-local variable.\n")
           ;; time
           (concat
            (tv/custom-modeline-time)
-           (and time-zone " (") time-zone (and time-zone ")"))
-          ;; cpu load average
-          ;; (if (and load (not (string= load "")))
-          ;;     (format " [Cpu:%s%%%%] " load) "")
-          ""
-          ;; mail
-          ""))
+           ;; `time-zone' is a let-bounded var in `display-time-update'.
+           (and time-zone (format "(%s)" time-zone)))))
   (display-time))
 
 ;;; Frame and window config.
