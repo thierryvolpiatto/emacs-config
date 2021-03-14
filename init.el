@@ -1544,14 +1544,36 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;; Python config
 ;;
 ;;
+;; (use-package lsp-mode :straight t
+;;   :config
+;;   (setq lsp-enable-snippet nil)
+;;   ;; Disable yasnippet, even with it installed there is an error.
+;;   (unless (fboundp 'yas-expand-snippet)
+;;     (defun yas-expand-snippet (&rest args) (ignore))))
+
+;; (use-package lsp-python-ms
+;;   :straight t
+;;   :init (setq lsp-python-ms-auto-install-server t)
+;;   :hook (python-mode . (lambda ()
+;;                          (require 'lsp-python-ms)
+;;                          (lsp-deferred))))
+
+;; (use-package lsp-ui :straight t
+;;   :config
+;;   ;; Make docstrings less invasive.
+;;   (setq lsp-ui-doc-use-childframe nil))
+
 (use-package anaconda-mode :straight t)
 
 (use-package python
   :no-require t
   :init
   (progn
+    (use-package gud
+      :config
+      (and (boundp 'gud-pdb-command-name)
+           (setq gud-pdb-command-name "ipdb")))
     (setq
-     gud-pdb-command-name "ipdb"
      python-shell-interpreter "ipython"
      python-shell-interpreter-args "-i --autoindent --simple-prompt --InteractiveShell.display_page=True"
      python-shell-prompt-regexp "In \\[[0-9]+\\]: "
