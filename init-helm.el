@@ -122,51 +122,6 @@
   (with-helm-in-frame
     (call-interactively #'helm-top)))
 
-(defvar helm/all-the-icons-alist '((all-the-icons-data/alltheicons-alist . all-the-icons-alltheicon)
-                                   (all-the-icons-data/fa-icon-alist . all-the-icons-faicon)
-                                   (all-the-icons-data/file-icon-alist . all-the-icons-fileicon)
-                                   (all-the-icons-data/octicons-alist . all-the-icons-octicon)
-                                   (all-the-icons-data/material-icons-alist . all-the-icons-material)
-                                   (all-the-icons-data/weather-icons-alist . all-the-icons-wicon)))
-
-(defun helm/all-the-icons-build-source (data fn)
-  (let ((max-len (cl-loop for (s . _i) in (symbol-value data)
-                          maximize (length s))))
-    (helm-build-sync-source (replace-regexp-in-string
-                             "-alist\\'" ""
-                             (cadr (split-string (symbol-name data) "/")))
-      :candidates (lambda ()
-                    (cl-loop for (name . icon) in (symbol-value data)
-                             for fmt-icon = (funcall fn name)
-                             collect (cons (concat name
-                                                   (make-string
-                                                    (1+ (- max-len (length name))) ? )
-                                                   (format "%s" fmt-icon))
-                                           (cons name icon))))
-      :action `(("insert icon" . (lambda (candidate)
-                                   (let ((fmt-icon (funcall ',fn (car candidate))))
-                                     (insert (format "%s" fmt-icon)))))
-                ("insert code for icon" . (lambda (candidate)
-                                            (insert (format "(%s \"%s\")" ',fn (car candidate)))))
-                ("insert name" . (lambda (candidate)
-                                   (insert (car candidate))))
-                ("insert raw icon" . (lambda (candidate)
-                                       (insert (cdr candidate))))
-                ;; FIXME: yank is inserting the raw icon, not the display.
-                ("kill icon" . (lambda (candidate)
-                                 (let ((fmt-icon (funcall ',fn (car candidate))))
-                                   (kill-new (format "%s" fmt-icon)))))))))
-
-(defun helm/all-the-icons-sources ()
-  (cl-loop for (db . fn) in helm/all-the-icons-alist
-           collect (helm/all-the-icons-build-source db fn)))
-
-(defun helm/all-the-icons ()
-  (interactive)
-  (require 'all-the-icons)
-  (helm :sources (helm/all-the-icons-sources)
-        :buffer "*helm all the icons*"))
-
 
 ;;; Use-package declarations.
 ;;
@@ -449,10 +404,7 @@ new directory."
                               nil nil nil
                               (lambda (f)
                                 (string-match "autoloads\\|loaddefs" f)))))
-         (cl-letf (((symbol-function 'autoload-generated-file)
-                    (lambda ()
-                      (expand-file-name generated-autoload-file default-directory))))
-           (update-directory-autoloads (expand-file-name candidate)))))
+         (update-directory-autoloads default-directory)))
      source
      (lambda (candidate)
        (and (file-directory-p candidate)
@@ -600,6 +552,8 @@ First call indent, second complete symbol, third complete fname."
   (cl-defmethod helm-setup-user-source ((source helm-fd-class))
     (setf (slot-value source 'persistent-action) 'helm-fd-pa)))
 
+(use-package helm-all-the-icons
+  :commands helm-all-the-icons)
 
 ;;; Ctl-x-5 map
 ;;
