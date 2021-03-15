@@ -1525,21 +1525,22 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
             (setq doc (eldoc-docstring-format-sym-doc prefix doc))
             doc)))
       (advice-add 'elisp--highlight-function-argument
-                  :override #'tv/advice-elisp--highlight-function-argument))))
+                  :override #'tv/advice-elisp--highlight-function-argument)))
+  :diminish eldoc-mode)
 
-(use-package eldoc-eval
+(unless (>= emacs-major-version 28) 
+  (use-package eldoc-eval
     :preface (defvar eldoc-in-minibuffer-mode nil)
-    :diminish eldoc-mode
     :config
     (progn
       (eldoc-in-minibuffer-mode 1)
       (defadvice edebug-eval-expression (around with-eldoc activate)
         "This advice enable eldoc support."
         (interactive (list (with-eldoc-in-minibuffer
-                               (read-from-minibuffer
-                                "Eval: " nil read-expression-map t
-                                'read-expression-history))))
-        ad-do-it)))
+                            (read-from-minibuffer
+                             "Eval: " nil read-expression-map t
+                             'read-expression-history))))
+        ad-do-it))))
 
 ;;; Python config
 ;;
