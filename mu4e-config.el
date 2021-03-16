@@ -5,6 +5,7 @@
 (use-package mu4e-contrib)
 (use-package config-w3m)
 (use-package mu4e-patch)
+(require 'mu4e-view-gnus nil t)
 
 
 ;;; Message and smtp settings
@@ -456,7 +457,7 @@ if one may help."
 
 (setq mu4e-headers-thread-last-child-prefix '("L" . "╰► "))
 
-(define-key mu4e-view-mode-map (kbd "X") 'mu4e-view-gnus-save-mime-parts)
+;; (define-key mu4e-view-mode-map (kbd "X") 'mu4e-view-gnus-save-mime-parts)
 
 (provide 'mu4e-config)
 
