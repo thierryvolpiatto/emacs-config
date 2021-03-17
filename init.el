@@ -916,7 +916,10 @@ file-local variable.\n")
                                       (shell-command (format "git checkout -q '%s'" real))
                                       (message "Switched to %s branch" real)))))
                into lst
-               finally return (append '("Git branches") lst))))
+               finally return
+               (append '("Git branches")
+                       lst
+                       '("--" ["Magit status" magit-status])))))
 
   (defun tv/custom-modeline-github-vc ()
     (require 'helm-ls-git)
