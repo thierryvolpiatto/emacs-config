@@ -453,8 +453,7 @@ if one may help."
 (define-key mu4e-view-mode-map (kbd "C-c C-l") 'org-store-link)
 
 (setq mu4e-headers-thread-last-child-prefix '("L" . "╰► "))
-
-;; (define-key mu4e-view-mode-map (kbd "X") 'mu4e-view-gnus-save-mime-parts)
+(setq mu4e-headers-precise-alignment t)
 
 (provide 'mu4e-config)
 
