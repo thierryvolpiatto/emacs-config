@@ -901,6 +901,23 @@ file-local variable.\n")
               (char-to-string #x29a9) ; (⦩) Needs a one line height char.
               (propertize (helm-ls-git--branch) 'face '(:foreground "yellow")))))
 
+  (defun tv/select-git-branches-menu ()
+    (let ((branchs (split-string (shell-command-to-string "git branch") "\n" t)))
+      (cl-loop with current
+               for b in branchs
+               for branch = (replace-regexp-in-string "[ ]" "" b)
+               when (string-match "\\`\\*" branch) do (setq current branch)
+               collect (vector branch
+                               `(lambda ()
+                                  (interactive)
+                                  (let ((real (replace-regexp-in-string "\\`\\*" "" ,branch)))
+                                    (if (string= ,branch ,current)
+                                        (message "Already on %s" real)
+                                      (shell-command (format "git checkout -q '%s'" real))
+                                      (message "Switching to %s" real)))))
+               into lst
+               finally return (append '("Git branches") lst))))
+
   (defun tv/custom-modeline-github-vc ()
     (require 'helm-ls-git)
     (let ((branch     
@@ -915,7 +932,14 @@ file-local variable.\n")
          (propertize (format "%s" (all-the-icons-octicon "git-branch"))
                      'face `(:height 1.3 :family ,(all-the-icons-octicon-family) :foreground "Deepskyblue3")
                      'display '(raise -0.1))
-         (propertize (format " %s" branch) 'face `(:height 0.9 :foreground "yellow"))))))
+         (propertize (format " %s" branch)
+                     'face `(:height 0.9 :foreground "yellow")
+                     'mouse-face 'highlight
+                     'help-echo "Mouse-1: Switch to branch"
+                     'local-map (make-mode-line-mouse-map
+                                 'mouse-1 (lambda ()
+                                            (interactive)
+                                            (popup-menu (tv/select-git-branches-menu)))))))))
   
   (setq-default mode-line-format '("%e"
                                    mode-line-front-space
@@ -958,6 +982,7 @@ file-local variable.\n")
                    'face `(:height 0.9 :foreground "green")
                    'help-echo (format "%s\n Mouse-1: display calendar"
                                       (format-time-string " %A %e %b, %Y" now))
+                   'mouse-face 'highlight
                    'local-map (make-mode-line-mouse-map 'mouse-1 'tv/toggle-calendar))
        (propertize (format "%s " icon)
                    'face `(:height 1.3 :family ,(all-the-icons-wicon-family))

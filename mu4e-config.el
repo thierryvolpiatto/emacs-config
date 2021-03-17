@@ -156,9 +156,6 @@
 ;;; Signature
 (setq mu4e-compose-signature t)
 
-;;; encryption
-(define-key mu4e-view-mode-map [remap mu4e-view-verify-msg-popup] 'epa-mail-verify)
-
 ;;; Shortcuts
 (setq mu4e-maildir-shortcuts
       '(("/Posteo/Drafts"                  . ?d)
