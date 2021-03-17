@@ -912,9 +912,9 @@ file-local variable.\n")
                                   (interactive)
                                   (let ((real (replace-regexp-in-string "\\`\\*" "" ,branch)))
                                     (if (string= ,branch ,current)
-                                        (message "Already on %s" real)
+                                        (message "Already on %s branch" real)
                                       (shell-command (format "git checkout -q '%s'" real))
-                                      (message "Switching to %s" real)))))
+                                      (message "Switched to %s branch" real)))))
                into lst
                finally return (append '("Git branches") lst))))
 
