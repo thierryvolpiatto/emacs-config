@@ -158,10 +158,13 @@
 
 ;;; Shortcuts
 (setq mu4e-maildir-shortcuts
-      '(("/Posteo/Drafts"                  . ?d)
-        ("/Posteo/INBOX"                   . ?i)
-        ("/Posteo/Sent"                    . ?s)
-        ("/Posteo/Trash"                   . ?t)
+      '(("/Posteo/Drafts"      . ?d)
+        ("/Posteo/INBOX"       . ?i)
+        ("/Posteo/Sent"        . ?s)
+        ("/Posteo/Trash"       . ?t)
+        ("/Posteo/Emacs-devel" . ?e)
+        ("/Posteo/github-helm" . ?h)
+        ("/Posteo/github-mu"   . ?m)
         ))
 
 ;;; Bookmarks
