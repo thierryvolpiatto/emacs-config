@@ -163,9 +163,9 @@
         ("/Posteo/Sent"        . ?s)
         ("/Posteo/Trash"       . ?t)
         ("/Posteo/Emacs-devel" . ?e)
+        ("/Posteo/Emacs-bug"   . ?b)
         ("/Posteo/github-helm" . ?h)
-        ("/Posteo/github-mu"   . ?m)
-        ))
+        ("/Posteo/github-mu"   . ?m)))
 
 ;;; Bookmarks
 (setq mu4e-bookmarks
