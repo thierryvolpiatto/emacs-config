@@ -927,7 +927,9 @@ file-local variable.\n")
            (when (and (buffer-file-name (current-buffer))
                       (fboundp 'helm-ls-git--branch)
                       (helm-ls-git-root-dir))
-             (helm-ls-git--branch))))
+             (helm-ls-git--branch)))
+          (status-color (if (string= (helm-ls-git-status) "")
+                            "SkyBlue" "yellow")))
       (when branch
         (concat
          (propertize (format " %s" (all-the-icons-faicon "git")) 'face `(:height 1.2) 'display '(raise -0.1))
@@ -936,7 +938,7 @@ file-local variable.\n")
                      'face `(:height 1.3 :family ,(all-the-icons-octicon-family) :foreground "Deepskyblue3")
                      'display '(raise -0.1))
          (propertize (format " %s" branch)
-                     'face `(:height 0.9 :foreground "yellow")
+                     'face `(:height 0.9 :foreground ,status-color)
                      'mouse-face 'highlight
                      'help-echo "Mouse-1: Switch to branch"
                      'local-map (make-mode-line-mouse-map
