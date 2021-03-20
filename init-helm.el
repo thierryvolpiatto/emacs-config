@@ -139,13 +139,15 @@
   :config
   (helm-mode 1)
   (setq helm-completing-read-handlers-alist
-        '((xref-find-references . helm-completing-read-default-find-tag)
-          (write-file . helm-read-file-name-handler-1)
+        '((write-file . helm-read-file-name-handler-1)
           (basic-save-buffer . helm-read-file-name-handler-1)
           (find-tag . helm-completing-read-default-find-tag)
           (xref-find-definitions . helm-completing-read-default-find-tag)
           (xref-find-references . helm-completing-read-default-find-tag)
+          (ggtags-find-tag-dwim . helm-completing-read-default-find-tag)
           (tmm-menubar)
+          (find-file)
+          (execute-extended-command)
           (mu4e-view-save-attachment-multi . helm-read-file-name-handler-1)
           (mu4e-view-save-attachment-single . helm-read-file-name-handler-1)
           (cancel-debug-on-entry)
