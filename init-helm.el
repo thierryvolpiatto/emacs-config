@@ -122,6 +122,16 @@
   (with-helm-in-frame
     (call-interactively #'helm-top)))
 
+(defun helm/bash-history ()
+  (interactive)
+  (helm :sources (helm-build-in-file-source "Bash history" "~/.bash_history"
+                   :action 'kill-new)
+        :buffer "*helm bash history*"))
+
+(defun helm-zgrep-recursive (&optional directory)
+  (interactive)
+  (helm-ff-zgrep-1 (list (or directory default-directory)) t))
+
 
 ;;; Use-package declarations.
 ;;
