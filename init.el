@@ -383,8 +383,8 @@ So far, F can only be a symbol, not a lambda expression."))
 (use-package browse-url
   :config
   ;; See avail browser at ~/labo/github/helm/helm-net.el:253
-  (setq browse-url-firefox-program "chromium-browser"
-        browse-url-browser-function 'helm-browse-url-chromium))
+  (setq browse-url-firefox-program "firefox"
+        browse-url-browser-function 'helm-browse-url-firefox))
 
 ;;; Ediff
 ;;
