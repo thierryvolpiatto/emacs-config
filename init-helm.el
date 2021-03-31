@@ -34,6 +34,9 @@
 ;;
 (load "/home/thierry/elisp/helm-extensions/helm-extensions-autoloads.el")
 
+;; Helm firefox
+(customize-set-variable 'helm-firefox-default-directory "~/.mozilla/firefox-esr")
+
 
 (defun helm/debug-toggle ()
   (interactive)
