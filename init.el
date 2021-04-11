@@ -1945,7 +1945,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;; Autocrypt
 ;;
 (use-package autocrypt
-  :straight (autocrypt :local-repo "/home/thierry/labo/autocrypt-1"
+  :straight (autocrypt :local-repo "/home/thierry/labo/autocrypt"
                        :branch "remove_generic-functions" 
                        :files ("autocrypt.el"
                                "autocrypt-mu4e.el"

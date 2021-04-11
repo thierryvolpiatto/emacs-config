@@ -68,6 +68,7 @@
 
 ;; Diary-integration-in-org 
 (setq org-agenda-include-diary t) ; show also content of regular diary file.
+;; (setq org-agenda-diary-file "~/org/diary.org")
 
 ;; Subtasks 
 (defun org-summary-todo (n-done n-not-done)
