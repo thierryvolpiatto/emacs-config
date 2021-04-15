@@ -161,8 +161,6 @@
           (tmm-menubar)
           (find-file)
           (execute-extended-command)
-          (mu4e-view-save-attachment-multi . helm-read-file-name-handler-1)
-          (mu4e-view-save-attachment-single . helm-read-file-name-handler-1)
           (cancel-debug-on-entry)
           (org-capture . helm-org-completing-read-tags)
           (org-set-tags . helm-org-completing-read-tags)
