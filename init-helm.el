@@ -128,7 +128,8 @@
 (defun helm/bash-history ()
   (interactive)
   (helm :sources (helm-build-in-file-source "Bash history" "~/.bash_history"
-                   :action 'kill-new)
+                   :action '(("Kill new" . kill-new)
+                             ("Send command to Tmux" . emamux:send-command)))
         :buffer "*helm bash history*"))
 
 (defun helm-zgrep-recursive (&optional directory)
