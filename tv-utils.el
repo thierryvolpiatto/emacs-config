@@ -763,6 +763,11 @@ In this case, sexps are searched before point."
                 (setq len (1- len)))
            finally return vector))
 
+(defun tv/shuffle-sequence (seq)
+  (cl-loop for i from (1- (length seq)) downto 1
+           do (cl-rotatef (elt seq i) (elt seq (random i)))
+           finally return seq))
+
 ;;;###autoload
 (cl-defun genpasswd (&optional (limit 12))
   "Generate strong password of length LIMIT.
@@ -778,7 +783,7 @@ the password will be of length (floor LIMIT)."
            for i from 1 to (floor (/ limit 2))
            for rand1 = (int-to-string (random 9))
            for alphaindex = (random (length alph))
-           for rand2 = (aref (tv/shuffle-vector alph) alphaindex)
+           for rand2 = (aref (tv/shuffle-sequence alph) alphaindex)
            ;; Collect a random number between O-9
            concat rand1 into ls
            ;; collect a random alpha between a-zA-Z.
@@ -787,6 +792,8 @@ the password will be of length (floor LIMIT)."
 
 ;;;###autoload
 (defun tv/generate-passwd (arg)
+  "Generate a random password of (max 8 ARG) chars.
+Use a prefix arg to specify ARG."
   (interactive "p")
   (message "New pwd `%s' saved to kill ring"
            (kill-new (genpasswd (max 8 arg)))))
