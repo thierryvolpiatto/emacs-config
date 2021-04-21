@@ -380,6 +380,13 @@ new directory."
             (locate-dominating-file helm-ff-default-directory ".git")))
      1)
     (helm-source-add-action-to-source-if
+     "Open info file"
+     (lambda (candidate) (info candidate))
+     source
+     (lambda (candidate) (helm-aif (file-name-extension candidate)
+                             (string= it "info")))
+     1)
+    (helm-source-add-action-to-source-if
      "Patch region on directory"
      (lambda (_candidate)
        (with-helm-current-buffer
