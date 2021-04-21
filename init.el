@@ -1064,6 +1064,11 @@ file-local variable.\n")
                                   (t
                                    ;; Use .Xdefaults config (Dejavu).
                                    (assoc-default 'font (frame-parameters)))))
+    ;; Need fonts-emojione package (apt)
+    ;; See (info "(elisp) Fontsets")
+    (when (member "Emoji One" (font-family-list))
+      (set-fontset-font
+       t 'symbol (font-spec :family "Emoji One") nil 'prepend))
     (setq-default frame-background-mode 'dark)
     (setq initial-frame-alist '((fullscreen . maximized)))
     (setq frame-auto-hide-function 'delete-frame)
