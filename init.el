@@ -45,6 +45,7 @@
 ;;; load-path
 ;;
 (dolist (i '("~/elisp/"
+             "~/elisp/autocrypt"
 	     "~/elisp/autoconf-mode"
 	     "~/elisp/desktop-file-utils"
 	     "~/elisp/emacs-wget"
@@ -1599,7 +1600,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;   ;; Make docstrings less invasive.
 ;;   (setq lsp-ui-doc-use-childframe nil))
 
-(use-package anaconda-mode :straight t)
+(use-package anaconda-mode :straight t :diminish (anaconda-mode " 🐍"))
 
 (use-package python
   :no-require t
@@ -1619,7 +1620,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
     (add-hook 'python-mode-hook 'flymake-mode) ;; Needs pyflakes
     (add-hook 'python-mode-hook
               (lambda ()
-                (setq-local mode-name " 🐍")
+                (setq-local mode-name "py")
                 (define-key python-mode-map (kbd "C-c C-i") 'helm-semantic-or-imenu)
                 (define-key python-mode-map (kbd "C-m") 'newline-and-indent)
                 (define-key python-mode-map (kbd "C-c '") 'flymake-goto-next-error))))
@@ -1950,17 +1951,10 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;; Autocrypt
 ;;
 (use-package autocrypt
-  :straight (autocrypt :local-repo "/home/thierry/labo/autocrypt"
-                       :branch "remove_generic-functions" 
-                       :files ("autocrypt.el"
-                               "autocrypt-mu4e.el"
-                               "autocrypt-message.el"
-                               "autocrypt-gnus.el"
-                               "autocrypt-rmail.el"))
-  :hook ((mu4e-main-mode . autocrypt-mode)
-         (gnus-mode . autocrypt-mode)
-         (message-mode . autocrypt-mode))
   :config
+  (add-hook 'mu4e-main-mode 'autocrypt-mode)
+  (add-hook 'gnus-mode 'autocrypt-mode)
+  (add-hook 'message-mode 'autocrypt-mode)
   (setq autocrypt-accounts
         '(("thievol@posteo.net"
            "E6F697C8ED3C46FC"
