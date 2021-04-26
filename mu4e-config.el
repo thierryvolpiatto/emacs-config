@@ -395,11 +395,13 @@ See https://en.wikipedia.org/wiki/Null_character."
 ;; force choosing key (completion).
 ;; (setq mm-encrypt-option 'guided)
 
-;; See also encrypt-to and hidden-encrypt-to gnupg options.
-(setq mml-secure-openpgp-encrypt-to-self '("E6F697C8ED3C46FC") ; pub
-      mml-secure-openpgp-sign-with-sender t
+;; `mml-secure-openpgp-encrypt-to-self' will encrypt to self only when
+;; using mml* functions but not if for some reasons I use epa*, using
+;; encrypt-to in gpg.conf ensure epa and mml encrypt to self.
+(setq mml-secure-openpgp-sign-with-sender t
       mml-secure-openpgp-signers '("0EC56D141D16EF93") ; priv
       )
+(define-key mu4e-compose-mode-map (kbd "C-c e") 'mml-secure-encrypt)
 
 ;; Using 'known for `mm-verify-option' may hang mu4e or gnus forever
 ;; if the key is not found.
