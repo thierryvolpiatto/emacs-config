@@ -227,9 +227,7 @@
 ;;; Automatic updates.
 ;(setq mu4e-update-interval 600)
 
-;;; Attempt to show images when viewing messages
-;; (setq mu4e-view-show-images t
-;;       mu4e-view-image-max-width 800)
+(setq mu4e-view-inhibit-images t)
 
 ;; View html message in firefox (type aV)
 (add-to-list 'mu4e-view-actions
@@ -321,6 +319,7 @@
 (define-key mu4e-view-mode-map (kbd "<backtab>") 'tv/mu4e-previous-anchor)
 (define-key mu4e-view-mode-map (kbd "C-c v") 'mu4e-view-open-attachment)
 
+()
 ;;; A simplified and more efficient version of `article-translate-strings'.
 ;;
 ;; Transform also in headers.
