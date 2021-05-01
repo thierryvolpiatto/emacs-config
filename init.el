@@ -246,6 +246,12 @@ Restart works only on graphic display."
           iconify-frame
           make-frame-visible
           selection-request)))
+
+;; New events are available in emacs-28
+(when (>= emacs-major-version)
+  (setq while-no-input-ignore-events
+        (append '(file-notify dbus-event) while-no-input-ignore-events)))
+
 
 ;;; Compatibility
 ;;
@@ -2349,6 +2355,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 
   :bind (("<f11> s c" . goto-scratch)
          ("<S-f12>" . cancel-debug-on-entry)
+         ("M-:" . pp-eval-expression)
          :map
          emacs-lisp-mode-map
          ("RET" . newline-and-indent)
