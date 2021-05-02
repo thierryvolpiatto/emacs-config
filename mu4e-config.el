@@ -373,12 +373,12 @@ try this wash."
 (defun tv/delete-null-chars-from-gnus ()
   "Delete null characters in gnus article buffer.
 Such characters are represented by \"^@\" chars.
-They are often at end of signature in encrypted mails (or not?).
+They are most of the time at the end of mails sent with Gnus or Rmail.
 See https://en.wikipedia.org/wiki/Null_character."
   (save-excursion
     (let ((inhibit-read-only t))
       (message-goto-body)
-      ;; WARNING: (emacs bug)
+      ;; WARNING: (emacs bug#44486)
       ;; Using ^@ instead of \0 corrupt emacs-lisp buffers
       ;; containing special characters such as "à" and may be
       ;; others (unicode), this doesn't happen in lisp-interaction
