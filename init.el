@@ -405,7 +405,7 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;; Help
 ;;
 (use-package help
-  :after 'tv-utils
+  :after tv-utils
   :config
   (progn
     ;; Fix curly quotes in emacs-25
