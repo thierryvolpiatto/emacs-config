@@ -459,6 +459,15 @@ if one may help."
 (setq mu4e-headers-thread-last-child-prefix '("L" . "╰► "))
 (setq mu4e-headers-precise-alignment t)
 
+(define-key mu4e-headers-mode-map (kbd "M") 'mu4e-headers-mark-all-unread-read)
+
+(defun tv/mu4e-remove-buttons-in-reply ()
+  (save-excursion
+    (message-goto-body)
+    (while (re-search-forward "[[]\\{2\\}.*[]]\\{2\\}" nil t)
+      (replace-match ""))))
+(add-function :before mu4e-compose-cite-function 'tv/mu4e-remove-buttons-in-reply)
+
 (provide 'mu4e-config)
 
 ;;; mu4e-config.el ends here
