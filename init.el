@@ -9,7 +9,7 @@
              (format "%.2f" time))))
 (add-hook 'emacs-startup-hook #'tv/emacs-load-time t)
 
-(setq comp-deferred-compilation
+(setq native-comp-deferred-compilation
       (and (fboundp 'native-comp-available-p)
            (native-comp-available-p)))
 
