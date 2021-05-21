@@ -2079,10 +2079,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;
 (straight-use-package 'rainbow-mode)
 
-;;; boxquote
-;;
-(use-package boxquote)
-
 ;;; Imenu
 ;;
 (use-package imenu
