@@ -2,9 +2,11 @@
 
 ;;; Code:
 
+(use-package mu4e-patch
+  :config (advice-add 'gnus-article-prepare-display
+                      :after #'mu4e-patch:article-treat-patch))
 (use-package mu4e-contrib)
 (use-package config-w3m)
-(use-package mu4e-patch)
 (require 'mu4e-view-gnus nil t)
 
 
