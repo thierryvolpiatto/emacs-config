@@ -149,6 +149,7 @@
 (define-key mu4e-main-mode-map "q"   'quit-window)
 (define-key mu4e-main-mode-map "Q"   'mu4e-quit)
 (define-key mu4e-main-mode-map "\C-s" 'helm-mu)
+(define-key mu4e-main-mode-map [remap mu4e-headers-search] 'tv/mu4e-headers-search)
 (define-key mu4e-main-mode-map "u" 'mu4e-update-index)
 
 (setq mu4e-headers-skip-duplicates t)
@@ -172,24 +173,42 @@
       '((:name
          "Unread messages"
          :query "flag:unread AND NOT flag:trashed"
+         :key ?U)
+        (:name
+         "Unread messages but EmacsDev"
+         :query "flag:unread AND NOT flag:trashed AND NOT maildir:/Posteo/Emacs-devel"
          :key ?u)
+        (:name
+         "Unread messages from Helm"
+         :query "flag:unread AND NOT flag:trashed AND maildir:/Posteo/github-helm"
+         :key ?h)
         (:name
          "Today's messages"
          :query "date:today..now AND NOT flag:trashed"
          :key ?t)
         (:name
-         "Yesterday and today messages"
-         :query "date:1d..now AND NOT flag:trashed"
+         "Yesterday and today messages but EmacsDev"
+         :query "date:1d..now AND NOT flag:trashed AND NOT maildir:/Posteo/Emacs-devel"
          :key ?y)
         (:name
-         "Last week messages"
-         :query "date:7d..now AND NOT flag:trashed"
+         "Last week messages but EmacsDev"
+         :query "date:7d..now AND NOT flag:trashed AND NOT maildir:/Posteo/Emacs-devel"
          :key ?w)
         (:name
-         "Last month messages"
-         :query "date:1m..now AND NOT flag:trashed"
+         "Last month messages but EmacsDev"
+         :query "date:1m..now AND NOT flag:trashed AND NOT maildir:/Posteo/Emacs-devel"
          :key ?m)
         ))
+
+(defun tv/mu4e-headers-search ()
+  "Add a query reminder in `mu4e-headers-search' prompt."
+  (interactive)
+  (mu4e-headers-search
+   nil
+   (format "Search for%s: "
+           (propertize
+            " " 'display (propertize "(from:date:flag:prio:mime:maildir:and/not)"
+                                     'face '(:foreground "DimGray"))))))
 
 (add-hook 'mu4e-compose-mode-hook 'tv/message-mode-setup)
 
@@ -464,7 +483,7 @@ if one may help."
 (defun tv/mu4e-remove-buttons-in-reply ()
   (save-excursion
     (message-goto-body)
-    (while (re-search-forward "[[]\\{2\\}.*[]]\\{2\\}" nil t)
+    (while (re-search-forward "^[[]\\{2\\}.*[]]\\{2\\}" nil t)
       (replace-match ""))))
 (add-function :before mu4e-compose-cite-function 'tv/mu4e-remove-buttons-in-reply)
 
