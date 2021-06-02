@@ -1215,19 +1215,19 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                   :override #'tv/advice-elisp--highlight-function-argument)))
   :diminish eldoc-mode)
 
-(unless (>= emacs-major-version 28) 
-  (use-package eldoc-eval
-    :preface (defvar eldoc-in-minibuffer-mode nil)
-    :config
-    (progn
-      (eldoc-in-minibuffer-mode 1)
-      (defadvice edebug-eval-expression (around with-eldoc activate)
-        "This advice enable eldoc support."
-        (interactive (list (with-eldoc-in-minibuffer
-                            (read-from-minibuffer
-                             "Eval: " nil read-expression-map t
-                             'read-expression-history))))
-        ad-do-it))))
+;; (unless (>= emacs-major-version 28) 
+;;   (use-package eldoc-eval
+;;     :preface (defvar eldoc-in-minibuffer-mode nil)
+;;     :config
+;;     (progn
+;;       (eldoc-in-minibuffer-mode 1)
+;;       (defadvice edebug-eval-expression (around with-eldoc activate)
+;;         "This advice enable eldoc support."
+;;         (interactive (list (with-eldoc-in-minibuffer
+;;                             (read-from-minibuffer
+;;                              "Eval: " nil read-expression-map t
+;;                              'read-expression-history))))
+;;         ad-do-it))))
 
 ;;; Python config
 ;;
@@ -1596,6 +1596,8 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
   :config
   (progn (require 'mu4e-config)
          (addressbook-turn-on-mail-completion))
+  (use-package mu4e-thread-folding
+    :config (add-hook 'mu4e-headers-mode-hook 'mu4e-thread-folding-mode))
   :commands (mu4e)
   :bind ("<f8>" . mu4e))
 
