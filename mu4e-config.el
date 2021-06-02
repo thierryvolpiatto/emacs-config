@@ -416,13 +416,14 @@ See https://en.wikipedia.org/wiki/Null_character."
   "Remove keymap prop in all gnus buttons found."
   (save-excursion
     (let ((inhibit-read-only t)
-          pos)
+          (pos 0))
       (message-goto-body)
       (while (setq pos (next-single-property-change (point) 'button))
         (goto-char (1+ pos))
         (let ((end (next-single-property-change (point) 'button)))
-          (set-text-properties pos end '(keymap nil))
-          (goto-char end))))))
+          (when end
+            (set-text-properties pos end '(keymap nil))
+            (goto-char end)))))))
 (advice-add 'gnus-article-prepare-display
             :after #'tv/remove-keymap-button-prop)
 
