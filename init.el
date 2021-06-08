@@ -390,7 +390,7 @@ So far, F can only be a symbol, not a lambda expression."))
 (use-package browse-url
   :config
   ;; See avail browser at ~/labo/github/helm/helm-net.el:253
-  (setq browse-url-firefox-program "firefox-esr"
+  (setq browse-url-firefox-program "opera"
         browse-url-browser-function 'helm-browse-url-firefox))
 
 ;;; Ediff
@@ -1214,20 +1214,6 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
       (advice-add 'elisp--highlight-function-argument
                   :override #'tv/advice-elisp--highlight-function-argument)))
   :diminish eldoc-mode)
-
-;; (unless (>= emacs-major-version 28) 
-;;   (use-package eldoc-eval
-;;     :preface (defvar eldoc-in-minibuffer-mode nil)
-;;     :config
-;;     (progn
-;;       (eldoc-in-minibuffer-mode 1)
-;;       (defadvice edebug-eval-expression (around with-eldoc activate)
-;;         "This advice enable eldoc support."
-;;         (interactive (list (with-eldoc-in-minibuffer
-;;                             (read-from-minibuffer
-;;                              "Eval: " nil read-expression-map t
-;;                              'read-expression-history))))
-;;         ad-do-it))))
 
 ;;; Python config
 ;;
