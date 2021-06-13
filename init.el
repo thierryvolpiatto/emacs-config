@@ -211,9 +211,7 @@ Restart works only on graphic display."
 (setq history-delete-duplicates t)
 (setq history-length            100) ; default is 30.
 
-(setq line-move-visual                 nil
-      ;; completion-cycle-threshold       t ; always cycle, no completion buffers.
-      report-emacs-bug-no-explanations t
+(setq report-emacs-bug-no-explanations t
       comint-prompt-read-only          t
       uniquify-buffer-name-style       nil
       register-preview-delay           nil
