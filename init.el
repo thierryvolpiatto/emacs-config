@@ -1581,7 +1581,17 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
   (progn (require 'mu4e-config)
          (addressbook-turn-on-mail-completion))
   (use-package mu4e-thread-folding
-    :config (add-hook 'mu4e-headers-mode-hook 'mu4e-thread-folding-mode))
+    :config
+    (add-hook 'mu4e-headers-mode-hook 'mu4e-thread-folding-mode)
+    (set-face-attribute 'mu4e-thread-folding-root-unfolded-face
+                        nil :extend t :background "Palegreen4")
+    (set-face-attribute 'mu4e-thread-folding-root-folded-face
+                        nil :extend t :background "DarkGreen")
+    (set-face-attribute 'mu4e-thread-folding-child-face
+                        nil
+                        :extend t :background "Darkseagreen2"
+                        :foreground "Black")
+    (setq mu4e-thread-folding-default-view 'unfolded))
   :commands (mu4e)
   :bind ("<f8>" . mu4e))
 
