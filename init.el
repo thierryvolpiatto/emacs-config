@@ -46,14 +46,14 @@
 ;;
 (dolist (i '("~/elisp/"
              "~/elisp/autocrypt"
-	     "~/elisp/autoconf-mode"
-	     "~/elisp/desktop-file-utils"
-	     "~/elisp/emacs-wget"
-	     "~/elisp/tex-utils"
+             "~/elisp/autoconf-mode"
+             "~/elisp/desktop-file-utils"
+             "~/elisp/emacs-wget"
+             "~/elisp/tex-utils"
              "~/elisp/helm-extensions"
              "~/.emacs.d/themes/"
-	     "~/.emacs.d/emacs-config/"
-	     ))
+             "~/.emacs.d/emacs-config/"
+             ))
   ;; Add all at end of `load-path' to avoid conflicts.
   (add-to-list 'load-path (file-name-as-directory i) t))
 
@@ -1179,34 +1179,34 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
           ;; Handle now positional arguments.
           (while (and index (>= index 1))
             (if (string-match "[^ ()]+" args end)
-	        (progn
-	          (setq start (match-beginning 0)
-		        end   (match-end 0))
-	          (let ((argument (match-string 0 args)))
-	            (cond ((string= argument "&rest")
+                (progn
+                  (setq start (match-beginning 0)
+                        end   (match-end 0))
+                  (let ((argument (match-string 0 args)))
+                    (cond ((string= argument "&rest")
                            ;; All the rest arguments are the same.
-		           (setq index 1))
-		          ((string= argument "&optional")) ; Skip.
+                           (setq index 1))
+                          ((string= argument "&optional")) ; Skip.
                           ((string= argument "&allow-other-keys")) ; Skip.
                           ;; Back to index 0 in ARG1 ARG2 ARG2 ARG3 etc...
                           ;; like in `setq'.
-		          ((or (and (string-match-p "\\.\\.\\.\\'" argument)
+                          ((or (and (string-match-p "\\.\\.\\.\\'" argument)
                                     (string= argument (car (last args-lst))))
                                (and (string-match-p "\\.\\.\\.\\'"
                                                     (substring args 1 (1- (length args))))
                                     (= (length (remove "..." args-lst)) 2)
                                     (> index 1) (eq (logand index 1) 1)))
                            (setq index 0))
-		          (t
-		           (setq index (1- index))))))
-	      (setq end           (length args)
-	            start         (1- end)
-	            argument-face 'font-lock-warning-face
-	            index         0)))
+                          (t
+                           (setq index (1- index))))))
+              (setq end           (length args)
+                    start         (1- end)
+                    argument-face 'font-lock-warning-face
+                    index         0)))
           (let ((doc args))
             (when start
-	      (setq doc (copy-sequence args))
-	      (add-text-properties start end (list 'face argument-face) doc))
+              (setq doc (copy-sequence args))
+              (add-text-properties start end (list 'face argument-face) doc))
             (setq doc (eldoc-docstring-format-sym-doc prefix doc))
             doc)))
       (advice-add 'elisp--highlight-function-argument
@@ -1454,13 +1454,13 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
     (defun tv/advice--bookmark-write-file (file)
       "Write `bookmark-alist' to FILE."
       (let ((reporter (make-progress-reporter
-		       (format "Saving bookmarks to file %s..." file))))
+                       (format "Saving bookmarks to file %s..." file))))
         (with-current-buffer (find-file-noselect file)
           (let ((vc (cond
-		     ((null bookmark-version-control) nil)
-		     ((eq 'never bookmark-version-control) 'never)
-		     ((eq 'nospecial bookmark-version-control) version-control)
-		     (t t))))
+                     ((null bookmark-version-control) nil)
+                     ((eq 'never bookmark-version-control) 'never)
+                     ((eq 'nospecial bookmark-version-control) version-control)
+                     (t t))))
             (when (version-control-safe-local-p vc)
               (setq-local version-control vc)))
           (goto-char (point-min))
@@ -1591,7 +1591,30 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                         nil
                         :extend t :background "Darkseagreen2"
                         :foreground "Black")
-    (setq mu4e-thread-folding-default-view 'unfolded))
+    (setq mu4e-thread-folding-default-view 'unfolded)
+    
+    (defun mu4e-thread-folding-goto-top-or-bottom-thread (arg)
+      (let ((id (mu4e-headers-get-thread-id (mu4e-message-at-point)))
+            (fn (if (> arg 0) #'eobp #'bobp))
+            pos)
+        (while (and (cl-loop for ov in (overlays-in (point-at-bol) (point-at-eol))
+                             thereis (and (string= id (overlay-get ov 'thread-id))
+                                          (setq pos (overlay-start ov))))
+                    (not (funcall fn)))
+          (forward-line arg))
+        (when pos
+          (goto-char pos)
+          (forward-line 0))))
+    
+    (defun mu4e-thread-folding-goto-end-of-thread ()
+      (interactive)
+      (mu4e-thread-folding-goto-top-or-bottom-thread 1))
+    (define-key mu4e-thread-folding-mode-map (kbd "<M-down>") 'mu4e-thread-folding-goto-end-of-thread)
+    
+    (defun mu4e-thread-folding-goto-beginning-of-thread ()
+      (interactive)
+      (mu4e-thread-folding-goto-top-or-bottom-thread -1))
+    (define-key mu4e-thread-folding-mode-map (kbd "<M-up>") 'mu4e-thread-folding-goto-beginning-of-thread))
   :commands (mu4e)
   :bind ("<f8>" . mu4e))
 
@@ -1787,29 +1810,29 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
       (defun tv/advice--eshell-pred-substitute (&optional repeat)
         "Return a modifier function that will substitute matches."
         (let ((delim (char-after))
-	      match replace end)
+              match replace end)
           (forward-char)
           (setq end (eshell-find-delimiter delim delim nil nil t)
-	        match (buffer-substring-no-properties (point) end))
+                match (buffer-substring-no-properties (point) end))
           (goto-char (1+ end))
           (setq end (or (eshell-find-delimiter delim delim nil nil t) (point))
-	        replace (buffer-substring-no-properties (point) end))
+                replace (buffer-substring-no-properties (point) end))
           (goto-char (1+ end))
           (if repeat
-	      (lambda (lst)
-	        (mapcar
-	         (lambda (str)
-	           (let ((i 0))
-		     (while (setq i (string-match match str i))
-		       (setq str (replace-match replace t nil str))))
-	           str)
+              (lambda (lst)
+                (mapcar
+                 (lambda (str)
+                   (let ((i 0))
+                     (while (setq i (string-match match str i))
+                       (setq str (replace-match replace t nil str))))
+                   str)
                  lst))
             (lambda (lst)
-	      (mapcar
+              (mapcar
                (lambda (str)
-	         (if (string-match match str)
-		     (setq str (replace-match replace t nil str)))
-	         str)
+                 (if (string-match match str)
+                     (setq str (replace-match replace t nil str)))
+                 str)
                lst)))))
       ;; Allow empty string in substitution e.g. echo foo.el(:gs/.el//)
       (advice-add 'eshell-pred-substitute :override #'tv/advice--eshell-pred-substitute)
@@ -1856,9 +1879,9 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
       "Toggle `flyspell-mode'." 
       (interactive "P")
       (if (and flyspell-mode (null arg))
-	  (progn
-	    (flyspell-mode -1)
-	    (message "Flyspell Mode disabled"))
+          (progn
+            (flyspell-mode -1)
+            (message "Flyspell Mode disabled"))
         (flyspell-mode 1)
         (unwind-protect
             (progn
@@ -2182,5 +2205,9 @@ With a prefix arg ask with completion which buffer to kill."
 
 ;; Link now scratch buffer to file
 (tv/restore-scratch-buffer)
+
+;; Local Variables:
+;; indent-tabs-mode: nil
+;; End:
 
 ;;; init.el ends here
