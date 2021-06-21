@@ -25,7 +25,8 @@
         helm-autoresize-min-height                20 ; it is %.
         helm-debug-root-directory                 "/home/thierry/tmp/helm-debug"
         helm-follow-mode-persistent               t
-        helm-candidate-number-limit               500)
+        helm-candidate-number-limit               500
+        helm-visible-mark-prefix                  "✓")
   (add-to-list 'helm-sources-using-default-as-input 'helm-source-info-bash)
   (helm-define-key-with-subkeys global-map (kbd "C-c n") ?n 'helm-cycle-resume))
 
