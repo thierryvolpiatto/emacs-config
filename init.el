@@ -1622,9 +1622,12 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;
 (use-package autocrypt
   :config
-  (add-hook 'mu4e-main-mode 'autocrypt-mode)
-  (add-hook 'gnus-mode 'autocrypt-mode)
-  (add-hook 'message-mode 'autocrypt-mode)
+  (use-package autocrypt-mu4e)
+  (use-package autocrypt-gnus)
+  (use-package autocrypt-message)
+  (add-hook 'mu4e-main-mode-hook 'autocrypt-mode)
+  (add-hook 'gnus-mode-hook 'autocrypt-mode)
+  (add-hook 'message-mode-hook 'autocrypt-mode)
   (setq autocrypt-accounts
         '(("thievol@posteo.net"
            "E6F697C8ED3C46FC"
