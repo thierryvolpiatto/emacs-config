@@ -281,6 +281,8 @@ So far, F can only be a symbol, not a lambda expression."))
 ;; Don't beep even with visible-bell (debian)
 (setq ring-bell-function 'ignore)
 
+(setq line-move-visual nil)
+
 
 ;;; Use package declarations
 

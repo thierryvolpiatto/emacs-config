@@ -500,6 +500,8 @@ if one may help."
 (setq mu4e-headers-precise-alignment t)
 
 (define-key mu4e-headers-mode-map (kbd "M") 'mu4e-headers-mark-all-unread-read)
+(define-key mu4e-headers-mode-map (kbd "<down>") 'mu4e-headers-next)
+(define-key mu4e-headers-mode-map (kbd "<up>") 'mu4e-headers-prev)
 
 (defun tv/mu4e-remove-buttons-in-reply ()
   (save-excursion
