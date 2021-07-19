@@ -510,6 +510,13 @@ if one may help."
       (replace-match ""))))
 (add-function :before mu4e-compose-cite-function 'tv/mu4e-remove-buttons-in-reply)
 
+(defun tv/mu4e-compose-reply-advice (&rest args)
+  (setq mu4e-compose-cite-function
+        (if current-prefix-arg
+            (lambda () (delete-region (point) (point-max)))
+          #'message-cite-original-without-signature)))
+(advice-add 'mu4e-compose-reply :before #'tv/mu4e-compose-reply-advice)
+
 (provide 'mu4e-config)
 
 ;;; mu4e-config.el ends here
