@@ -178,12 +178,17 @@
                                                     "\n" url)
                                  collect (cons disp url)))
                       :multiline t
-                      :action 'helm-browse-url)
+                      :action (lambda (candidate)
+                                (let ((browse-url-browser-function
+                                       #'helm-browse-url-opera))
+                                  (helm-browse-url candidate))))
                    ,(helm-build-dummy-source "DuckDuckgo"
                      :action (lambda (candidate)
-                               (helm-browse-url 
-                                (format helm-surfraw-duckduckgo-url
-                                        (url-hexify-string candidate))))))
+                               (let ((browse-url-browser-function
+                                      #'helm-browse-url-opera))
+                                 (helm-browse-url
+                                  (format helm-surfraw-duckduckgo-url
+                                          (url-hexify-string candidate)))))))
         :buffer "*helm opera*"))
 (define-key helm-command-map (kbd "o") 'helm-opera-bmks)
 
