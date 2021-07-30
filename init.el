@@ -1050,6 +1050,13 @@ If your system's ping continues until interrupted, you can try setting
                                        (expand-file-name it))
                                       files)))
     (fset 'magit-am-apply-patches 'tv/magit-am-apply-patches))
+  (setq magit-status-sections-hook
+        (cl-loop for fn in magit-status-sections-hook
+                 unless (memq fn '(magit-insert-unpushed-to-pushremote
+                                   magit-insert-unpushed-to-upstream-or-recent
+                                   magit-insert-unpulled-from-pushremote
+                                   magit-insert-unpulled-from-upstream))
+                 collect fn))
   (diminish 'auto-revert-mode "AR")
   (bind-key "C"    'magit-commit-add-log magit-diff-mode-map)
   (bind-key "C-]"  'magit-toggle-margin magit-log-mode-map)
