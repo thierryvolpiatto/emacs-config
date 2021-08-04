@@ -307,6 +307,9 @@
                 (point) 'w3m-anchor-sequence)))
       (and pos (goto-char pos)))))
 
+;; Ignore these pesty gnus buttons.
+(setq w3m-handle-non-anchor-buttons nil)
+
 (defun tv/mu4e-next-anchor ()
   (interactive)
   (require 'w3m)
