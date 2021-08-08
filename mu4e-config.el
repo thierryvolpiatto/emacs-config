@@ -506,19 +506,16 @@ if one may help."
 (define-key mu4e-headers-mode-map (kbd "<down>") 'mu4e-headers-next)
 (define-key mu4e-headers-mode-map (kbd "<up>") 'mu4e-headers-prev)
 
-(defun tv/mu4e-remove-buttons-in-reply ()
-  (save-excursion
-    (message-goto-body)
-    (while (re-search-forward "^[[]\\{2\\}.*[]]\\{2\\}" nil t)
-      (replace-match ""))))
-(add-function :before mu4e-compose-cite-function 'tv/mu4e-remove-buttons-in-reply)
+(defun tv/mu4e-remove-buttons-in-reply (original-fn &rest args)
+  (if current-prefix-arg
+      (delete-region (point) (point-max))
+    (save-excursion
+      (message-goto-body)
+      (while (re-search-forward "^[[]\\{2\\}.*[]]\\{2\\}" nil t)
+        (replace-match "")))
+    (apply original-fn args)))
+(add-function :around mu4e-compose-cite-function #'tv/mu4e-remove-buttons-in-reply)
 
-(defun tv/mu4e-compose-reply-advice (&rest args)
-  (setq mu4e-compose-cite-function
-        (if current-prefix-arg
-            (lambda () (delete-region (point) (point-max)))
-          #'message-cite-original-without-signature)))
-(advice-add 'mu4e-compose-reply :before #'tv/mu4e-compose-reply-advice)
 
 (provide 'mu4e-config)
 
