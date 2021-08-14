@@ -1460,6 +1460,8 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
     (setq bookmark-automatically-show-annotations nil))
   :config
   (progn
+    ;; Write directly to bmk file instead of writing to a "
+    ;; *bookmarks*" buffer and then writing to bmk file.
     (defun tv/advice--bookmark-write-file (file)
       "Write `bookmark-alist' to FILE."
       (let ((reporter (make-progress-reporter
@@ -1589,41 +1591,6 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
   :config
   (progn (require 'mu4e-config)
          (addressbook-turn-on-mail-completion))
-  (use-package mu4e-thread-folding
-    :config
-    (add-hook 'mu4e-headers-mode-hook 'mu4e-thread-folding-mode)
-    (set-face-attribute 'mu4e-thread-folding-root-unfolded-face
-                        nil :extend t :background "Palegreen4")
-    (set-face-attribute 'mu4e-thread-folding-root-folded-face
-                        nil :extend t :background "DarkGreen")
-    (set-face-attribute 'mu4e-thread-folding-child-face
-                        nil
-                        :extend t :background "Darkseagreen2"
-                        :foreground "Black")
-    (setq mu4e-thread-folding-default-view 'unfolded)
-    
-    (defun mu4e-thread-folding-goto-top-or-bottom-thread (arg)
-      (let ((id (mu4e-headers-get-thread-id (mu4e-message-at-point)))
-            (fn (if (> arg 0) #'eobp #'bobp))
-            pos)
-        (while (and (cl-loop for ov in (overlays-in (point-at-bol) (point-at-eol))
-                             thereis (and (string= id (overlay-get ov 'thread-id))
-                                          (setq pos (overlay-start ov))))
-                    (not (funcall fn)))
-          (forward-line arg))
-        (when pos
-          (goto-char pos)
-          (forward-line 0))))
-    
-    (defun mu4e-thread-folding-goto-end-of-thread ()
-      (interactive)
-      (mu4e-thread-folding-goto-top-or-bottom-thread 1))
-    (define-key mu4e-thread-folding-mode-map (kbd "<M-down>") 'mu4e-thread-folding-goto-end-of-thread)
-    
-    (defun mu4e-thread-folding-goto-beginning-of-thread ()
-      (interactive)
-      (mu4e-thread-folding-goto-top-or-bottom-thread -1))
-    (define-key mu4e-thread-folding-mode-map (kbd "<M-up>") 'mu4e-thread-folding-goto-beginning-of-thread))
   :commands (mu4e)
   :bind ("<f8>" . mu4e))
 
