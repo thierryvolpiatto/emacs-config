@@ -1588,6 +1588,50 @@ file-local variable.\n")
                   ;; Return the text we displayed.
 	          (buffer-string))))))))
 
+;; Start org-agenda asynchronously.
+;; Just a proof of concept for async.el.
+(defun tv/org-agenda-async ()
+  (interactive)
+  (require 'org-agenda)
+  (async-start
+   `(lambda ()
+      (require 'org-agenda)
+      (setq org-agenda-files ',org-agenda-files)
+      (org-agenda-list)
+      (buffer-string))
+   (lambda (result)
+     (switch-to-buffer-other-window "*Org Agenda*")
+     (mapc 'find-file-noselect (org-agenda-files))
+     (with-current-buffer "*Org Agenda*"
+       (let ((inhibit-read-only t))
+         (erase-buffer)
+         (insert (car result))
+         (map-text-properties (cdr result)))
+       (org-agenda-mode)))))
+
+(defun map-text-properties (props)
+  (cl-loop for (prop val) on (caddr props)
+           for value = (cond ((and (consp val)
+                                   (stringp (car val)))
+                              (with-temp-buffer
+                                (insert (car val))
+                                (map-text-properties (cdr val))
+                                (buffer-string)))
+                             ((and (consp val) (memq 'marker val))
+                              (let ((marker (set-marker
+                                             (make-marker)
+                                             (cl-loop for i in val
+                                                      thereis (and (numberp i) i))
+                                             (get-buffer (mapconcat 'symbol-name (last val) "")))))
+                                (set-marker-insertion-type marker t)
+                                marker))
+                             (t val))
+           do (put-text-property (1+ (nth 0 props))
+                                 (1+ (nth 1 props))
+                                 prop value))
+  (when props
+    (map-text-properties (nthcdr 3 props))))
+
 (provide 'tv-utils)
 
 ;; Local Variables:
