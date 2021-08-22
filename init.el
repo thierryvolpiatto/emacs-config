@@ -537,7 +537,11 @@ So far, F can only be a symbol, not a lambda expression."))
                                 "*Ibuffer*"
                                 "*mu4e-loading*"
                                 ))
-  (winner-mode 1))
+  (winner-mode 1)
+  (helm-define-key-with-subkeys
+      winner-mode-map (kbd "C-c <left>")
+      'left 'winner-undo '((right . winner-redo))
+      nil nil 3))
 
 ;;; All-the-icons and mode-line
 ;;
