@@ -1610,27 +1610,30 @@ file-local variable.\n")
        (org-agenda-mode)))))
 
 (defun map-text-properties (props)
-  (cl-loop for (prop val) on (caddr props)
-           for value = (cond ((and (consp val)
-                                   (stringp (car val)))
-                              (with-temp-buffer
-                                (insert (car val))
-                                (map-text-properties (cdr val))
-                                (buffer-string)))
-                             ((and (consp val) (memq 'marker val))
-                              (let ((marker (set-marker
-                                             (make-marker)
-                                             (cl-loop for i in val
-                                                      thereis (and (numberp i) i))
-                                             (get-buffer (mapconcat 'symbol-name (last val) "")))))
-                                (set-marker-insertion-type marker t)
-                                marker))
-                             (t val))
-           do (put-text-property (1+ (nth 0 props))
-                                 (1+ (nth 1 props))
-                                 prop value))
-  (when props
-    (map-text-properties (nthcdr 3 props))))
+  (let ((plist (caddr props)))
+    (while plist
+      (put-text-property (1+ (nth 0 props))
+                         (1+ (nth 1 props))
+                         (car plist)
+                         (let ((value (cadr plist)))
+                           (cond ((and (consp value)
+                                       (stringp (car value)))
+                                  (with-temp-buffer
+                                    (insert (car value))
+                                    (map-text-properties (cdr value))
+                                    (buffer-string)))
+                                 ((and (consp value) (memq 'marker value))
+                                  (let ((marker (set-marker
+                                                 (make-marker)
+                                                 (cl-loop for i in value
+                                                          thereis (and (numberp i) i))
+                                                 (get-buffer (mapconcat 'symbol-name (last value) "")))))
+                                    (set-marker-insertion-type marker t)
+                                    marker))
+                                 (t value))))
+      (setq plist (cddr plist)))
+    (when props
+      (map-text-properties (nthcdr 3 props)))))
 
 (provide 'tv-utils)
 
