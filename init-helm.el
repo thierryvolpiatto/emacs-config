@@ -603,7 +603,8 @@ First call indent, second complete symbol, third complete fname."
 
 (use-package helm-elisp-package
   :config
-  (setq helm-el-package-autoremove-on-start t
+  (setq helm-el-package-initial-filter 'installed
+        helm-el-package-autoremove-on-start t
         helm-el-package-upgrade-on-start t))
 
 (use-package helm-imenu

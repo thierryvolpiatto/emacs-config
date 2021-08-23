@@ -17,29 +17,25 @@
 
 (setq inhibit-startup-echo-area-message "thierry")
 
-;;; Straight.el
+;;; package.el
 ;;
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 5))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
+;;; Melpa/Elpa
+;;
+;; Emacs-26
+(unless (boundp 'package-quickstart)
+  (load-file (expand-file-name "early-init.el" user-emacs-directory))
+  ;; Initialize packages after setting package-archives
+  ;; to feed package-archive-contents with all archives.
+  (package-initialize))
 
-(cl-dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
-  (font-lock-add-keywords
-   mode
-   '(("(\\<\\(straight-use-package\\)\\>" 1 font-lock-keyword-face))))
+(defun tv/fix-selected-packages ()
+  (interactive)
+  (package-initialize)
+  (package--save-selected-packages (package--find-non-dependencies)))
 
 ;;; Use-package
 ;;
-(straight-use-package 'use-package)
+(eval-when-compile (require 'use-package))
 
 
 ;;; load-path
@@ -288,13 +284,11 @@ So far, F can only be a symbol, not a lambda expression."))
 
 ;;; Diminish
 ;;
-(straight-use-package
-  '(diminish :host github :repo "myrjola/diminish.el"))
+(use-package diminish :ensure t)
 
 ;;; Popup
 ;;
-(straight-use-package
- '(popup :host github :repo "auto-complete/popup-el"))
+(use-package popup :ensure t)
 
 ;;; Info
 ;;
@@ -346,7 +340,7 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;; Emms
 ;;
 (use-package emms
-  :straight (emms :type git :repo "https://git.savannah.gnu.org/git/emms.git")
+  :ensure t
   :commands 'helm-emms
   :config (use-package emms-vlc-config))
 
@@ -355,7 +349,7 @@ So far, F can only be a symbol, not a lambda expression."))
 ;; Need to be called before helm config.
 (use-package async
   ;; Use built-in work for packages installed in site-lisp/.
-  :straight (async :type built-in)
+  :ensure t
   :config
   (progn
     ;; Dired async.
@@ -546,7 +540,7 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;; All-the-icons and mode-line
 ;;
 (use-package all-the-icons
-  :straight t
+  :ensure t
   :config
   (defun tv/git-branch-in-mode-line ()
     (require 'helm-ls-git)
@@ -932,7 +926,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Ledger
 ;;
 (use-package ledger-mode
-  :straight t
+  :ensure t
   :init (setenv "LEDGER_PAGER" "cat")
   :commands (ledger-mode csv2ledger)
   :config (use-package ledger-config
@@ -965,7 +959,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Iedit
 ;;
 (use-package iedit
-  :straight (iedit :host github :repo "victorhge/iedit")
+  :ensure t
   :config
   (defun iedit-narrow-to-defun (arg)
     (interactive "P")
@@ -1018,7 +1012,7 @@ If your system's ping continues until interrupted, you can try setting
 ;; git-rebase so no need to install them as dependency.
 ;;
 (use-package magit
-  :straight t
+  :ensure t
   :commands (magit-status magit-status-internal magit-blame)
   :init
   (bind-key "<f2>" 'magit-status)
@@ -1083,7 +1077,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Emamux
 ;;
 (use-package emamux
-  :straight (emamux :host github :repo "emacsorphanage/emamux")
+  :ensure t
   :init (setq emamux:completing-read-type 'helm)
   :config (setq emamux:get-buffers-regexp
                 "^\\(buffer[0-9]+\\): +\\([0-9]+\\) +\\(bytes\\): +[\"]\\(.*\\)[\"]"
@@ -1229,7 +1223,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;; Python config
 ;;
 ;;
-;; (use-package lsp-mode :straight t
+;; (use-package lsp-mode :ensure t
 ;;   :config
 ;;   (setq lsp-enable-snippet nil)
 ;;   ;; Disable yasnippet, even with it installed there is an error.
@@ -1237,18 +1231,18 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;     (defun yas-expand-snippet (&rest args) (ignore))))
 
 ;; (use-package lsp-python-ms
-;;   :straight t
+;;   :ensure t
 ;;   :init (setq lsp-python-ms-auto-install-server t)
 ;;   :hook (python-mode . (lambda ()
 ;;                          (require 'lsp-python-ms)
 ;;                          (lsp-deferred))))
 
-;; (use-package lsp-ui :straight t
+;; (use-package lsp-ui :ensure t
 ;;   :config
 ;;   ;; Make docstrings less invasive.
 ;;   (setq lsp-ui-doc-use-childframe nil))
 
-(use-package anaconda-mode :straight t :diminish (anaconda-mode " 🐍"))
+(use-package anaconda-mode :ensure t :diminish (anaconda-mode " 🐍"))
 
 (use-package python
   :no-require t
@@ -1519,7 +1513,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;; git-gutter-mode
 ;;
 (use-package git-gutter
-  :straight t
+  :ensure t
   :init
   (progn
     ;; Activate live update timer.
@@ -1565,12 +1559,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;; W3m
 ;;
 (use-package w3m
-  :straight (w3m
-             :host github
-             :repo "emacs-w3m/emacs-w3m"
-             ;; Need to set VERSION directly in emacs-w3m.texi.
-             :files (:defaults "icons" "doc/emacs-w3m.texi"
-                     (:exclude "octet.el" "mew-w3m.el" "w3m-xmas.el" "doc/emacs-w3m-ja.texi")))
+  :ensure t
   :commands (w3m-toggle-inline-image w3m-region w3m-browse-url)
   :init (require 'config-w3m)
   :bind
@@ -1654,15 +1643,14 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;; markdown-mode
 ;;
 (use-package markdown-mode
-  :straight t
+  :ensure t
   :mode (("\\.markdown$" . markdown-mode)
          ("\\.md$" . markdown-mode)
          ("\\.mdpp$" . markdown-mode)))
 
 ;;; markdown-toc
 ;;
-(straight-use-package
-  '(markdown-toc :host github :repo "ardumont/markdown-toc"))
+(use-package markdown-toc :ensure t)
 
 (use-package ffap
   :config
@@ -2030,7 +2018,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;
 (use-package toc-org
   :commands (toc-org-insert-toc)  
-  :straight (toc-org :host github :repo "snosov1/toc-org")
+  :ensure t
   :config (add-hook 'org-mode-hook 'toc-org-enable))
 
 ;;; Rectangle edit
@@ -2040,7 +2028,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Bash-completion
 ;;
 ;; (use-package bash-completion
-;;   :straight (bash-completion :host github :repo "szermatt/emacs-bash-completion")
+;;   :ensure t
 ;;   :commands 'bash-completion-dynamic-complete
 ;;   :init
 ;;   (add-hook 'shell-dynamic-complete-functions 'bash-completion-dynamic-complete))
@@ -2049,7 +2037,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;
 ;; Seems that bash-completion and pcmpl can cohabit.
 ;; No subcommands completion with pcmpl in eshell though.
-(use-package pcmpl-git :straight (pcmpl-git :host github :repo "leoliu/pcmpl-git-el"))
+(use-package pcmpl-git :ensure t)
 
 ;;; Log-view
 ;;
@@ -2062,12 +2050,9 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 
 ;;; Wgrep
 ;;
-(use-package wgrep
-  :straight (wgrep :fork "thierryvolpiatto/Emacs-wgrep"
-                   :branch "fix_helm_occur"
-                   :files ("wgrep-helm.el" "wgrep.el"))
+(use-package wgrep-helm
+  :ensure t
   :config
-  (use-package wgrep-helm)
   (setq wgrep-enable-key "\C-x\C-q"))
 
 ;;; psession
@@ -2079,7 +2064,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 
 ;;; Rainbow-mode
 ;;
-(straight-use-package 'rainbow-mode)
+(use-package rainbow-mode :ensure t)
 
 ;;; Imenu
 ;;
@@ -2097,7 +2082,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;
 (when (>= emacs-major-version 27)
   (use-package ligature
-    :straight (ligature :host github :repo "mickeynp/ligature.el")
     :config
     ;; Enable all Fira Code ligatures in programming modes
     (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "~~>" "***" "||=" "||>"
@@ -2118,7 +2102,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Undo-tree
 ;;
 (use-package undo-tree
-  :straight t
+  :ensure t
   :diminish undo-tree-mode
   :config
   (defun git-gutter:undo-tree-undo (&rest _args)
