@@ -23,10 +23,12 @@
 ;;
 ;; Emacs-26
 (unless (boundp 'package-quickstart)
-  (load-file (expand-file-name "early-init.el" user-emacs-directory))
-  ;; Initialize packages after setting package-archives
-  ;; to feed package-archive-contents with all archives.
-  (package-initialize))
+  (load-file (expand-file-name "early-init.el" user-emacs-directory)))
+(package-initialize)
+
+;; Need to update manually package-quickstart.el with
+;; `package-quickstart-refresh' after each update.
+(when (boundp 'package-quickstart) (setq package-quickstart t))
 
 (defun tv/fix-selected-packages ()
   (interactive)
