@@ -508,7 +508,7 @@ new directory."
 
 (use-package helm-dictionary ; Its autoloads are already loaded.
   :commands helm-dictionary
-  :config
+  :init
   (setq helm-dictionary-database
         '(("en-fr" . "~/helm-dictionary/dic-en-fr.iso")
           ("fr-en" . "~/helm-dictionary/dic-fr-en.iso"))
@@ -516,7 +516,9 @@ new directory."
         '(("translate.reference.com en->fr" .
            "http://translate.reference.com/translate?query=%s&src=en&dst=fr")
           ("translate.reference.com fr->en" .
-           "http://translate.reference.com/translate?query=%s&src=fr&dst=en"))))
+           "http://translate.reference.com/translate?query=%s&src=fr&dst=en")
+          ("en.wiktionary.org" . "http://en.wiktionary.org/wiki/%s")
+          ("fr.wiktionary.org" . "http://fr.wiktionary.org/wiki/%s"))))
 
 (use-package helm-descbinds
   :config
