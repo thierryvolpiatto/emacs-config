@@ -1244,8 +1244,6 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;   ;; Make docstrings less invasive.
 ;;   (setq lsp-ui-doc-use-childframe nil))
 
-(use-package anaconda-mode :ensure t :diminish (anaconda-mode " 🐍"))
-
 (use-package python
   :no-require t
   :init
@@ -1259,8 +1257,6 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
      python-shell-interpreter-args "-i --autoindent --simple-prompt --InteractiveShell.display_page=True"
      python-shell-prompt-regexp "In \\[[0-9]+\\]: "
      python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: ")
-    (add-hook 'python-mode-hook 'anaconda-mode)
-    (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
     (add-hook 'python-mode-hook 'flymake-mode) ;; Needs pyflakes
     (add-hook 'python-mode-hook
               (lambda ()
@@ -1649,10 +1645,6 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
   :mode (("\\.markdown$" . markdown-mode)
          ("\\.md$" . markdown-mode)
          ("\\.mdpp$" . markdown-mode)))
-
-;;; markdown-toc
-;;
-(use-package markdown-toc :ensure t)
 
 (use-package ffap
   :config
