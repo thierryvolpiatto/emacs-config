@@ -23,8 +23,8 @@
 ;;
 ;; Emacs-26
 (unless (boundp 'package-quickstart)
-  (load-file (expand-file-name "early-init.el" user-emacs-directory)))
-(package-initialize)
+  (load-file (expand-file-name "early-init.el" user-emacs-directory))
+  (package-initialize))
 
 ;; Need to update manually package-quickstart.el with
 ;; `package-quickstart-refresh' after each update.
@@ -1224,25 +1224,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 
 ;;; Python config
 ;;
-;;
-;; (use-package lsp-mode :ensure t
-;;   :config
-;;   (setq lsp-enable-snippet nil)
-;;   ;; Disable yasnippet, even with it installed there is an error.
-;;   (unless (fboundp 'yas-expand-snippet)
-;;     (defun yas-expand-snippet (&rest args) (ignore))))
-
-;; (use-package lsp-python-ms
-;;   :ensure t
-;;   :init (setq lsp-python-ms-auto-install-server t)
-;;   :hook (python-mode . (lambda ()
-;;                          (require 'lsp-python-ms)
-;;                          (lsp-deferred))))
-
-;; (use-package lsp-ui :ensure t
-;;   :config
-;;   ;; Make docstrings less invasive.
-;;   (setq lsp-ui-doc-use-childframe nil))
+(use-package anaconda-mode :ensure t)
 
 (use-package python
   :no-require t
@@ -1257,6 +1239,8 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
      python-shell-interpreter-args "-i --autoindent --simple-prompt --InteractiveShell.display_page=True"
      python-shell-prompt-regexp "In \\[[0-9]+\\]: "
      python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: ")
+    (add-hook 'python-mode-hook 'anaconda-mode)
+    (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
     (add-hook 'python-mode-hook 'flymake-mode) ;; Needs pyflakes
     (add-hook 'python-mode-hook
               (lambda ()

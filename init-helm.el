@@ -136,61 +136,6 @@
   (interactive)
   (helm-ff-zgrep-1 (list (or directory default-directory)) t))
 
-(defvar helm-opera-bmk-file "/home/thierry/.config/opera/Bookmarks")
-(defvar helm-opera-data-cache nil)
-(defun helm-opera-get-data (file)
-  (with-temp-buffer
-    (insert-file-contents file)
-    (json-parse-string (buffer-string) :object-type 'plist)))
-
-(defun helm-opera-get-candidates ()
-  (let* ((plist (or helm-opera-data-cache
-                    (setq helm-opera-data-cache
-                          (helm-opera-get-data helm-opera-bmk-file))))
-         (bmk-bar (cl-loop with group = (plist-get plist :roots)
-                           with vec = (plist-get (plist-get group :bookmark_bar) :children)
-                           for bmk across vec
-                           for name = (plist-get bmk :name)
-                           for url = (plist-get bmk :url)
-                           when (and name url) 
-                           collect (cons name url)))
-         (userRoot (cl-loop for bmk across
-                            (cl-loop with data = (plist-get plist :roots)
-                                     for kwd in '(:custom_root :userRoot :children)
-                                     do (setq data (plist-get data kwd))
-                                     finally return data)
-                            for name = (plist-get bmk :name)
-                            for url = (plist-get bmk :url)
-                            when (and name url) 
-                            collect (cons name url))))
-    (append bmk-bar userRoot)))
-    
-(defun helm-opera-bmks (&optional arg)
-  (interactive "P")
-  (when arg (setq helm-opera-data-cache nil))
-  (helm :sources `(,(helm-build-sync-source "Opera"
-                      :candidates 'helm-opera-get-candidates
-                      :candidate-transformer
-                      (lambda (candidates)
-                        (cl-loop for (name . url) in candidates
-                                 for disp = (concat (propertize
-                                                     name 'face 'font-lock-keyword-face)
-                                                    "\n" url)
-                                 collect (cons disp url)))
-                      :multiline t
-                      :action (lambda (candidate)
-                                (let ((browse-url-browser-function
-                                       #'helm-browse-url-opera))
-                                  (helm-browse-url candidate))))
-                   ,(helm-build-dummy-source "DuckDuckgo"
-                     :action (lambda (candidate)
-                               (let ((browse-url-browser-function
-                                      #'helm-browse-url-opera))
-                                 (helm-browse-url
-                                  (format helm-surfraw-duckduckgo-url
-                                          (url-hexify-string candidate)))))))
-        :buffer "*helm opera*"))
-(define-key helm-command-map (kbd "o") 'helm-opera-bmks)
 
 ;;; Use-package declarations.
 ;;
