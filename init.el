@@ -301,12 +301,6 @@ So far, F can only be a symbol, not a lambda expression."))
     (add-to-list 'Info-directory-list "/usr/local/share/info")
     (add-to-list 'Info-directory-list "/usr/share/info")
     (add-to-list 'Info-directory-list "~/elisp/info")
-    (add-to-list 'Info-directory-list "~/.emacs.d/straight/build/magit")
-    (add-to-list 'Info-directory-list "~/.emacs.d/straight/build/emms")
-    (add-to-list 'Info-directory-list "~/.emacs.d/straight/build/transient")
-    (add-to-list 'Info-directory-list "~/.emacs.d/straight/build/use-package")
-    (add-to-list 'Info-directory-list "~/.emacs.d/straight/build/with-editor")
-    (add-to-list 'Info-directory-list "~/.emacs.d/straight/build/w3m")
     ;; Fancy faces in info.
     (defface tv/info-ref-item
       '((((background dark)) :background "DimGray" :foreground "Gold")
