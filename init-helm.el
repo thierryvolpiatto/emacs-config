@@ -228,22 +228,6 @@
   :init (customize-set-variable 'helm-recoll-directories
                                 '(("work" . "~/.recoll-work"))))
 
-(use-package helm-ls-git
-  :config
-  ;; Use `magit-status-setup-buffer' instead of
-  ;; `magit-status-internal' with recent magit.
-  (setq helm-ls-git-status-command 'magit-status-internal)
-  (cl-defmethod helm-setup-user-source ((source helm-ls-git-source))
-    (helm-source-add-action-to-source-if
-     "Magit find file"
-     (lambda (candidate)
-       (magit-find-file (magit-branch-or-commit-at-point) candidate))
-     source
-     (lambda (_candidate)
-       (require 'magit)
-       (with-helm-current-buffer (magit-branch-or-commit-at-point)))
-     1)))
-
 (use-package helm-buffers
   :config
   (setq helm-buffers-favorite-modes
@@ -263,7 +247,7 @@
   
   (cl-defmethod helm-setup-user-source ((source helm-source-buffers))
   "Adds additional actions to `helm-source-buffers-list'.
-- Magit status."
+- Git status."
   (setf (slot-value source 'candidate-number-limit) 300)
   (helm-aif (slot-value source 'action)
       (setf (slot-value source 'action)
@@ -273,7 +257,7 @@
            it)
          '(("Diff buffers" . helm-buffers-diff-buffers)) 4)))
   (helm-source-add-action-to-source-if
-   "Magit status"
+   "Git status"
    (lambda (candidate)
      (funcall helm-ls-git-status-command
               (with-current-buffer candidate default-directory)))
@@ -342,7 +326,7 @@ new directory."
     "Adds additional actions to `helm-find-files'.
     - Byte compile file(s) async
     - Byte recompile directory
-    - Magit status
+    - Git status
     - Github issues
     - Patch region on directory
     - Open in emms
@@ -370,7 +354,7 @@ new directory."
      source
      'file-directory-p)
     (helm-source-add-action-to-source-if
-     "Magit status"
+     "Git status"
      (lambda (_candidate)
        (funcall helm-ls-git-status-command
                 helm-ff-default-directory))

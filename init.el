@@ -63,7 +63,7 @@
 ;;; VC
 ;;
 ;; Possible values for vc backends: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
-(setq vc-handled-backends '(RCS))
+(setq vc-handled-backends '(RCS Git))
 (setq vc-ignore-dir-regexp
       (format "\\(%s\\)\\|\\(%s\\)"
                    vc-ignore-dir-regexp
@@ -565,7 +565,7 @@ So far, F can only be a symbol, not a lambda expression."))
                finally return
                (append '("Git branches")
                        lst
-                       '("--" ["Magit status" magit-status])))))
+                       '("--" ["Git status" vc-dir])))))
 
   (defun tv/custom-modeline-github-vc ()
     (require 'helm-ls-git)
@@ -1001,74 +1001,6 @@ If your system's ping continues until interrupted, you can try setting
         migemo-coding-system    'utf-8-unix
         migemo-isearch-enable-p nil)
   :disabled t)
-
-;;; Magit
-;;
-;; Magit when installed from git contains also git-commit and
-;; git-rebase so no need to install them as dependency.
-;;
-(use-package magit
-  :ensure t
-  :commands (magit-status magit-status-internal magit-blame)
-  :init
-  (bind-key "<f2>" 'magit-status)
-  (use-package magit-branch
-    :bind ("C-c b" . magit-checkout))
-  (setq git-commit-fill-column             78
-        git-commit-summary-max-length      78
-        auto-revert-verbose                nil
-        magit-auto-revert-immediately
-        (null (and (boundp 'auto-revert-use-notify)
-                   auto-revert-use-notify))
-        magit-revision-show-gravatars nil
-        magit-uniquify-buffer-names   nil)
-  (add-hook 'git-commit-setup-hook (lambda () (setq-local adaptive-fill-mode nil)))
-  :config
-  (use-package magit-sequence
-    :config
-    (defun tv/magit-am-apply-patches (&optional files args)
-      "Apply the patches FILES."
-      (interactive (list (or (magit-region-values 'file)
-                             (let ((default (magit-file-at-point))
-                                   (helm-comp-read-use-marked t)
-                                   (fn (if helm-mode #'identity #'list)))
-                               (funcall fn
-                                        (read-file-name
-                                         (if default
-                                             (format "Apply patch (%s): " default)
-                                           "Apply patch: ")
-                                         nil default))))
-                         (magit-am-arguments)))
-      (magit-run-git-sequencer "am" args "--"
-                               (--map (magit-convert-filename-for-git
-                                       (expand-file-name it))
-                                      files)))
-    (fset 'magit-am-apply-patches 'tv/magit-am-apply-patches))
-  (setq magit-status-sections-hook
-        (cl-loop for fn in magit-status-sections-hook
-                 unless (memq fn '(magit-insert-unpushed-to-pushremote
-                                   magit-insert-unpushed-to-upstream-or-recent
-                                   magit-insert-unpulled-from-pushremote
-                                   magit-insert-unpulled-from-upstream))
-                 collect fn))
-  (diminish 'auto-revert-mode "AR")
-  (bind-key "C"    'magit-commit-add-log magit-diff-mode-map)
-  (bind-key "C-]"  'magit-toggle-margin magit-log-mode-map)
-  ;; Press RET while in branch manager to checkout branches as
-  ;; before.
-  (setq magit-visit-ref-behavior '(checkout-any focus-on-ref))
-  (add-to-list 'magit-visit-ref-behavior 'create-branch)
-  ;; Recognize sudo french/english password prompt in shell
-  ;; commands.
-  ;; Use the nth99 submatch to pass the match to auth-source.
-  (add-to-list 'magit-process-password-prompt-regexps
-               "^\\[sudo\\] [Mm]ot de passe de \\(?99:.*[^ ]\\).?:.*$")
-  (add-to-list 'magit-process-password-prompt-regexps
-               "^\\[sudo\\] [Pp]assword for \\(?99:.*\\): ?$")
-  (add-to-list 'magit-process-find-password-functions
-               (lambda (key)
-                 (tv/get-passwd-from-auth-sources key :port "sudo")))
-  :no-require t)
 
 ;;; Emamux
 ;;
