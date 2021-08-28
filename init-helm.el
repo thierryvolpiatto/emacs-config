@@ -228,60 +228,6 @@
   :init (customize-set-variable 'helm-recoll-directories
                                 '(("work" . "~/.recoll-work"))))
 
-(use-package helm-ls-git
-  :config
-  (defun helm-ls-git-collect-branches (&optional arg)
-    (helm-aif (helm-ls-git-root-dir)
-        (with-helm-default-directory it
-          (with-output-to-string
-            (with-current-buffer standard-output
-              (cond ((null arg)
-                     ;; Only local branches.
-                     (apply #'call-process "git" nil t nil '("branch")))
-                    (t
-                     (apply #'call-process "git" nil t nil '("branch" "-a")))))))
-      ""))
-
-  (defvar helm-ls-git-branches-show-all nil)
-  
-  (defun helm-ls-git-branches-toggle-show-all ()
-    (interactive)
-    (setq helm-ls-git-branches-show-all (not helm-ls-git-branches-show-all))
-    (helm-force-update))
-
-  (defvar helm-ls-git-branches-map (let ((map (make-sparse-keymap)))
-                                     (set-keymap-parent map helm-map)
-                                     (define-key map (kbd "C-c b") 'helm-ls-git-branches-toggle-show-all)
-                                     map))
-  
-  (defvar helm-ls-git-branches-source
-    (helm-build-in-buffer-source "Git branches"
-      :init (lambda ()
-              (let ((data (helm-ls-git-collect-branches helm-ls-git-branches-show-all)))
-                (helm-init-candidates-in-buffer 'global data)))
-      :candidate-transformer (lambda (candidates)
-                               (cl-loop for c in candidates
-                                        collect (if (string-match "\\`\\([*]\\)\\(.*\\)" c)
-                                                    (format "%s%s"
-                                                            (propertize (match-string 1 c) 'face '((:foreground "gold")))
-                                                            (propertize (match-string 2 c) 'face '((:foreground "red"))))
-                                                  (propertize c 'face '((:foreground "red"))))))
-      :action '(("Checkout" . (lambda (candidate)
-                                (with-helm-current-buffer
-                                  (let* ((branch (replace-regexp-in-string "[ ]" "" candidate)) 
-                                         (real (replace-regexp-in-string "\\`\\*" "" branch)))
-                                    (if (string-match "\\`[*]" candidate)
-                                        (message "Already on %s branch" real)
-                                      (let ((status (apply #'call-process
-                                                           "git" nil nil nil
-                                                           `("checkout" "-q" ,real))))
-                                        (if (= status 0)
-                                            (message "Switched to %s branch" real)
-                                          (error "Process exit with non zero status")))))))))
-      :keymap 'helm-ls-git-branches-map))
-
-  (add-to-list 'helm-ls-git-default-sources 'helm-ls-git-branches-source))
-
 (use-package helm-buffers
   :config
   (setq helm-buffers-favorite-modes
