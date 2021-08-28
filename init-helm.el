@@ -272,8 +272,12 @@
                                          (real (replace-regexp-in-string "\\`\\*" "" branch)))
                                     (if (string-match "\\`[*]" candidate)
                                         (message "Already on %s branch" real)
-                                      (shell-command (format "git checkout -q '%s'" real))
-                                      (message "Switched to %s branch" real)))))))
+                                      (let ((status (apply #'call-process
+                                                           "git" nil nil nil
+                                                           `("checkout" "-q" ,real))))
+                                        (if (= status 0)
+                                            (message "Switched to %s branch" real)
+                                          (error "Process exit with non zero status")))))))))
       :keymap 'helm-ls-git-branches-map))
 
   (add-to-list 'helm-ls-git-default-sources 'helm-ls-git-branches-source))
