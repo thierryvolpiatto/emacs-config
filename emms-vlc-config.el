@@ -9,13 +9,9 @@
 (setq emms-source-file-default-directory "/home/thierry/Musique")
 
 (emms-all)
-(emms-default-players)
 
-(setq emms-player-list '(emms-player-vlc-playlist
-                         emms-player-vlc
-                         emms-player-mpv
-                         emms-player-mpg321
-                         emms-player-ogg123))
+;; Setup `emms-player-list'.
+(emms-default-players)
 
 (setq emms-player-mpv-parameters
       '("--no-terminal" "--force-window=no" "--audio-display=no"))
