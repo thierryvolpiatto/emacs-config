@@ -9,9 +9,12 @@
              (format "%.2f" time))))
 (add-hook 'emacs-startup-hook #'tv/emacs-load-time t)
 
-(setq native-comp-deferred-compilation
-      (and (fboundp 'native-comp-available-p)
-           (native-comp-available-p)))
+(when (and (fboundp 'native-comp-available-p)
+           (native-comp-available-p))
+  (setq native-comp-deferred-compilation t
+        native-comp-async-query-on-exit t
+        native-comp-async-jobs-number 4
+        native-comp-async-report-warnings-errors 'silent))
 
 (require 'cl-lib)
 
