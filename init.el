@@ -437,28 +437,7 @@ So far, F can only be a symbol, not a lambda expression."))
 
 (use-package man
     :config
-  (setq Man-notify-method 'pushy)
-  (defun tv/advice--Man-highlight-references (&optional xref-man-type)
-    (unless Man-arguments
-      (setq Man-arguments ""))
-    (if (string-match "-k " Man-arguments)
-        (progn
-          (Man-highlight-references0 nil Man-reference-regexp 1
-                                     'Man-default-man-entry
-                                     (or xref-man-type 'Man-xref-man-page))
-          (Man-highlight-references0 nil Man-apropos-regexp 1
-                                     'Man-default-man-entry
-                                     (or xref-man-type 'Man-xref-man-page)))
-      ;; Highlight references from top to bottom, not only from "SEE
-      ;; ALSO" section.
-      (Man-highlight-references0 nil Man-reference-regexp 1
-                                 'Man-default-man-entry
-                                 (or xref-man-type 'Man-xref-man-page))
-      (Man-highlight-references0 Man-synopsis-regexp Man-header-regexp 0 2
-                                 'Man-xref-header-file)
-      (Man-highlight-references0 Man-files-regexp Man-normal-file-regexp 0 0
-                                 'Man-xref-normal-file)))
-  (advice-add 'Man-highlight-references :override #'tv/advice--Man-highlight-references))
+  (setq Man-notify-method 'pushy))
 
 ;; show-paren-mode
 ;;
