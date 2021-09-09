@@ -289,6 +289,7 @@
 (defun tv/mu4e-browse-url-or-show-patch (arg)
   (interactive "P")
   (require 'helm-net)
+  (require 'w3m)
   (let ((url (w3m-active-region-or-url-at-point)))
     (when url
       (if (string-match "\\.\\(patch\\|diff\\)\\'" url)
