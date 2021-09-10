@@ -347,8 +347,6 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;
 ;; Need to be called before helm config.
 (use-package async
-  ;; Use built-in work for packages installed in site-lisp/.
-  :ensure t
   :config
   (progn
     ;; Dired async.

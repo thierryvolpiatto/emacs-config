@@ -519,6 +519,8 @@ if one may help."
 (add-function :around mu4e-compose-cite-function #'tv/mu4e-remove-buttons-in-reply)
 
 
+(define-key mu4e-search-minor-mode-map (kbd "S") nil)
+
 (provide 'mu4e-config)
 
 ;;; mu4e-config.el ends here
