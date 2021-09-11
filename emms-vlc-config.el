@@ -31,15 +31,15 @@
 ;; «Mode-line» (to ".Mode-line")
 (setq emms-mode-line-icon-color "Gold1")
 (setq emms-mode-line-icon-before-format "[")
-(setq emms-mode-line-format " %s")
+(setq emms-mode-line-format " `%s'")
 (setq emms-playing-time-display-format " %s]")
 (defun emms-mode-line-playlist-current ()
   "Format the currently playing song."
-  (format emms-mode-line-format
-          (propertize "Emms playing"
-                      'help-echo
-                      (emms-track-description
-                       (emms-playlist-current-selected-track)))))
+  (let ((cur-track (emms-track-description
+                    (emms-playlist-current-selected-track))))
+    (format emms-mode-line-format
+            (propertize (truncate-string-to-width cur-track 20 nil nil "⃨")
+                        'help-echo cur-track))))
 
 (defun tv/emms-mode-line-icon-function ()
   (setq emms-mode-line-icon-image-cache
