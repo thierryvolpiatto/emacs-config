@@ -40,6 +40,7 @@
          (all (emms-info-track-description (emms-playlist-current-selected-track))))
     (format emms-mode-line-format
             (propertize (truncate-string-to-width cur-track 20 nil nil "⃨")
+                        'face 'font-lock-type-face
                         'help-echo all))))
 
 (defun tv/emms-mode-line-icon-function ()
