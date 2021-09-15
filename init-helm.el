@@ -458,6 +458,8 @@ new directory."
   :config
   (use-package isearch-light)
   (setq helm-scroll-amount 4)
+  (setq helm-find-function-default-project
+        '("~/labo/emacs/lisp/" "~/labo/github/"))
   (helm-help-define-key "C-x" 'exchange-point-and-mark)
   (helm-help-define-key "C-l" 'recenter-top-bottom)
   (helm-help-define-key "C-s" nil)
