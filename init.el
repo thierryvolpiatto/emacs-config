@@ -72,7 +72,6 @@
       (format "\\(%s\\)\\|\\(%s\\)"
               vc-ignore-dir-regexp
               tramp-file-name-regexp))
-
 
 ;;; Global settings
 ;;
