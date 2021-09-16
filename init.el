@@ -66,10 +66,11 @@
 ;;; VC
 ;;
 ;; Possible values for vc backends: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
-(setq vc-handled-backends '(RCS Git))
-(setq vc-ignore-dir-regexp
+(setq vc-handled-backends '(RCS Git)
+      vc-follow-symlinks t
+      vc-ignore-dir-regexp
       (format "\\(%s\\)\\|\\(%s\\)"
-                   vc-ignore-dir-regexp
+              vc-ignore-dir-regexp
               tramp-file-name-regexp))
 
 
@@ -903,7 +904,9 @@ If your system's ping continues until interrupted, you can try setting
 ;;
 (use-package ledger-mode
   :ensure t
-  :init (setenv "LEDGER_PAGER" "cat")
+  :init
+  (setenv "LEDGER_PAGER" "cat")
+  (add-to-list 'auto-mode-alist '("\\.dat\\'" . ledger-mode))
   :commands (ledger-mode csv2ledger ledger-position)
   :config (use-package ledger-config
             :init
@@ -2001,6 +2004,12 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
         isl-after-position-string "≥")
   :bind (("C-s" . isl-search)
          ("C-z" . isl-narrow-to-defun)))
+
+;;; Yaml-mode
+;;
+(use-package yaml-mode
+  :ensure t
+  :config (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode)))
 
 ;; Kill buffer and windows
 (defun tv/kill-buffer-and-windows (arg)
