@@ -46,7 +46,6 @@
 ;;; load-path
 ;;
 (dolist (i '("~/elisp/"
-             "~/elisp/autocrypt"
              "~/elisp/autoconf-mode"
              "~/elisp/desktop-file-utils"
              "~/elisp/emacs-wget"
@@ -1476,6 +1475,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;; Autocrypt
 ;;
 (use-package autocrypt
+  :ensure t
   :config
   (use-package autocrypt-mu4e)
   (use-package autocrypt-gnus)
@@ -1959,27 +1959,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
      'imenu-generic-expression
      '("Use package" "^\\s-*(\\(?:straight-\\)?use-package\\s-+'?\\(\\(?:\\sw\\|\\s_\\|\\\\.\\)+\\)[[:space:]\n]*[^)]*" 1)))
   (add-hook 'emacs-lisp-mode-hook #'imenu-add-use-package-generic-expr))
-
-;;; Ligatures
-;;
-(when (>= emacs-major-version 27)
-  (use-package ligature
-    :config
-    ;; Enable all Fira Code ligatures in programming modes
-    (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "~~>" "***" "||=" "||>"
-                                         ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
-                                         "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
-                                         "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
-                                         "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "#_(" "..<"
-                                         "/==" "///" "_|_" "&&" "^=" "~~" "~@" "~=" "/=" "/>" "://"
-                                         "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
-                                         "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
-                                         ">=" ">-" "-~" "-|" "->" "-<" "<~" "<*" "<|" "<:"
-                                         "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
-                                         "#(" "#?" "#_" ".=" ".-" ".?" "+>" "?:" "?=" "?."))
-    ;; Enables ligature checks globally in all buffers.  You can also do it
-    ;; per mode with `ligature-mode'.
-    (global-ligature-mode t)))
 
 ;;; Undo-tree
 ;;
