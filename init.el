@@ -1804,20 +1804,12 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
     (add-hook 'emacs-lisp-mode-hook #'tv/set-emacs-lisp-name)
 
     (use-package cl-indent
-      :config
-      ;; Try to have same indentation in both 24, 25 and 26.
-      (defun tv/common-lisp-indent-function (indent-point state)
-        ;; Use cl indent just for cl-loop.
-        (if (save-excursion (goto-char (elt state 1))
-                            (looking-at "(cl-\\([Ll][Oo][Oo][Pp]\\)"))
-            (common-lisp-indent-function-1 indent-point state)
-          (lisp-indent-function indent-point state)))
-      
-      ;; Fix indentation in CL loop.
-      (setq lisp-indent-function #'tv/common-lisp-indent-function
+        :config
+      ;; Fix indentation in CL functions (cl-flet/loop etc...).
+      (setq lisp-indent-function #'common-lisp-indent-function
             lisp-simple-loop-indentation 1
-            lisp-loop-keyword-indentation 6
-            lisp-loop-forms-indentation 6))
+            lisp-loop-keyword-indentation 9 ;; Align cl-loop clauses.
+            lisp-loop-forms-indentation 9)) ;; Align cl-loop next clauses.
 
     (defun goto-scratch ()
       (interactive)
