@@ -113,16 +113,12 @@
 
 (setq mu4e-refile-folder 'tv/mu4e-refile-folder-function)
 
-(cond ((fboundp 'w3m)
-         ;; Emacs-w3m
-         (setq mm-text-html-renderer 'w3m))
-        ((executable-find "w3m")
-         ;; W3m (Don't need emacs-w3m)
-         (setq mm-text-html-renderer 'w3m-standalone))
-        (t                              ; Fall back to shr.
-         (setq shr-color-visible-luminance-min 75)
-         (setq shr-width nil)           ; Use all window width.
-         (setq mm-text-html-renderer 'shr)))
+;; Avoid default 'shr which is slow, ugly and even worse open
+;; unexpectedly links (particularly image links).
+(setq mm-text-html-renderer
+      (cond ((fboundp 'w3m) 'w3m)
+            ((executable-find "w3m") 'w3m-standalone)
+            (t 'shr)))
 
 (setq mm-inline-text-html-with-w3m-keymap nil
       mm-html-inhibit-images t
