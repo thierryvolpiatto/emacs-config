@@ -565,6 +565,10 @@ First call indent, second complete symbol, third complete fname."
 
 (use-package helm-all-the-icons
   :commands helm-all-the-icons)
+
+(use-package helm-ls-git
+    :config
+  (setq helm-ls-git-delete-branch-on-remote t))
 
 ;;; Ctl-x-5 map
 ;;
