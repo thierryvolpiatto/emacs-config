@@ -113,12 +113,7 @@
 
 (setq mu4e-refile-folder 'tv/mu4e-refile-folder-function)
 
-;;; Html rendering
-(setq mu4e-view-use-gnus t)
-
-(when mu4e-view-use-gnus
-  ;; Disable crap gnus shr rendering.
-  (cond ((fboundp 'w3m)
+(cond ((fboundp 'w3m)
          ;; Emacs-w3m
          (setq mm-text-html-renderer 'w3m))
         ((executable-find "w3m")
@@ -128,21 +123,13 @@
          (setq shr-color-visible-luminance-min 75)
          (setq shr-width nil)           ; Use all window width.
          (setq mm-text-html-renderer 'shr)))
-  (setq mm-inline-text-html-with-w3m-keymap nil
-        mm-html-inhibit-images t
-        gnus-inhibit-images t)
-  (use-package gnus-art
-    :config (fset 'gnus-article-press-button 'mu4e-scroll-up)))
 
-(setq mu4e-view-prefer-html t)
-(setq mu4e-html2text-command (cond ((fboundp 'w3m)
-                                    ;; Use emacs-w3m
-                                    (lambda ()
-                                      (w3m-region (point-min) (point-max))))
-                                   ((executable-find "w3m")
-                                    ;; Use w3m shell-command
-                                    "w3m -T text/html")
-                                   (t 'html2text)))
+(setq mm-inline-text-html-with-w3m-keymap nil
+      mm-html-inhibit-images t
+      gnus-inhibit-images t)
+
+(use-package gnus-art
+    :config (fset 'gnus-article-press-button 'mu4e-scroll-up))
 
 (setq mail-user-agent      'mu4e-user-agent
       read-mail-command    'mu4e
