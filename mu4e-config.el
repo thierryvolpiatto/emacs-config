@@ -412,8 +412,9 @@ See https://en.wikipedia.org/wiki/Null_character."
           (when end
             (set-text-properties pos end '(keymap nil))
             (goto-char end)))))))
-(advice-add 'gnus-article-prepare-display
-            :after #'tv/remove-keymap-button-prop)
+;; This break mm-text-html-renderer so don't use it.
+;; (advice-add 'gnus-article-prepare-display
+;;             :after #'tv/remove-keymap-button-prop)
 
 ;; Crypto
 ;; Autocrypt will decide if encrypting or not.
