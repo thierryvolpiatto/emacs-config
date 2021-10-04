@@ -400,22 +400,6 @@ See https://en.wikipedia.org/wiki/Null_character."
         (replace-match "")))))
 (add-hook 'gnus-part-display-hook 'tv/delete-null-chars-from-gnus)
 
-(defun tv/remove-keymap-button-prop ()
-  "Remove keymap prop in all gnus buttons found."
-  (save-excursion
-    (let ((inhibit-read-only t)
-          (pos 0))
-      (message-goto-body)
-      (while (setq pos (next-single-property-change (point) 'button))
-        (goto-char (1+ pos))
-        (let ((end (next-single-property-change (point) 'button)))
-          (when end
-            (set-text-properties pos end '(keymap nil))
-            (goto-char end)))))))
-;; This break mm-text-html-renderer so don't use it.
-;; (advice-add 'gnus-article-prepare-display
-;;             :after #'tv/remove-keymap-button-prop)
-
 ;; Crypto
 ;; Autocrypt will decide if encrypting or not.
 (setq mu4e-compose-crypto-policy '(sign-all-messages))
