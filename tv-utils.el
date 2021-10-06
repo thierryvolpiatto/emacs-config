@@ -321,7 +321,8 @@ depending the value of N is positive or negative."
       (let (action kb com)
         (catch 'break
           (while t
-            (setq action (read-key "`(*)': Enclose forward, (any key to exit)."))
+            (setq action (read-key (propertize "`(': Enclose forward, (any key to exit)."
+                                               'face 'minibuffer-prompt)))
             (cl-case action
               (?\(
                (skip-chars-forward " \n")
@@ -348,7 +349,8 @@ depending the value of N is positive or negative."
         (insert "(")
         (catch 'break
           (while t
-            (setq action (read-key "`)': Move forward, (any key to exit)."))
+            (setq action (read-key (propertize "`)': Move forward, (any key to exit)."
+                                               'face 'minibuffer-prompt)))
             (cl-case action
               (?\)
                (unless (looking-back "(" (1- (point)))
