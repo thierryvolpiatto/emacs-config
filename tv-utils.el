@@ -318,26 +318,30 @@ depending the value of N is positive or negative."
   (if (region-active-p)
       (progn (goto-char beg) (insert "(")
              (goto-char (1+ end)) (insert ")"))
-      (let (action kb com)
-        (catch 'break
-          (while t
-            (setq action (read-key (propertize "`(': Enclose forward, (any key to exit)."
-                                               'face 'minibuffer-prompt)))
-            (cl-case action
-              (?\(
-               (skip-chars-forward " \n")
-               (insert "(")
-               (forward-sexp 1)
-               (insert ")"))
-              (t (setq kb  (this-command-keys-vector))
-                 (setq com (lookup-key (current-local-map) kb))
-                 (if (commandp com)
-                     (call-interactively com)
-                     (setq unread-command-events
-                           (nconc (mapcar 'identity
-                                          (this-single-command-raw-keys))
-                                  unread-command-events)))
-                 (throw 'break nil))))))))
+    (let ((timer (run-with-idle-timer
+                  delay nil (lambda () (keyboard-quit))))
+          action kb com)
+      (unwind-protect
+           (catch 'break
+             (while t
+               (setq action (read-key (propertize "`(': Enclose forward, (any key to exit)."
+                                                  'face 'minibuffer-prompt)))
+               (cl-case action
+                 (?\(
+                  (skip-chars-forward " \n")
+                  (insert "(")
+                  (forward-sexp 1)
+                  (insert ")"))
+                 (t (setq kb  (this-command-keys-vector))
+                    (setq com (lookup-key (current-local-map) kb))
+                    (if (commandp com)
+                        (call-interactively com)
+                      (setq unread-command-events
+                            (nconc (mapcar 'identity
+                                           (this-single-command-raw-keys))
+                                   unread-command-events)))
+                    (throw 'break nil)))))
+        (cancel-timer timer)))))
 
 ;;;###autoload
 (defun tv/insert-pair-and-close-forward (beg end)
@@ -345,30 +349,34 @@ depending the value of N is positive or negative."
   (if (region-active-p)
       (progn (goto-char beg) (insert "(")
              (goto-char (1+ end)) (insert ")"))
-      (let (action kb com)
-        (insert "(")
-        (catch 'break
-          (while t
-            (setq action (read-key (propertize "`)': Move forward, (any key to exit)."
-                                               'face 'minibuffer-prompt)))
-            (cl-case action
-              (?\)
-               (unless (looking-back "(" (1- (point)))
-                 (delete-char -1))
-               (skip-chars-forward " ")
-               (forward-symbol 1)
-               ;; move forward in a list of strings
-               (skip-chars-forward "\"")
-               (insert ")"))
-              (t (setq kb  (this-command-keys-vector))
-                 (setq com (lookup-key (current-local-map) kb))
-                 (if (commandp com)
-                     (call-interactively com)
-                     (setq unread-command-events
-                           (nconc (mapcar 'identity
-                                          (this-single-command-raw-keys))
-                                  unread-command-events)))
-                 (throw 'break nil))))))))
+    (let ((timer (run-with-idle-timer
+                  1.5 nil (lambda () (keyboard-quit))))
+          action kb com)
+      (insert "(")
+      (unwind-protect
+           (catch 'break
+             (while t
+               (setq action (read-key (propertize "`)': Move forward, (any key to exit)."
+                                                  'face 'minibuffer-prompt)))
+               (cl-case action
+                 (?\)
+                  (unless (looking-back "(" (1- (point)))
+                    (delete-char -1))
+                  (skip-chars-forward " ")
+                  (forward-symbol 1)
+                  ;; move forward in a list of strings
+                  (skip-chars-forward "\"")
+                  (insert ")"))
+                 (t (setq kb  (this-command-keys-vector))
+                    (setq com (lookup-key (current-local-map) kb))
+                    (if (commandp com)
+                        (call-interactively com)
+                      (setq unread-command-events
+                            (nconc (mapcar 'identity
+                                           (this-single-command-raw-keys))
+                                   unread-command-events)))
+                    (throw 'break nil)))))
+        (cancel-timer timer)))))
 
 ;;;###autoload
 (defun tv/insert-double-quote-and-close-forward (beg end)
