@@ -321,7 +321,7 @@ depending the value of N is positive or negative."
       (let (action kb com)
         (catch 'break
           (while t
-            (setq action (read-key "`(': Insert, (any key to exit)."))
+            (setq action (read-key "`(*)': Enclose forward, (any key to exit)."))
             (cl-case action
               (?\(
                (skip-chars-forward " \n")
@@ -348,7 +348,7 @@ depending the value of N is positive or negative."
         (insert "(")
         (catch 'break
           (while t
-            (setq action (read-key "`)': Insert, (any key to exit)."))
+            (setq action (read-key "`)': Move forward, (any key to exit)."))
             (cl-case action
               (?\)
                (unless (looking-back "(" (1- (point)))
