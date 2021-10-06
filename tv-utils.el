@@ -319,13 +319,15 @@ depending the value of N is positive or negative."
       (progn (goto-char beg) (insert "(")
              (goto-char (1+ end)) (insert ")"))
     (let ((timer (run-with-idle-timer
-                  delay nil (lambda () (keyboard-quit))))
+                  5 nil (lambda () (keyboard-quit))))
           action kb com)
       (unwind-protect
            (catch 'break
              (while t
-               (setq action (read-key (propertize "`(': Enclose forward, (any key to exit)."
-                                                  'face 'minibuffer-prompt)))
+               (setq action (read-key
+                             (propertize
+                              "`(': Enclose forward, (any key to exit)."
+                              'face 'minibuffer-prompt)))
                (cl-case action
                  (?\(
                   (skip-chars-forward " \n")
@@ -350,14 +352,16 @@ depending the value of N is positive or negative."
       (progn (goto-char beg) (insert "(")
              (goto-char (1+ end)) (insert ")"))
     (let ((timer (run-with-idle-timer
-                  1.5 nil (lambda () (keyboard-quit))))
+                  5 nil (lambda () (keyboard-quit))))
           action kb com)
-      (insert "(")
+      (unless (looking-back "(" (1- (point))) (insert "("))
       (unwind-protect
            (catch 'break
              (while t
-               (setq action (read-key (propertize "`)': Move forward, (any key to exit)."
-                                                  'face 'minibuffer-prompt)))
+               (setq action (read-key
+                             (propertize
+                              "`)': Move forward, (any key to exit)."
+                              'face 'minibuffer-prompt)))
                (cl-case action
                  (?\)
                   (unless (looking-back "(" (1- (point)))
