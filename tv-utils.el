@@ -367,7 +367,8 @@ depending the value of N is positive or negative."
                   (unless (looking-back "(" (1- (point)))
                     (delete-char -1))
                   (skip-chars-forward " ")
-                  (forward-symbol 1)
+                  (if (looking-at "(")
+                      (forward-sexp 1) (forward-symbol 1))
                   ;; move forward in a list of strings
                   (skip-chars-forward "\"")
                   (insert ")"))
