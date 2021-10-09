@@ -48,7 +48,6 @@
 (dolist (i '("~/elisp/"
              "~/elisp/autoconf-mode"
              "~/elisp/desktop-file-utils"
-             "~/elisp/emacs-wget"
              "~/elisp/tex-utils"
              "~/elisp/helm-extensions"
              "~/.emacs.d/themes/"
@@ -479,17 +478,6 @@ So far, F can only be a symbol, not a lambda expression."))
   :config
   (add-to-list 'auto-mode-alist
                '("\\.desktop\\(\\.in\\)?$" . desktop-entry-mode)))
-
-;;; Wget
-;;
-;;
-(use-package wget
-  :config
-  (progn
-    (use-package w3m-wget)
-    ;; Use wget in eshell.
-    (defun eshell/wget (url)
-      (wget url))))
 
 ;;; Winner
 ;;
