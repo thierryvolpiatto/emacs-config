@@ -1650,6 +1650,39 @@ file-local variable.\n")
     (when props
       (map-text-properties (nthcdr 3 props)))))
 
+;;;###autoload
+(defun tv/align-let ()
+  "Align let forms.
+Refuse to align let forms containing multiline clauses."
+  (interactive)
+  (let ((sexp       (thing-at-point 'sexp t))
+        (bounds     (bounds-of-thing-at-point 'sexp))
+        (let-regexp "(?\\(([^ ]*\\)\\(\\s-\\).*$")
+        new-sexp)
+    (when sexp
+      (setq new-sexp
+            (with-temp-buffer
+              (insert sexp)
+              (goto-char (point-min))
+              (save-excursion
+                (cl-assert (not (re-search-forward "[^)]$" nil t)) nil
+                           "Can't align such let forms"))
+              (let ((max-len 0))
+                (save-excursion
+                  (while (re-search-forward let-regexp nil t)
+                    (setq max-len (max (length (match-string 1)) max-len))))
+                (while (re-search-forward let-regexp nil t)
+                  (save-excursion
+                    (replace-match
+                     (make-string (1+ (- max-len (length (match-string 1)))) ? )
+                     t t nil 2))))
+              (buffer-string)))
+      (when (and new-sexp (not (string= new-sexp "")))
+        (delete-region (car bounds) (cdr bounds))
+        (save-excursion
+          (insert new-sexp))
+        (indent-sexp)))))
+
 (provide 'tv-utils)
 
 ;; Local Variables:

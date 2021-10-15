@@ -1525,22 +1525,6 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
             (setq whitespace-line-column 80))
   :bind ("C-c W" . whitespace-mode))
 
-;;; align-let
-;;
-(use-package align-let
-  :commands 'align-let-keybinding
-  :init
-  (progn
-    (add-hook 'emacs-lisp-mode-hook 'align-let-keybinding)
-    (add-hook 'lisp-interaction-mode-hook 'align-let-keybinding)
-    (add-hook 'lisp-mode-hook 'align-let-keybinding))
-  :config
-  (progn
-    (put 'setq-local 'align-let 'setq)
-    (put 'cl-psetq 'align-let 'setq)
-    (put 'helm-set-local-variable 'align-let 'setq))
-  :disabled t)
-
 ;;; markdown-mode
 ;;
 (use-package markdown-mode
@@ -1888,11 +1872,13 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
          ("<prior>" . backward-page)
          ("C-M-j" . backward-kill-sexp)
          ("M-e" . tv/pp-eval-or-expand-last-sexp)
+         ("C-c C-a" . tv/align-let)
          :map
          lisp-interaction-mode-map
          ("RET" . newline-and-indent)
          ("C-M-j" . backward-kill-sexp)
          ("M-e" . tv/pp-eval-or-expand-last-sexp)
+         ("C-c C-a" . tv/align-let)
          :map
          lisp-mode-map
          ("RET" . newline-and-indent)))
