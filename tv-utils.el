@@ -1657,31 +1657,29 @@ Refuse to align let forms containing multiline clauses."
   (interactive)
   (let ((sexp       (thing-at-point 'sexp t))
         (bounds     (bounds-of-thing-at-point 'sexp))
-        (let-regexp "(?\\(([^ ]*\\)\\(\\s-\\).*$")
-        new-sexp)
+        (let-regexp "(?\\(([^ ]*\\)\\(\\s-\\).*$"))
     (when sexp
-      (setq new-sexp
-            (with-temp-buffer
-              (insert sexp)
-              (goto-char (point-min))
-              (save-excursion
-                (cl-assert (not (re-search-forward "[^)]$" nil t)) nil
-                           "Can't align such let forms"))
-              (let ((max-len 0))
-                (save-excursion
-                  (while (re-search-forward let-regexp nil t)
-                    (setq max-len (max (length (match-string 1)) max-len))))
-                (while (re-search-forward let-regexp nil t)
-                  (save-excursion
-                    (replace-match
-                     (make-string (1+ (- max-len (length (match-string 1)))) ? )
-                     t t nil 2))))
-              (buffer-string)))
-      (when (and new-sexp (not (string= new-sexp "")))
-        (delete-region (car bounds) (cdr bounds))
-        (save-excursion
-          (insert new-sexp))
-        (indent-sexp)))))
+      (save-restriction
+        (narrow-to-region (car bounds) (cdr bounds))
+        (let ((max-len 0))
+          (save-excursion
+            (while (re-search-forward let-regexp nil t)
+              (setq max-len (max (length (match-string 1)) max-len))
+              (goto-char (match-end 1))
+              (skip-chars-forward " ")
+              (when (looking-at "(") (forward-sexp 1))))
+          (while (re-search-forward let-regexp nil t)
+            (let (bol)
+              (goto-char (match-end 1))
+              (setq bol (bolp))
+              (skip-chars-forward "\n \t")
+              (unless bol
+                (replace-match
+                 (make-string (1+ (- max-len (length (match-string 1)))) ? )
+                 t t nil 2)))
+            (when (looking-at "(") (forward-sexp 1))))
+        (goto-char (point-min))
+        (indent-region (point-min) (point-max))))))
 
 (provide 'tv-utils)
 
