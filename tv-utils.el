@@ -1656,7 +1656,7 @@ file-local variable.\n")
   (interactive)
   (let ((sexp       (thing-at-point 'sexp t))
         (bounds     (bounds-of-thing-at-point 'sexp))
-        (let-regexp "(?\\(([^ ]*\\)\\(\\s-\\).*$"))
+        (let-regexp "(?\\(([^ ]*\\)\\(\\s-*\\).*$"))
     (when sexp
       (save-restriction
         (narrow-to-region (car bounds) (cdr bounds))
