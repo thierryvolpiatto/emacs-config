@@ -1652,8 +1652,7 @@ file-local variable.\n")
 
 ;;;###autoload
 (defun tv/align-let ()
-  "Align let forms.
-Refuse to align let forms containing multiline clauses."
+  "Align let forms."
   (interactive)
   (let ((sexp       (thing-at-point 'sexp t))
         (bounds     (bounds-of-thing-at-point 'sexp))
