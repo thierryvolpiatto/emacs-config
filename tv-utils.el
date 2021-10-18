@@ -902,13 +902,13 @@ With a prefix arg remove new lines."
 ;; Stollen somewhere.
 ;;;###autoload
 (defun tv/kill-kbd (key)
-  (interactive "kGenerate and kill `kbd' form for key: ")
+  (interactive "kKill `kbd' form: ")
   (kill-new (message "(kbd \"%s\")" (help-key-description key nil)))
   (message nil))
 
 ;;;###autoload
 (defun tv/insert-kbd-at-point (key)
-  (interactive "kGenerate and kill `kbd' form for key: ")
+  (interactive "kInsert `kbd' form: ")
   (insert (format "(kbd \"%s\")" (help-key-description key nil)))
   (message nil))
 
