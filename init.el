@@ -860,7 +860,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;
 (use-package org
   :bind (("C-c a" . org-agenda)
-         ("C-c k" . org-capture))
+         ("C-c C-k" . org-capture))
   :config (use-package org-config))
 
 ;;; Dired
@@ -911,7 +911,8 @@ If your system's ping continues until interrupted, you can try setting
          ("<M-down>"              . tv/scroll-down)
          ("<M-up>"                . tv/scroll-up)
          ("<C-M-down>"            . tv/scroll-other-down)
-         ("<C-M-up>"              . tv/scroll-other-up)))
+         ("<C-M-up>"              . tv/scroll-other-up)
+         ("C-c k"                 . tv/insert-kbd-at-point)))
 
 ;;; Ledger
 ;;
