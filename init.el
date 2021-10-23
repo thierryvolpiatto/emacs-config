@@ -1514,8 +1514,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;
 (use-package esh-toggle
   :commands (eshell-toggle-cd eshell-toggle)
-  :bind (("<f9>" . eshell-toggle)
-         ("<f10>" . eshell-toggle-cd)))
+  :bind (("<f2>" . eshell-toggle)))
 
 ;;; Whitespace-mode
 ;;
