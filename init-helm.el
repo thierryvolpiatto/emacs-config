@@ -613,7 +613,7 @@ First call indent, second complete symbol, third complete fname."
 (global-set-key (kbd "C-h a")                        'helm-apropos)
 (global-set-key (kbd "C-h C-d")                      'helm-debug-open-last-log)
 (global-set-key (kbd "<f5> s")                       'helm-find)
-(global-set-key (kbd "S-<f2>")                       'helm-execute-kmacro)
+(global-set-key (kbd "S-<f3>")                       'helm-execute-kmacro)
 (global-set-key (kbd "C-c i")                        'helm-imenu-in-all-buffers)
 (global-set-key (kbd "C-c C-i")                      'helm-imenu)
 (global-set-key (kbd "<f11>")                        nil)
