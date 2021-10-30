@@ -136,6 +136,34 @@
   (interactive)
   (helm-ff-zgrep-1 (list (or directory default-directory)) t))
 
+(defun helm-ff-tramp-methods-complete ()
+  "Completion on tramp methods in a nested helm session."
+  (interactive)
+  (let* (initial-input
+         (str helm-pattern)
+         (pattern (with-temp-buffer
+                    (insert str)
+                    (let ((end (point)) beg)
+                      (when (re-search-backward "[/|]" nil t)
+                        (setq beg (1+ (point)))
+                        (unless (= beg end)
+                          (setq initial-input
+                                (buffer-substring beg end))
+                          (delete-region beg end))
+                        (buffer-string)))))
+         (collection (helm-ff--get-tramp-methods))
+         (method (helm-comp-read
+                  "Tramp methods: "
+                  (sort collection #'string<)
+                  :initial-input initial-input
+                  :fc-transformer
+                  (lambda (candidates _source)
+                    (cl-loop for c in candidates
+                             collect (propertize c 'face 'helm-ff-file)))
+                  :allow-nest t
+                  :must-match t)))
+    (helm-set-pattern (concat pattern method ":"))))
+
 
 ;;; Use-package declarations.
 ;;
@@ -280,6 +308,7 @@
   (define-key helm-read-file-map (kbd "RET") 'helm-ff-RET)
   (define-key helm-find-files-map (kbd "C-i") nil)
   (define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
+  (define-key helm-find-files-map (kbd "C-:") 'helm-ff-tramp-methods-complete)
 
   (defun helm/insert-date-in-minibuffer ()
     (interactive)
