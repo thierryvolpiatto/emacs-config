@@ -298,6 +298,11 @@ So far, F can only be a symbol, not a lambda expression."))
 (use-package info
   :config
   (progn
+    ;; Cleanup `Info-directory-list'.
+    ;; When an empty string is in `Info-directory-list' info search by
+    ;; default in .emacs.d, and if it finds a file with same name as
+    ;; the info file it uses it even if it is not an info file, e.g. tramp.
+    (setq Info-directory-list (delete "" Info-directory-list))
     ;; Additional info directories
     (add-to-list 'Info-directory-list "/usr/local/share/info")
     (add-to-list 'Info-directory-list "/usr/share/info")
