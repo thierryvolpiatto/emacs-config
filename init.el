@@ -1814,8 +1814,17 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
       (setq lisp-indent-function #'common-lisp-indent-function
             lisp-simple-loop-indentation 1
             lisp-loop-keyword-indentation 9 ;; Align cl-loop clauses.
-            lisp-loop-forms-indentation 9)) ;; Align cl-loop next clauses.
-
+            lisp-loop-forms-indentation 9) ;; Align cl-loop next clauses.
+      (let ((l '((cl-flet ((&whole 4 &rest (&whole 1 &lambda &body)) &body))
+                 (cl-flet* . cl-flet)
+                 (cl-labels . cl-flet)
+                 (cl-macrolet . cl-flet))))
+        (dolist (el l)
+          (put (car el) 'common-lisp-indent-function
+               (if (symbolp (cdr el))
+                   (get (cdr el) 'common-lisp-indent-function)
+                 (car (cdr el)))))))
+    
     (defun goto-scratch ()
       (interactive)
       (switch-to-buffer "*scratch*"))
