@@ -1950,7 +1950,9 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 (use-package psession
   :config
   (psession-savehist-mode 1)
-  (psession-mode 1))
+  (psession-mode 1)
+  (setq psession-save-buffers-unwanted-buffers-regexp
+        "\\(\\.org\\|diary\\|\\.jpg\\|\\.png\\|\\*image-native-display\\*\\)$"))
 
 ;;; Rainbow-mode
 ;;
