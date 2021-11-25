@@ -507,6 +507,8 @@ So far, F can only be a symbol, not a lambda expression."))
 
 ;;; All-the-icons and mode-line
 ;;
+;; Don't forget to install necessary fonts with M-x
+;; all-the-icons-install-fonts.
 (use-package all-the-icons
   :ensure t
   :config
