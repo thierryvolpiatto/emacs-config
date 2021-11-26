@@ -1161,9 +1161,9 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
     (use-package gud
       :config
       (and (boundp 'gud-pdb-command-name)
-           (setq gud-pdb-command-name "ipdb")))
+           (setq gud-pdb-command-name "ipdb3")))
     (setq
-     python-shell-interpreter "ipython"
+     python-shell-interpreter "ipython3"
      python-shell-interpreter-args "-i --autoindent --simple-prompt --InteractiveShell.display_page=True"
      python-shell-prompt-regexp "In \\[[0-9]+\\]: "
      python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: ")
