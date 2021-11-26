@@ -2027,13 +2027,6 @@ With a prefix arg ask with completion which buffer to kill."
                          'unspecified))
            do (set-face-attribute f nil :extend t)))
 
-(when (fboundp 'set-face-extend)
-  (with-eval-after-load "magit"
-    (tv/extend-faces-matching "\\`magit"))
-  ;; (with-eval-after-load "helm"
-  ;;   (tv/extend-faces-matching "\\`helm"))
-  )
-
 ;; Fix unreadable diff/ediff in emacs-27
 (when (>= emacs-major-version 27)
   (with-eval-after-load 'diff-mode
