@@ -586,6 +586,7 @@ First call indent, second complete symbol, third complete fname."
 
 (use-package helm-fd
   :config
+  (setq helm-fd-executable "fdfind")
   (defun helm-fd-pa (candidate)
     (with-helm-buffer
       (helm-ff-kill-or-find-buffer-fname
