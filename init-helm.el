@@ -181,9 +181,7 @@
   :config
   (helm-mode 1)
   (setq helm-completing-read-handlers-alist
-        '((write-file . helm-read-file-name-handler-1)
-          (basic-save-buffer . helm-read-file-name-handler-1)
-          (find-tag . helm-completing-read-default-find-tag)
+        '((find-tag . helm-completing-read-default-find-tag)
           (xref-find-definitions . helm-completing-read-default-find-tag)
           (xref-find-references . helm-completing-read-default-find-tag)
           (ggtags-find-tag-dwim . helm-completing-read-default-find-tag)
@@ -199,8 +197,8 @@
           (dired-do-relsymlink . helm-read-file-name-handler-1)
           (dired-do-hardlink . helm-read-file-name-handler-1)
           (basic-save-buffer . helm-read-file-name-handler-1)
-          (write-file . helm-read-file-name-handler-1)
-          (write-region . helm-read-file-name-handler-1)))
+          (write-file . (default helm-read-file-name-handler-1))
+          (write-region . (default helm-read-file-name-handler-1))))
   ;; Fix CAP with LSP in python.
   (add-to-list 'helm-completion-styles-alist '(python-mode . helm-fuzzy)))
 
