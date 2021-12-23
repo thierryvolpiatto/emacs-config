@@ -20,7 +20,6 @@
 (declare-function auth-source-search            "auth-source.el")
 (declare-function eshell-interactive-process    "esh-cmd.el")
 (declare-function which-function                "which-func.el")
-(declare-function helm--ansi-color-apply        "ext:helm-lib.el")
 (declare-function tramp-get-completion-function "tramp")
 (defvar tramp-methods)
 
@@ -1144,7 +1143,7 @@ See <https://github.com/chubin/wttr.in>."
                                ("226" "33")
                                (r     r))
                              t t nil 1))
-            (helm--ansi-color-apply (buffer-string)))))
+            (ansi-color-apply (buffer-string)))))
     (erase-buffer)
     (save-excursion
       (if data
