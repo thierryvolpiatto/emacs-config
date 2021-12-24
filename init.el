@@ -1364,7 +1364,6 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;; Bookmarks
 ;;
 (use-package bookmark
-  :no-require t
   :init
   (progn
     (add-hook 'bookmark-bmenu-mode-hook 'hl-line-mode)
@@ -1423,7 +1422,12 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
         (progress-reporter-done reporter)))
     (advice-add 'bookmark-write-file :override #'tv/advice--bookmark-write-file)
     (and (boundp 'bookmark-bmenu-use-header-line)
-         (setq bookmark-bmenu-use-header-line nil))))
+         (setq bookmark-bmenu-use-header-line nil))
+    ;; This for unknow reasons add a orange point in fringe when
+    ;; switching to HFF from a bookmark and then quitting, not sure
+    ;; what this feature is for and what the benefit is, so disable it.
+    (and (boundp 'bookmark-set-fringe-mark)
+         (setq bookmark-set-fringe-mark nil))))
 
 ;;; git-gutter-mode
 ;;
