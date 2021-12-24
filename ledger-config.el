@@ -244,6 +244,7 @@ If entries are already pointed, skip."
   (set-window-configuration ledger-previous-window-configuration))
 
 (defvar ledger/associations '(("PRELEVEMENT A LA SOURCE REVENUS" . ":impot:prelevement_source")
+                              ("SOLDE IMPOT REVENUS" . ":impot:impot_revenu")
                               ("MOTIF: CARAC" . ":carac")
                               ("MOTIF: DECLIC" . ":codevi")
                               ("IMMOB PATRIMOINE ET FINANCES" . ":loyers:immovar")
