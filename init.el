@@ -252,7 +252,7 @@ Restart works only on graphic display."
           selection-request)))
 
 ;; New events are available in emacs-28
-(when (>= emacs-major-version)
+(when (>= emacs-major-version 28)
   (setq while-no-input-ignore-events
         (append '(file-notify dbus-event) while-no-input-ignore-events)))
 
