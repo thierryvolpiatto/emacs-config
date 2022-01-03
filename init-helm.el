@@ -360,6 +360,14 @@ new directory."
     - Open in emms
     - Update directory autoloads
     - Recoll directory creation"
+    (helm-aif (slot-value source 'match)
+        (setf (slot-value source 'match)
+              (append it
+                      '((lambda (candidate)
+                          (string-match (concat (helm-basedir helm-input)
+                                                (char-fold-to-regexp
+                                                 (helm-basename helm-input)))
+                                        candidate))))))
     (helm-source-add-action-to-source-if
      "Byte compile file(s) async"
      (lambda (_candidate)
