@@ -589,7 +589,11 @@ So far, F can only be a symbol, not a lambda expression."))
                                    (:eval (tv/custom-modeline-github-vc))
                                    " "
                                    mode-line-misc-info
-                                   mode-line-end-spaces)))
+                                   mode-line-end-spaces))
+  (when (>= emacs-major-version 29)
+    ;; A new annoyance for each major version.
+    (set-face-attribute 'mode-line-active nil :inherit 'mode-line)
+    (set-face-attribute 'mode-line-inactive nil :inherit 'mode-line)))
 
 ;;; Time
 ;;
