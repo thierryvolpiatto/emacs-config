@@ -308,6 +308,19 @@
   (define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
   (define-key helm-find-files-map (kbd "C-:") 'helm-ff-tramp-methods-complete)
 
+  (defun helm-ff-cleanup-image-dired-dir-and-cache ()
+    "Cleanup `image-dired-dir' directory.
+Delete all thumb files that are no more associated with an image file in
+`helm-ff-image-dired-thumbnails-cache'."
+    (interactive)
+    (cl-loop for key being the hash-keys in helm-ff-image-dired-thumbnails-cache
+             using (hash-value val)
+             unless (file-exists-p key) do
+             (progn
+               (message "Deleting %s" val)
+               (delete-file val)
+               (remhash key helm-ff-image-dired-thumbnails-cache))))
+
   (defun helm/insert-date-in-minibuffer ()
     (interactive)
     (with-selected-window (or (active-minibuffer-window)
