@@ -485,6 +485,13 @@ new directory."
           ("en.wiktionary.org" . "http://en.wiktionary.org/wiki/%s")
           ("fr.wiktionary.org" . "http://fr.wiktionary.org/wiki/%s"))))
 
+(use-package helm-wikipedia
+    :config
+  (setq helm-wikipedia-summary-url
+      "https://fr.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&titles=%s&exintro=1&explaintext=1&redirects=1"
+      helm-wikipedia-suggest-url
+      "https://fr.wikipedia.org/w/api.php?action=opensearch&search=%s"))
+
 (use-package helm-descbinds
   :config
   ;; C-h b, C-x C-h etc...
