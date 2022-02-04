@@ -525,11 +525,11 @@ new directory."
   (setq helm-pdfgrep-default-read-command
         "evince --page-label=%p '%f'"
         helm-grep-default-command
-        "ack-grep -Hn --color --smart-case --no-group %e %p %f"
+        "ack-grep -Hn --color --smart-case --no-group %e -- %p %f"
         helm-grep-default-recurse-command
-        "ack-grep -H --color --smart-case --no-group %e %p %f"
+        "ack-grep -H --color --smart-case --no-group %e -- %p %f"
         helm-grep-ag-command
-        "rg --color=always --colors 'match:bg:yellow' --colors 'match:fg:black' --smart-case --no-heading --line-number %s %s %s"
+        "rg --color=always --colors 'match:bg:yellow' --colors 'match:fg:black' --smart-case --no-heading --line-number %s -- %s %s"
         helm-grep-ag-pipe-cmd-switches
         '("--colors 'match:bg:yellow' --colors 'match:fg:black'")
         helm-grep-git-grep-command
