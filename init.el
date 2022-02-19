@@ -1436,7 +1436,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
   :init
   (progn
     ;; Activate live update timer.
-    (customize-set-variable 'git-gutter:update-interval 2)
+    (customize-set-variable 'git-gutter:update-interval 1)
     ;; Always a 0 width margin when no changes.
     (setq git-gutter:hide-gutter t)
     ;; Not sure why I would like to have git-gutter runs when listing
