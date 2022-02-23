@@ -294,7 +294,7 @@
    1)))
 
 (use-package helm-files
-  :config
+    :config
   (setq helm-ff-auto-update-initial-value        t
         helm-ff-allow-non-existing-file-at-point t
         helm-trash-remote-files                  t
@@ -351,7 +351,7 @@ new directory."
 
   ;; Add actions to `helm-source-find-files' IF:
   (cl-defmethod helm-setup-user-source ((source helm-source-ffiles))
-    "Adds additional actions to `helm-find-files'.
+      "Adds additional actions to `helm-find-files'.
     - Byte compile file(s) async
     - Byte recompile directory
     - Git status

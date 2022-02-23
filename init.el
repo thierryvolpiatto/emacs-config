@@ -1985,10 +1985,16 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 
 ;;; Undo-tree
 ;;
+;; Use version 0.8.2 from gitlab which needs queue package as
+;; dependencie as the ELPA version is deprecated (0.7.5).
+;; Version 0.8.2 has persistent history by default.
+;; Undo-tree.el and queue.el are now in ~/elisp.
 (use-package undo-tree
-  :ensure t
   :diminish undo-tree-mode
   :config
+  ;; undo-tree history files have their own directory otherwise they
+  ;; are added in current directory for each file.
+  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree-history")))
   (defun git-gutter:undo-tree-undo (&rest _args)
     (when git-gutter-mode
       (run-with-idle-timer 0.1 nil 'git-gutter)))
