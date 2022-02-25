@@ -44,30 +44,9 @@
                         'help-echo all))))
 
 (defun tv/emms-mode-line-icon-function ()
-  (setq emms-mode-line-icon-image-cache
-        `(image :type xpm :ascent center :data ,(concat "/* XPM */
-static char *note[] = {
-/* width height num_colors chars_per_pixel */
-\"    10   11        2            1\",
-/* colors */
-\". c " emms-mode-line-icon-color  "\",
-\"# c None s None\",
-/* pixels */
-\"###...####\",
-\"###.#...##\",
-\"###.###...\",
-\"###.#####.\",
-\"###.#####.\",
-\"#...#####.\",
-\"....#####.\",
-\"#..######.\",
-\"#######...\",
-\"######....\",
-\"#######..#\"};")))
-  (concat " "
-          emms-mode-line-icon-before-format
-          (emms-propertize "NP:" 'display emms-mode-line-icon-image-cache)
-          (emms-mode-line-playlist-current)))
+  (let* ((pls  (emms-mode-line-playlist-current))
+         (icon (if (string-match "\\` *[`]http://" pls) "📻" "🎜")))
+    (concat " " emms-mode-line-icon-before-format icon pls)))
 
 (setq emms-mode-line-mode-line-function 'tv/emms-mode-line-icon-function)
 
