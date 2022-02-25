@@ -302,6 +302,7 @@
         helm-locate-recursive-dirs-command "fd --hidden --type d --glob '*%s*' %s"
         helm-ff-eshell-unwanted-aliases '("sudo" "cdu" "man"
                                           "gpg-pubkey-export-armor" "gpg-secretkey-export-armor"))
+  
   (customize-set-variable 'helm-ff-lynx-style-map t)
   (define-key helm-read-file-map (kbd "RET") 'helm-ff-RET)
   (define-key helm-find-files-map (kbd "C-i") nil)
@@ -469,7 +470,8 @@ new directory."
                                           :candidates 'helm-epa-get-key-list))))
      source
      'file-exists-p
-     3)))
+     3))
+  (helm-ff-icon-mode 1))
 
 (use-package helm-dictionary ; Its autoloads are already loaded.
   :commands helm-dictionary

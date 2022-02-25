@@ -586,7 +586,11 @@ So far, F can only be a symbol, not a lambda expression."))
   (when (>= emacs-major-version 29)
     ;; A new annoyance for each major version.
     (set-face-attribute 'mode-line-active nil :inherit 'mode-line)
-    (set-face-attribute 'mode-line-inactive nil :inherit 'mode-line)))
+    (set-face-attribute 'mode-line-inactive nil :inherit 'mode-line))
+  (add-to-list 'all-the-icons-extension-icon-alist
+               '("avi" all-the-icons-faicon "film" :face all-the-icons-blue))
+  (add-to-list 'all-the-icons-extension-icon-alist
+               '("3gp" all-the-icons-faicon "film" :face all-the-icons-blue)))
 
 ;;; Time
 ;;
