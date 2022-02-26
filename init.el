@@ -1996,9 +1996,10 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 (use-package undo-tree
   :diminish undo-tree-mode
   :config
+  (setq undo-tree-auto-save-history nil)
   ;; undo-tree history files have their own directory otherwise they
   ;; are added in current directory for each file.
-  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree-history")))
+  ;; (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree-history")))
   (defun git-gutter:undo-tree-undo (&rest _args)
     (when git-gutter-mode
       (run-with-idle-timer 0.1 nil 'git-gutter)))
