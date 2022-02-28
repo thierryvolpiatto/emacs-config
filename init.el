@@ -590,7 +590,15 @@ So far, F can only be a symbol, not a lambda expression."))
   (add-to-list 'all-the-icons-extension-icon-alist
                '("avi" all-the-icons-faicon "film" :face all-the-icons-blue))
   (add-to-list 'all-the-icons-extension-icon-alist
-               '("3gp" all-the-icons-faicon "film" :face all-the-icons-blue)))
+               '("3gp" all-the-icons-faicon "film" :face all-the-icons-blue))
+  (add-to-list 'all-the-icons-extension-icon-alist
+               '("xz" all-the-icons-octicon "file-binary"
+                 :v-adjust 0.0 :face all-the-icons-lmaroon))
+  (setq all-the-icons-regexp-icon-alist
+        (append '(("^bookmark" all-the-icons-octicon "bookmark"
+                   :height 1.1 :v-adjust 0.0 :face all-the-icons-lpink))
+                (delete (assoc "bookmark" all-the-icons-regexp-icon-alist)
+                        all-the-icons-regexp-icon-alist))))
 
 ;;; Time
 ;;
