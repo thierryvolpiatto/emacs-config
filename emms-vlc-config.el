@@ -52,22 +52,31 @@
 
 (emms-mode-line 1)
 
+(defun tv/emms-volume--pulse-get-volume ()
+  (with-temp-buffer
+    (call-process "pactl" nil t nil "list" "sinks")
+    (goto-char (point-min))
+    (when (re-search-forward "^[\t ]*Volume.?:.*/ *\\([0-9]*\\)% */" nil t)
+      (string-to-number (match-string 1)))))
+(advice-add 'emms-volume--pulse-get-volume :override #'tv/emms-volume--pulse-get-volume)
+(setq emms-volume-change-function #'emms-volume-pulse-change)
+
 ;; «Bindings» (to ".Bindings")
 
 (global-set-key (kbd "<f6> r")  'emms-streams)
-(global-set-key (kbd "<f6> +")  'emms-volume-raise)
-(global-set-key (kbd "<f6> -")  'emms-volume-lower)
+(helm-define-key-with-subkeys
+    global-map (kbd "<f6> +")
+    ?+ 'emms-volume-raise '((?- . emms-volume-lower)))
+(helm-define-key-with-subkeys
+    global-map (kbd "<f6> -")
+    ?- 'emms-volume-lower '((?+ . emms-volume-raise)))
 (global-set-key (kbd "<f6> b")  'emms-smart-browse)
-(global-set-key (kbd "<f6> t")  'emms-player-mpd-show)
 (global-set-key (kbd "<f6> s")  'emms-stop)
 (global-set-key (kbd "<f6> RET")'emms-start)
 (global-set-key (kbd "<f6> c")  'emms-browser-clear-playlist)
 (global-set-key (kbd "<f6> p")  'emms-pause)
 (global-set-key (kbd "<f6> >")  'emms-next)
 (global-set-key (kbd "<f6> <")  'emms-previous)
-(global-set-key (kbd "<XF86AudioNext>")  'emms-next)
-(global-set-key (kbd "<XF86AudioPrev>")  'emms-previous)
-(global-set-key (kbd "<XF86AudioPlay>")  'emms-pause)
 (global-set-key (kbd "<f6> m")  'emms-mode-line-toggle)
 
 ;; «Update-mpd-directory» (to ".Update-mpd-directory")
