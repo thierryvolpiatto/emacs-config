@@ -207,6 +207,9 @@
   (setq helm-adaptive-history-file nil)
   (helm-adaptive-mode 1))
 
+(use-package helm-bookmark
+    :config (setq helm-bookmark-use-icon t))
+
 (use-package helm-utils
   :config
   ;; Popup buffer-name or filename in grep/moccur/imenu-all etc...

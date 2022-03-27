@@ -765,7 +765,7 @@ With a prefix arg decrease transparency."
 
       (setq default-frame-alist `((foreground-color . "Wheat")
                                   (background-color . "Gray20")
-                                  (alpha . 90) ;; Needs compositing manager.
+                                  (alpha . 100) ;; Needs compositing manager.
                                   ;; New frames go in right corner.
                                   (left . ,(- (* (window-width) 8) 160)) ; Chars are 8 bits long.
                                   (vertical-scroll-bars . nil)
@@ -2034,6 +2034,13 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   :ensure t
   :config (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode)))
 
+;;; OSM (openstreetmap package)
+;;
+(use-package osm
+    :config
+  (unless (fboundp 'json-available-p)
+    (defun json-available-p ()
+      (fboundp 'json-parse-string))))
 
 ;; Kill buffer and windows
 (defun tv/kill-buffer-and-windows (arg)
