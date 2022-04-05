@@ -14,7 +14,6 @@
                                                     helm-apropos
                                                     helm-eshell-prompts helm-imenu
                                                     helm-imenu-in-all-buffers)
-        helm-persistent-action-use-special-display t
         helm-actions-inherit-frame-settings       t
         helm-use-frame-when-more-than-two-windows t
         helm-use-frame-when-dedicated-window      t

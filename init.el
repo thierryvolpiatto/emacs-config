@@ -780,63 +780,54 @@ With a prefix arg decrease transparency."
                                   )))
 
     ;; Special buffer display.
-    (customize-set-variable 'display-buffer-alist
-                            (append '(("\\*Help"
-                                       (display-buffer-pop-up-frame)
-                                       (pop-up-frame-parameters .
-                                        ((minibuffer . nil)
-                                         (width . 80)
-                                         (height . 24)
-                                         (left-fringe . 0)
-                                         (border-width . 0)
-                                         (menu-bar-lines . 0)
-                                         (tool-bar-lines . 0)
-                                         (unsplittable . t)
-                                         (top . 24)
-                                         (left . 450)
-                                         (background-color . "Lightsteelblue1")
-                                         (foreground-color . "black")
-                                         (alpha . nil)
-                                         (fullscreen . nil))))
-                                      ("\\*Compile-Log"
-                                       (display-buffer-reuse-window
-                                        display-buffer-pop-up-frame)
-                                       (reusable-frames . 0)
-                                       (pop-up-frame-parameters .
-                                        ((minibuffer . nil)
-                                         (width . 85)
-                                         (height . 24)
-                                         (left-fringe . 0)
-                                         (border-width . 0)
-                                         (menu-bar-lines . 0)
-                                         (tool-bar-lines . 0)
-                                         (unsplittable . t)
-                                         (top . 24)
-                                         (left . 450)
-                                         (background-color . "Brown4")
-                                         (foreground-color . "black")
-                                         (alpha . nil)
-                                         (fullscreen . nil))))
-                                      ("\\*helm apt show\\*"
-                                       (display-buffer-pop-up-frame)
-                                       (pop-up-frame-parameters .
-                                        ((minibuffer . nil)
-                                         (width . 80)
-                                         (height . 24)
-                                         (left-fringe . 0)
-                                         (border-width . 0)
-                                         (menu-bar-lines . 0)
-                                         (tool-bar-lines . 0)
-                                         (unsplittable . t)
-                                         (top . 24)
-                                         (left . 450)
-                                         (background-color . "Lightsteelblue4")
-                                         (foreground-color . "black")
-                                         (alpha . nil)
-                                         (fullscreen . nil))))
-                                      ("^\\*osm"
-                                       (display-buffer-same-window)))
-                                    display-buffer-alist)))
+    (add-hook 'window-setup-hook
+              (lambda ()
+                (setq special-display-regexps `(("\\*Help"
+                                                 (minibuffer . nil)
+                                                 (width . 80)
+                                                 (height . 24)
+                                                 (left-fringe . 0)
+                                                 (border-width . 0)
+                                                 (menu-bar-lines . 0)
+                                                 (tool-bar-lines . 0)
+                                                 (unsplittable . t)
+                                                 (top . 24)
+                                                 (left . 450)
+                                                 (background-color . "Lightsteelblue1")
+                                                 (foreground-color . "black")
+                                                 (alpha . nil)
+                                                 (fullscreen . nil))
+                                                ("\\*Compile-Log"
+                                                 (minibuffer . nil)
+                                                 (width . 85)
+                                                 (height . 24)
+                                                 (left-fringe . 0)
+                                                 (border-width . 0)
+                                                 (menu-bar-lines . 0)
+                                                 (tool-bar-lines . 0)
+                                                 (unsplittable . t)
+                                                 (top . 24)
+                                                 (left . 450)
+                                                 (background-color . "Brown4")
+                                                 (foreground-color . "black")
+                                                 (alpha . nil)
+                                                 (fullscreen . nil))
+                                                ("\\*helm apt show\\*"
+                                                 (minibuffer . nil)
+                                                 (width . 80)
+                                                 (height . 24)
+                                                 (left-fringe . 0)
+                                                 (border-width . 0)
+                                                 (menu-bar-lines . 0)
+                                                 (tool-bar-lines . 0)
+                                                 (unsplittable . t)
+                                                 (top . 24)
+                                                 (left . 450)
+                                                 (background-color . "Lightsteelblue4")
+                                                 (foreground-color . "black")
+                                                 (alpha . nil)
+                                                 (fullscreen . nil))
+                                                )))))
   :bind ("C-8" . tv/transparency-modify))
 
 (use-package window
@@ -1977,7 +1968,10 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 
 ;;; Wgrep
 ;;
-(use-package wgrep-helm :ensure t)
+(use-package wgrep-helm
+  :ensure t
+  :config
+  (setq wgrep-enable-key "\C-x\C-q"))
 
 ;;; psession
 ;;
