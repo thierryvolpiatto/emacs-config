@@ -20,6 +20,11 @@
 
 (setq inhibit-startup-echo-area-message "thierry")
 
+;; Ansi-color is broken in emacs-28, use the emacs-29 version.
+(when (and (eq emacs-major-version 28)
+             (file-exists-p "~/elisp/ansi-color-29.el"))
+    (load "~/elisp/ansi-color-29.el"))
+
 ;;; package.el
 ;;
 ;;; Melpa/Elpa
