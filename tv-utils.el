@@ -1127,7 +1127,10 @@ See <https://github.com/chubin/wttr.in>."
              "curl" nil '(t t) nil
              "-s" (format "fr.wttr.in/~%s?m" (shell-quote-argument place)))
             (goto-char (point-min))
-            (while (re-search-forward "38;5;\\([0-9]+\\)m" nil t)
+            ;; Try to replace 256 colors seq like this
+            ;; "\033[38;5;226m" => "\033[33m". Thanks to Jim Porter
+            ;; for explanations in Emacs bug#54774.
+            (while (re-search-forward "\\(38;5;[0-9]+\\)m" nil t)
               ;; If we have ansi sequences, that's mean we had weather
               ;; output, otherwise we have a simple message notifying
               ;; weather report is not available.
@@ -1138,15 +1141,16 @@ See <https://github.com/chubin/wttr.in>."
                 ;; ansi colors as now, so replace all 38;5 foreground
                 ;; specs by simple ansi sequences.
                 (replace-match (pcase (match-string 1)
-                                 ("154" "32") ; green
-                                 ("190" "31") ; red
-                                 ("118" "32") ; green
-                                 ("208" "37") ; white
-                                 ("202" "34") ; blue
-                                 ("214" "35") ; magenta
-                                 ("220" "36") ; cyan
-                                 ("226" "33") ; yellow
-                                 (r     r))
+                                 ("38;5;154" "32")  ;; green
+                                 ("38;5;190" "31")  ;; red
+                                 ("38;5;118" "32")  ;; green
+                                 ("38;5;208" "37")  ;; white
+                                 ("38;5;202" "34")  ;; blue
+                                 ("38;5;214" "35")  ;; magenta
+                                 ("38;5;220" "36")  ;; cyan
+                                 ("38;5;226" "33")  ;; yellow
+                                 (_          "0"))  ;; Avoid box face
+                                                    ;; for temperatures.
                                t t nil 1)))
             (ansi-color-apply (buffer-string)))))
     (erase-buffer)
