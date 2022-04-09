@@ -1132,19 +1132,20 @@ See <https://github.com/chubin/wttr.in>."
               ;; output, otherwise we have a simple message notifying
               ;; weather report is not available.
               (setq ansi t)
-              (when (< emacs-major-version 28)
+              ;; Emacs-29 supports 256 colors ansi sequences.
+              (when (< emacs-major-version 29)
                 ;; Need a 256 color ansi library, emacs supports only basic
                 ;; ansi colors as now, so replace all 38;5 foreground
                 ;; specs by simple ansi sequences.
                 (replace-match (pcase (match-string 1)
-                                 ("154" "32")
-                                 ("190" "31")
-                                 ("118" "32")
-                                 ("208" "37")
-                                 ("202" "34")
-                                 ("214" "35")
-                                 ("220" "36")
-                                 ("226" "33")
+                                 ("154" "32") ; green
+                                 ("190" "31") ; red
+                                 ("118" "32") ; green
+                                 ("208" "37") ; white
+                                 ("202" "34") ; blue
+                                 ("214" "35") ; magenta
+                                 ("220" "36") ; cyan
+                                 ("226" "33") ; yellow
                                  (r     r))
                                t t nil 1)))
             (ansi-color-apply (buffer-string)))))

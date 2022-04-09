@@ -20,10 +20,35 @@
 
 (setq inhibit-startup-echo-area-message "thierry")
 
-;; Ansi-color is broken in emacs-28, use the emacs-29 version.
-(when (and (eq emacs-major-version 28)
-             (file-exists-p "~/elisp/ansi-color-29.el"))
-    (load "~/elisp/ansi-color-29.el"))
+;; Fix Emacs-28 bug#54774 with ansi-color
+(when (eq emacs-major-version 28)
+  (require 'ansi-color)
+  (defun tv/advice-ansi-color-get-face-1 (ansi-code &optional bright)
+    "Get face definition from `ansi-color-map'.
+ANSI-CODE is used as an index into the vector."
+    (when (and bright (<= 30 ansi-code 49))
+      (setq ansi-code (+ ansi-code 60)))
+    (cond ((<= 30 ansi-code 38)
+           (list :foreground
+                 (face-foreground
+                  (aref ansi-color-normal-colors-vector (- ansi-code 30))
+                  nil 'default)))
+          ((<= 40 ansi-code 48)
+           (list :background
+                 (face-background
+                  (aref ansi-color-normal-colors-vector (- ansi-code 40))
+                  nil 'default)))
+          ((<= 90 ansi-code 98)
+           (list :foreground
+                 (face-foreground
+                  (aref ansi-color-bright-colors-vector (- ansi-code 90))
+                  nil 'default)))
+          ((<= 100 ansi-code 108)
+           (list :background
+                 (face-background
+                  (aref ansi-color-bright-colors-vector (- ansi-code 100))
+                  nil 'default)))))
+  (advice-add 'ansi-color-get-face-1 :override #'tv/advice-ansi-color-get-face-1))
 
 ;;; package.el
 ;;
