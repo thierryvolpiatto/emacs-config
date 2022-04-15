@@ -1128,30 +1128,32 @@ See <https://github.com/chubin/wttr.in>."
              "-s" (format "fr.wttr.in/~%s?m" (shell-quote-argument place)))
             (goto-char (point-min))
             ;; Try to replace 256 colors seq like this
-            ;; "\033[38;5;226m" => "\033[33m". Thanks to Jim Porter
-            ;; for explanations in Emacs bug#54774.
-            (while (re-search-forward "\\(38;5;[0-9]+\\)m" nil t)
+            ;; "\033[38;5;226m" => "\033[33m" or sequence ending with
+            ;; ;5m (animated) which Emacs-28 replace by a crapy box.
+            ;; "\033[38;5;228;5m" => "\033[33m".
+            ;; Thanks to Jim Porter for explanations in Emacs bug#54774.
+            (while (re-search-forward "\\(38;5;\\([0-9]+\\);?[0-9]?\\)m" nil t)
               ;; If we have ansi sequences, that's mean we had weather
               ;; output, otherwise we have a simple message notifying
               ;; weather report is not available.
               (setq ansi t)
-              ;; Emacs-29 supports 256 colors ansi sequences.
-              (when (< emacs-major-version 29)
-                ;; Need a 256 color ansi library, emacs supports only basic
-                ;; ansi colors as now, so replace all 38;5 foreground
-                ;; specs by simple ansi sequences.
-                (replace-match (pcase (match-string 1)
-                                 ("38;5;154" "32")  ;; green
-                                 ("38;5;190" "31")  ;; red
-                                 ("38;5;118" "32")  ;; green
-                                 ("38;5;208" "37")  ;; white
-                                 ("38;5;202" "34")  ;; blue
-                                 ("38;5;214" "35")  ;; magenta
-                                 ("38;5;220" "36")  ;; cyan
-                                 ("38;5;226" "33")  ;; yellow
-                                 (_          "0"))  ;; Avoid box face
-                                                    ;; for temperatures.
-                               t t nil 1)))
+              ;; Need a 256 color ansi library, emacs supports only basic
+              ;; ansi colors as now, so replace all 38;5 foreground
+              ;; specs by simple ansi sequences.
+              ;; Emacs-29 supports 256 color but still have bad support for
+              ;; animated ansi sequences, so better use basic colors.
+              (replace-match (pcase (match-string 2)
+                               ("154" "32")            ;; green  
+                               ("190" "31")            ;; red    
+                               ("118" "32")            ;; green  
+                               ("208" "37")            ;; white  
+                               ("202" "34")            ;; blue   
+                               ("214" "35")            ;; magenta
+                               ((or "220" "111") "36") ;; cyan
+                               ((or "226" "228") "33") ;; yellow
+                               (_          "0")) ;; Avoid box face
+                             ;; for temperatures.
+                             t t nil 1))
             (ansi-color-apply (buffer-string)))))
     (erase-buffer)
     (save-excursion
