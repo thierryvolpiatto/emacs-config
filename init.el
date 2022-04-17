@@ -720,16 +720,6 @@ So far, F can only be a symbol, not a lambda expression."))
 (use-package frame
   :config
   (progn
-    (defvar tv/default-font (cond ((string= (invocation-name) "remacs")
-                                   "-*-DejaVu Sans Mono-bold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
-                                  ((and (>= emacs-major-version 27)
-                                        (condition-case nil
-                                            (font-info "-CTDB-Fira Code-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1")
-                                          (error nil)))
-                                   "-CTDB-Fira Code-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1")
-                                  (t
-                                   ;; Use .Xdefaults config (Dejavu).
-                                   (assoc-default 'font (frame-parameters)))))
     ;; Need fonts-emojione package (apt)
     ;; See (info "(elisp) Fontsets")
     (when (member "Emoji One" (font-family-list))
@@ -774,7 +764,6 @@ With a prefix arg decrease transparency."
                                                     emacs-version))
                                   (tool-bar-lines . 0)
                                   (menu-bar-lines . 0)
-                                  (font . ,tv/default-font)
                                   (cursor-color . "red")
                                   (fullscreen . nil)
                                   )))
