@@ -473,8 +473,25 @@ new directory."
                                           :candidates 'helm-epa-get-key-list))))
      source
      'file-exists-p
+     3)
+    (helm-source-add-action-to-source-if
+     "Change background"
+     'tv/change-xfce-background
+     source
+     (lambda (candidate)
+       (member (file-name-extension candidate) '("jpg" "jpeg" "png")))
      3))
   (helm-ff-icon-mode 1))
+
+(defun tv/change-xfce-background (file)
+  (if (= (apply #'call-process "xfconf-query" nil nil nil
+                `("-c"
+                  "xfce4-desktop" "-p"
+                  "/backdrop/screen0/monitoreDP/workspace0/last-image" "-s"
+                  ,file))
+         0)
+      (message "Background changed successfully to %s" (helm-basename file))
+    (message "Failed to change background")))
 
 (use-package helm-dictionary ; Its autoloads are already loaded.
   :commands helm-dictionary
