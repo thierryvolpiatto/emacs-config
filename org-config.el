@@ -52,7 +52,8 @@
                       ("travel")))
 
 ;; org-capture
-(setq org-default-notes-file (expand-file-name "notes.org" org-directory))
+(setq org-default-notes-file (expand-file-name "notes.org" org-directory)
+      org-capture-use-agenda-date t)
 (setq org-capture-templates
       '(("t" "Todo" entry         (file+headline  "~/org/agenda.org" "Tasks")        "** TODO %?\n    %i\n  %a" :prepend t)
         ("n" "Notes" entry        (file+headline  "~/org/notes.org"  "General")      "** %T %?\n\n    %i\n"     :prepend t)
