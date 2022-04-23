@@ -774,7 +774,12 @@ With a prefix arg decrease transparency."
     ;; replicate `special-display-regexps' behavior.
     (customize-set-variable 'display-buffer-alist
                             (append '(("\\*Help"
-                                       (display-buffer-pop-up-frame)
+                                       ;; Avoid creating new frames
+                                       ;; when pressing buttons
+                                       ;; in help buffer.
+                                       (display-buffer-reuse-window
+                                        display-buffer-pop-up-frame)
+                                       (reusable-frames . 0)
                                        (dedicated . t)
                                        (pop-up-frame-parameters .
                                         ((minibuffer . nil)
