@@ -1143,16 +1143,14 @@ See <https://github.com/chubin/wttr.in>."
               ;; Emacs-29 supports 256 color but still have bad support for
               ;; animated ansi sequences, so better use basic colors.
               (replace-match (pcase (match-string 2)
-                               ("154" "32")            ;; green  
-                               ("190" "31")            ;; red    
-                               ("118" "32")            ;; green  
-                               ("208" "37")            ;; white  
-                               ("202" "34")            ;; blue   
-                               ("214" "35")            ;; magenta
-                               ((or "220" "111") "36") ;; cyan
-                               ((or "226" "228") "33") ;; yellow
-                               (_          "0")) ;; Avoid box face
-                             ;; for temperatures.
+                               ("190"            "31")  ;; red
+                               ((or "118" "154") "32")  ;; green
+                               ((or "226" "228") "33")  ;; yellow
+                               ("202"            "34")  ;; blue
+                               ("214"            "35")  ;; magenta
+                               ((or "220" "111") "36")  ;; cyan
+                               ("208"            "37")  ;; white
+                               (_                "0"))  ;; Avoid box face
                              t t nil 1))
             (ansi-color-apply (buffer-string)))))
     (erase-buffer)
