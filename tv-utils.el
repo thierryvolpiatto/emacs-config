@@ -1173,6 +1173,7 @@ See <https://github.com/chubin/wttr.in>."
 (define-derived-mode wttr-weather-mode special-mode "wttr"
   (make-local-variable 'wttr-weather-last-location)
   (set (make-local-variable 'revert-buffer-function) 'wttr-weather-revert-fn))
+(put 'wttr-weather-mode 'no-helm-mx t)
 
 ;;;###autoload
 (defun tv/insert-info-command-from-current-node-at-point ()
