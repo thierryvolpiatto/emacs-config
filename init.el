@@ -208,7 +208,9 @@ Restart works only on graphic display."
 
 ;; History variables
 (setq history-delete-duplicates t)
-(setq history-length            100) ; default is 30.
+(setq history-length            100)
+;; Limit M-x history to 50.
+(put 'extended-command-history 'history-length 50)
 
 (setq report-emacs-bug-no-explanations t
       comint-prompt-read-only          t
