@@ -1514,7 +1514,6 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
   :bind
   (("<f7> h" . w3m)
    :map w3m-mode-map
-   ("F" . w3m-view-url-with-browse-url)
    ("M-<right>" . w3m-next-buffer)
    ("M-<left>" . w3m-previous-buffer)
    ("V" . helm-w3m-bookmarks)
@@ -1522,8 +1521,6 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
    ("M-q" . tv/w3m-fill-region-or-paragraph)
    ("<down>" . next-line)
    ("<up>" . previous-line)
-   ("RET" . tv/scroll-down)
-   ("<backspace>" . tv/scroll-up)
    :map w3m-lynx-like-map
    ("S-<right>" . w3m-view-this-url-new-session)))
 

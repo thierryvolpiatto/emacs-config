@@ -188,6 +188,7 @@
 (define-key org-mode-map (kbd "<C-return>") nil)
 (define-key org-mode-map (kbd "<M-right>")  nil)
 (define-key org-mode-map (kbd "<M-left>")   nil)
+(define-key org-mode-map (kbd "C-c C-i") 'org-table-insert-row)
 
 ;; Hide leading stars
 ;;
