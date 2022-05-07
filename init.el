@@ -1522,6 +1522,8 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
    ("M-q" . tv/w3m-fill-region-or-paragraph)
    ("<down>" . next-line)
    ("<up>" . previous-line)
+   ("RET" . tv/w3m-RET)
+   ("<backspace>" . tv/scroll-up)
    :map w3m-lynx-like-map
    ("S-<right>" . w3m-view-this-url-new-session)))
 

@@ -109,6 +109,18 @@ Otherwise, if ARG is non-nil, it forces to reload the url at point."
             (w3m-message "No URL at point"))))))
 (advice-add 'w3m-view-this-url :override #'tv/advice--w3m-view-this-url)
 
+(defun tv/w3m-form-p (obj)
+  "Return t if OBJ is a form object."
+  (and (vectorp obj)
+       (symbolp (aref obj 0))
+       (eq (aref obj 0) 'w3m-form-object)))
+
+(defun tv/w3m-RET ()
+  (interactive)
+  (if (tv/w3m-form-p (cadr (w3m-action)))
+      (w3m-view-this-url)
+    (tv/scroll-down)))
+
 (provide 'config-w3m)
 
 ;;; .emacs-config-w3m.el ends here
