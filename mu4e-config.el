@@ -487,7 +487,8 @@ if one may help."
 (add-function :around mu4e-compose-cite-function #'tv/mu4e-remove-buttons-in-reply)
 
 
-(define-key mu4e-search-minor-mode-map (kbd "S") nil)
+(when (boundp 'mu4e-search-minor-mode-map)
+  (define-key mu4e-search-minor-mode-map (kbd "S") nil))
 
 (provide 'mu4e-config)
 
