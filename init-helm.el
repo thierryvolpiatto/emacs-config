@@ -505,7 +505,8 @@ new directory."
           ("translate.reference.com fr->en" .
            "http://translate.reference.com/translate?query=%s&src=fr&dst=en")
           ("en.wiktionary.org" . "http://en.wiktionary.org/wiki/%s")
-          ("fr.wiktionary.org" . "http://fr.wiktionary.org/wiki/%s"))))
+          ("fr.wiktionary.org" . "http://fr.wiktionary.org/wiki/%s"))
+        helm-dictionary-ignore-diacritics t))
 
 (use-package helm-wikipedia
     :config
