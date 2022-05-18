@@ -355,7 +355,7 @@ new directory."
 
   ;; Add actions to `helm-source-find-files' IF:
   (cl-defmethod helm-setup-user-source ((source helm-source-ffiles))
-      "Adds additional actions to `helm-find-files'.
+      "Adds additional actions and settings to `helm-find-files'.
     - Byte compile file(s) async
     - Byte recompile directory
     - Git status
@@ -552,7 +552,7 @@ new directory."
         helm-grep-default-recurse-command
         "ack-grep -H --color --smart-case --no-group %e -- %p %f"
         helm-grep-ag-command
-        "rg --color=always --colors 'match:bg:yellow' --colors 'match:fg:black' --smart-case --no-heading --line-number %s -- %s %s"
+        "rg --color=always --colors 'match:bg:yellow' --colors 'match:fg:black' --smart-case --search-zip --no-heading --line-number %s -- %s %s"
         helm-grep-ag-pipe-cmd-switches
         '("--colors 'match:bg:yellow' --colors 'match:fg:black'")
         helm-grep-git-grep-command
