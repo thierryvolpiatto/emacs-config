@@ -305,7 +305,16 @@
         helm-locate-recursive-dirs-command "fd --hidden --type d --glob '*%s*' %s"
         helm-ff-eshell-unwanted-aliases '("sudo" "cdu" "man"
                                           "gpg-pubkey-export-armor" "gpg-secretkey-export-armor"))
-  
+
+  (defun helm-ff-dragon (files)
+    "Create a small window with FILES ready to drag and drop anywhere.
+
+Needs `dragon' executable: https://github.com/mwh/dragon."
+    (interactive (list (helm-marked-candidates)))
+    (cl-assert (executable-find "dragon") nil "Dragon executable not found")
+    (apply #'call-process "dragon" nil nil nil "--all" "--and-exit" files))
+  (define-key helm-find-files-map (kbd "C-c m") 'helm-ff-dragon)
+
   (customize-set-variable 'helm-ff-lynx-style-map t)
   (define-key helm-read-file-map (kbd "RET") 'helm-ff-RET)
   (define-key helm-find-files-map (kbd "C-i") nil)
