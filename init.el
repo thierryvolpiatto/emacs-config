@@ -1556,7 +1556,8 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 ;;
 (use-package auth-source
   :no-require t
-  :config (setq auth-sources '("~/.authinfo.gpg" "~/.netrc")))
+  :config (setq auth-sources '("~/.authinfo.gpg" "~/.netrc")
+                auth-source-save-behavior nil))
 
 ;;; esh-toggle
 ;;
