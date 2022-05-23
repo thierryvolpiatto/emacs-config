@@ -304,7 +304,8 @@
         helm-dwim-target                         'next-window
         helm-locate-recursive-dirs-command "fd --hidden --type d --glob '*%s*' %s"
         helm-ff-eshell-unwanted-aliases '("sudo" "cdu" "man"
-                                          "gpg-pubkey-export-armor" "gpg-secretkey-export-armor"))
+                                          "gpg-pubkey-export-armor" "gpg-secretkey-export-armor")
+        helm-ff-drag-and-drop-default-directory "/home/thierry/Bureau/")
 
   (defun helm-ff-dragon (files)
     "Create a small window with FILES ready to drag and drop anywhere.

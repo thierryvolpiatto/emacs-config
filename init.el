@@ -600,6 +600,9 @@ So far, F can only be a symbol, not a lambda expression."))
   (add-to-list 'all-the-icons-extension-icon-alist
                '("eln" all-the-icons-octicon "file-binary"
                  :v-adjust 0.0 :face all-the-icons-dsilver))
+  (add-to-list 'all-the-icons-extension-icon-alist
+               '("epub" all-the-icons-octicon "book"
+                 :v-adjust 0.0 :face all-the-icons-red-alt))
   (setq all-the-icons-regexp-icon-alist
         (append '(("^bookmark" all-the-icons-octicon "bookmark"
                    :height 1.1 :v-adjust 0.0 :face all-the-icons-lpink))
