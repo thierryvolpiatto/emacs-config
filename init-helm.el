@@ -308,7 +308,9 @@
         helm-ff-drag-and-drop-default-directory "/home/thierry/Bureau/")
 
   (defun helm-ff-dragon (files)
-    "Create a small window with FILES ready to drag and drop anywhere.
+    "Create a small window with FILES ready to drag and drop.
+Use this to drop files on externals applications or desktop.
+Dropping on emacs buffers with this is not supported.
 
 Needs `dragon' executable: https://github.com/mwh/dragon."
     (interactive (list (helm-marked-candidates)))
