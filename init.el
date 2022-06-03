@@ -1908,6 +1908,60 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
     ;; is detected. Ensure the hook is appended otherwise things like
     ;; eldoc-eval will not work.
     (add-hook 'post-command-hook #'tv/turn-on-auto-fill-mode-maybe t)
+    
+    ;; Fold docstrings
+    ;;
+    (defun tv/on-docstring-quoted-symbol-p ()
+      (or (equal (get-text-property (point) 'face)
+                 '(font-lock-constant-face font-lock-doc-face))
+          (memql (char-after) '(?` ?'))))
+
+    (defun tv/on-unneeded-backslash-p ()
+      (equal (get-text-property (point) 'help-echo)
+             "This \\ has no effect"))
+
+    (defun tv/goto-docstring-beg-or-end (arg)
+      "Return point value at beginning or end of docstring.
+If ARG is 1 goto end of docstring, -1 goto beginning."
+      (when (or (tv/point-in-docstring-p (point))
+                (tv/on-docstring-quoted-symbol-p)
+                (tv/on-unneeded-backslash-p))
+        (while (or (tv/point-in-docstring-p (point))
+                   (tv/on-docstring-quoted-symbol-p)
+                   (tv/on-unneeded-backslash-p))
+          (forward-char arg))
+        (if (< arg 0)
+            (back-to-indentation)
+          (while (not (tv/point-in-docstring-p (point))) (forward-char -1)))
+        (point)))
+
+    (defun tv/beginning-of-docstring ()
+      "Move to beginning of docstring and return `point'."
+      (tv/goto-docstring-beg-or-end -1))
+
+    (defun tv/end-of-docstring ()
+      "Move to beginning of docstring and return point."
+      (tv/goto-docstring-beg-or-end 1))
+
+    (defun tv/fold-docstring ()
+      "Fold docstring."
+      (interactive)
+      (let ((beg (save-excursion (tv/beginning-of-docstring)))
+            (end (save-excursion (tv/end-of-docstring))))
+        (add-text-properties (1+ beg) (1- end) '(display "[⃛]"))
+        (set-buffer-modified-p nil)))
+    (define-key emacs-lisp-mode-map (kbd "C-c f") 'tv/fold-docstring)
+
+    (defun tv/unfold-docstring ()
+      "Unfold docstring."
+      (interactive)
+      (let ((beg (or (previous-single-property-change (point) 'display)
+                     (point)))
+            (end (or (next-single-property-change (point) 'display)
+                     (point))))
+        (remove-text-properties beg end '(display))
+        (set-buffer-modified-p nil)))
+    (define-key emacs-lisp-mode-map (kbd "C-c u") 'tv/unfold-docstring)
 
     (defun tv/pp-eval-or-expand-last-sexp (&optional arg)
       "Eval sexp at point, with ARG macroexpand it."
