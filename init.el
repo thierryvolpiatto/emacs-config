@@ -1963,6 +1963,33 @@ If ARG is 1 goto end of docstring, -1 goto beginning."
         (set-buffer-modified-p nil)))
     (define-key emacs-lisp-mode-map (kbd "C-c u") 'tv/unfold-docstring)
 
+    (defun tv/clean-backslashes-in-docstrings ()
+      (interactive)
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward "\\s\\" nil t)
+          (forward-char -1)
+          (if (and (tv/on-unneeded-backslash-p)
+                   (tv/point-in-docstring-p (1+ (point))))
+              (delete-char 1)
+            (forward-char 1)))))
+    (define-key emacs-lisp-mode-map (kbd "C-c \\") 'tv/clean-backslashes-in-docstrings)
+
+    (defun tv/next-unquoted-backslash-in-regexps ()
+      (interactive)
+      (let ((pos (point))
+            found)
+        (catch 'break
+          (while (re-search-forward "\\s\\" nil t)
+            (catch 'continue
+              (forward-char -1)
+              (if (and (tv/on-unneeded-backslash-p)
+                       (not (tv/point-in-docstring-p (1+ (point)))))
+                  (throw 'break (setq found t))
+                (forward-char 1)
+                (throw 'continue t))))
+          (unless found (goto-char pos) (message "No wrong backslashes found")))))
+    
     (defun tv/pp-eval-or-expand-last-sexp (&optional arg)
       "Eval sexp at point, with ARG macroexpand it."
       (interactive "P")
