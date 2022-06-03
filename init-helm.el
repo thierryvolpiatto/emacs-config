@@ -273,7 +273,20 @@
           "\\`\\*Messages" "\\`\\*Magit" "\\`\\*git-gutter" "\\`\\*Help"))
 
   (define-key helm-buffer-map (kbd "C-d") 'helm-buffer-run-kill-persistent)
+
+  (defun helm-buffers-clean-backslashes-in-docstrings (_candidate)
+    (let ((bufs (helm-marked-candidates)))
+      (cl-loop for buf in bufs
+               do (with-current-buffer buf
+                    (tv/clean-backslashes-in-docstrings)
+                    (when (buffer-modified-p)
+                      (save-buffer))))))
   
+  (add-to-list 'helm-type-buffer-actions
+               '("Clean backslashes in docstrings"
+                 . helm-buffers-clean-backslashes-in-docstrings)
+               t)
+
   (cl-defmethod helm-setup-user-source ((source helm-source-buffers))
   "Adds additional actions to `helm-source-buffers-list'.
 - Git status."
