@@ -5,6 +5,7 @@
 
 (use-package helm
   :config
+  ;; Only needed when installing from source.
   (require 'helm-config)
   (setq helm-input-idle-delay                     0.01
         helm-reuse-last-window-split-state        t
