@@ -279,6 +279,10 @@
     (let ((bufs (helm-marked-candidates)))
       (cl-loop for buf in bufs
                do (with-current-buffer buf
+                    ;; Predicates to determine if point is in
+                    ;; docstring are based on text-props, so all text
+                    ;; in buffer need to be fontified [1].
+                    (jit-lock-fontify-now)
                     (tv/clean-backslashes-in-docstrings)
                     (when (buffer-modified-p)
                       (save-buffer))))))
@@ -288,6 +292,28 @@
                  . helm-buffers-clean-backslashes-in-docstrings)
                t)
 
+  (defun tv/clean-single-quotes-in-docstring ()
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward "[ \n]'" nil t)
+        (forward-char -1)
+        (if (tv/point-in-docstring-p (point))
+            (progn (insert "\\\\=") (forward-char 1))
+          (forward-char 1)))))
+
+  (defun helm-buffers-clean-single-quotes-in-docstrings (_candidate)
+    (let ((bufs (helm-marked-candidates)))
+      (cl-loop for buf in bufs
+               do (with-current-buffer buf
+                    (jit-lock-fontify-now) ; Same comment as [1] above.
+                    (tv/clean-single-quotes-in-docstring)
+                    (when (buffer-modified-p)
+                      (save-buffer))))))
+  (add-to-list 'helm-type-buffer-actions
+               '("Clean single quotes  in docstrings" .
+                 helm-buffers-clean-single-quotes-in-docstrings)
+               t)
+  
   (cl-defmethod helm-setup-user-source ((source helm-source-buffers))
   "Adds additional actions to `helm-source-buffers-list'.
 - Git status."

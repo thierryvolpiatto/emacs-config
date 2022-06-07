@@ -1970,7 +1970,7 @@ If ARG is 1 goto end of docstring, -1 goto beginning."
         (while (re-search-forward "\\s\\" nil t)
           (forward-char -1)
           (if (and (tv/on-unneeded-backslash-p)
-                   (tv/point-in-docstring-p (1+ (point))))
+                   (save-excursion (tv/point-in-docstring-p (1+ (point)))))
               (delete-char 1)
             (forward-char 1)))))
     (define-key emacs-lisp-mode-map (kbd "C-c \\") 'tv/clean-backslashes-in-docstrings)
