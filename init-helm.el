@@ -12,6 +12,7 @@
         helm-always-two-windows                   t
         helm-split-window-inside-p                nil
         helm-commands-using-frame                 '(completion-at-point
+                                                    helm-apropos
                                                     helm-eshell-prompts helm-imenu
                                                     helm-imenu-in-all-buffers)
         helm-actions-inherit-frame-settings       t
@@ -592,7 +593,7 @@ new directory."
   (setq helm-show-completion-display-function #'helm-display-buffer-in-own-frame
         helm-apropos-fuzzy-match    t
         helm-lisp-fuzzy-completion  t
-        helm-apropos-show-short-doc t)
+        helm-apropos-show-short-doc nil)
   (helm-multi-key-defun helm-multi-lisp-complete-at-point
       "Multi key function for completion in emacs lisp buffers.
 First call indent, second complete symbol, third complete fname."
