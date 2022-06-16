@@ -1234,8 +1234,7 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
     ;; scp is better for copying large files but not working with many
     ;; files.
     (setq tramp-default-method "ssh")
-    ;; (setq tramp-verbose 6) ; See `helm-tramp-verbose' in init-helm.
-
+    ;; (setq tramp-verbose 10 tramp-debug-to-file t helm-tramp-verbose 10)
     ;; No messages
     (setq tramp-message-show-message nil)
 
@@ -1560,6 +1559,8 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 (use-package auth-source
   :no-require t
   :config (setq auth-sources '("~/.authinfo.gpg" "~/.netrc")
+                ;; Don't ask to save password in auth-source file when
+                ;; entering a password from tramp.
                 auth-source-save-behavior nil))
 
 ;;; esh-toggle

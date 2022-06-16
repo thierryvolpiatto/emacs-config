@@ -12,7 +12,6 @@
         helm-always-two-windows                   t
         helm-split-window-inside-p                nil
         helm-commands-using-frame                 '(completion-at-point
-                                                    helm-apropos
                                                     helm-eshell-prompts helm-imenu
                                                     helm-imenu-in-all-buffers)
         helm-actions-inherit-frame-settings       t
@@ -136,34 +135,6 @@
 (defun helm-zgrep-recursive (&optional directory)
   (interactive)
   (helm-ff-zgrep-1 (list (or directory default-directory)) t))
-
-(defun helm-ff-tramp-methods-complete ()
-  "Completion on tramp methods in a nested helm session."
-  (interactive)
-  (let* (initial-input
-         (str helm-pattern)
-         (pattern (with-temp-buffer
-                    (insert str)
-                    (let ((end (point)) beg)
-                      (when (re-search-backward "[/|]" nil t)
-                        (setq beg (1+ (point)))
-                        (unless (= beg end)
-                          (setq initial-input
-                                (buffer-substring beg end))
-                          (delete-region beg end))
-                        (buffer-string)))))
-         (collection (helm-ff--get-tramp-methods))
-         (method (helm-comp-read
-                  "Tramp methods: "
-                  (sort collection #'string<)
-                  :initial-input initial-input
-                  :fc-transformer
-                  (lambda (candidates _source)
-                    (cl-loop for c in candidates
-                             collect (propertize c 'face 'helm-ff-file)))
-                  :allow-nest t
-                  :must-match t)))
-    (helm-set-pattern (concat pattern method ":"))))
 
 
 ;;; Use-package declarations.
@@ -362,8 +333,7 @@ Needs `dragon' executable: https://github.com/mwh/dragon."
   (define-key helm-read-file-map (kbd "RET") 'helm-ff-RET)
   (define-key helm-find-files-map (kbd "C-i") nil)
   (define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
-  (define-key helm-find-files-map (kbd "C-:") 'helm-ff-tramp-methods-complete)
-  
+
   (defun helm/insert-date-in-minibuffer ()
     (interactive)
     (with-selected-window (or (active-minibuffer-window)
@@ -620,8 +590,9 @@ new directory."
 (use-package helm-elisp
   :config
   (setq helm-show-completion-display-function #'helm-display-buffer-in-own-frame
-        helm-apropos-fuzzy-match              t
-        helm-lisp-fuzzy-completion            t)
+        helm-apropos-fuzzy-match    t
+        helm-lisp-fuzzy-completion  t
+        helm-apropos-show-short-doc t)
   (helm-multi-key-defun helm-multi-lisp-complete-at-point
       "Multi key function for completion in emacs lisp buffers.
 First call indent, second complete symbol, third complete fname."
