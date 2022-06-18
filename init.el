@@ -60,6 +60,9 @@
 (use-package gcmh
   :config (gcmh-mode 1))
 
+;; Increase GC
+;; (setq gc-cons-threshold 20000000)
+
 ;;; Emacs customize have it's own file
 ;;
 (setq custom-file "~/.emacs.d/.emacs-custom.el")
@@ -125,9 +128,6 @@ Restart works only on graphic display."
 ;; Limite-max-lisp
 (setq max-lisp-eval-depth 40000
       max-specpdl-size    100000)
-
-;; Increase GC
-(setq gc-cons-threshold 20000000)
 
 ;; Disable bidi
 ;; (setq-default bidi-display-reordering nil)
