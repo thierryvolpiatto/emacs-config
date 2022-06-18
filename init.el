@@ -1535,20 +1535,19 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 
 ;;; Mu4e
 ;;
-;; (use-package mu4e
-;;   :config
-;;   (progn (require 'mu4e-config)
-;;          (addressbook-turn-on-mail-completion))
-;;   :commands (mu4e)
-;;   :bind ("<f8>" . mu4e))
+(use-package mu4e
+    :config
+  (progn (require 'tv-mu4e-config)
+         (addressbook-turn-on-mail-completion))
+  :bind ("<f8>" . mu4e))
 
 ;;; Gnus
 ;;
 (use-package gnus
+    :disabled t
     :config
   (setq gnus-init-file "~/.emacs.d/gnus-config.el")
   (addressbook-turn-on-mail-completion)
-  :commands (gnus)
   :bind ("<f9>" . gnus))
 
 ;;; Autocrypt
