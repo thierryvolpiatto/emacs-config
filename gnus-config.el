@@ -5,10 +5,6 @@
 
 ;;; Code:
 
-;;; Search engine for imap and gmane (hit `G G' in group buffer)
-;;
-(require 'nnir)
-
 ;; Don't read/write to the .newrc file, go straight to the *.eld.
 (setq gnus-save-newsrc-file nil
       gnus-read-newsrc-file nil)
@@ -20,8 +16,7 @@
 ;;
 ;;
 ;; Default method
-(setq gnus-select-method '(nntp "news.gmane.io"
-                           (nnir-search-engine gmane)))
+(setq gnus-select-method '(nntp "news.gmane.io"))
 
 (setq gnus-thread-sort-functions '((not gnus-thread-sort-by-number)))
 
@@ -335,6 +330,23 @@ This will run in `message-send-hook'."
           (tv/gnus-show-patch-other-frame (if arg (concat url "?w=1") url))
         (browse-url url)))))
 (define-key gnus-article-mode-map (kbd "C-c C-c") 'tv/gnus-browse-url-or-show-patch)
+
+(defun tv/delete-null-chars-from-gnus ()
+  "Delete null characters in gnus article buffer.
+Such characters are represented by \"^@\" chars.
+They are most of the time at the end of mails sent with Gnus or Rmail.
+See https://en.wikipedia.org/wiki/Null_character."
+  (save-excursion
+    (let ((inhibit-read-only t))
+      (message-goto-body)
+      ;; WARNING: (emacs bug#44486)
+      ;; Using ^@ instead of \0 corrupt emacs-lisp buffers
+      ;; containing special characters such as "à" and may be
+      ;; others (unicode), this doesn't happen in lisp-interaction
+      ;; buffers i.e. scratch.
+      (while (re-search-forward "\0" nil t)
+        (replace-match "")))))
+(add-hook 'gnus-part-display-hook 'tv/delete-null-chars-from-gnus)
 
 ;;; gnus-config.el ends here
 

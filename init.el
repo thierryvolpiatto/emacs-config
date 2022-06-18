@@ -56,6 +56,10 @@
   ;; Add all at end of `load-path' to avoid conflicts.
   (add-to-list 'load-path (file-name-as-directory i) t))
 
+;; gcmh-mode
+(use-package gcmh
+  :config (gcmh-mode 1))
+
 ;;; Emacs customize have it's own file
 ;;
 (setq custom-file "~/.emacs.d/.emacs-custom.el")
@@ -1531,12 +1535,21 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
 
 ;;; Mu4e
 ;;
-(use-package mu4e
-  :config
-  (progn (require 'mu4e-config)
-         (addressbook-turn-on-mail-completion))
-  :commands (mu4e)
-  :bind ("<f8>" . mu4e))
+;; (use-package mu4e
+;;   :config
+;;   (progn (require 'mu4e-config)
+;;          (addressbook-turn-on-mail-completion))
+;;   :commands (mu4e)
+;;   :bind ("<f8>" . mu4e))
+
+;;; Gnus
+;;
+(use-package gnus
+    :config
+  (setq gnus-init-file "~/.emacs.d/gnus-config.el")
+  (addressbook-turn-on-mail-completion)
+  :commands (gnus)
+  :bind ("<f9>" . gnus))
 
 ;;; Autocrypt
 ;;
