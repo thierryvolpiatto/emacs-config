@@ -2056,18 +2056,9 @@ If ARG is 1 goto end of docstring, -1 goto beginning."
 ;;
 (use-package rectangle-edit :commands 'rectangle-edit)
 
-;;; Bash-completion
+;;; Git completion
 ;;
-;; (use-package bash-completion
-;;   :ensure t
-;;   :commands 'bash-completion-dynamic-complete
-;;   :init
-;;   (add-hook 'shell-dynamic-complete-functions 'bash-completion-dynamic-complete))
-
-;;; Pcmpl-git (For Eshell)
-;;
-;; Seems that bash-completion and pcmpl can cohabit.
-;; No subcommands completion with pcmpl in eshell though.
+;; A pcomplete for eshell
 (use-package pcmpl-git :ensure t)
 
 ;;; Log-view
