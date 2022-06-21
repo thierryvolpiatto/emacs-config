@@ -568,7 +568,7 @@ new directory."
 (use-package helm-grep
   :config
   (setq helm-pdfgrep-default-read-command
-        "evince --page-label=%p '%f'"
+        "xreader --page-label=%p '%f'"
         helm-grep-default-command
         "ack-grep -Hn --color --smart-case --no-group %e -- %p %f"
         helm-grep-default-recurse-command
