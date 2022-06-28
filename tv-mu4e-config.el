@@ -369,20 +369,8 @@ try this wash."
        (150 . "-") (151 . "--") (152 . "~") (153 . "(TM)")
        (155 . ">") (156 . "oe") (180 . "'")))))
 
-;;; Same as `article-remove-cr' (W-c) but simplified and more efficient.
-;;
-;; Not sure it is needed in mu4e though.
-(defun mu4e-view-remove-cr ()
-  "Remove trailing CRs and then translate remaining CRs into LFs."
-  (interactive)
-  (save-excursion
-    (let ((inhibit-read-only t))
-      (goto-char (point-min))
-      (while (re-search-forward "\r" nil t)
-        (if (eolp)
-            (replace-match "" t t)
-            (replace-match "\n" t t))))))
-
+;; For some reasons some mails have many null characters at the end,
+;; most of the time these emails come from emacs developers.
 (defun tv/delete-null-chars-from-gnus ()
   "Delete null characters in gnus article buffer.
 Such characters are represented by \"^@\" chars.
@@ -399,6 +387,13 @@ See https://en.wikipedia.org/wiki/Null_character."
       (while (re-search-forward "\0" nil t)
         (replace-match "")))))
 (add-hook 'gnus-part-display-hook 'tv/delete-null-chars-from-gnus)
+
+(defun tv/remove-cr ()
+  (when (save-excursion
+          (message-goto-body)
+          (re-search-forward "$" nil t))
+    (article-remove-cr)))
+(add-hook 'gnus-part-display-hook 'tv/remove-cr)
 
 ;; Crypto
 ;; Autocrypt will decide if encrypting or not.

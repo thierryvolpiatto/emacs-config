@@ -664,7 +664,8 @@ First call indent, second complete symbol, third complete fname."
 
 (use-package helm-ls-git
     :config
-  (setq helm-ls-git-delete-branch-on-remote t))
+  (setq helm-ls-git-delete-branch-on-remote t
+        helm-ls-git-auto-refresh-at-eob t))
 
 ;;; Ctl-x-5 map
 ;;
