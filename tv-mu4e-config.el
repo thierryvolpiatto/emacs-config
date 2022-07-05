@@ -461,7 +461,6 @@ if one may help."
 (advice-add 'smtpmail-send-queued-mail :after #'tv/advice-smtpmail-send-queued-mail)
 
 ;; Org links
-(require 'org-mu4e)
 (define-key mu4e-view-mode-map (kbd "C-c C-l") 'org-store-link)
 
 (setq mu4e-headers-thread-last-child-prefix '("L" . "╰► "))
