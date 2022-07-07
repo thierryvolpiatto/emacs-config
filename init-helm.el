@@ -30,7 +30,8 @@
         helm-visible-mark-prefix                  "✓")
   (set-face-foreground 'helm-mark-prefix "Gold1")
   (add-to-list 'helm-sources-using-default-as-input 'helm-source-info-bash)
-  (helm-define-key-with-subkeys global-map (kbd "C-c n") ?n 'helm-cycle-resume))
+  (helm-define-key-with-subkeys global-map (kbd "C-c n") ?n 'helm-cycle-resume)
+  (helm-define-key-with-subkeys global-map (kbd "M-g n") ?n #'next-error '((?p . previous-error))))
 
 ;;; Load all autoloads for helm extensions
 ;;
