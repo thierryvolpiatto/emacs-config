@@ -1673,23 +1673,19 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
       (defalias 'eshell-complete-lisp-symbol 'lisp-complete-symbol))
 
     (add-hook 'eshell-mode-hook (lambda ()
-                                  (setq eshell-pwd-convert-function (lambda (f)
-                                                                      (if (file-equal-p (file-truename f) "/")
-                                                                          "/" f)))
+                                  (setq eshell-pwd-convert-function
+                                        (lambda (f)
+                                          (if (file-equal-p (file-truename f) "/")
+                                              "/" f)))
                                   ;; This is needed for eshell-command (otherwise initial history is empty).
                                   (eshell-read-history eshell-history-file-name)
                                   ;; Helm completion with pcomplete
                                   (setq eshell-cmpl-ignore-case t
                                         eshell-hist-ignoredups t)
                                   (eshell-cmpl-initialize)
-                                  ;; emacs-27+ use completion-at-point
-                                  ;; which sucks.NOTE: eshell*map are
-                                  ;; moving targets, watch out.
-                                  (cond ((= emacs-major-version 27)
-                                         (define-key eshell-mode-map (kbd "TAB") 'helm-esh-pcomplete))
-                                        ((= emacs-major-version 28)
-                                         (define-key eshell-hist-mode-map (kbd "TAB") 'helm-esh-pcomplete))
-                                        (t (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)))
+                                  ;; Use bash-completion which works
+                                  ;; for all.
+                                  (define-key eshell-hist-mode-map (kbd "TAB") 'bash-completion-from-eshell)
                                   ;; Helm completion on eshell
                                   ;; history.
                                   (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)
@@ -2049,10 +2045,22 @@ If ARG is 1 goto end of docstring, -1 goto beginning."
 ;;
 (use-package rectangle-edit :commands 'rectangle-edit)
 
-;;; Git completion
+;;; Bash completion
 ;;
-;; A pcomplete for eshell
-(use-package pcmpl-git :ensure t)
+(use-package bash-completion
+    :config
+  (bash-completion-setup)
+  
+  (defun bash-completion-from-eshell ()
+    (interactive)
+    (let ((completion-at-point-functions
+           '(bash-completion-eshell-capf)))
+      (completion-at-point)))
+
+  (defun bash-completion-eshell-capf ()
+    (bash-completion-dynamic-complete-nocomint
+     (save-excursion (eshell-bol) (point))
+     (point) t)))
 
 ;;; Log-view
 ;;
