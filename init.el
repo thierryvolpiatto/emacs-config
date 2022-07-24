@@ -942,7 +942,10 @@ If your system's ping continues until interrupted, you can try setting
   :init (progn
           (bind-key "C-M-!" 'tv/eval-region lisp-interaction-mode-map) 
           (bind-key "C-M-!" 'tv/eval-region emacs-lisp-mode-map))
-  :config (advice-add 'view-echo-area-messages :around 'tv/view-echo-area-messages)
+  :config
+  (advice-add 'view-echo-area-messages :around 'tv/view-echo-area-messages)
+  (with-eval-after-load 'helm-core
+    (helm-define-key-with-subkeys global-map (kbd "C-h e") ?e #'view-echo-area-messages))
   :bind (("M-\""                  . tv/insert-double-quote)
          ("C-M-`"                 . tv/insert-double-backquote)
          ("C-M-("                 . tv/move-pair-forward)
