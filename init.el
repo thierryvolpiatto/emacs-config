@@ -1686,9 +1686,8 @@ In the absence of INDEX, just call `eldoc-docstring-format-sym-doc'."
                                   (setq eshell-cmpl-ignore-case t
                                         eshell-hist-ignoredups t)
                                   (eshell-cmpl-initialize)
-                                  ;; Use bash-completion which works
-                                  ;; for all.
-                                  (define-key eshell-hist-mode-map (kbd "TAB") 'bash-completion-from-eshell)
+                                  ;; Make `completion-at-point' use bash-completion which works for all.
+                                  (setq-local completion-at-point-functions '(bash-completion-eshell-capf))
                                   ;; Helm completion on eshell
                                   ;; history.
                                   (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)
@@ -2052,14 +2051,12 @@ If ARG is 1 goto end of docstring, -1 goto beginning."
 ;;
 (use-package bash-completion
     :config
-  (bash-completion-setup)
+  (autoload 'bash-completion-dynamic-complete "bash-completion"
+    "BASH completion hook")
+  (add-hook 'shell-dynamic-complete-functions
+            'bash-completion-dynamic-complete)
   
-  (defun bash-completion-from-eshell ()
-    (interactive)
-    (let ((completion-at-point-functions
-           '(bash-completion-eshell-capf)))
-      (completion-at-point)))
-
+  ;; Used as CAPF in eshell.
   (defun bash-completion-eshell-capf ()
     (bash-completion-dynamic-complete-nocomint
      (save-excursion (eshell-bol) (point))
