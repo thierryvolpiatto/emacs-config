@@ -39,15 +39,16 @@
                 (getenv "USER")))
          (host (completing-read
                 "Host: "
-                (cl-loop with all-methods = (mapcar 'car tramp-methods)
-                         for (f . h) in (tramp-get-completion-function "ssh")
-                         append (cl-loop for e in (funcall f (car h))
-                                         for host = (and (consp e) (cadr e))
-                                         ;; On emacs-27 host may be
-                                         ;; ("root" t) in sudo method.
-                                         when (and (stringp host)
-                                                   (not (member host all-methods)))
-                                         collect host))))
+                (delete-dups
+                 (cl-loop with all-methods = (mapcar 'car tramp-methods)
+                          for (f . h) in (tramp-get-completion-function "ssh")
+                          append (cl-loop for e in (funcall f (car h))
+                                          for host = (and (consp e) (cadr e))
+                                          ;; On emacs-27 host may be
+                                          ;; ("root" t) in sudo method.
+                                          when (and (stringp host)
+                                                    (not (member host all-methods)))
+                                          collect host)))))
          (fs (concat host ":/home/" user))
          (mp (concat "~/sshfs/" user)))
     (unless (file-directory-p mp)
