@@ -2051,8 +2051,6 @@ If ARG is 1 goto end of docstring, -1 goto beginning."
 ;;
 (use-package bash-completion
     :config
-  (autoload 'bash-completion-dynamic-complete "bash-completion"
-    "BASH completion hook")
   (add-hook 'shell-dynamic-complete-functions
             'bash-completion-dynamic-complete)
   
@@ -2062,7 +2060,7 @@ If ARG is 1 goto end of docstring, -1 goto beginning."
      (save-excursion (eshell-bol) (point))
      (point) t)))
 
-;;; Log-view
+;;; Log-view (only used with RCS)
 ;;
 (use-package log-view
   :config
