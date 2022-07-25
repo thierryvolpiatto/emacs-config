@@ -2050,6 +2050,7 @@ If ARG is 1 goto end of docstring, -1 goto beginning."
 ;;; Bash completion
 ;;
 (use-package bash-completion
+    :ensure t
     :config
   (add-hook 'shell-dynamic-complete-functions
             'bash-completion-dynamic-complete)
