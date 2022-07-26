@@ -465,10 +465,19 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;; Shell script
 ;;
 (use-package sh-script
-    :config (add-to-list 'auto-mode-alist '("\\.bashrc\\'" . sh-mode))
-    :bind (:map sh-mode-map
-                ("RET" . newline-and-indent)
-                ("C-h f" . helm-info-bash)))
+    :config
+  (add-to-list 'auto-mode-alist '("\\.bashrc\\'" . sh-mode))
+  (add-hook 'sh-mode-hook 'flymake-mode)
+  ;; Use shellcheck as backend for flymake.
+  (use-package flymake-shellcheck
+      :ensure t
+      :commands (flymake-shellcheck-load)
+      :init
+      (add-hook 'sh-mode-hook 'flymake-shellcheck-load))
+  
+  :bind (:map sh-mode-map
+              ("RET" . newline-and-indent)
+              ("C-h f" . helm-info-bash)))
 
 ;;; Auto-conf
 ;;
