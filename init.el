@@ -1043,10 +1043,6 @@ If your system's ping continues until interrupted, you can try setting
 ;;
 (use-package iterator)
 
-;;; pcomplete
-;;
-(use-package pcomplete-extension)
-
 ;;; Migemo
 ;;
 (use-package migemo
