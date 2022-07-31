@@ -437,9 +437,11 @@ depending the value of N is positive or negative."
 
 (defun tv/view-echo-area-messages (old--fn &rest args)
   (let ((win (get-buffer-window (messages-buffer) 'visible)))
-    (if win
-        (quit-window nil win)
-      (apply old--fn args))))
+    (cond ((and win (one-window-p))
+           (quit-window nil win))
+          (win
+           (delete-other-windows win))
+          (t (apply old--fn args)))))
 
 ;; Kill-backward
 ;;;###autoload
