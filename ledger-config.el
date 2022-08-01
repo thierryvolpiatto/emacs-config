@@ -253,7 +253,12 @@ If entries are already pointed, skip."
                               ("LFREM DISTRI SCPI" . ":scpi:lfrem")
                               ("AMAZON PAYMENTS COMMERCE ELECTRONIQUE" . ":shopping:amazon")
                               ("LES QUATRE VALLEES" . ":vétérinaire")
-                              ("CERUTI PONS" . ":vétérinaire")))
+                              ("CERUTI PONS" . ":vétérinaire")
+                              ("VETO GUILLESTRE" . ":vétérinaire")
+                              ("SAMSE" . ":brico:mont-dauphin")
+                              ("WELDOM EMBRUN" . ":brico:mont-dauphin")
+                              ("GEMAP" . ":brico:mont-dauphin")
+                              ("LOGITEL POUR: Rachel Bourdin" . ":rachel:virement")))
 
 ;;;###autoload
 (defun ledger/update-associations ()

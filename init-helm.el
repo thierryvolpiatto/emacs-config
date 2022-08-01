@@ -376,17 +376,29 @@ new directory."
                when (file-directory-p dir)
                do (helm-ff-recoll-index-directory dir))))
 
+  (defun tv/change-xfce-background (file)
+    (if (= (apply #'call-process "xfconf-query" nil nil nil
+                  `("-c"
+                    "xfce4-desktop" "-p"
+                    "/backdrop/screen0/monitoreDP/workspace0/last-image" "-s"
+                    ,file))
+           0)
+        (message "Background changed successfully to %s" (helm-basename file))
+      (message "Failed to change background")))
+  
   ;; Add actions to `helm-source-find-files' IF:
   (cl-defmethod helm-setup-user-source ((source helm-source-ffiles))
       "Adds additional actions and settings to `helm-find-files'.
     - Byte compile file(s) async
-    - Byte recompile directory
+    - Byte recompile directory async
     - Git status
-    - Github issues
+    - Open info file
     - Patch region on directory
     - Open in emms
     - Update directory autoloads
-    - Recoll directory creation"
+    - Recoll directory creation
+    - Epa encrypt file
+    - Change background"
     (helm-aif (slot-value source 'match)
         (setf (slot-value source 'match)
               (append it
@@ -505,16 +517,6 @@ new directory."
        (member (file-name-extension candidate) '("jpg" "jpeg" "png")))
      3))
   (helm-ff-icon-mode 1))
-
-(defun tv/change-xfce-background (file)
-  (if (= (apply #'call-process "xfconf-query" nil nil nil
-                `("-c"
-                  "xfce4-desktop" "-p"
-                  "/backdrop/screen0/monitoreDP/workspace0/last-image" "-s"
-                  ,file))
-         0)
-      (message "Background changed successfully to %s" (helm-basename file))
-    (message "Failed to change background")))
 
 (use-package helm-dictionary ; Its autoloads are already loaded.
   :commands helm-dictionary
