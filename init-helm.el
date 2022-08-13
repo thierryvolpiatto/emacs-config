@@ -38,7 +38,6 @@
 ;;
 (load "/home/thierry/elisp/helm-extensions/helm-extensions-autoloads.el")
 
-
 
 (defun helm/debug-toggle ()
   (interactive)
@@ -318,7 +317,8 @@
         helm-locate-recursive-dirs-command "fdfind --hidden --type d --glob '*%s*' %s"
         helm-ff-eshell-unwanted-aliases '("sudo" "cdu" "man"
                                           "gpg-pubkey-export-armor" "gpg-secretkey-export-armor")
-        helm-ff-drag-and-drop-default-directory "/home/thierry/Bureau/")
+        helm-ff-drag-and-drop-default-directory "/home/thierry/Bureau/"
+        helm-file-name-history-hide-deleted t)
 
   (defun helm-ff-dragon (files)
     "Create a small window with FILES ready to drag and drop.

@@ -213,6 +213,8 @@ Restart works only on graphic display."
 ;; History variables
 (setq history-delete-duplicates t)
 (setq history-length            100)
+(put 'file-name-history 'history-length 10000)
+
 ;; Limit M-x history to 50.
 (put 'extended-command-history 'history-length 50)
 
