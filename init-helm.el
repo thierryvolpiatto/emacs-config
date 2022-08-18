@@ -391,7 +391,6 @@ new directory."
       "Adds additional actions and settings to `helm-find-files'.
     - Byte compile file(s) async
     - Byte recompile directory async
-    - Git status
     - Open info file
     - Patch region on directory
     - Open in emms
@@ -407,6 +406,7 @@ new directory."
                                                 (char-fold-to-regexp
                                                  (helm-basename helm-input)))
                                         candidate))))))
+    ;; Byte compile file async
     (helm-source-add-action-to-source-if
      "Byte compile file(s) async"
      (lambda (_candidate)
@@ -414,6 +414,7 @@ new directory."
                 do (async-byte-compile-file file)))
      source
      'helm/ff-candidates-lisp-p)
+    ;; Recover file from its autoload file
     (helm-source-add-action-to-source-if
      "Recover file"
      (lambda (candidate)
@@ -423,22 +424,13 @@ new directory."
        (file-exists-p (expand-file-name
                        (format "#%s#" (helm-basename candidate))
                        (helm-basedir candidate)))))
+    ;; Byte recompile dir async
     (helm-source-add-action-to-source-if
      "Byte recompile directory (async)"
      'async-byte-recompile-directory
      source
      'file-directory-p)
-    (helm-source-add-action-to-source-if
-     "Git status"
-     (lambda (_candidate)
-       (funcall helm-ls-git-status-command
-                helm-ff-default-directory))
-     source
-     (lambda (candidate)
-       (and (not (string-match-p ffap-url-regexp candidate))
-            helm-ff-default-directory
-            (locate-dominating-file helm-ff-default-directory ".git")))
-     1)
+    ;; Info on .info files
     (helm-source-add-action-to-source-if
      "Open info file"
      (lambda (candidate) (info candidate))
@@ -446,6 +438,7 @@ new directory."
      (lambda (candidate) (helm-aif (file-name-extension candidate)
                              (string= it "info")))
      1)
+    ;; Patch region on dir
     (helm-source-add-action-to-source-if
      "Patch region on directory"
      (lambda (_candidate)
@@ -460,6 +453,7 @@ new directory."
                   (eq major-mode 'diff-mode))
               (region-active-p))))
      1)
+    ;; Emms
     (helm-source-add-action-to-source-if
      "Open in emms"
      (lambda (candidate)
@@ -474,6 +468,7 @@ new directory."
                  nil ".*\\.\\(mp3\\|ogg\\|flac\\)$" t))
            (string-match-p ".*\\.\\(mp3\\|ogg\\|flac\\)$" candidate)))
      1)
+    ;; update-directory-autoloads
     (helm-source-add-action-to-source-if
      "Update directory autoloads"
      (lambda (candidate)
@@ -491,12 +486,14 @@ new directory."
        (and (file-directory-p candidate)
             (string= (helm-basename candidate) ".")))
      1)
+    ;; Setup recoll dirs
     (helm-source-add-action-to-source-if
      "Recoll index directory"
      'helm-ff-recoll-index-directories
      source
      'file-directory-p
      3)
+    ;; Encrypt file
     (helm-source-add-action-to-source-if
      "Epa encrypt file"
      (lambda (candidate)
@@ -509,6 +506,7 @@ new directory."
      source
      'file-exists-p
      3)
+    ;; Background
     (helm-source-add-action-to-source-if
      "Change background"
      'tv/change-xfce-background

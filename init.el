@@ -1542,26 +1542,32 @@ If your system's ping continues until interrupted, you can try setting
                 (>= emacs-major-version 27))
       (defalias 'eshell-complete-lisp-symbol 'lisp-complete-symbol))
 
-    (add-hook 'eshell-mode-hook (lambda ()
-                                  (setq eshell-pwd-convert-function
-                                        (lambda (f)
-                                          (if (file-equal-p (file-truename f) "/")
-                                              "/" f)))
-                                  ;; This is needed for eshell-command (otherwise initial history is empty).
-                                  (eshell-read-history eshell-history-file-name)
-                                  ;; Helm completion with pcomplete
-                                  (setq eshell-cmpl-ignore-case t
-                                        eshell-hist-ignoredups t)
-                                  (eshell-cmpl-initialize)
-                                  ;; Make `completion-at-point' use bash-completion which works for all.
-                                  (setq-local completion-at-point-functions '(bash-completion-eshell-capf))
-                                  ;; Helm completion on eshell
-                                  ;; history.
-                                  (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)
-                                  (when (boundp 'eshell-hist-mode-map)
-                                    (define-key eshell-hist-mode-map (kbd "M-p") 'helm-eshell-history))
-                                  ;; Eshell prompt
-                                  (set-face-attribute 'eshell-prompt nil :foreground "Gold1")))
+    (add-hook 'eshell-mode-hook
+              (lambda ()
+                (setq eshell-pwd-convert-function
+                      (lambda (f)
+                        (if (file-equal-p (file-truename f) "/")
+                            "/" f)))
+                ;; This is needed for eshell-command (otherwise initial history is empty).
+                (eshell-read-history eshell-history-file-name)
+                ;; Helm completion with pcomplete
+                (setq eshell-cmpl-ignore-case t
+                      eshell-hist-ignoredups t)
+                (eshell-cmpl-initialize)
+                ;; Make `completion-at-point' use
+                ;; bash-completion which works
+                ;; mostly all (no eshell aliases).
+                (setq-local completion-at-point-functions '(bash-completion-eshell-capf))
+                ;; Completion on aliases among other things. It's
+                ;; pretty unclear which map to use, at least it
+                ;; changes nearly at each emacs version :-(.
+                (define-key eshell-hist-mode-map (kbd "C-c TAB") 'helm-esh-pcomplete)
+                ;; Helm completion on eshell history.
+                (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)
+                (when (boundp 'eshell-hist-mode-map)
+                  (define-key eshell-hist-mode-map (kbd "M-p") 'helm-eshell-history))
+                ;; Eshell prompt
+                (set-face-attribute 'eshell-prompt nil :foreground "Gold1")))
 
     ;; Eshell history size
     (setq eshell-history-size 1000) ; Same as env var HISTSIZE.
