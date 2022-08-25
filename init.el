@@ -221,7 +221,6 @@ Restart works only on graphic display."
 (setq report-emacs-bug-no-explanations t
       comint-prompt-read-only          t
       uniquify-buffer-name-style       nil
-      register-preview-delay           nil
       inhibit-startup-message          t
       message-log-max                  1000
       kill-ring-max                    80
@@ -1414,9 +1413,8 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Gnus
 ;;
 (use-package gnus
-    :disabled t
     :config
-  (setq gnus-init-file "~/.emacs.d/gnus-config.el")
+  (setq gnus-init-file "~/.emacs.d/gnus-mini.el")
   (addressbook-turn-on-mail-completion)
   :bind ("<f9>" . gnus))
 

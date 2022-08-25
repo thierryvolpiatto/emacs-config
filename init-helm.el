@@ -320,6 +320,14 @@
         helm-ff-drag-and-drop-default-directory "/home/thierry/Bureau/"
         helm-file-name-history-hide-deleted t)
 
+  ;; Un wdired artisanal.
+  (use-package helm-edit-marked
+      :config
+    (setq helm-find-files-actions
+          (helm-append-at-nth
+           helm-find-files-actions
+           '(("Edit filename(s)" . helm-ff-edit-marked-files)) 2)))
+  
   (defun helm-ff-dragon (files)
     "Create a small window with FILES ready to drag and drop.
 Use this to drop files on externals applications or desktop.
