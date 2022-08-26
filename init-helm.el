@@ -319,14 +319,18 @@
                                           "gpg-pubkey-export-armor" "gpg-secretkey-export-armor")
         helm-ff-drag-and-drop-default-directory "/home/thierry/Bureau/"
         helm-file-name-history-hide-deleted t)
+  
+  (defun helm-ff-wfnames (_candidate)
+    (let ((marked (helm-marked-candidates)))
+      (wfnames-setup-buffer marked)))
 
-  ;; Un wdired artisanal.
-  (use-package helm-edit-marked
+  (use-package wfnames
       :config
     (setq helm-find-files-actions
           (helm-append-at-nth
            helm-find-files-actions
-           '(("Edit filename(s)" . helm-ff-edit-marked-files)) 2)))
+           '(("Edit filename(s)" . helm-ff-wfnames)) 2)
+          wfnames-create-parent-directories t))
   
   (defun helm-ff-dragon (files)
     "Create a small window with FILES ready to drag and drop.
