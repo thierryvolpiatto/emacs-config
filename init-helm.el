@@ -321,7 +321,7 @@
         helm-file-name-history-hide-deleted t)
   
   (defun helm-ff-wfnames (_candidate)
-    (let ((marked (helm-marked-candidates)))
+    (let ((marked (helm-marked-candidates :with-wildcard t)))
       (wfnames-setup-buffer marked)))
 
   (helm-make-command-from-action helm-run-wfnames
@@ -336,7 +336,8 @@
           (helm-append-at-nth
            helm-find-files-actions
            '(("Edit filename(s)" . helm-ff-wfnames)) 2)
-          wfnames-create-parent-directories t))
+          wfnames-create-parent-directories t
+          wfnames-interactive-rename nil))
   
   (defun helm-ff-dragon (files)
     "Create a small window with FILES ready to drag and drop.
@@ -563,7 +564,7 @@ new directory."
 
 (use-package helm-lib
   :config
-  (use-package isearch-light)
+  (use-package isl)
   (setq helm-scroll-amount 4)
   (setq helm-find-function-default-project
         '("~/labo/emacs/lisp/" "~/labo/github/"))

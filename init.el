@@ -56,10 +56,6 @@
   ;; Add all at end of `load-path' to avoid conflicts.
   (add-to-list 'load-path (file-name-as-directory i) t))
 
-;; gcmh-mode
-(use-package gcmh
-  :config (gcmh-mode 1))
-
 ;; Increase GC
 ;; (setq gc-cons-threshold 20000000)
 
@@ -1996,12 +1992,13 @@ If ARG is 1 goto end of docstring, -1 goto beginning."
 
 ;;; Isearch-light
 ;;
-(use-package isearch-light
+(use-package isl
   :config
   (setq isl-before-position-string "≤"
         isl-after-position-string "≥")
   :bind (("C-s" . isl-search)
-         ("C-z" . isl-narrow-to-defun)))
+         ("C-z" . isl-narrow-to-defun)
+         ("C-M-s" . isl-resume)))
 
 ;;; Yaml-mode
 ;;
