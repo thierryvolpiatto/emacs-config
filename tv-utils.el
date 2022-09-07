@@ -443,6 +443,11 @@ depending the value of N is positive or negative."
            (delete-other-windows win))
           (t (apply old--fn args)))))
 
+(defun tv/quit-echo-area-messages ()
+  (interactive)
+  (with-selected-window (get-buffer-window (messages-buffer))
+    (quit-window)))
+
 ;; Kill-backward
 ;;;###autoload
 (defun tv/kill-whole-line (&optional arg)
