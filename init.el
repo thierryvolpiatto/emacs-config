@@ -16,8 +16,6 @@
         native-comp-async-jobs-number 4
         native-comp-async-report-warnings-errors 'silent))
 
-(require 'cl-lib)
-
 (setq inhibit-startup-echo-area-message "thierry")
 
 ;;; package.el
