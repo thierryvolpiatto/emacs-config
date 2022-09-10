@@ -328,7 +328,7 @@
       "Run wfnames from HFF."
     'helm-ff-wfnames)
   (put 'helm-run-wfnames 'helm-only t)
-  (define-key helm-find-files-map (kbd "C-c R") 'helm-run-wfnames)
+  (define-key helm-find-files-map (kbd "C-x C-q") 'helm-run-wfnames)
   
   (use-package wfnames
       :config
