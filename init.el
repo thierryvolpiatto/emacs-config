@@ -1004,8 +1004,8 @@ If your system's ping continues until interrupted, you can try setting
 
 ;;; Iedit
 ;;
+;; Installed from source in site-lisp.
 (use-package iedit
-  :ensure t
   :config
   (defun iedit-narrow-to-defun (arg)
     (interactive "P")
