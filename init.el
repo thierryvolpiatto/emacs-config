@@ -1406,14 +1406,6 @@ If your system's ping continues until interrupted, you can try setting
          (addressbook-turn-on-mail-completion))
   :bind ("<f8>" . mu4e))
 
-;;; Gnus
-;;
-(use-package gnus
-    :config
-  (setq gnus-init-file "~/.emacs.d/gnus-mini.el")
-  (addressbook-turn-on-mail-completion)
-  :bind ("<f9>" . gnus))
-
 ;;; Autocrypt
 ;;
 (use-package autocrypt
