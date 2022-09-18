@@ -396,14 +396,17 @@ new directory."
                do (helm-ff-recoll-index-directory dir))))
 
   (defun tv/change-xfce-background (file)
-    (if (= (apply #'call-process "xfconf-query" nil nil nil
-                  `("-c"
-                    "xfce4-desktop" "-p"
-                    "/backdrop/screen0/monitoreDP/workspace0/last-image" "-s"
-                    ,file))
-           0)
-        (message "Background changed successfully to %s" (helm-basename file))
-      (message "Failed to change background")))
+    (let* ((screen  (frame-parameter (selected-frame) 'display))
+           (monitor (assoc-default 'name (car (display-monitor-attributes-list))))
+           ;; No need to extract the workspace number, it works only
+           ;; when hardcoded to 0.
+           (prop    (format "/backdrop/screen%s/monitor%s/workspace0/last-image"
+                            (substring screen (1- (length screen))) monitor)))
+      (if (= (apply #'call-process "xfconf-query" nil nil nil
+                    `("-c" "xfce4-desktop" "-p" ,prop "-s" ,file))
+             0)
+          (message "Background changed successfully to %s" (helm-basename file))
+        (error "Failed to change background using prop value `%s'" prop))))
   
   ;; Add actions to `helm-source-find-files' IF:
   (cl-defmethod helm-setup-user-source ((source helm-source-ffiles))
