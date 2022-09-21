@@ -396,17 +396,25 @@ new directory."
                do (helm-ff-recoll-index-directory dir))))
 
   (defun tv/change-xfce-background (file)
-    (let* ((screen  (frame-parameter (selected-frame) 'display))
-           (monitor (assoc-default 'name (car (display-monitor-attributes-list))))
-           ;; No need to extract the workspace number, it works only
-           ;; when hardcoded to 0.
-           (prop    (format "/backdrop/screen%s/monitor%s/workspace0/last-image"
-                            (substring screen (1- (length screen))) monitor)))
-      (if (= (apply #'call-process "xfconf-query" nil nil nil
-                    `("-c" "xfce4-desktop" "-p" ,prop "-s" ,file))
-             0)
-          (message "Background changed successfully to %s" (helm-basename file))
-        (error "Failed to change background using prop value `%s'" prop))))
+    (let* ((screen  (getenv "DISPLAY"))
+           (monitor (shell-command-to-string
+                     "echo -n $(xrandr | awk '/\\w* connected/ {print $1}')"))
+           (desktop (and (display-graphic-p)
+                         (x-window-property "_NET_CURRENT_DESKTOP" nil "CARDINAL" 0 nil t)))
+           (prop    (format "/backdrop/screen%s/monitor%s/workspace%s/last-image"
+                            (substring screen (1- (length screen)))
+                            monitor
+                            (or desktop 0)))
+           (proc    (apply #'start-process "set background" nil "xfconf-query"
+                           `("-c" "xfce4-desktop" "-p" ,prop "-s" ,file))))
+      (set-process-sentinel
+       proc (lambda (_proc event)
+              (if (string= event "finished\n")
+                  (message "Background changed successfully to %s" (helm-basename file))
+                (message "Failed to change background"))))))
+
+  (defun helm-ff-csv2ledger (candidate)
+    (csv2ledger "Socgen" candidate "/home/thierry/finance/ledger.dat"))
   
   ;; Add actions to `helm-source-find-files' IF:
   (cl-defmethod helm-setup-user-source ((source helm-source-ffiles))
@@ -419,7 +427,8 @@ new directory."
     - Update directory autoloads
     - Recoll directory creation
     - Epa encrypt file
-    - Change background"
+    - Change background
+    - Csv2ledger"
     (helm-aif (slot-value source 'match)
         (setf (slot-value source 'match)
               (append it
@@ -535,7 +544,15 @@ new directory."
      source
      (lambda (candidate)
        (member (file-name-extension candidate) '("jpg" "jpeg" "png")))
+     3)
+    (helm-source-add-action-to-source-if
+     "Csv2Ledger"
+     'helm-ff-csv2ledger
+     source
+     (lambda (candidate)
+       (member (file-name-extension candidate) '("csv")))
      3))
+  
   (helm-ff-icon-mode 1))
 
 (use-package helm-dictionary ; Its autoloads are already loaded.

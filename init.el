@@ -907,7 +907,9 @@ If your system's ping continues until interrupted, you can try setting
                           (list "Dig" host dig-program)
                           " ** "))
        dig-program
-       (list host)))))
+       (list host)))
+    (setq netstat-program "ss"
+          netstat-program-options '("-p" "-u" "-t" "-n"))))
 
 ;;; Org
 ;;
