@@ -1932,8 +1932,9 @@ If ARG is 1 goto end of docstring, -1 goto beginning."
 
 ;;; Wgrep
 ;;
+;; Needs only two files, wgrep.el and wgrep-helm.el, they are
+;; installed in ~/elisp.
 (use-package wgrep-helm
-  :ensure t
   :config
   (setq wgrep-enable-key "\C-x\C-q"))
 
