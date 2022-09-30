@@ -173,7 +173,8 @@
           (write-file . (default helm-read-file-name-handler-1))
           (write-region . (default helm-read-file-name-handler-1))))
   ;; Fix CAP with LSP in python.
-  (add-to-list 'helm-completion-styles-alist '(python-mode . helm-fuzzy)))
+  (add-to-list 'helm-completion-styles-alist '(python-mode . helm-fuzzy))
+  (add-to-list 'helm-completion-styles-alist '(wfnames-mode . (emacs helm flex))))
 
 (use-package helm-adaptive
   :config
@@ -327,7 +328,6 @@
   (helm-make-command-from-action helm-run-wfnames
       "Run wfnames from HFF."
     'helm-ff-wfnames)
-  (put 'helm-run-wfnames 'helm-only t)
   (define-key helm-find-files-map (kbd "C-x C-q") 'helm-run-wfnames)
   
   (use-package wfnames

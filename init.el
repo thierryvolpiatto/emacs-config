@@ -343,7 +343,6 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;; Emms
 ;;
 (use-package emms
-  :ensure t
   :commands 'helm-emms
   :config (use-package emms-vlc-config))
 
