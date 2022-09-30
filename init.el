@@ -290,10 +290,6 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;
 (use-package diminish :ensure t)
 
-;;; Popup
-;;
-(use-package popup :ensure t)
-
 ;;; Info
 ;;
 (use-package info
