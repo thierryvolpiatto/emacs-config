@@ -2008,13 +2008,6 @@ If ARG is 1 goto end of docstring, -1 goto beginning."
     (defun json-available-p ()
       (fboundp 'json-parse-string))))
 
-;;; Gnus
-;;
-(use-package gnus
-    :config
-  (setq gnus-init-file "~/.emacs.d/gnus-mini.el")
-  (addressbook-turn-on-mail-completion)
-  :bind ("<f9>" . gnus))
 
 ;; Kill buffer and windows
 (defun tv/kill-buffer-and-windows (arg)
