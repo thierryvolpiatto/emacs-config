@@ -320,8 +320,13 @@
                                           "gpg-pubkey-export-armor" "gpg-secretkey-export-armor")
         helm-ff-drag-and-drop-default-directory "/home/thierry/Bureau/"
         helm-file-name-history-hide-deleted t)
-  
-  (setq image-dired-thumbnail-storage 'standard)
+
+  (use-package image-dired
+      :config
+    (setq image-dired-thumbnail-storage 'standard
+          ;; Be consistent with emacs-29.
+          image-dired-cmd-pngnq-program "pngquant"
+          image-dired-cmd-pngnq-options '("--ext" "-nq8.png" "%t")))
   
   (defun helm-ff-wfnames (_candidate)
     (let ((marked (helm-marked-candidates :with-wildcard t)))
