@@ -64,9 +64,9 @@
 (defun tv/w3m-fill-region-or-paragraph ()
   (interactive)
   (let ((inhibit-read-only t))
-    (if (region-active-p)
-        (call-interactively #'fill-region)
-      (call-interactively #'fill-paragraph))))
+    (save-excursion
+      (while (not (eobp))
+        (fill-paragraph) (forward-line 1)))))
 
 (defun tv/advice--w3m-view-this-url (&optional arg new-session)
   "Display the page pointed to by the link under point.
