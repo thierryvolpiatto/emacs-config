@@ -321,6 +321,8 @@
         helm-ff-drag-and-drop-default-directory "/home/thierry/Bureau/"
         helm-file-name-history-hide-deleted t)
   
+  (setq image-dired-thumbnail-storage 'standard)
+  
   (defun helm-ff-wfnames (_candidate)
     (let ((marked (helm-marked-candidates :with-wildcard t)))
       (wfnames-setup-buffer marked)))
