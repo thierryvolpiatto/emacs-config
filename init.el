@@ -1953,11 +1953,15 @@ If ARG is 1 goto end of docstring, -1 goto beginning."
   :defer t
   :config
   ;; Allow browsing use-package definitions in init files.
-  (defun imenu-add-use-package-generic-expr ()
+  (defun tv/imenu-add-extras-generic-expr ()
     (add-to-list
      'imenu-generic-expression
-     '("Use package" "^\\s-*(\\(?:straight-\\)?use-package\\s-+'?\\(\\(?:\\sw\\|\\s_\\|\\\\.\\)+\\)[[:space:]\n]*[^)]*" 1)))
-  (add-hook 'emacs-lisp-mode-hook #'imenu-add-use-package-generic-expr))
+     '("Use package" "^\\s-*(\\(?:straight-\\)?use-package\\s-+'?\\(\\(?:\\sw\\|\\s_\\|\\\\.\\)+\\)[[:space:]\n]*[^)]*" 1))
+    (add-to-list
+     'imenu-generic-expression
+     '("Helm make command"
+       "^\\s-*(\\(?:helm-make-\\)?\\(?:persistent-\\)?command-from-action\\s-+'?\\(\\(?:\\sw\\|\\s_\\|\\\\.\\)+\\)[[:space:]\n]*[^)]*" 1)))
+  (add-hook 'emacs-lisp-mode-hook #'tv/imenu-add-extras-generic-expr))
 
 ;;; Undo-tree
 ;;
