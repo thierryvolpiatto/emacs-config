@@ -320,6 +320,8 @@
         helm-ff-drag-and-drop-default-directory "/home/thierry/Bureau/"
         helm-file-name-history-hide-deleted t)
 
+  ;; (customize-set-variable 'helm-ff-nohighlight-matches nil)
+
   (use-package image-dired
       :config
     (setq image-dired-thumbnail-storage 'standard

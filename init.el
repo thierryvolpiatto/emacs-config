@@ -1331,7 +1331,6 @@ If your system's ping continues until interrupted, you can try setting
 ;;; git-gutter-mode
 ;;
 (use-package git-gutter
-  :ensure t
   :init
   (progn
     ;; Activate live update timer.
