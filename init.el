@@ -598,6 +598,8 @@ So far, F can only be a symbol, not a lambda expression."))
   (add-to-list 'all-the-icons-extension-icon-alist
                '("3gp" all-the-icons-faicon "film" :face all-the-icons-blue))
   (add-to-list 'all-the-icons-extension-icon-alist
+               '("m4v" all-the-icons-faicon "film" :face all-the-icons-blue))
+  (add-to-list 'all-the-icons-extension-icon-alist
                '("xz" all-the-icons-octicon "file-binary"
                  :v-adjust 0.0 :face all-the-icons-lmaroon))
   (add-to-list 'all-the-icons-extension-icon-alist
@@ -1344,7 +1346,9 @@ If your system's ping continues until interrupted, you can try setting
     ;; Stage current hunk
     (bind-key [remap vc-create-tag] 'git-gutter:stage-hunk)
     ;; Revert current hunk
-    (bind-key (kbd "C-x v r") 'git-gutter:revert-hunk))
+    (bind-key (kbd "C-x v r") 'git-gutter:revert-hunk)
+    ;; Toggle whitespace changes view
+    (bind-key (kbd "C-c _") 'git-gutter:toggle-space-view))
   :diminish (git-gutter-mode " 🐱")
   :config
   (progn
