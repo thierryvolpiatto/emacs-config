@@ -1,4 +1,4 @@
-;;; emms-vlc-config.el --- config for emms using vlc.
+;;; emms-config.el --- emms config. -*- lexical-binding: t -*-
 
 ;;; Code:
 
@@ -127,6 +127,6 @@ character."
 (add-hook 'emms-player-started-hook 'tv/emms-player-start-hook)
 (add-hook 'emms-player-stopped-hook 'tv/emms-player-stop-hook)
 
-(provide 'emms-vlc-config)
+(provide 'emms-config)
 
-;;; emms-vlc-config.el ends here
+;;; emms-config.el ends here
