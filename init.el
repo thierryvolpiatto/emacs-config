@@ -1946,10 +1946,6 @@ If ARG is 1 goto end of docstring, -1 goto beginning."
   (setq psession-save-buffers-unwanted-buffers-regexp
         "\\(\\.org\\|diary\\|\\.jpg\\|\\.png\\|\\*image-native-display\\*\\)$"))
 
-;;; Rainbow-mode
-;;
-(use-package rainbow-mode :ensure t)
-
 ;;; Imenu
 ;;
 (use-package imenu
