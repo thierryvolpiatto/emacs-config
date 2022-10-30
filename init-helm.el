@@ -243,7 +243,8 @@
                                     helm-source-buffer-not-found)
         helm-boring-buffer-regexp-list
         '("\\` " "\\`\\*helm" "\\`\\*Echo Area" "\\`\\*Minibuf"
-          "\\`\\*Messages" "\\`\\*Magit" "\\`\\*git-gutter" "\\`\\*Help"))
+          "\\`\\*Messages" "\\`\\*Magit" "\\`\\*git-gutter" "\\`\\*Help")
+        helm-buffers-show-icons t)
 
   (define-key helm-buffer-map (kbd "C-d") 'helm-buffer-run-kill-persistent)
 

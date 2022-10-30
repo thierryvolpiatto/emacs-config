@@ -126,6 +126,7 @@ character."
 
 (add-hook 'emms-player-started-hook 'tv/emms-player-start-hook)
 (add-hook 'emms-player-stopped-hook 'tv/emms-player-stop-hook)
+(add-hook 'emms-player-finished-hook 'tv/emms-player-stop-hook)
 
 (provide 'emms-config)
 
