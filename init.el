@@ -348,6 +348,8 @@ So far, F can only be a symbol, not a lambda expression."))
 (use-package async
   :config
   (progn
+    ;; Temporary fix for emacs bug 58919.
+    (setq async-child-init "~/.emacs.d/fix-copy-directory.el")
     ;; Dired async.
     (use-package dired-async :config (dired-async-mode 1))
     ;; Smtp async.
@@ -608,6 +610,18 @@ So far, F can only be a symbol, not a lambda expression."))
   (add-to-list 'all-the-icons-extension-icon-alist
                '("epub" all-the-icons-octicon "book"
                  :v-adjust 0.0 :face all-the-icons-red-alt))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(diary-mode all-the-icons-faicon "calendar" :height 1.0
+                 :v-adjust -0.1 :face all-the-icons-yellow))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(diary-fancy-display-mode all-the-icons-faicon "calendar" :height 1.0
+                 :v-adjust -0.1 :face all-the-icons-yellow))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(calendar-mode all-the-icons-faicon "calendar" :height 1.0
+                 :v-adjust -0.1 :face all-the-icons-yellow))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(Info-mode all-the-icons-faicon "info"
+                 :v-adjust -0.1 :face all-the-icons-purple))
   (setq all-the-icons-regexp-icon-alist
         (append '(("^bookmark" all-the-icons-octicon "bookmark"
                    :height 1.1 :v-adjust 0.0 :face all-the-icons-lpink))
