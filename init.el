@@ -458,8 +458,12 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;
 (use-package sh-script
     :config
+  (defun tv/set-sh-script-mode-name ()
+    (setq-local mode-name (all-the-icons-alltheicon "script" :height 1.0 :v-adjust 0.0))
+    (setq mode-line-process nil))
   (add-to-list 'auto-mode-alist '("\\.bashrc\\'" . sh-mode))
   (add-hook 'sh-mode-hook 'flymake-mode)
+  (add-hook 'sh-mode-hook #'tv/set-sh-script-mode-name)
   ;; Use shellcheck as backend for flymake.
   (use-package flymake-shellcheck
       :ensure t
