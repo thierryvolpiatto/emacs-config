@@ -628,6 +628,8 @@ So far, F can only be a symbol, not a lambda expression."))
     ;; A new annoyance for each major version.
     (set-face-attribute 'mode-line-active nil :inherit 'mode-line)
     (set-face-attribute 'mode-line-inactive nil :inherit 'mode-line))
+  (setf (alist-get "dat" all-the-icons-extension-icon-alist nil nil 'equal)
+        '(all-the-icons-faicon "bar-chart" :face all-the-icons-cyan :height 0.9 :v-adjust 0.0))
   (add-to-list 'all-the-icons-extension-icon-alist
                '("avi" all-the-icons-faicon "film" :face all-the-icons-blue))
   (add-to-list 'all-the-icons-extension-icon-alist
