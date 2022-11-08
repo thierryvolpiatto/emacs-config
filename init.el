@@ -455,32 +455,33 @@ So far, F can only be a symbol, not a lambda expression."))
   :config (auto-compression-mode 1))
 
 (use-package flymake
-      :init
-  (customize-set-variable 'flymake-mode-line-lighter "🪰")
   :config
-  (setq flymake-mode-line-title
-        `(:propertize
-          ,flymake-mode-line-lighter
-          mouse-face mode-line-highlight
-          help-echo
-          ,(lambda (&rest _)
-             (concat
-              (format "%s known backends\n" (hash-table-count flymake--state))
-              (format "%s running\n" (length (flymake-running-backends)))
-              (format "%s disabled\n" (length (flymake-disabled-backends)))
-              "mouse-1: Display minor mode menu\n"
-              "mouse-2: Show help for minor mode"))
-          keymap
-          ,(let ((map (make-sparse-keymap)))
-             (define-key map [mode-line down-mouse-1]
-               flymake-menu)
-             (define-key map [mode-line down-mouse-3]
-               flymake-menu)
-             (define-key map [mode-line mouse-2]
-               (lambda ()
-                 (interactive)
-                 (describe-function 'flymake-mode)))
-             map))))
+  (if (> emacs-major-version 28)
+      (customize-set-variable 'flymake-mode-line-lighter "🪰")
+    (defvar flymake-mode-line-lighter "🪰")
+    (setq flymake-mode-line-title
+          `(:propertize
+            ,flymake-mode-line-lighter
+            mouse-face mode-line-highlight
+            help-echo
+            ,(lambda (&rest _)
+               (concat
+                (format "%s known backends\n" (hash-table-count flymake--state))
+                (format "%s running\n" (length (flymake-running-backends)))
+                (format "%s disabled\n" (length (flymake-disabled-backends)))
+                "mouse-1: Display minor mode menu\n"
+                "mouse-2: Show help for minor mode"))
+            keymap
+            ,(let ((map (make-sparse-keymap)))
+               (define-key map [mode-line down-mouse-1]
+                 flymake-menu)
+               (define-key map [mode-line down-mouse-3]
+                 flymake-menu)
+               (define-key map [mode-line mouse-2]
+                 (lambda ()
+                   (interactive)
+                   (describe-function 'flymake-mode)))
+               map)))))
 
 ;;; Shell script
 ;;

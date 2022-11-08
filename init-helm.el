@@ -634,6 +634,7 @@ new directory."
 (use-package helm-occur
   :config
   (setq helm-occur-keep-closest-position t)
+  (setq helm-occur-match-shorthands t)
   (add-hook 'helm-occur-mode-hook 'hl-line-mode)
   (define-key helm-occur-map (kbd "C-M-a") 'helm/occur-which-func))
 
