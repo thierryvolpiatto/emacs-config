@@ -217,7 +217,7 @@ Restart works only on graphic display."
       uniquify-buffer-name-style       nil
       inhibit-startup-message          t
       message-log-max                  1000
-      kill-ring-max                    80
+      kill-ring-max                    120
       mark-ring-max                    60
       global-mark-ring-max             200)
 
