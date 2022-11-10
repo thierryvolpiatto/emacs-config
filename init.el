@@ -628,6 +628,7 @@ So far, F can only be a symbol, not a lambda expression."))
     ;; A new annoyance for each major version.
     (set-face-attribute 'mode-line-active nil :inherit 'mode-line)
     (set-face-attribute 'mode-line-inactive nil :inherit 'mode-line))
+  ;; Icons for file extensions.
   (setf (alist-get "dat" all-the-icons-extension-icon-alist nil nil 'equal)
         '(all-the-icons-faicon "bar-chart" :face all-the-icons-cyan :height 0.9 :v-adjust 0.0))
   (add-to-list 'all-the-icons-extension-icon-alist
@@ -645,6 +646,9 @@ So far, F can only be a symbol, not a lambda expression."))
   (add-to-list 'all-the-icons-extension-icon-alist
                '("epub" all-the-icons-octicon "book"
                  :v-adjust 0.0 :face all-the-icons-red-alt))
+  ;; Icons for modes.
+  (setf (alist-get 'sh-mode all-the-icons-mode-icon-alist)
+        '(all-the-icons-alltheicon "terminal" :face all-the-icons-purple :v-adjust 0.0))
   (add-to-list 'all-the-icons-mode-icon-alist
                '(diary-mode all-the-icons-faicon "calendar" :height 1.0
                  :v-adjust -0.1 :face all-the-icons-yellow))
@@ -657,6 +661,7 @@ So far, F can only be a symbol, not a lambda expression."))
   (add-to-list 'all-the-icons-mode-icon-alist
                '(Info-mode all-the-icons-faicon "info"
                  :v-adjust -0.1 :face all-the-icons-purple))
+  ;; Regexp icons.
   (setq all-the-icons-regexp-icon-alist
         (append '(("^bookmark" all-the-icons-octicon "bookmark"
                    :height 1.1 :v-adjust 0.0 :face all-the-icons-lpink))
