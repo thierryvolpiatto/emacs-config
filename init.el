@@ -36,10 +36,6 @@
   (package-initialize)
   (package--save-selected-packages (package--find-non-dependencies)))
 
-;;; Use-package
-;;
-(eval-when-compile (require 'use-package))
-
 
 ;;; load-path
 ;;
@@ -285,10 +281,6 @@ So far, F can only be a symbol, not a lambda expression."))
 
 
 ;;; Use package declarations
-
-;;; Diminish
-;;
-(use-package diminish :ensure t)
 
 ;;; Info
 ;;
