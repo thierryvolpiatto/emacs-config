@@ -2059,6 +2059,12 @@ If ARG is 1 goto end of docstring, -1 goto beginning."
   (setq edebug-trace t
         edebug-initial-mode 'trace
         edebug-sit-for-seconds 2))
+
+(use-package wfnames
+    :commands 'wfnames-setup-buffer
+    :config
+    (setq wfnames-create-parent-directories t
+          wfnames-interactive-rename nil))
 
 ;; Kill buffer and windows
 (defun tv/kill-buffer-and-windows (arg)

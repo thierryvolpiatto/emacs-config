@@ -338,15 +338,11 @@
       "Run wfnames from HFF."
     'helm-ff-wfnames)
   (define-key helm-find-files-map (kbd "C-x C-q") 'helm-run-wfnames)
-  
-  (use-package wfnames
-      :config
-    (setq helm-find-files-actions
-          (helm-append-at-nth
-           helm-find-files-actions
-           '(("Edit filename(s)" . helm-ff-wfnames)) 2)
-          wfnames-create-parent-directories t
-          wfnames-interactive-rename nil))
+
+  (setq helm-find-files-actions
+        (helm-append-at-nth
+         helm-find-files-actions
+         '(("Edit filename(s)" . helm-ff-wfnames)) 2))
   
   (defun helm-ff-dragon (files)
     "Create a small window with FILES ready to drag and drop.
