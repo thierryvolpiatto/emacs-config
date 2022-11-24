@@ -2053,6 +2053,8 @@ If ARG is 1 goto end of docstring, -1 goto beginning."
     (defun json-available-p ()
       (fboundp 'json-parse-string))))
 
+;;; Edebug
+;;
 (use-package edebug
     :config
   ;; Setup edebug for helm
@@ -2060,11 +2062,18 @@ If ARG is 1 goto end of docstring, -1 goto beginning."
         edebug-initial-mode 'trace
         edebug-sit-for-seconds 2))
 
+;;; Wfnames
+;;
 (use-package wfnames
     :commands 'wfnames-setup-buffer
     :config
     (setq wfnames-create-parent-directories t
           wfnames-interactive-rename nil))
+
+;;; Boxquote
+;;
+(use-package boxquote)
+
 
 ;; Kill buffer and windows
 (defun tv/kill-buffer-and-windows (arg)
