@@ -172,7 +172,7 @@
           (write-file . (default helm-read-file-name-handler-1))
           (write-region . (default helm-read-file-name-handler-1))))
   ;; Fix CAP with LSP in python.
-  (add-to-list 'helm-completion-styles-alist '(python-mode . helm-fuzzy))
+  (add-to-list 'helm-completion-styles-alist '(python-mode . (emacs helm flex)))
   (add-to-list 'helm-completion-styles-alist '(wfnames-mode . (emacs helm flex))))
 
 (use-package helm-adaptive
@@ -197,15 +197,6 @@
 
 (use-package helm-info
   :bind ("C-h r" . helm-info-emacs))
-
-(use-package helm-ipython
-  :config
-  (use-package python
-    :config
-    (defun tv/bind-tab-in-inf-python ()
-      (define-key inferior-python-mode-map (kbd "<M-tab>") 'helm-ipython-complete))
-    (define-key python-mode-map (kbd "<M-tab>") 'helm-ipython-complete)
-    (add-hook 'inferior-python-mode-hook 'tv/bind-tab-in-inf-python)))
 
 (use-package helm-ring
   :config
