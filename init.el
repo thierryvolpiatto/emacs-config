@@ -29,7 +29,7 @@
 
 ;; Need to update manually package-quickstart.el with
 ;; `package-quickstart-refresh' after each update.
-(when (boundp 'package-quickstart) (setq package-quickstart t))
+;; (when (boundp 'package-quickstart) (setq package-quickstart t))
 
 (defun tv/fix-selected-packages ()
   (interactive)
@@ -1505,6 +1505,10 @@ If your system's ping continues until interrupted, you can try setting
   :config
   ;; See issue #2003 in helm
   (setq ffap-url-unwrap-remote '("ftp" "file"))
+  (dolist (var '(ffap-machine-p-known
+                 ffap-machine-p-local
+                 ffap-machine-p-unknown))
+    (set var 'reject))
   (when (> emacs-major-version 24)
     ;; See issue #1716 in helm.
     (setcdr (assq 'file ffap-string-at-point-mode-alist)
