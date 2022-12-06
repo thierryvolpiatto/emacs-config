@@ -51,7 +51,7 @@
   (add-to-list 'load-path (file-name-as-directory i) t))
 
 ;; Increase GC
-;; (setq gc-cons-threshold 20000000)
+(setq gc-cons-threshold 20000000)
 
 ;;; Emacs customize have it's own file
 ;;
@@ -2078,6 +2078,13 @@ If ARG is 1 goto end of docstring, -1 goto beginning."
 ;;
 (use-package boxquote)
 
+;;; Gnus
+;;
+(use-package gnus
+    :config
+  (setq gnus-init-file "~/.emacs.d/gnus-mini.el")
+  (addressbook-turn-on-mail-completion)
+  :bind ("<f9>" . gnus))
 
 ;; Kill buffer and windows
 (defun tv/kill-buffer-and-windows (arg)
