@@ -44,37 +44,6 @@
   (message "Helm Debug is now %s"
            (if helm-debug "Enabled" "Disabled")))
 
-(defun helm/eselect-grep ()
-  (interactive)
-  (when (y-or-n-p (format "Current grep program is %s, switching? "
-                          (helm-grep-command)))
-    (if (helm-grep-use-ack-p)
-        (setq helm-grep-default-command
-              "grep --color=always -d skip %e -n%cH -e %p %f"
-              helm-grep-default-recurse-command
-              "grep --color=always -d recurse %e -n%cH -e %p %f")
-        (setq helm-grep-default-command
-              "ack-grep -Hn --color --smart-case --no-group %e %p %f"
-              helm-grep-default-recurse-command
-              "ack-grep -H --color --smart-case --no-group %e %p %f"))
-    (message "Switched to %s" (helm-grep-command))))
-
-(defun helm/turn-on-header-line ()
-  (interactive)
-  (setq helm-echo-input-in-header-line t)
-  (setq helm-split-window-in-side-p t)
-  (helm-autoresize-mode -1)
-  (add-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)
-  )
-
-(defun helm/turn-off-header-line ()
-  (interactive)
-  (setq helm-echo-input-in-header-line nil)
-  ;;(helm-autoresize-mode 1)
-  (setq helm-split-window-in-side-p nil)
-  (remove-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)
-  )
-
 (defun helm/occur-which-func ()
   (interactive)
   (with-current-buffer
@@ -85,57 +54,12 @@
     (when (eq major-mode 'emacs-lisp-mode)
       (message "[%s]" (which-function)))))
 
-(defun helm-find-files-in-frame ()
-  (interactive)
-  (with-helm-in-frame
-    (call-interactively #'helm-find-files)))
-
-(defun helm-M-x-in-frame ()
-  (interactive)
-  (with-helm-in-frame
-    (call-interactively #'helm-M-x)))
-
-(defun helm-occur-in-frame ()
-  (interactive)
-  (with-helm-in-frame
-    (call-interactively #'helm-occur)))
-
-(defun helm-mini-in-frame ()
-  (interactive)
-  (with-helm-in-frame
-    (call-interactively #'helm-mini)))
-
-(defun helm-do-grep-ag-in-frame ()
-  (interactive)
-  (with-helm-in-frame
-    (call-interactively #'helm-do-grep-ag)))
-
-(defun helm-do-git-grep-in-frame ()
-  (interactive)
-  (with-helm-in-frame
-    (call-interactively #'helm-grep-do-git-grep)))
-
-(defun helm-imenu-in-frame ()
-  (interactive)
-  (with-helm-in-frame
-    (call-interactively #'helm-imenu)))
-
-(defun helm-top-in-frame ()
-  (interactive)
-  (with-helm-in-frame
-    (call-interactively #'helm-top)))
-
 (defun helm/bash-history ()
   (interactive)
   (helm :sources (helm-build-in-file-source "Bash history" "~/.bash_history"
                    :action '(("Kill new" . kill-new)
                              ("Send command to Tmux" . emamux:send-command)))
         :buffer "*helm bash history*"))
-
-(defun helm-zgrep-recursive (&optional directory)
-  (interactive)
-  (helm-ff-zgrep-1 (list (or directory default-directory)) t))
-
 
 ;;; Use-package declarations.
 ;;
@@ -703,18 +627,6 @@ First call indent, second complete symbol, third complete fname."
     :config
   (setq helm-ls-git-delete-branch-on-remote t
         helm-ls-git-auto-refresh-at-eob t))
-
-;;; Ctl-x-5 map
-;;
-(define-key ctl-x-5-map (kbd "C-x c t") 'helm-top-in-frame)
-(define-key ctl-x-5-map (kbd "C-x c i") 'helm-imenu-in-frame)
-(define-key ctl-x-5-map (kbd "C-x C-f") 'helm-find-files-in-frame)
-(define-key ctl-x-5-map (kbd "M-x")     'helm-M-x-in-frame)
-(define-key ctl-x-5-map (kbd "C-s")     'helm-occur-in-frame)
-(define-key ctl-x-5-map (kbd "C-x C-b") 'helm-mini-in-frame)
-(define-key ctl-x-5-map (kbd "M-g a")   'helm-do-grep-ag-in-frame)
-(define-key ctl-x-5-map (kbd "M-g g")   'helm-do-git-grep-in-frame)
-
 
 ;;; Helm-command-map
 ;;
