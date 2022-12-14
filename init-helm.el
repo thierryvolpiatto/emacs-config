@@ -6,7 +6,7 @@
 (use-package helm
   :config
   ;; Only needed when installing from source.
-  (require 'helm-config)
+  (require 'helm-autoloads)
   (setq helm-input-idle-delay                     0.01
         helm-reuse-last-window-split-state        t
         helm-always-two-windows                   t
@@ -627,6 +627,7 @@ First call indent, second complete symbol, third complete fname."
     :config
   (setq helm-ls-git-delete-branch-on-remote t
         helm-ls-git-auto-refresh-at-eob t))
+
 
 ;;; Helm-command-map
 ;;

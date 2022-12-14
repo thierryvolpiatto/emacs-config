@@ -1447,6 +1447,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Mu4e
 ;;
 (use-package mu4e
+    :disabled t
     :config
   (progn (require 'tv-mu4e-config)
          (addressbook-turn-on-mail-completion))
@@ -2082,9 +2083,16 @@ If ARG is 1 goto end of docstring, -1 goto beginning."
 ;;
 (use-package gnus
     :config
-  (setq gnus-init-file "~/.emacs.d/gnus-mini.el")
+  (setq gnus-init-file "~/.emacs.d/.gnus.el")
   (addressbook-turn-on-mail-completion)
-  :bind ("<f9>" . gnus))
+  :bind (("<f9>" . gnus)
+         :map
+         gnus-summary-mode-map
+         ("M-q" . gnus-article-fill-long-lines)
+         ("n" . gnus-summary-next-article)
+         ("N" . gnus-summary-next-unread-article)
+         ("p" . gnus-summary-prev-article)
+         ("P" . gnus-summary-prev-unread-article)))
 
 ;; Kill buffer and windows
 (defun tv/kill-buffer-and-windows (arg)
