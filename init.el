@@ -29,7 +29,7 @@
 
 ;; Need to update manually package-quickstart.el with
 ;; `package-quickstart-refresh' after each update.
-(when (boundp 'package-quickstart) (setq package-quickstart t))
+;; (when (boundp 'package-quickstart) (setq package-quickstart t))
 
 (defun tv/fix-selected-packages ()
   (interactive)
@@ -51,7 +51,7 @@
   (add-to-list 'load-path (file-name-as-directory i) t))
 
 ;; Increase GC
-;; (setq gc-cons-threshold 20000000)
+(setq gc-cons-threshold 20000000)
 
 ;;; Emacs customize have it's own file
 ;;
@@ -203,7 +203,7 @@ Restart works only on graphic display."
 ;; History variables
 (setq history-delete-duplicates t)
 (setq history-length            100)
-(put 'file-name-history 'history-length 10000)
+(put 'file-name-history 'history-length 1000)
 
 ;; Limit M-x history to 50.
 (put 'extended-command-history 'history-length 50)
@@ -1447,6 +1447,7 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Mu4e
 ;;
 (use-package mu4e
+    :disabled t
     :config
   (progn (require 'tv-mu4e-config)
          (addressbook-turn-on-mail-completion))
@@ -1505,6 +1506,10 @@ If your system's ping continues until interrupted, you can try setting
   :config
   ;; See issue #2003 in helm
   (setq ffap-url-unwrap-remote '("ftp" "file"))
+  (dolist (var '(ffap-machine-p-known
+                 ffap-machine-p-local
+                 ffap-machine-p-unknown))
+    (set var 'reject))
   (when (> emacs-major-version 24)
     ;; See issue #1716 in helm.
     (setcdr (assq 'file ffap-string-at-point-mode-alist)
@@ -2053,12 +2058,41 @@ If ARG is 1 goto end of docstring, -1 goto beginning."
     (defun json-available-p ()
       (fboundp 'json-parse-string))))
 
+;;; Edebug
+;;
 (use-package edebug
     :config
   ;; Setup edebug for helm
   (setq edebug-trace t
         edebug-initial-mode 'trace
         edebug-sit-for-seconds 2))
+
+;;; Wfnames
+;;
+(use-package wfnames
+    :commands 'wfnames-setup-buffer
+    :config
+    (setq wfnames-create-parent-directories t
+          wfnames-interactive-rename nil))
+
+;;; Boxquote
+;;
+(use-package boxquote)
+
+;;; Gnus
+;;
+(use-package gnus
+    :config
+  (setq gnus-init-file "~/.emacs.d/.gnus.el")
+  (addressbook-turn-on-mail-completion)
+  :bind (("<f9>" . gnus)
+         :map
+         gnus-summary-mode-map
+         ("M-q" . gnus-article-fill-long-lines)
+         ("n" . gnus-summary-next-article)
+         ("N" . gnus-summary-next-unread-article)
+         ("p" . gnus-summary-prev-article)
+         ("P" . gnus-summary-prev-unread-article)))
 
 ;; Kill buffer and windows
 (defun tv/kill-buffer-and-windows (arg)

@@ -195,6 +195,17 @@
 ;; (setq org-hide-leading-stars t)
 ;; (setq org-startup-indented t)
 
+(when (> emacs-major-version 28)
+  (use-package org-persist
+      :config
+    (setq org-persist-disable-when-emacs-Q t)
+    (defun tv/advice--org-persist (old-fn &rest args)
+      (let (user-init-file)
+        (apply old-fn args)))
+    (advice-add 'org-persist-write :around #'tv/advice--org-persist)
+    (advice-add 'org-persist-read :around #'tv/advice--org-persist)
+    (advice-add 'org-persist-gc :around #'tv/advice--org-persist)))
+
 (provide 'org-config)
 
 ;;; org-config.el ends here

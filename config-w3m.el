@@ -64,9 +64,10 @@
 (defun tv/w3m-fill-region-or-paragraph ()
   (interactive)
   (let ((inhibit-read-only t))
-    (save-excursion
-      (while (not (eobp))
-        (fill-paragraph) (forward-line 1)))))
+    (fill-region (point-at-bol)
+                 (save-excursion
+                   (forward-paragraph) (point))
+                 nil t)))
 
 (defun tv/advice--w3m-view-this-url (&optional arg new-session)
   "Display the page pointed to by the link under point.
