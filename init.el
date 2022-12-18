@@ -341,7 +341,8 @@ So far, F can only be a symbol, not a lambda expression."))
   :config
   (progn
     ;; Temporary fix for emacs bug 58919.
-    (setq async-child-init "~/.emacs.d/fix-copy-directory.el")
+    (when (< emacs-major-version 29)
+      (setq async-child-init "~/.emacs.d/fix-copy-directory.el"))
     ;; Dired async.
     (use-package dired-async :config (dired-async-mode 1))
     ;; Smtp async.
