@@ -2093,6 +2093,15 @@ If ARG is 1 goto end of docstring, -1 goto beginning."
          ("N" . gnus-summary-next-unread-article)
          ("p" . gnus-summary-prev-article)
          ("P" . gnus-summary-prev-unread-article)))
+
+;;; Tree-sitter
+;;
+(use-package treesit
+    :if (and (fboundp 'treesit-available-p)
+             (treesit-available-p))
+    :config
+    (setq treesit-extra-load-path '("/usr/local/lib"))
+    (add-hook 'python-mode-hook 'python-ts-mode))
 
 ;; Kill buffer and windows
 (defun tv/kill-buffer-and-windows (arg)
