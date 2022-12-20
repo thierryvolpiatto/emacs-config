@@ -246,10 +246,32 @@
 ;;
 (setq smtpmail-queue-dir "~/Maildir/queue/")
 
-;;; Handle quoted text added with `message-mark-inserted-region' (`C-c M-m')
-(add-hook 'mu4e-view-mode-hook 'mu4e-mark-region-code)
-;;; Show Smileys
-(add-hook 'mu4e-view-mode-hook 'smiley-buffer)
+(unless (fboundp 'display-buffer-full-frame)
+  (defun display-buffer-full-frame (buffer alist)
+    "Display BUFFER in the current frame, taking the entire frame.
+ALIST is an association list of action symbols and values.  See
+Info node `(elisp) Buffer Display Action Alists' for details of
+such alists.
+
+This is an action function for buffer display, see Info
+node `(elisp) Buffer Display Action Functions'.  It should be
+called only by `display-buffer' or a function directly or
+indirectly called by the latter."
+    (when-let ((window (or (display-buffer-reuse-window buffer alist)
+                           (display-buffer-same-window buffer alist)
+                           (display-buffer-pop-up-window buffer alist)
+                           (display-buffer-use-some-window buffer alist))))
+      (delete-other-windows window)
+      window)))
+                 
+(if (boundp 'mu4e-view-rendered-hook)
+    (progn
+      (add-hook 'mu4e-view-rendered-hook 'mu4e-mark-region-code 100)
+      (add-hook 'mu4e-view-rendered-hook 'smiley-buffer 100))
+  ;; Handle quoted text added with `message-mark-inserted-region' (`C-c M-m')
+  (add-hook 'mu4e-view-mode-hook 'mu4e-mark-region-code)
+  ;; Show Smileys
+  (add-hook 'mu4e-view-mode-hook 'smiley-buffer))
 
 (defun tv/curl-url-retrieve (url)
   (with-temp-buffer
