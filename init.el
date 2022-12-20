@@ -1456,18 +1456,18 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Autocrypt
 ;;
 (use-package autocrypt
-  :ensure t
-  :config
-  (use-package autocrypt-mu4e)
-  (use-package autocrypt-gnus)
-  (use-package autocrypt-message)
-  (add-hook 'mu4e-main-mode-hook 'autocrypt-mode)
-  (add-hook 'gnus-mode-hook 'autocrypt-mode)
-  (add-hook 'message-mode-hook 'autocrypt-mode)
-  (setq autocrypt-accounts
-        '(("thievol@posteo.net"
-           "E6F697C8ED3C46FC"
-           mutual))))
+    :ensure t
+    :config
+    (use-package autocrypt-mu4e)
+    (use-package autocrypt-gnus)
+    (use-package autocrypt-message)
+    (add-hook 'mu4e-main-mode-hook 'autocrypt-mode)
+    (add-hook 'gnus-mode-hook 'autocrypt-mode)
+    (add-hook 'message-mode-hook 'autocrypt-mode)
+    (setq autocrypt-accounts
+          '(("thievol@posteo.net"
+             "E6F697C8ED3C46FC"
+             mutual))))
 
 ;;; Auth-source
 ;;
