@@ -1744,10 +1744,17 @@ Don't bind this to global-map but to `byzanz-record-mode-map' instead."
 ;;
 ;; Places are saved and restored by psession!
 (defvar tv-save-place-cache (make-hash-table :test 'equal))
+(defvar tv-save-place-ignore-file-regexps '("\\.git/" "-autoloads.el\\'"))
 (defun tv-save-place ()
-  (let ((file (buffer-file-name)))
-    (widen)
-    (puthash file (point) tv-save-place-cache)))
+  (let ((file (buffer-file-name))
+        pos)
+    (when (and file
+               (cl-loop for re in tv-save-place-ignore-file-regexps
+                        never (string-match re file)))
+      (widen)
+      (setq pos (point))
+      (unless (<= pos 1)
+        (puthash file pos tv-save-place-cache)))))
 
 (defun tv-save-place-restore-pos ()
   (let* ((file (buffer-file-name))
