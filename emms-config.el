@@ -111,22 +111,9 @@ character."
                      ": " (emms-track-name track))))))
 (setq emms-track-description-function 'tv/emms-track-simple-description)
 
-;; Switch to xfce presentation mode
-(defun tv/emms-xfce-presentation-mode-1 (val)
-  (call-process "xfconf-query" nil nil nil
-                "xfconf-query" "-c" "xfce4-power-manager"
-                "-p" "/xfce4-power-manager/presentation-mode"
-                "-s" val))
-
-(defun tv/emms-player-start-hook ()
-  (tv/emms-xfce-presentation-mode-1 "true"))
-
-(defun tv/emms-player-stop-hook ()
-  (tv/emms-xfce-presentation-mode-1 "false"))
-
-(add-hook 'emms-player-started-hook 'tv/emms-player-start-hook)
-(add-hook 'emms-player-stopped-hook 'tv/emms-player-stop-hook)
-(add-hook 'emms-player-finished-hook 'tv/emms-player-stop-hook)
+(add-hook 'emms-player-started-hook 'tv/xfce-presentation-mode-start)
+(add-hook 'emms-player-stopped-hook 'tv/xfce-presentation-mode-stop)
+(add-hook 'emms-player-finished-hook 'tv/xfce-presentation-mode-stop)
 
 (provide 'emms-config)
 

@@ -17,6 +17,21 @@
         native-comp-async-report-warnings-errors 'silent))
 
 (setq inhibit-startup-echo-area-message "thierry")
+(setq use-package-verbose t)
+
+;;; Functions to switch to xfce presentation mode
+;;
+(defun tv/xfce-presentation-mode-1 (val)
+  (call-process "xfconf-query" nil nil nil
+                "xfconf-query" "-c" "xfce4-power-manager"
+                "-p" "/xfce4-power-manager/presentation-mode"
+                "-s" val))
+
+(defun tv/xfce-presentation-mode-start ()
+  (tv/xfce-presentation-mode-1 "true"))
+
+(defun tv/xfce-presentation-mode-stop ()
+  (tv/xfce-presentation-mode-1 "false"))
 
 ;;; package.el
 ;;
@@ -332,7 +347,7 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;
 (use-package emms
   :commands 'helm-emms
-  :config (use-package emms-config))
+  :config (require 'emms-config))
 
 ;;; Async
 ;;
@@ -1452,22 +1467,6 @@ If your system's ping continues until interrupted, you can try setting
   (progn (require 'tv-mu4e-config)
          (addressbook-turn-on-mail-completion))
   :bind ("<f8>" . mu4e))
-
-;;; Autocrypt
-;;
-(use-package autocrypt
-    :ensure t
-    :config
-    (use-package autocrypt-mu4e)
-    (use-package autocrypt-gnus)
-    (use-package autocrypt-message)
-    (add-hook 'mu4e-main-mode-hook 'autocrypt-mode)
-    (add-hook 'gnus-mode-hook 'autocrypt-mode)
-    (add-hook 'message-mode-hook 'autocrypt-mode)
-    (setq autocrypt-accounts
-          '(("thievol@posteo.net"
-             "E6F697C8ED3C46FC"
-             mutual))))
 
 ;;; Auth-source
 ;;

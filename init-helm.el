@@ -521,13 +521,11 @@ new directory."
         helm-google-suggest-search-url helm-surfraw-duckduckgo-url))
 
 (use-package helm-external
-  :config
+    :config
   (setq helm-raise-command                 "wmctrl -xa %s"
         helm-default-external-file-browser "thunar")
-  (use-package emms-config
-      :config
-    (add-hook 'helm-open-file-externally-after-hook #'tv/emms-player-start-hook)
-    (add-hook 'helm-open-file-externally-after-finish-hook #'tv/emms-player-stop-hook)))
+  (add-hook 'helm-open-file-externally-after-hook #'tv/xfce-presentation-mode-start)
+  (add-hook 'helm-open-file-externally-after-finish-hook #'tv/xfce-presentation-mode-stop))
 
 (use-package helm-grep
   :config
@@ -574,6 +572,7 @@ First call indent, second complete symbol, third complete fname."
   (setq helm-locate-fuzzy-match t))
 
 (use-package helm-org
+    :requires helm-org-agenda-files-headings
   :config
   (setq helm-org-headings-fontify t))
 
