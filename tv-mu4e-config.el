@@ -454,7 +454,7 @@ if one may help."
         (goto-char (point-max))
         (insert "\n-----END PGP PUBLIC KEY BLOCK-----")
         (tv/epg-import-keys-region (point-min) (point-max))))))
-(add-hook 'gnus-article-decode-hook 'tv/autocrypt-import-key)
+;; (add-hook 'gnus-article-decode-hook 'tv/autocrypt-import-key)
 
 ;; Refresh main buffer when sending queued mails
 (defun tv/advice-smtpmail-send-queued-mail ()

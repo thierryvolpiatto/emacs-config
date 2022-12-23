@@ -998,6 +998,7 @@ If your system's ping continues until interrupted, you can try setting
     (helm-define-key-with-subkeys global-map (kbd "C-h e")
                                   ?e #'view-echo-area-messages
                                   '((?q . tv/quit-echo-area-messages))))
+  (tv-save-place-mode 1)
   :bind (("M-\""                  . tv/insert-double-quote)
          ("C-M-`"                 . tv/insert-double-backquote)
          ("C-M-("                 . tv/move-pair-forward)
@@ -1453,22 +1454,6 @@ If your system's ping continues until interrupted, you can try setting
          (addressbook-turn-on-mail-completion))
   :bind ("<f8>" . mu4e))
 
-;;; Autocrypt
-;;
-(use-package autocrypt
-    :ensure t
-    :config
-    (use-package autocrypt-mu4e)
-    (use-package autocrypt-gnus)
-    (use-package autocrypt-message)
-    (add-hook 'mu4e-main-mode-hook 'autocrypt-mode)
-    (add-hook 'gnus-mode-hook 'autocrypt-mode)
-    (add-hook 'message-mode-hook 'autocrypt-mode)
-    (setq autocrypt-accounts
-          '(("thievol@posteo.net"
-             "E6F697C8ED3C46FC"
-             mutual))))
-
 ;;; Auth-source
 ;;
 (use-package auth-source
@@ -1675,22 +1660,21 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Outline-mode
 ;;
 (use-package outline
-  :defer t
-  :requires helm
-  :config
-  (progn
-    (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-p")
-                                  ?p 'outline-previous-visible-heading
-                                  '((?n . outline-next-visible-heading)))
-    (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-n")
-                                  ?n 'outline-next-visible-heading
-                                  '((?p . outline-previous-visible-heading)))
-    (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-f")
-                                  ?f 'outline-forward-same-level
-                                  '((?b . outline-backward-same-level)))
-    (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-b")
-                                  ?b 'outline-backward-same-level
-                                  '((?f . outline-forward-same-level)))))
+    :after helm
+    :config
+    (progn
+      (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-p")
+                                    ?p 'outline-previous-visible-heading
+                                    '((?n . outline-next-visible-heading)))
+      (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-n")
+                                    ?n 'outline-next-visible-heading
+                                    '((?p . outline-previous-visible-heading)))
+      (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-f")
+                                    ?f 'outline-forward-same-level
+                                    '((?b . outline-backward-same-level)))
+      (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-b")
+                                    ?b 'outline-backward-same-level
+                                    '((?f . outline-forward-same-level)))))
 
 ;;; Flyspell
 ;;
@@ -1751,7 +1735,6 @@ If your system's ping continues until interrupted, you can try setting
 ;;; Shell
 ;;
 (use-package shell
-  :requires helm
   :config
   (progn
     (defun comint--advice-send-eof (&rest _args)
@@ -2078,21 +2061,6 @@ If ARG is 1 goto end of docstring, -1 goto beginning."
 ;;; Boxquote
 ;;
 (use-package boxquote)
-
-;;; Gnus
-;;
-(use-package gnus
-    :config
-  (setq gnus-init-file "~/.emacs.d/.gnus.el")
-  (addressbook-turn-on-mail-completion)
-  :bind (("<f9>" . gnus)
-         :map
-         gnus-summary-mode-map
-         ("M-q" . gnus-article-fill-long-lines)
-         ("n" . gnus-summary-next-article)
-         ("N" . gnus-summary-next-unread-article)
-         ("p" . gnus-summary-prev-article)
-         ("P" . gnus-summary-prev-unread-article)))
 
 ;;; Tree-sitter
 ;;
