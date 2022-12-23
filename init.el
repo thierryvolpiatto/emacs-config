@@ -7,7 +7,7 @@
   (let ((time (float-time (time-subtract (current-time) tv/startup-time))))
     (message "Emacs config loaded in %s seconds"
              (format "%.2f" time))))
-(add-hook 'emacs-startup-hook #'tv/emacs-load-time t)
+(add-hook 'emacs-startup-hook #'tv/emacs-load-time 99)
 
 (when (and (fboundp 'native-comp-available-p)
            (native-comp-available-p))
@@ -26,6 +26,8 @@
 (unless (boundp 'package-quickstart)
   (load-file (expand-file-name "early-init.el" user-emacs-directory))
   (package-initialize))
+
+(setq use-package-verbose t)
 
 ;; Need to update manually package-quickstart.el with
 ;; `package-quickstart-refresh' after each update.
@@ -328,12 +330,6 @@ So far, F can only be a symbol, not a lambda expression."))
     (add-hook 'Info-mode-hook 'tv/font-lock-doc-rules)
     (define-key Info-mode-map [remap Info-index] 'helm-info-at-point)))
 
-;;; Emms
-;;
-(use-package emms
-  :commands 'helm-emms
-  :config (use-package emms-config))
-
 ;;; Async
 ;;
 ;; Need to be called before helm config.
@@ -424,12 +420,14 @@ So far, F can only be a symbol, not a lambda expression."))
 ;;; Woman/man
 ;;
 (use-package woman
-  :config
-  (setq woman-use-own-frame nil))
+    :defer t
+    :config
+    (setq woman-use-own-frame nil))
 
 (use-package man
+    :defer t
     :config
-  (setq Man-notify-method 'pushy))
+    (setq Man-notify-method 'pushy))
 
 ;; show-paren-mode
 ;;

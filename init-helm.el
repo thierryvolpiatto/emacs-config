@@ -146,199 +146,201 @@
                                 '(("work" . "~/.recoll-work"))))
 
 (use-package helm-buffers
-  :config
-  (setq helm-buffers-favorite-modes
-        (append helm-buffers-favorite-modes '(picture-mode artist-mode))
-        helm-buffers-fuzzy-matching       t
-        helm-buffer-skip-remote-checking  t
-        helm-buffer-max-length            22
-        helm-buffers-end-truncated-string "…"
-        helm-buffers-maybe-switch-to-tab  t
-        helm-mini-default-sources '(helm-source-buffers-list
-                                    helm-source-buffer-not-found)
-        helm-boring-buffer-regexp-list
-        '("\\` " "\\`\\*helm" "\\`\\*Echo Area" "\\`\\*Minibuf"
-          "\\`\\*Messages" "\\`\\*Magit" "\\`\\*git-gutter" "\\`\\*Help" "\\`\\*skitour")
-        helm-buffers-show-icons t)
+    :defer t
+    :config
+    (setq helm-buffers-favorite-modes
+          (append helm-buffers-favorite-modes '(picture-mode artist-mode))
+          helm-buffers-fuzzy-matching       t
+          helm-buffer-skip-remote-checking  t
+          helm-buffer-max-length            22
+          helm-buffers-end-truncated-string "…"
+          helm-buffers-maybe-switch-to-tab  t
+          helm-mini-default-sources '(helm-source-buffers-list
+                                      helm-source-buffer-not-found)
+          helm-boring-buffer-regexp-list
+          '("\\` " "\\`\\*helm" "\\`\\*Echo Area" "\\`\\*Minibuf"
+            "\\`\\*Messages" "\\`\\*Magit" "\\`\\*git-gutter" "\\`\\*Help" "\\`\\*skitour")
+          helm-buffers-show-icons t)
 
-  (define-key helm-buffer-map (kbd "C-d") 'helm-buffer-run-kill-persistent)
+    (define-key helm-buffer-map (kbd "C-d") 'helm-buffer-run-kill-persistent)
 
-  (defun helm-buffers-clean-backslashes-in-docstrings (_candidate)
-    (let ((bufs (helm-marked-candidates)))
-      (cl-loop for buf in bufs
-               do (with-current-buffer buf
-                    ;; Predicates to determine if point is in
-                    ;; docstring are based on text-props, so all text
-                    ;; in buffer need to be fontified [1].
-                    (jit-lock-fontify-now)
-                    (tv/clean-backslashes-in-docstrings)
-                    (when (buffer-modified-p)
-                      (save-buffer))))))
+    (defun helm-buffers-clean-backslashes-in-docstrings (_candidate)
+      (let ((bufs (helm-marked-candidates)))
+        (cl-loop for buf in bufs
+                 do (with-current-buffer buf
+                      ;; Predicates to determine if point is in
+                      ;; docstring are based on text-props, so all text
+                      ;; in buffer need to be fontified [1].
+                      (jit-lock-fontify-now)
+                      (tv/clean-backslashes-in-docstrings)
+                      (when (buffer-modified-p)
+                        (save-buffer))))))
   
-  (add-to-list 'helm-type-buffer-actions
-               '("Clean backslashes in docstrings"
-                 . helm-buffers-clean-backslashes-in-docstrings)
-               t)
+    (add-to-list 'helm-type-buffer-actions
+                 '("Clean backslashes in docstrings"
+                   . helm-buffers-clean-backslashes-in-docstrings)
+                 t)
 
-  (defun tv/clean-single-quotes-in-docstring ()
-    (save-excursion
-      (goto-char (point-min))
-      (while (re-search-forward "[ \n]'" nil t)
-        (forward-char -1)
-        (if (tv/point-in-docstring-p (point))
-            (progn (insert "\\\\=") (forward-char 1))
-          (forward-char 1)))))
+    (defun tv/clean-single-quotes-in-docstring ()
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward "[ \n]'" nil t)
+          (forward-char -1)
+          (if (tv/point-in-docstring-p (point))
+              (progn (insert "\\\\=") (forward-char 1))
+            (forward-char 1)))))
 
-  (defun helm-buffers-clean-single-quotes-in-docstrings (_candidate)
-    (let ((bufs (helm-marked-candidates)))
-      (cl-loop for buf in bufs
-               do (with-current-buffer buf
-                    (jit-lock-fontify-now) ; Same comment as [1] above.
-                    (tv/clean-single-quotes-in-docstring)
-                    (when (buffer-modified-p)
-                      (save-buffer))))))
-  (add-to-list 'helm-type-buffer-actions
-               '("Clean single quotes  in docstrings" .
-                 helm-buffers-clean-single-quotes-in-docstrings)
-               t)
+    (defun helm-buffers-clean-single-quotes-in-docstrings (_candidate)
+      (let ((bufs (helm-marked-candidates)))
+        (cl-loop for buf in bufs
+                 do (with-current-buffer buf
+                      (jit-lock-fontify-now) ; Same comment as [1] above.
+                      (tv/clean-single-quotes-in-docstring)
+                      (when (buffer-modified-p)
+                        (save-buffer))))))
+    (add-to-list 'helm-type-buffer-actions
+                 '("Clean single quotes  in docstrings" .
+                   helm-buffers-clean-single-quotes-in-docstrings)
+                 t)
   
-  (cl-defmethod helm-setup-user-source ((source helm-source-buffers))
-  "Adds additional actions to `helm-source-buffers-list'.
+    (cl-defmethod helm-setup-user-source ((source helm-source-buffers))
+        "Adds additional actions to `helm-source-buffers-list'.
 - Git status."
-  (setf (slot-value source 'candidate-number-limit) 300)
-  (helm-aif (slot-value source 'action)
-      (setf (slot-value source 'action)
-        (helm-append-at-nth
-         (if (symbolp it)
-             (symbol-value it)
-           it)
-         '(("Diff buffers" . helm-buffers-diff-buffers)) 4)))
-  (helm-source-add-action-to-source-if
-   "Git status"
-   (lambda (candidate)
-     (funcall helm-ls-git-status-command
-              (with-current-buffer candidate default-directory)))
-   source
-   (lambda (candidate)
-     (locate-dominating-file (with-current-buffer candidate default-directory)
-                             ".git"))
-   1)))
+        (setf (slot-value source 'candidate-number-limit) 300)
+        (helm-aif (slot-value source 'action)
+            (setf (slot-value source 'action)
+                  (helm-append-at-nth
+                   (if (symbolp it)
+                       (symbol-value it)
+                     it)
+                   '(("Diff buffers" . helm-buffers-diff-buffers)) 4)))
+      (helm-source-add-action-to-source-if
+       "Git status"
+       (lambda (candidate)
+         (funcall helm-ls-git-status-command
+                  (with-current-buffer candidate default-directory)))
+       source
+       (lambda (candidate)
+         (locate-dominating-file (with-current-buffer candidate default-directory)
+                                 ".git"))
+       1)))
 
 (use-package helm-files
+    :defer t
     :config
-  (setq helm-ff-auto-update-initial-value        t
-        helm-ff-allow-non-existing-file-at-point t
-        helm-trash-remote-files                  t
-        helm-dwim-target                         'next-window
-        helm-locate-recursive-dirs-command "fdfind --hidden --type d --glob '*%s*' %s"
-        helm-ff-eshell-unwanted-aliases '("sudo" "cdu" "man"
-                                          "gpg-pubkey-export-armor" "gpg-secretkey-export-armor")
-        helm-ff-drag-and-drop-default-directory "/home/thierry/Bureau/"
-        helm-file-name-history-hide-deleted t)
+    (setq helm-ff-auto-update-initial-value        t
+          helm-ff-allow-non-existing-file-at-point t
+          helm-trash-remote-files                  t
+          helm-dwim-target                         'next-window
+          helm-locate-recursive-dirs-command "fdfind --hidden --type d --glob '*%s*' %s"
+          helm-ff-eshell-unwanted-aliases '("sudo" "cdu" "man"
+                                            "gpg-pubkey-export-armor" "gpg-secretkey-export-armor")
+          helm-ff-drag-and-drop-default-directory "/home/thierry/Bureau/"
+          helm-file-name-history-hide-deleted t)
 
-  (customize-set-variable 'helm-ff-nohighlight-matches nil)
+    (customize-set-variable 'helm-ff-nohighlight-matches nil)
 
-  (use-package image-dired
-      :config
-    (setq image-dired-thumbnail-storage 'standard
-          ;; Be consistent with emacs-29.
-          image-dired-cmd-pngnq-program "pngquant"
-          image-dired-cmd-pngnq-options '("--ext" "-nq8.png" "%t")))
+    (use-package image-dired
+        :config
+      (setq image-dired-thumbnail-storage 'standard
+            ;; Be consistent with emacs-29.
+            image-dired-cmd-pngnq-program "pngquant"
+            image-dired-cmd-pngnq-options '("--ext" "-nq8.png" "%t")))
   
-  (defun helm-ff-wfnames (_candidate)
-    (let ((marked (helm-marked-candidates :with-wildcard t)))
-      (wfnames-setup-buffer marked)))
+    (defun helm-ff-wfnames (_candidate)
+      (let ((marked (helm-marked-candidates :with-wildcard t)))
+        (wfnames-setup-buffer marked)))
 
-  (helm-make-command-from-action helm-run-wfnames
-      "Run wfnames from HFF."
-    'helm-ff-wfnames)
-  (define-key helm-find-files-map (kbd "C-x C-q") 'helm-run-wfnames)
+    (helm-make-command-from-action helm-run-wfnames
+        "Run wfnames from HFF."
+      'helm-ff-wfnames)
+    (define-key helm-find-files-map (kbd "C-x C-q") 'helm-run-wfnames)
 
-  (setq helm-find-files-actions
-        (helm-append-at-nth
-         helm-find-files-actions
-         '(("Edit filename(s)" . helm-ff-wfnames)) 2))
+    (setq helm-find-files-actions
+          (helm-append-at-nth
+           helm-find-files-actions
+           '(("Edit filename(s)" . helm-ff-wfnames)) 2))
   
-  (defun helm-ff-dragon (files)
-    "Create a small window with FILES ready to drag and drop.
+    (defun helm-ff-dragon (files)
+      "Create a small window with FILES ready to drag and drop.
 Use this to drop files on externals applications or desktop.
 Dropping on emacs buffers with this is not supported.
 
 Needs `dragon' executable: https://github.com/mwh/dragon."
-    (interactive (list (helm-marked-candidates)))
-    (cl-assert (executable-find "dragon") nil "Dragon executable not found")
-    (apply #'call-process "dragon" nil nil nil "--all" "--and-exit" files))
-  (define-key helm-find-files-map (kbd "C-c m") 'helm-ff-dragon)
+      (interactive (list (helm-marked-candidates)))
+      (cl-assert (executable-find "dragon") nil "Dragon executable not found")
+      (apply #'call-process "dragon" nil nil nil "--all" "--and-exit" files))
+    (define-key helm-find-files-map (kbd "C-c m") 'helm-ff-dragon)
 
-  (customize-set-variable 'helm-ff-lynx-style-map t)
-  (define-key helm-read-file-map (kbd "RET") 'helm-ff-RET)
-  (define-key helm-find-files-map (kbd "C-i") nil)
-  (define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
+    (customize-set-variable 'helm-ff-lynx-style-map t)
+    (define-key helm-read-file-map (kbd "RET") 'helm-ff-RET)
+    (define-key helm-find-files-map (kbd "C-i") nil)
+    (define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
 
-  (defun helm/insert-date-in-minibuffer ()
-    (interactive)
-    (with-selected-window (or (active-minibuffer-window)
-                              (minibuffer-window))
-      (unless (or (helm-follow-mode-p)
-                  helm--temp-follow-flag)
-        (insert (format-time-string "%Y-%m-%d-%H:%M")))))
-  (define-key helm-find-files-map (kbd "C-c y") 'helm/insert-date-in-minibuffer)
-  (define-key helm-read-file-map (kbd "C-c y") 'helm/insert-date-in-minibuffer)
+    (defun helm/insert-date-in-minibuffer ()
+      (interactive)
+      (with-selected-window (or (active-minibuffer-window)
+                                (minibuffer-window))
+        (unless (or (helm-follow-mode-p)
+                    helm--temp-follow-flag)
+          (insert (format-time-string "%Y-%m-%d-%H:%M")))))
+    (define-key helm-find-files-map (kbd "C-c y") 'helm/insert-date-in-minibuffer)
+    (define-key helm-read-file-map (kbd "C-c y") 'helm/insert-date-in-minibuffer)
 
-  (defun helm/ff-candidates-lisp-p (candidate)
-    (cl-loop for cand in (helm-marked-candidates)
-             always (string-match "\\.el$" cand)))
+    (defun helm/ff-candidates-lisp-p (candidate)
+      (cl-loop for cand in (helm-marked-candidates)
+               always (string-match "\\.el$" cand)))
 
-  (defun helm-ff-recoll-index-directory (directory)
-    "Create a recoll index directory from DIRECTORY.
+    (defun helm-ff-recoll-index-directory (directory)
+      "Create a recoll index directory from DIRECTORY.
 Add the new created directory to `helm-recoll-directories' using the
 basename of DIRECTORY as name.
 By using `customize-set-variable', a new source is created for this
 new directory."
-    (cl-assert (boundp 'helm-recoll-directories) nil
-               "Package helm-recoll not installed or configured")
-    (let* ((bn (helm-basename (expand-file-name directory)))
-           (index-dir (format "~/.recoll-%s" bn))
-           (conf-file (expand-file-name "recoll.conf" index-dir)))
-      (mkdir index-dir)
-      (with-current-buffer (find-file-noselect conf-file)
-        (insert (format "topdirs = %s" (expand-file-name directory)))
-        (save-buffer)
-        (kill-buffer))
-      (customize-set-variable 'helm-recoll-directories
-                              (append `((,bn . ,index-dir)) helm-recoll-directories))
-      (message "Don't forget to index config directory with 'recollindex -c %s'" index-dir)))
+      (cl-assert (boundp 'helm-recoll-directories) nil
+                 "Package helm-recoll not installed or configured")
+      (let* ((bn (helm-basename (expand-file-name directory)))
+             (index-dir (format "~/.recoll-%s" bn))
+             (conf-file (expand-file-name "recoll.conf" index-dir)))
+        (mkdir index-dir)
+        (with-current-buffer (find-file-noselect conf-file)
+          (insert (format "topdirs = %s" (expand-file-name directory)))
+          (save-buffer)
+          (kill-buffer))
+        (customize-set-variable 'helm-recoll-directories
+                                (append `((,bn . ,index-dir)) helm-recoll-directories))
+        (message "Don't forget to index config directory with 'recollindex -c %s'" index-dir)))
 
-  (defun helm-ff-recoll-index-directories (_candidate)
-    (let ((dirs (helm-marked-candidates)))
-      (cl-loop for dir in dirs
-               when (file-directory-p dir)
-               do (helm-ff-recoll-index-directory dir))))
+    (defun helm-ff-recoll-index-directories (_candidate)
+      (let ((dirs (helm-marked-candidates)))
+        (cl-loop for dir in dirs
+                 when (file-directory-p dir)
+                 do (helm-ff-recoll-index-directory dir))))
 
-  (defun tv/change-xfce-background (file)
-    (let* ((screen  (getenv "DISPLAY"))
-           (monitor (shell-command-to-string
-                     "echo -n $(xrandr | awk '/\\w* connected/ {print $1}')"))
-           (desktop (and (display-graphic-p)
-                         (x-window-property "_NET_CURRENT_DESKTOP" nil "CARDINAL" 0 nil t)))
-           (prop    (format "/backdrop/screen%s/monitor%s/workspace%s/last-image"
-                            (substring screen (1- (length screen)))
-                            monitor
-                            (or desktop 0)))
-           (proc    (apply #'start-process "set background" nil "xfconf-query"
-                           `("-c" "xfce4-desktop" "-p" ,prop "-s" ,file))))
-      (set-process-sentinel
-       proc (lambda (_proc event)
-              (if (string= event "finished\n")
-                  (message "Background changed successfully to %s" (helm-basename file))
-                (message "Failed to change background"))))))
+    (defun tv/change-xfce-background (file)
+      (let* ((screen  (getenv "DISPLAY"))
+             (monitor (shell-command-to-string
+                       "echo -n $(xrandr | awk '/\\w* connected/ {print $1}')"))
+             (desktop (and (display-graphic-p)
+                           (x-window-property "_NET_CURRENT_DESKTOP" nil "CARDINAL" 0 nil t)))
+             (prop    (format "/backdrop/screen%s/monitor%s/workspace%s/last-image"
+                              (substring screen (1- (length screen)))
+                              monitor
+                              (or desktop 0)))
+             (proc    (apply #'start-process "set background" nil "xfconf-query"
+                             `("-c" "xfce4-desktop" "-p" ,prop "-s" ,file))))
+        (set-process-sentinel
+         proc (lambda (_proc event)
+                (if (string= event "finished\n")
+                    (message "Background changed successfully to %s" (helm-basename file))
+                  (message "Failed to change background"))))))
 
-  (defun helm-ff-csv2ledger (candidate)
-    (csv2ledger "Socgen" candidate "/home/thierry/finance/ledger.dat"))
+    (defun helm-ff-csv2ledger (candidate)
+      (csv2ledger "Socgen" candidate "/home/thierry/finance/ledger.dat"))
   
-  ;; Add actions to `helm-source-find-files' IF:
-  (cl-defmethod helm-setup-user-source ((source helm-source-ffiles))
-      "Adds additional actions and settings to `helm-find-files'.
+    ;; Add actions to `helm-source-find-files' IF:
+    (cl-defmethod helm-setup-user-source ((source helm-source-ffiles))
+        "Adds additional actions and settings to `helm-find-files'.
     - Byte compile file(s) async
     - Byte recompile directory async
     - Open info file
@@ -349,131 +351,131 @@ new directory."
     - Epa encrypt file
     - Change background
     - Csv2ledger"
-    (helm-aif (slot-value source 'match)
-        (setf (slot-value source 'match)
-              (append it
-                      '((lambda (candidate)
-                          (string-match (concat (helm-basedir helm-input)
-                                                (char-fold-to-regexp
-                                                 (helm-basename helm-input)))
-                                        candidate))))))
-    ;; Byte compile file async
-    (helm-source-add-action-to-source-if
-     "Byte compile file(s) async"
-     (lambda (_candidate)
-       (cl-loop for file in (helm-marked-candidates)
-                do (async-byte-compile-file file)))
-     source
-     'helm/ff-candidates-lisp-p)
-    ;; Recover file from its autoload file
-    (helm-source-add-action-to-source-if
-     "Recover file"
-     (lambda (candidate)
-       (recover-file candidate))
-     source
-     (lambda (candidate)
-       (file-exists-p (expand-file-name
-                       (format "#%s#" (helm-basename candidate))
-                       (helm-basedir candidate)))))
-    ;; Byte recompile dir async
-    (helm-source-add-action-to-source-if
-     "Byte recompile directory (async)"
-     'async-byte-recompile-directory
-     source
-     'file-directory-p)
-    ;; Info on .info files
-    (helm-source-add-action-to-source-if
-     "Open info file"
-     (lambda (candidate) (info candidate))
-     source
-     (lambda (candidate) (helm-aif (file-name-extension candidate)
-                             (string= it "info")))
-     1)
-    ;; Patch region on dir
-    (helm-source-add-action-to-source-if
-     "Patch region on directory"
-     (lambda (_candidate)
-       (with-helm-current-buffer
-         (shell-command-on-region (region-beginning) (region-end)
-                                  (format "patch -d %s -p1"
-                                          helm-ff-default-directory))))
-     source
-     (lambda (_candidate)
-       (with-helm-current-buffer
-         (and (or (eq major-mode 'mu4e-view-mode)
-                  (eq major-mode 'diff-mode))
-              (region-active-p))))
-     1)
-    ;; Emms
-    (helm-source-add-action-to-source-if
-     "Open in emms"
-     (lambda (candidate)
-       (if (file-directory-p candidate)
-           (emms-play-directory candidate)
-         (emms-play-file candidate)))
-     source
-     (lambda (candidate)
-       (or (and (file-directory-p candidate)
-                (directory-files
-                 candidate
-                 nil ".*\\.\\(mp3\\|ogg\\|flac\\)$" t))
-           (string-match-p ".*\\.\\(mp3\\|ogg\\|flac\\)$" candidate)))
-     1)
-    ;; update-directory-autoloads
-    (helm-source-add-action-to-source-if
-     "Update directory autoloads"
-     (lambda (candidate)
-       (require 'autoload)
-       (let ((default-directory helm-ff-default-directory)
-             (generated-autoload-file
-              (read-file-name "Write autoload definitions to file: "
-                              helm-ff-default-directory
-                              nil nil nil
-                              (lambda (f)
-                                (string-match "autoloads\\|loaddefs" f)))))
-         (update-directory-autoloads default-directory)))
-     source
-     (lambda (candidate)
-       (and (file-directory-p candidate)
-            (string= (helm-basename candidate) ".")))
-     1)
-    ;; Setup recoll dirs
-    (helm-source-add-action-to-source-if
-     "Recoll index directory"
-     'helm-ff-recoll-index-directories
-     source
-     'file-directory-p
-     3)
-    ;; Encrypt file
-    (helm-source-add-action-to-source-if
-     "Epa encrypt file"
-     (lambda (candidate)
-       (require 'epg) (require 'epa)
-       (epa-encrypt-file candidate
-                         (helm :sources (helm-build-sync-source
-                                            "Select recipient for encryption: "
-                                          :persistent-action 'ignore
-                                          :candidates 'helm-epa-get-key-list))))
-     source
-     'file-exists-p
-     3)
-    ;; Background
-    (helm-source-add-action-to-source-if
-     "Change background"
-     'tv/change-xfce-background
-     source
-     (lambda (candidate)
-       (member (file-name-extension candidate) '("jpg" "jpeg" "png")))
-     3)
-    (helm-source-add-action-to-source-if
-     "Csv2Ledger"
-     'helm-ff-csv2ledger
-     source
-     (lambda (candidate)
-       (member (file-name-extension candidate) '("csv")))
-     3))
+        (helm-aif (slot-value source 'match)
+            (setf (slot-value source 'match)
+                  (append it
+                          '((lambda (candidate)
+                              (string-match (concat (helm-basedir helm-input)
+                                                    (char-fold-to-regexp
+                                                     (helm-basename helm-input)))
+                                            candidate))))))
+        ;; Byte compile file async
+        (helm-source-add-action-to-source-if
+         "Byte compile file(s) async"
+         (lambda (_candidate)
+           (cl-loop for file in (helm-marked-candidates)
+                    do (async-byte-compile-file file)))
+         source
+         'helm/ff-candidates-lisp-p)
+      ;; Recover file from its autoload file
+      (helm-source-add-action-to-source-if
+       "Recover file"
+       (lambda (candidate)
+         (recover-file candidate))
+       source
+       (lambda (candidate)
+         (file-exists-p (expand-file-name
+                         (format "#%s#" (helm-basename candidate))
+                         (helm-basedir candidate)))))
+      ;; Byte recompile dir async
+      (helm-source-add-action-to-source-if
+       "Byte recompile directory (async)"
+       'async-byte-recompile-directory
+       source
+       'file-directory-p)
+      ;; Info on .info files
+      (helm-source-add-action-to-source-if
+       "Open info file"
+       (lambda (candidate) (info candidate))
+       source
+       (lambda (candidate) (helm-aif (file-name-extension candidate)
+                               (string= it "info")))
+       1)
+      ;; Patch region on dir
+      (helm-source-add-action-to-source-if
+       "Patch region on directory"
+       (lambda (_candidate)
+         (with-helm-current-buffer
+           (shell-command-on-region (region-beginning) (region-end)
+                                    (format "patch -d %s -p1"
+                                            helm-ff-default-directory))))
+       source
+       (lambda (_candidate)
+         (with-helm-current-buffer
+           (and (or (eq major-mode 'mu4e-view-mode)
+                    (eq major-mode 'diff-mode))
+                (region-active-p))))
+       1)
+      ;; Emms
+      (helm-source-add-action-to-source-if
+       "Open in emms"
+       (lambda (candidate)
+         (if (file-directory-p candidate)
+             (emms-play-directory candidate)
+           (emms-play-file candidate)))
+       source
+       (lambda (candidate)
+         (or (and (file-directory-p candidate)
+                  (directory-files
+                   candidate
+                   nil ".*\\.\\(mp3\\|ogg\\|flac\\)$" t))
+             (string-match-p ".*\\.\\(mp3\\|ogg\\|flac\\)$" candidate)))
+       1)
+      ;; update-directory-autoloads
+      (helm-source-add-action-to-source-if
+       "Update directory autoloads"
+       (lambda (candidate)
+         (require 'autoload)
+         (let ((default-directory helm-ff-default-directory)
+               (generated-autoload-file
+                (read-file-name "Write autoload definitions to file: "
+                                helm-ff-default-directory
+                                nil nil nil
+                                (lambda (f)
+                                  (string-match "autoloads\\|loaddefs" f)))))
+           (update-directory-autoloads default-directory)))
+       source
+       (lambda (candidate)
+         (and (file-directory-p candidate)
+              (string= (helm-basename candidate) ".")))
+       1)
+      ;; Setup recoll dirs
+      (helm-source-add-action-to-source-if
+       "Recoll index directory"
+       'helm-ff-recoll-index-directories
+       source
+       'file-directory-p
+       3)
+      ;; Encrypt file
+      (helm-source-add-action-to-source-if
+       "Epa encrypt file"
+       (lambda (candidate)
+         (require 'epg) (require 'epa)
+         (epa-encrypt-file candidate
+                           (helm :sources (helm-build-sync-source
+                                              "Select recipient for encryption: "
+                                            :persistent-action 'ignore
+                                            :candidates 'helm-epa-get-key-list))))
+       source
+       'file-exists-p
+       3)
+      ;; Background
+      (helm-source-add-action-to-source-if
+       "Change background"
+       'tv/change-xfce-background
+       source
+       (lambda (candidate)
+         (member (file-name-extension candidate) '("jpg" "jpeg" "png")))
+       3)
+      (helm-source-add-action-to-source-if
+       "Csv2Ledger"
+       'helm-ff-csv2ledger
+       source
+       (lambda (candidate)
+         (member (file-name-extension candidate) '("csv")))
+       3))
   
-  (helm-ff-icon-mode 1))
+    (helm-ff-icon-mode 1))
 
 (use-package helm-dictionary ; Its autoloads are already loaded.
   :commands helm-dictionary
@@ -521,37 +523,39 @@ new directory."
         helm-google-suggest-search-url helm-surfraw-duckduckgo-url))
 
 (use-package helm-external
-  :config
-  (setq helm-raise-command                 "wmctrl -xa %s"
-        helm-default-external-file-browser "thunar")
-  (use-package emms-config
-      :config
+    :defer t
+    :config
+    (setq helm-raise-command                 "wmctrl -xa %s"
+          helm-default-external-file-browser "thunar")
+    (require 'emms-config)
     (add-hook 'helm-open-file-externally-after-hook #'tv/emms-player-start-hook)
-    (add-hook 'helm-open-file-externally-after-finish-hook #'tv/emms-player-stop-hook)))
+    (add-hook 'helm-open-file-externally-after-finish-hook #'tv/emms-player-stop-hook))
 
 (use-package helm-grep
-  :config
-  (setq helm-pdfgrep-default-read-command
-        "xreader --page-label=%p '%f'"
-        helm-grep-default-command
-        "ack-grep -Hn --color --smart-case --no-group %e -- %p %f"
-        helm-grep-default-recurse-command
-        "ack-grep -H --color --smart-case --no-group %e -- %p %f"
-        helm-grep-ag-command
-        "rg --color=always --colors 'match:bg:yellow' --colors 'match:fg:black' --smart-case --search-zip --no-heading --line-number %s -- %s %s"
-        helm-grep-ag-pipe-cmd-switches
-        '("--colors 'match:bg:yellow' --colors 'match:fg:black'")
-        helm-grep-git-grep-command
-        "git --no-pager grep -n%cH --color=always --exclude-standard --no-index --full-name -e %p -- %f")
-  (add-hook 'helm-grep-mode-hook 'hl-line-mode)
-  (define-key helm-grep-map   (kbd "C-M-a") 'helm/occur-which-func))
+    :defer t
+    :config
+    (setq helm-pdfgrep-default-read-command
+          "xreader --page-label=%p '%f'"
+          helm-grep-default-command
+          "ack-grep -Hn --color --smart-case --no-group %e -- %p %f"
+          helm-grep-default-recurse-command
+          "ack-grep -H --color --smart-case --no-group %e -- %p %f"
+          helm-grep-ag-command
+          "rg --color=always --colors 'match:bg:yellow' --colors 'match:fg:black' --smart-case --search-zip --no-heading --line-number %s -- %s %s"
+          helm-grep-ag-pipe-cmd-switches
+          '("--colors 'match:bg:yellow' --colors 'match:fg:black'")
+          helm-grep-git-grep-command
+          "git --no-pager grep -n%cH --color=always --exclude-standard --no-index --full-name -e %p -- %f")
+    (add-hook 'helm-grep-mode-hook 'hl-line-mode)
+    (define-key helm-grep-map   (kbd "C-M-a") 'helm/occur-which-func))
 
 (use-package helm-occur
-  :config
-  (setq helm-occur-keep-closest-position t)
-  (setq helm-occur-match-shorthands t)
-  (add-hook 'helm-occur-mode-hook 'hl-line-mode)
-  (define-key helm-occur-map (kbd "C-M-a") 'helm/occur-which-func))
+    :defer t
+    :config
+    (setq helm-occur-keep-closest-position t)
+    (setq helm-occur-match-shorthands t)
+    (add-hook 'helm-occur-mode-hook 'hl-line-mode)
+    (define-key helm-occur-map (kbd "C-M-a") 'helm/occur-which-func))
 
 (use-package helm-elisp
   :config
@@ -574,17 +578,20 @@ First call indent, second complete symbol, third complete fname."
   (setq helm-locate-fuzzy-match t))
 
 (use-package helm-org
-  :config
-  (setq helm-org-headings-fontify t))
+    :commands (helm-org-agenda-files-headings helm-org-in-buffer-headings)
+    :config
+    (setq helm-org-headings-fontify t))
 
 (use-package helm-emms
-  :after 'emms
-  :config
-  (setq helm-emms-use-track-description-function nil))
+    :commands helm-emms
+    :config
+    (require 'emms-config)
+    (setq helm-emms-use-track-description-function nil))
 
 (use-package helm-find
-  :config
-  (setq helm-find-noerrors t))
+    :defer t
+    :config
+    (setq helm-find-noerrors t))
 
 (use-package helm-elisp-package
   :config
@@ -615,22 +622,24 @@ First call indent, second complete symbol, third complete fname."
   (helm-epa-mode 1))
 
 (use-package helm-fd
-  :config
-  (setq helm-fd-executable "fdfind")
-  (defun helm-fd-pa (candidate)
-    (with-helm-buffer
-      (helm-ff-kill-or-find-buffer-fname
-       (expand-file-name candidate))))
-  (cl-defmethod helm-setup-user-source ((source helm-fd-class))
-    (setf (slot-value source 'persistent-action) 'helm-fd-pa)))
+    :defer t
+    :config
+    (setq helm-fd-executable "fdfind")
+    (defun helm-fd-pa (candidate)
+      (with-helm-buffer
+        (helm-ff-kill-or-find-buffer-fname
+         (expand-file-name candidate))))
+    (cl-defmethod helm-setup-user-source ((source helm-fd-class))
+        (setf (slot-value source 'persistent-action) 'helm-fd-pa)))
 
 (use-package helm-all-the-icons
-  :commands helm-all-the-icons)
+    :commands helm-all-the-icons)
 
 (use-package helm-ls-git
+    :defer t
     :config
-  (setq helm-ls-git-delete-branch-on-remote t
-        helm-ls-git-auto-refresh-at-eob t))
+    (setq helm-ls-git-delete-branch-on-remote t
+          helm-ls-git-auto-refresh-at-eob t))
 
 
 ;;; Helm-command-map
