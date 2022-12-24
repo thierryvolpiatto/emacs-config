@@ -1769,7 +1769,7 @@ Don't bind this to global-map but to `byzanz-record-mode-map' instead."
   (if tv-save-place-mode
       (progn
         (add-hook 'kill-buffer-hook 'tv-save-place)
-        (add-hook 'find-file-hook 'tv-save-place-restore-pos))
+        (add-hook 'find-file-hook 'tv-save-place-restore-pos 100))
     (remove-hook 'kill-buffer-hook 'tv-save-place)
     (remove-hook 'find-file-hook 'tv-save-place-restore-pos)))
 
