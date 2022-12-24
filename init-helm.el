@@ -123,19 +123,20 @@
   :bind ("C-h r" . helm-info-emacs))
 
 (use-package helm-ring
-  :config
-  (setq helm-kill-ring-threshold 1)
-  ;; Action for helm kill-ring
-  (defun helm/emamux:copy-from-kill-ring (candidate)
-    (require 'emamux)
-    (emamux:check-tmux-running)
-    (when (null kill-ring)
-      (error "kill-ring is nil!!"))
-    (emamux:set-buffer candidate 0))
-  (add-to-list 'helm-kill-ring-actions '("Emamux copy" . helm/emamux:copy-from-kill-ring) t)
-  (add-to-list 'helm-kill-ring-actions '("Emamux send command" . emamux:send-command) t)
-  :bind (:map helm-kill-ring-map
-              ("C-d" . helm-kill-ring-run-persistent-delete)))
+    :defer t
+    :config
+    (setq helm-kill-ring-threshold 1)
+    ;; Action for helm kill-ring
+    (defun helm/emamux:copy-from-kill-ring (candidate)
+      (require 'emamux)
+      (emamux:check-tmux-running)
+      (when (null kill-ring)
+        (error "kill-ring is nil!!"))
+      (emamux:set-buffer candidate 0))
+    (add-to-list 'helm-kill-ring-actions '("Emamux copy" . helm/emamux:copy-from-kill-ring) t)
+    (add-to-list 'helm-kill-ring-actions '("Emamux send command" . emamux:send-command) t)
+    :bind (:map helm-kill-ring-map
+                ("C-d" . helm-kill-ring-run-persistent-delete)))
 
 (use-package helm-recoll
   :disabled t
@@ -493,11 +494,12 @@ new directory."
         helm-dictionary-ignore-diacritics t))
 
 (use-package helm-wikipedia
+    :commands helm-wikipedia 
     :config
-  (setq helm-wikipedia-summary-url
-      "https://fr.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&titles=%s&exintro=1&explaintext=1&redirects=1"
-      helm-wikipedia-suggest-url
-      "https://fr.wikipedia.org/w/api.php?action=opensearch&search=%s"))
+    (setq helm-wikipedia-summary-url
+          "https://fr.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&titles=%s&exintro=1&explaintext=1&redirects=1"
+          helm-wikipedia-suggest-url
+          "https://fr.wikipedia.org/w/api.php?action=opensearch&search=%s"))
 
 (use-package helm-descbinds
   :config
@@ -517,10 +519,11 @@ new directory."
   (helm-help-define-key "C-s" 'isl-search))
 
 (use-package helm-net
-  :config
-  (setq helm-net-prefer-curl           nil
-        helm-surfraw-duckduckgo-url    "https://duckduckgo.com/?q=%s&ke=-1&kf=fw&kl=fr-fr&kr=b&k1=-1&k4=-1"
-        helm-google-suggest-search-url helm-surfraw-duckduckgo-url))
+    :defer t
+    :config
+    (setq helm-net-prefer-curl           nil
+          helm-surfraw-duckduckgo-url    "https://duckduckgo.com/?q=%s&ke=-1&kf=fw&kl=fr-fr&kr=b&k1=-1&k4=-1"
+          helm-google-suggest-search-url helm-surfraw-duckduckgo-url))
 
 (use-package helm-external
     :defer t
@@ -574,8 +577,9 @@ First call indent, second complete symbol, third complete fname."
   (define-key lisp-interaction-mode-map (kbd "TAB") 'helm-multi-lisp-complete-at-point))
 
 (use-package helm-locate
-  :config
-  (setq helm-locate-fuzzy-match t))
+    :defer t
+    :config
+    (setq helm-locate-fuzzy-match t))
 
 (use-package helm-org
     :commands (helm-org-agenda-files-headings helm-org-in-buffer-headings)
@@ -594,21 +598,23 @@ First call indent, second complete symbol, third complete fname."
     (setq helm-find-noerrors t))
 
 (use-package helm-elisp-package
-  :config
-  (setq helm-el-package-initial-filter 'installed
-        helm-el-package-autoremove-on-start t
-        helm-el-package-upgrade-on-start t))
+    :commands (helm-list-elisp-packages-no-fetch helm-list-elisp-packages)
+    :config
+    (setq helm-el-package-initial-filter 'installed
+          helm-el-package-autoremove-on-start t
+          helm-el-package-upgrade-on-start t))
 
 (use-package helm-imenu
-  :config
-  (add-to-list 'helm-imenu-type-faces
-               '("^Use package$" . font-lock-keyword-face))
-  (add-to-list 'helm-imenu-icon-type-alist
-               '("Use package" . (all-the-icons-octicon
-                                  "package" :face font-lock-keyword-face)))
-  (customize-set-variable 'helm-imenu-lynx-style-map t)
-  (setq helm-imenu-use-icon t
-        helm-imenu-hide-item-type-name t))
+    :defer t
+    :config
+    (add-to-list 'helm-imenu-type-faces
+                 '("^Use package$" . font-lock-keyword-face))
+    (add-to-list 'helm-imenu-icon-type-alist
+                 '("Use package" . (all-the-icons-octicon
+                                    "package" :face font-lock-keyword-face)))
+    (customize-set-variable 'helm-imenu-lynx-style-map t)
+    (setq helm-imenu-use-icon t
+          helm-imenu-hide-item-type-name t))
 
 (use-package helm-apt :commands 'helm-apt)
 
