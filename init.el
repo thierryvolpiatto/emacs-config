@@ -2068,6 +2068,21 @@ If ARG is 1 goto end of docstring, -1 goto beginning."
     :config
     (setq treesit-extra-load-path '("/usr/local/lib"))
     (add-hook 'python-mode-hook 'python-ts-mode))
+
+;;; Gnus
+;;
+(use-package gnus
+    :config
+  (setq gnus-init-file "~/.emacs.d/.gnus.el")
+  :bind (("<f9>" . gnus)
+         :map
+         gnus-summary-mode-map
+         ("M-q" . gnus-article-fill-long-lines)
+         ("n" . gnus-summary-next-article)
+         ("N" . gnus-summary-next-unread-article)
+         ("p" . gnus-summary-prev-article)
+         ("P" . gnus-summary-prev-unread-article)))
+
 
 ;; Kill buffer and windows
 (defun tv/kill-buffer-and-windows (arg)
