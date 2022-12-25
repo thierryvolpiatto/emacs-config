@@ -2,11 +2,10 @@
 
 ;;; Code:
 
-(use-package mu4e-patch
-  :config (advice-add 'gnus-article-prepare-display
-                      :after #'mu4e-patch:article-treat-patch))
-(use-package mu4e-contrib)
-(use-package config-w3m)
+(require 'mu4e-patch)
+(advice-add 'gnus-article-prepare-display :after #'mu4e-patch:article-treat-patch)
+(require 'mu4e-contrib)
+(require 'config-w3m)
 (require 'mu4e-view-gnus nil t)
 
 
@@ -124,8 +123,8 @@
       mm-html-inhibit-images t
       gnus-inhibit-images t)
 
-(use-package gnus-art
-    :config (fset 'gnus-article-press-button 'mu4e-scroll-up))
+(with-eval-after-load 'gnus-art
+  (fset 'gnus-article-press-button 'mu4e-scroll-up))
 
 (setq mail-user-agent      'mu4e-user-agent
       read-mail-command    'mu4e

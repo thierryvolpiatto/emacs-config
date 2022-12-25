@@ -40,11 +40,9 @@
     (kill-buffer))))
 (advice-add 'w3m-bookmark-save-buffer :override #'tv/advice--w3m-bookmark-save-buffer)
 
-(use-package w3m-search
-    :defer t
-    :config
-    (add-to-list 'w3m-search-engine-alist '("DuckDuckGo" "https://duckduckgo.com/lite/?q=%s&kp=1"))
-    (setq w3m-search-default-engine "DuckDuckGo"))
+(with-eval-after-load 'w3m-search
+  (add-to-list 'w3m-search-engine-alist '("DuckDuckGo" "https://duckduckgo.com/lite/?q=%s&kp=1"))
+  (setq w3m-search-default-engine "DuckDuckGo"))
 
 (setq w3m-home-page "https://www.duckduckgo.com")
 
