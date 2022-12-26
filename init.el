@@ -1812,6 +1812,13 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   (define-key gnus-summary-mode-map (kbd "P") 'gnus-summary-prev-unread-article)
   (define-key gnus-summary-mode-map (kbd "p") 'gnus-summary-prev-article))
 
+;;; Emms
+;;
+(with-eval-after-load 'emms
+  ;; When helm-emms will load and require emms, config will be
+  ;; loaded.
+  (require 'emms-config))
+
 
 ;; Kill buffer and windows
 (defun tv/kill-buffer-and-windows (arg)

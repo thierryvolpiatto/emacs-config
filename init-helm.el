@@ -541,7 +541,6 @@ First call indent, second complete symbol, third complete fname."
   (setq helm-org-headings-fontify t))
 
 (with-eval-after-load 'helm-emms
-  (require 'emms-config)
   (setq helm-emms-use-track-description-function nil))
 
 (with-eval-after-load 'helm-find
