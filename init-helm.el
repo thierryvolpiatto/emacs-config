@@ -3,34 +3,33 @@
 
 ;;; Set up helm first (will load helm-autoloads.el)
 
-(use-package helm
-  :config
-  ;; Only needed when installing from source.
-  (require 'helm-autoloads)
-  (setq helm-input-idle-delay                     0.01
-        helm-reuse-last-window-split-state        t
-        helm-always-two-windows                   t
-        helm-split-window-inside-p                nil
-        helm-commands-using-frame                 '(completion-at-point
-                                                    ;; helm-apropos
-                                                    helm-eshell-prompts helm-imenu
-                                                    helm-imenu-in-all-buffers)
-        helm-actions-inherit-frame-settings       t
-        helm-use-frame-when-more-than-two-windows t
-        helm-use-frame-when-dedicated-window      t
-        helm-frame-background-color               "DarkSlateGray"
-        helm-show-action-window-other-window      'left
-        helm-allow-mouse                          t
-        helm-move-to-line-cycle-in-source         t
-        helm-autoresize-max-height                80 ; it is %.
-        helm-autoresize-min-height                20 ; it is %.
-        helm-debug-root-directory                 "/home/thierry/tmp/helm-debug"
-        helm-follow-mode-persistent               t
-        helm-candidate-number-limit               500
-        helm-visible-mark-prefix                  "✓")
-  (set-face-foreground 'helm-mark-prefix "Gold1")
-  (add-to-list 'helm-sources-using-default-as-input 'helm-source-info-bash)
-  (helm-define-key-with-subkeys global-map (kbd "C-c n") ?n 'helm-cycle-resume))
+(require 'helm)
+;; Only needed when installed from source.
+(require 'helm-autoloads)
+(setq helm-input-idle-delay                     0.01
+      helm-reuse-last-window-split-state        t
+      helm-always-two-windows                   t
+      helm-split-window-inside-p                nil
+      helm-commands-using-frame                 '(completion-at-point
+                                                  ;; helm-apropos
+                                                  helm-eshell-prompts helm-imenu
+                                                  helm-imenu-in-all-buffers)
+      helm-actions-inherit-frame-settings       t
+      helm-use-frame-when-more-than-two-windows t
+      helm-use-frame-when-dedicated-window      t
+      helm-frame-background-color               "DarkSlateGray"
+      helm-show-action-window-other-window      'left
+      helm-allow-mouse                          t
+      helm-move-to-line-cycle-in-source         t
+      helm-autoresize-max-height                80   ; it is %.
+      helm-autoresize-min-height                20   ; it is %.
+      helm-debug-root-directory                 "/home/thierry/tmp/helm-debug"
+      helm-follow-mode-persistent               t
+      helm-candidate-number-limit               500
+      helm-visible-mark-prefix                  "✓")
+(set-face-foreground 'helm-mark-prefix "Gold1")
+(add-to-list 'helm-sources-using-default-as-input 'helm-source-info-bash)
+(helm-define-key-with-subkeys global-map (kbd "C-c n") ?n 'helm-cycle-resume)
 
 ;;; Load all autoloads for helm extensions
 ;;
@@ -64,66 +63,57 @@
 ;;; Use-package declarations.
 ;;
 ;; Helm-mode is loading nearly everything.
-(use-package helm-mode
-  :init
-  (add-hook 'helm-mode-hook
-            (lambda ()
-              (setq completion-styles
-                    (cond ((assq 'helm-flex completion-styles-alist)
-                           '(helm-flex)) ;; emacs-26.
-                          ((assq 'flex completion-styles-alist)
-                           '(flex)))))) ;; emacs-27+.
-  :diminish (helm-mode " ⎈")
-  :config
-  (helm-mode 1)
-  (setq helm-completing-read-handlers-alist
-        '((find-tag . helm-completing-read-default-find-tag)
-          (xref-find-definitions . helm-completing-read-default-find-tag)
-          (xref-find-references . helm-completing-read-default-find-tag)
-          (ggtags-find-tag-dwim . helm-completing-read-default-find-tag)
-          (tmm-menubar)
-          (find-file)
-          (execute-extended-command)
-          (cancel-debug-on-entry)
-          (org-capture . helm-org-completing-read-tags)
-          (org-set-tags . helm-org-completing-read-tags)
-          (dired-do-rename . helm-read-file-name-handler-1)
-          (dired-do-copy . helm-read-file-name-handler-1)
-          (dired-do-symlink . helm-read-file-name-handler-1)
-          (dired-do-relsymlink . helm-read-file-name-handler-1)
-          (dired-do-hardlink . helm-read-file-name-handler-1)
-          (basic-save-buffer . helm-read-file-name-handler-1)
-          (write-file . (default helm-read-file-name-handler-1))
-          (write-region . (default helm-read-file-name-handler-1))))
-  ;; Fix CAP with LSP in python.
-  (add-to-list 'helm-completion-styles-alist '(python-mode . (emacs helm flex)))
-  (add-to-list 'helm-completion-styles-alist '(wfnames-mode . (emacs helm flex))))
+(add-hook 'helm-mode-hook
+          (lambda ()
+            (setq completion-styles
+                  (cond ((assq 'helm-flex completion-styles-alist)
+                         '(helm-flex)) ;; emacs-26.
+                        ((assq 'flex completion-styles-alist)
+                         '(flex)))))) ;; emacs-27+.
+(setq helm-completion-mode-string " ⎈")
+(helm-mode 1)
+(setq helm-completing-read-handlers-alist
+      '((find-tag . helm-completing-read-default-find-tag)
+        (xref-find-definitions . helm-completing-read-default-find-tag)
+        (xref-find-references . helm-completing-read-default-find-tag)
+        (ggtags-find-tag-dwim . helm-completing-read-default-find-tag)
+        (tmm-menubar)
+        (find-file)
+        (execute-extended-command)
+        (cancel-debug-on-entry)
+        (org-capture . helm-org-completing-read-tags)
+        (org-set-tags . helm-org-completing-read-tags)
+        (dired-do-rename . helm-read-file-name-handler-1)
+        (dired-do-copy . helm-read-file-name-handler-1)
+        (dired-do-symlink . helm-read-file-name-handler-1)
+        (dired-do-relsymlink . helm-read-file-name-handler-1)
+        (dired-do-hardlink . helm-read-file-name-handler-1)
+        (basic-save-buffer . helm-read-file-name-handler-1)
+        (write-file . (default helm-read-file-name-handler-1))
+        (write-region . (default helm-read-file-name-handler-1))))
+;; Fix CAP with LSP in python.
+(add-to-list 'helm-completion-styles-alist '(python-mode . (emacs helm flex)))
+(add-to-list 'helm-completion-styles-alist '(wfnames-mode . (emacs helm flex)))
 
-(use-package helm-adaptive
-  :config
-  (setq helm-adaptive-history-file nil)
-  (helm-adaptive-mode 1))
+(require 'helm-adaptive)
+(setq helm-adaptive-history-file nil)
+(helm-adaptive-mode 1)
 
-(use-package helm-bookmark
-    :config (setq helm-bookmark-use-icon t))
+(with-eval-after-load 'helm-bookmark
+  (setq helm-bookmark-use-icon t))
 
-(use-package helm-utils
-  :config
+(with-eval-after-load 'helm-utils
   ;; Popup buffer-name or filename in grep/moccur/imenu-all etc...
   (helm-popup-tip-mode 1)
   (setq helm-highlight-matches-around-point-max-lines   '(30 . 30)
         helm-window-show-buffers-function #'helm-window-mosaic-fn)
   (add-hook 'find-file-hook 'helm-save-current-pos-to-mark-ring))
 
-(use-package helm-sys
-  :commands (helm-top)
-  :config (helm-top-poll-mode 1))
+(helm-top-poll-mode 1)
 
-(use-package helm-info
-  :bind ("C-h r" . helm-info-emacs))
+(global-set-key (kbd "C-h r") 'helm-info-emacs)
 
-(use-package helm-ring
-  :config
+(with-eval-after-load 'helm-ring
   (setq helm-kill-ring-threshold 1)
   ;; Action for helm kill-ring
   (defun helm/emamux:copy-from-kill-ring (candidate)
@@ -134,19 +124,9 @@
     (emamux:set-buffer candidate 0))
   (add-to-list 'helm-kill-ring-actions '("Emamux copy" . helm/emamux:copy-from-kill-ring) t)
   (add-to-list 'helm-kill-ring-actions '("Emamux send command" . emamux:send-command) t)
-  :bind (:map helm-kill-ring-map
-              ("C-d" . helm-kill-ring-run-persistent-delete)))
+  (define-key helm-kill-ring-map (kbd "C-d") 'helm-kill-ring-run-persistent-delete))
 
-(use-package helm-recoll
-  :disabled t
-  :commands helm-recoll
-  ;; Use the HFF actions to setup directories, then run
-  ;; "recoll index -c DIR" on each directory. 
-  :init (customize-set-variable 'helm-recoll-directories
-                                '(("work" . "~/.recoll-work"))))
-
-(use-package helm-buffers
-  :config
+(with-eval-after-load 'helm-buffers
   (setq helm-buffers-favorite-modes
         (append helm-buffers-favorite-modes '(picture-mode artist-mode))
         helm-buffers-fuzzy-matching       t
@@ -162,7 +142,7 @@
         helm-buffers-show-icons t)
 
   (define-key helm-buffer-map (kbd "C-d") 'helm-buffer-run-kill-persistent)
-
+  
   (defun helm-buffers-clean-backslashes-in-docstrings (_candidate)
     (let ((bufs (helm-marked-candidates)))
       (cl-loop for buf in bufs
@@ -188,7 +168,7 @@
         (if (tv/point-in-docstring-p (point))
             (progn (insert "\\\\=") (forward-char 1))
           (forward-char 1)))))
-
+  
   (defun helm-buffers-clean-single-quotes-in-docstrings (_candidate)
     (let ((bufs (helm-marked-candidates)))
       (cl-loop for buf in bufs
@@ -203,29 +183,28 @@
                t)
   
   (cl-defmethod helm-setup-user-source ((source helm-source-buffers))
-  "Adds additional actions to `helm-source-buffers-list'.
+    "Adds additional actions to `helm-source-buffers-list'.
 - Git status."
-  (setf (slot-value source 'candidate-number-limit) 300)
-  (helm-aif (slot-value source 'action)
-      (setf (slot-value source 'action)
-        (helm-append-at-nth
-         (if (symbolp it)
-             (symbol-value it)
-           it)
-         '(("Diff buffers" . helm-buffers-diff-buffers)) 4)))
-  (helm-source-add-action-to-source-if
-   "Git status"
-   (lambda (candidate)
-     (funcall helm-ls-git-status-command
-              (with-current-buffer candidate default-directory)))
-   source
-   (lambda (candidate)
-     (locate-dominating-file (with-current-buffer candidate default-directory)
-                             ".git"))
-   1)))
+    (setf (slot-value source 'candidate-number-limit) 300)
+    (helm-aif (slot-value source 'action)
+        (setf (slot-value source 'action)
+              (helm-append-at-nth
+               (if (symbolp it)
+                   (symbol-value it)
+                 it)
+               '(("Diff buffers" . helm-buffers-diff-buffers)) 4)))
+    (helm-source-add-action-to-source-if
+     "Git status"
+     (lambda (candidate)
+       (funcall helm-ls-git-status-command
+                (with-current-buffer candidate default-directory)))
+     source
+     (lambda (candidate)
+       (locate-dominating-file (with-current-buffer candidate default-directory)
+                               ".git"))
+     1)))
 
-(use-package helm-files
-    :config
+(with-eval-after-load 'helm-files
   (setq helm-ff-auto-update-initial-value        t
         helm-ff-allow-non-existing-file-at-point t
         helm-trash-remote-files                  t
@@ -235,25 +214,24 @@
                                           "gpg-pubkey-export-armor" "gpg-secretkey-export-armor")
         helm-ff-drag-and-drop-default-directory "/home/thierry/Bureau/"
         helm-file-name-history-hide-deleted t)
-
+  
   (customize-set-variable 'helm-ff-nohighlight-matches nil)
-
-  (use-package image-dired
-      :config
-    (setq image-dired-thumbnail-storage 'standard
-          ;; Be consistent with emacs-29.
-          image-dired-cmd-pngnq-program "pngquant"
-          image-dired-cmd-pngnq-options '("--ext" "-nq8.png" "%t")))
+  
+  (require 'image-dired)
+  (setq image-dired-thumbnail-storage 'standard
+        ;; Be consistent with emacs-29.
+        image-dired-cmd-pngnq-program "pngquant"
+        image-dired-cmd-pngnq-options '("--ext" "-nq8.png" "%t"))
   
   (defun helm-ff-wfnames (_candidate)
     (let ((marked (helm-marked-candidates :with-wildcard t)))
       (wfnames-setup-buffer marked)))
-
+  
   (helm-make-command-from-action helm-run-wfnames
       "Run wfnames from HFF."
     'helm-ff-wfnames)
   (define-key helm-find-files-map (kbd "C-x C-q") 'helm-run-wfnames)
-
+  
   (setq helm-find-files-actions
         (helm-append-at-nth
          helm-find-files-actions
@@ -274,7 +252,7 @@ Needs `dragon' executable: https://github.com/mwh/dragon."
   (define-key helm-read-file-map (kbd "RET") 'helm-ff-RET)
   (define-key helm-find-files-map (kbd "C-i") nil)
   (define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
-
+  
   (defun helm/insert-date-in-minibuffer ()
     (interactive)
     (with-selected-window (or (active-minibuffer-window)
@@ -284,11 +262,11 @@ Needs `dragon' executable: https://github.com/mwh/dragon."
         (insert (format-time-string "%Y-%m-%d-%H:%M")))))
   (define-key helm-find-files-map (kbd "C-c y") 'helm/insert-date-in-minibuffer)
   (define-key helm-read-file-map (kbd "C-c y") 'helm/insert-date-in-minibuffer)
-
+  
   (defun helm/ff-candidates-lisp-p (candidate)
     (cl-loop for cand in (helm-marked-candidates)
              always (string-match "\\.el$" cand)))
-
+  
   (defun helm-ff-recoll-index-directory (directory)
     "Create a recoll index directory from DIRECTORY.
 Add the new created directory to `helm-recoll-directories' using the
@@ -308,13 +286,13 @@ new directory."
       (customize-set-variable 'helm-recoll-directories
                               (append `((,bn . ,index-dir)) helm-recoll-directories))
       (message "Don't forget to index config directory with 'recollindex -c %s'" index-dir)))
-
+  
   (defun helm-ff-recoll-index-directories (_candidate)
     (let ((dirs (helm-marked-candidates)))
       (cl-loop for dir in dirs
                when (file-directory-p dir)
                do (helm-ff-recoll-index-directory dir))))
-
+  
   (defun tv/change-xfce-background (file)
     (let* ((screen  (getenv "DISPLAY"))
            (monitor (shell-command-to-string
@@ -338,7 +316,7 @@ new directory."
   
   ;; Add actions to `helm-source-find-files' IF:
   (cl-defmethod helm-setup-user-source ((source helm-source-ffiles))
-      "Adds additional actions and settings to `helm-find-files'.
+    "Adds additional actions and settings to `helm-find-files'.
     - Byte compile file(s) async
     - Byte recompile directory async
     - Open info file
@@ -475,9 +453,7 @@ new directory."
   
   (helm-ff-icon-mode 1))
 
-(use-package helm-dictionary ; Its autoloads are already loaded.
-  :commands helm-dictionary
-  :init
+(with-eval-after-load 'helm-dictionary ; Its autoloads are already loaded.
   (setq helm-dictionary-database
         '(("en-fr" . "~/helm-dictionary/dic-en-fr.iso")
           ("fr-en" . "~/helm-dictionary/dic-fr-en.iso"))
@@ -490,21 +466,16 @@ new directory."
           ("fr.wiktionary.org" . "http://fr.wiktionary.org/wiki/%s"))
         helm-dictionary-ignore-diacritics t))
 
-(use-package helm-wikipedia
-    :config
+(with-eval-after-load 'helm-wikipedia
   (setq helm-wikipedia-summary-url
-      "https://fr.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&titles=%s&exintro=1&explaintext=1&redirects=1"
-      helm-wikipedia-suggest-url
-      "https://fr.wikipedia.org/w/api.php?action=opensearch&search=%s"))
+        "https://fr.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&titles=%s&exintro=1&explaintext=1&redirects=1"
+        helm-wikipedia-suggest-url
+        "https://fr.wikipedia.org/w/api.php?action=opensearch&search=%s"))
 
-(use-package helm-descbinds
-  :config
-  ;; C-h b, C-x C-h etc...
-  (helm-descbinds-mode 1))
+(helm-descbinds-mode 1)
 
-(use-package helm-lib
-  :config
-  (use-package isl)
+(with-eval-after-load 'helm-lib
+  (require 'isl)
   (setq helm-scroll-amount 4)
   (setq helm-find-function-default-project
         '("~/labo/emacs/lisp/" "~/labo/github/"))
@@ -514,21 +485,19 @@ new directory."
   (helm-help-define-key "C-r" nil)
   (helm-help-define-key "C-s" 'isl-search))
 
-(use-package helm-net
-  :config
+(with-eval-after-load 'helm-net
   (setq helm-net-prefer-curl           nil
         helm-surfraw-duckduckgo-url    "https://duckduckgo.com/?q=%s&ke=-1&kf=fw&kl=fr-fr&kr=b&k1=-1&k4=-1"
         helm-google-suggest-search-url helm-surfraw-duckduckgo-url))
 
-(use-package helm-external
-    :config
+(with-eval-after-load 'helm-external
   (setq helm-raise-command                 "wmctrl -xa %s"
         helm-default-external-file-browser "thunar")
-  (add-hook 'helm-open-file-externally-after-hook #'tv/xfce-presentation-mode-start)
-  (add-hook 'helm-open-file-externally-after-finish-hook #'tv/xfce-presentation-mode-stop))
+  (require 'emms-config)
+  (add-hook 'helm-open-file-externally-after-hook #'tv/emms-player-start-hook)
+  (add-hook 'helm-open-file-externally-after-finish-hook #'tv/emms-player-stop-hook))
 
-(use-package helm-grep
-  :config
+(with-eval-after-load 'helm-grep
   (setq helm-pdfgrep-default-read-command
         "xreader --page-label=%p '%f'"
         helm-grep-default-command
@@ -544,15 +513,13 @@ new directory."
   (add-hook 'helm-grep-mode-hook 'hl-line-mode)
   (define-key helm-grep-map   (kbd "C-M-a") 'helm/occur-which-func))
 
-(use-package helm-occur
-  :config
+(with-eval-after-load 'helm-occur
   (setq helm-occur-keep-closest-position t)
   (setq helm-occur-match-shorthands t)
   (add-hook 'helm-occur-mode-hook 'hl-line-mode)
   (define-key helm-occur-map (kbd "C-M-a") 'helm/occur-which-func))
 
-(use-package helm-elisp
-  :config
+(with-eval-after-load 'helm-elisp
   (setq helm-show-completion-display-function #'helm-display-buffer-in-own-frame
         helm-apropos-fuzzy-match    t
         helm-lisp-fuzzy-completion  t
@@ -567,32 +534,25 @@ First call indent, second complete symbol, third complete fname."
   (define-key emacs-lisp-mode-map (kbd "TAB") 'helm-multi-lisp-complete-at-point)
   (define-key lisp-interaction-mode-map (kbd "TAB") 'helm-multi-lisp-complete-at-point))
 
-(use-package helm-locate
-  :config
+(with-eval-after-load 'helm-locate
   (setq helm-locate-fuzzy-match t))
 
-(use-package helm-org
-    :requires helm-org-agenda-files-headings
-  :config
+(with-eval-after-load 'helm-org
   (setq helm-org-headings-fontify t))
 
-(use-package helm-emms
-  :after 'emms
-  :config
+(with-eval-after-load 'helm-emms
+  (require 'emms-config)
   (setq helm-emms-use-track-description-function nil))
 
-(use-package helm-find
-  :config
+(with-eval-after-load 'helm-find
   (setq helm-find-noerrors t))
 
-(use-package helm-elisp-package
-  :config
+(with-eval-after-load 'helm-elisp-package
   (setq helm-el-package-initial-filter 'installed
         helm-el-package-autoremove-on-start t
         helm-el-package-upgrade-on-start t))
 
-(use-package helm-imenu
-  :config
+(with-eval-after-load 'helm-imenu
   (add-to-list 'helm-imenu-type-faces
                '("^Use package$" . font-lock-keyword-face))
   (add-to-list 'helm-imenu-icon-type-alist
@@ -602,19 +562,13 @@ First call indent, second complete symbol, third complete fname."
   (setq helm-imenu-use-icon t
         helm-imenu-hide-item-type-name t))
 
-(use-package helm-apt :commands 'helm-apt)
-
-(use-package helm-misc
-  :config
+(with-eval-after-load 'helm-misc
   ;; Minibuffer history (Rebind to M-s).
   (customize-set-variable 'helm-minibuffer-history-key [remap next-matching-history-element]))
 
-(use-package helm-epa
-  :config
-  (helm-epa-mode 1))
+(helm-epa-mode 1)
 
-(use-package helm-fd
-  :config
+(with-eval-after-load 'helm-fd
   (setq helm-fd-executable "fdfind")
   (defun helm-fd-pa (candidate)
     (with-helm-buffer
@@ -623,11 +577,7 @@ First call indent, second complete symbol, third complete fname."
   (cl-defmethod helm-setup-user-source ((source helm-fd-class))
     (setf (slot-value source 'persistent-action) 'helm-fd-pa)))
 
-(use-package helm-all-the-icons
-  :commands helm-all-the-icons)
-
-(use-package helm-ls-git
-    :config
+(with-eval-after-load 'helm-ls-git
   (setq helm-ls-git-delete-branch-on-remote t
         helm-ls-git-auto-refresh-at-eob t))
 

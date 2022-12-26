@@ -10,8 +10,6 @@
 (setq inhibit-startup-message t)
 
 (add-to-list 'load-path "~/elisp/")
-(add-to-list 'load-path "~/elisp/use-package")
-(eval-when-compile (require 'use-package))
 (add-to-list 'load-path "~/elisp/helm")
 (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/emacs-async")
 (add-to-list 'load-path "~/elisp/helm-extensions")

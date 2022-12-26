@@ -65,7 +65,7 @@
         ("L" "Linux" entry        (file+headline  "~/org/notes.org"  "Linux")        "** %^{Title}\n  %i\n  %a" :prepend t)))
 
 ;; org-annotation-helper 
-;; (use-package org-annotation-helper)
+;; (require 'org-annotation-helper)
 
 ;; Diary-integration-in-org 
 (setq org-agenda-include-diary t) ; show also content of regular diary file.
@@ -149,14 +149,12 @@
 	  (lambda () (set-face-attribute 'org-agenda-date-weekend nil :foreground "red")))
 
 ;; org-crypt 
-(use-package org-crypt
-    :config
-  (progn
-    (org-crypt-use-before-save-magic)
-    (setq org-crypt-key "08FDB07A7433A7F2")
-    (setq org-crypt-disable-auto-save t) ;'encrypt)
-    (define-key org-mode-map (kbd "C-c e") 'org-encrypt-entry)
-    (define-key org-mode-map (kbd "C-c d") 'org-decrypt-entry)))
+(with-eval-after-load 'org-crypt
+  (org-crypt-use-before-save-magic)
+  (setq org-crypt-key "08FDB07A7433A7F2")
+  (setq org-crypt-disable-auto-save t) ;'encrypt)
+  (define-key org-mode-map (kbd "C-c e") 'org-encrypt-entry)
+  (define-key org-mode-map (kbd "C-c d") 'org-decrypt-entry))
 
 ;; fontify source code
 (setq org-src-fontify-natively t)
@@ -170,8 +168,7 @@
 (setq org-show-context-detail '((default . local)))
 
 ;; Org babel
-(use-package ob-emacs-lisp
-    :config
+(with-eval-after-load 'ob-emacs-lisp
   ;; active Babel languages
   (org-babel-do-load-languages
    'org-babel-load-languages
@@ -196,8 +193,7 @@
 ;; (setq org-startup-indented t)
 
 (when (> emacs-major-version 28)
-  (use-package org-persist
-      :config
+  (with-eval-after-load 'org-persist
     (setq org-persist-disable-when-emacs-Q t)
     (defun tv/advice--org-persist (old-fn &rest args)
       (let (user-init-file)

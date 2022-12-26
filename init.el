@@ -7,7 +7,7 @@
   (let ((time (float-time (time-subtract (current-time) tv/startup-time))))
     (message "Emacs config loaded in %s seconds"
              (format "%.2f" time))))
-(add-hook 'emacs-startup-hook #'tv/emacs-load-time t)
+(add-hook 'emacs-startup-hook #'tv/emacs-load-time 99)
 
 (when (and (fboundp 'native-comp-available-p)
            (native-comp-available-p))
@@ -265,6 +265,11 @@ Restart works only on graphic display."
 ;;; Compatibility
 ;;
 ;;
+;; For `osm' (open street map)
+(unless (fboundp 'json-available-p)
+  (defun json-available-p ()
+    (fboundp 'json-parse-string)))
+
 (unless (fboundp 'with-eval-after-load)
   (defmacro with-eval-after-load (file &rest body)
     "Execute BODY after FILE is loaded.
@@ -299,171 +304,172 @@ So far, F can only be a symbol, not a lambda expression."))
 
 ;;; Info
 ;;
-(use-package info
-  :config
-  (progn
-    ;; Cleanup `Info-directory-list'.
-    ;; When an empty string is in `Info-directory-list' info search by
-    ;; default in .emacs.d, and if it finds a file with same name as
-    ;; the info file it uses it even if it is not an info file, e.g. tramp.
-    (setq Info-directory-list (delete "" Info-directory-list))
-    ;; Additional info directories
-    (add-to-list 'Info-directory-list "/usr/local/share/info")
-    (add-to-list 'Info-directory-list "/usr/share/info")
-    (add-to-list 'Info-directory-list "~/elisp/info")
-    ;; Fancy faces in info.
-    (defface tv/info-ref-item
-      '((((background dark)) :background "DimGray" :foreground "Gold")
-        (((background light)) :background "firebrick" :foreground "LightGray"))
-      "Face for item stating with -- in info." :group 'Info :group 'faces)
+;; Cleanup `Info-directory-list'.
+;; When an empty string is in `Info-directory-list' info search by
+;; default in .emacs.d, and if it finds a file with same name as
+;; the info file it uses it even if it is not an info file, e.g. tramp.
+(setq Info-directory-list (delete "" Info-directory-list))
+;; Additional info directories
+(add-to-list 'Info-directory-list "/usr/local/share/info")
+(add-to-list 'Info-directory-list "/usr/share/info")
+(add-to-list 'Info-directory-list "~/elisp/info")
+;; Fancy faces in info.
+(defface tv/info-ref-item
+    '((((background dark)) :background "DimGray" :foreground "Gold")
+      (((background light)) :background "firebrick" :foreground "LightGray"))
+  "Face for item stating with -- in info." :group 'Info :group 'faces)
 
-    (defvar tv/info-title-face 'tv/info-ref-item)
-    (defvar tv/info-underline 'underline)
-    (defvar info-unicode-quote-start (string 8216))
-    (defvar info-unicode-quote-end (string 8217))
-    (defvar info-unicode-quoted-regexp (format "[%s]\\([^%s%s]+\\)[%s]"
-                                               info-unicode-quote-start
-                                               info-unicode-quote-start
-                                               info-unicode-quote-end
-                                               info-unicode-quote-end
-                                               ))
-    (defun tv/font-lock-doc-rules ()
-      (font-lock-add-keywords
-       nil `(("[^][\\s`]\\([^[](`'+\\)`']?[^][\\s']?" 1 font-lock-type-face)
-             (,info-unicode-quoted-regexp 1 font-lock-type-face)
-             ("^ --.*$" . tv/info-title-face)
-             ("[_]\\([^_]+\\)[_]" 1 tv/info-underline)
-             ("[\"]\\([^\"]*\\)[\"]" . font-lock-string-face)
-             ("\\*Warning:\\*" . font-lock-warning-face)
-             ("^ *\\([*•]\\) " 1 font-lock-variable-name-face)
-             ("^[[:upper:],]\\{2,\\}$" . font-lock-comment-face)
-             ("^[[:upper]][a-z- ]*:" . font-lock-variable-name-face)
-             )))
+(defvar tv/info-title-face 'tv/info-ref-item)
+(defvar tv/info-underline 'underline)
+(defvar info-unicode-quote-start (string 8216))
+(defvar info-unicode-quote-end (string 8217))
+(defvar info-unicode-quoted-regexp (format "[%s]\\([^%s%s]+\\)[%s]"
+                                           info-unicode-quote-start
+                                           info-unicode-quote-start
+                                           info-unicode-quote-end
+                                           info-unicode-quote-end
+                                           ))
+(defun tv/font-lock-doc-rules ()
+  (font-lock-add-keywords
+   nil `(("[^][\\s`]\\([^[](`'+\\)`']?[^][\\s']?" 1 font-lock-type-face)
+         (,info-unicode-quoted-regexp 1 font-lock-type-face)
+         ("^ --.*$" . tv/info-title-face)
+         ("[_]\\([^_]+\\)[_]" 1 tv/info-underline)
+         ("[\"]\\([^\"]*\\)[\"]" . font-lock-string-face)
+         ("\\*Warning:\\*" . font-lock-warning-face)
+         ("^ *\\([*•]\\) " 1 font-lock-variable-name-face)
+         ("^[[:upper:],]\\{2,\\}$" . font-lock-comment-face)
+         ("^[[:upper]][a-z- ]*:" . font-lock-variable-name-face)
+         )))
 
-    (add-hook 'Info-mode-hook 'tv/font-lock-doc-rules)
-    (define-key Info-mode-map [remap Info-index] 'helm-info-at-point)))
-
-;;; Emms
-;;
-(use-package emms
-  :commands 'helm-emms
-  :config (require 'emms-config))
+(add-hook 'Info-mode-hook 'tv/font-lock-doc-rules)
+(define-key Info-mode-map [remap Info-index] 'helm-info-at-point)
 
 ;;; Async
 ;;
 ;; Need to be called before helm config.
-(use-package async
-  :config
-  (progn
-    ;; Temporary fix for emacs bug 58919.
-    (when (< emacs-major-version 29)
-      (setq async-child-init "~/.emacs.d/fix-copy-directory.el"))
-    ;; Dired async.
-    (use-package dired-async :config (dired-async-mode 1))
-    ;; Smtp async.
-    (use-package smtpmail-async
-      :commands 'async-smtpmail-send-it)))
+;; Temporary fix for emacs bug 58919.
+(autoload 'dired-async-mode "dired-async.el" nil t)
+(when (< emacs-major-version 29)
+  (with-eval-after-load 'async
+    (setq async-child-init "~/.emacs.d/fix-copy-directory.el")))
+;; Dired async.
+(dired-async-mode 1)
 
 ;;; Helm
 ;;
+(autoload 'helm-define-key-with-subkeys "helm-core.el")
 (require 'init-helm)
 
 ;;; Term - ansi-term
 ;;
-(use-package term
-  :config
-  (progn
-    ;; Kill buffer after C-d in ansi-term.
-    (defadvice term-sentinel (after kill-buffer activate)
-      (kill-buffer))
-    (defun tv/term ()
-      (interactive)
-      (ansi-term "/bin/bash"))
-    (defadvice term-command-hook (before decode-string)
-      (setq string (decode-coding-string string locale-coding-system)))
-    (when (version< emacs-version "24.3.50.1") (ad-activate 'term-command-hook)))
-  :bind ("<f11> t" . tv/term))
+;; Kill buffer after C-d in ansi-term.
+(defadvice term-sentinel (after kill-buffer activate)
+  (kill-buffer))
+(defun tv/term ()
+  (interactive)
+  (ansi-term "/bin/bash"))
+(defadvice term-command-hook (before decode-string)
+  (setq string (decode-coding-string string locale-coding-system)))
+(when (version< emacs-version "24.3.50.1") (ad-activate 'term-command-hook))
+(global-set-key (kbd "<f11> t") 'tv/term)
 
 ;; Browse url
 ;;
 ;;
-(use-package browse-url
-  :config
+(with-eval-after-load 'browse-url
   ;; See avail browser at ~/labo/github/helm/helm-net.el:253
   (setq browse-url-firefox-program "firefox"
         browse-url-browser-function 'helm-browse-url-firefox))
 
 ;;; Ediff
 ;;
-(use-package ediff
-  :config
-  (progn
-    (setq ediff-window-setup-function 'ediff-setup-windows-plain
-          ediff-split-window-function 'split-window-horizontally
-          ediff-show-ancestor         nil)))
+(setq ediff-window-setup-function 'ediff-setup-windows-plain
+      ediff-split-window-function 'split-window-horizontally
+      ediff-show-ancestor         nil)
+
+;;; tv-utils fns
+;;
+(require 'tv-utils)
+
+(define-key lisp-interaction-mode-map (kbd "C-M-!") 'tv/eval-region) 
+(define-key emacs-lisp-mode-map (kbd "C-M-!") 'tv/eval-region)
+(advice-add 'view-echo-area-messages :around 'tv/view-echo-area-messages)
+(helm-define-key-with-subkeys global-map (kbd "C-h e")
+                              ?e #'view-echo-area-messages
+                              '((?q . tv/quit-echo-area-messages)))
+(tv-save-place-mode 1)
+(global-set-key (kbd "M-\"") 'tv/insert-double-quote)
+(global-set-key (kbd "C-M-`") 'tv/insert-double-backquote)
+(global-set-key (kbd "C-M-(") 'tv/move-pair-forward)
+(global-set-key (kbd "C-M-\"") 'tv/insert-double-quote-and-close-forward)
+(global-set-key (kbd "C-M-)") 'tv/insert-pair-and-close-forward)
+(global-set-key (kbd "<f5> c") 'tv/toggle-calendar)
+(global-set-key [remap kill-whole-line] 'tv/kill-whole-line)
+(global-set-key [remap kill-line] 'tv/kill-line)
+(global-set-key [remap delete-char] 'tv/delete-char)
+(global-set-key [remap c-electric-delete-forward] 'tv/delete-char)
+(global-set-key (kbd "C-<") 'other-window-backward)
+(global-set-key (kbd "C->") 'other-window-forward)
+(global-set-key [C-left] 'screen-top)
+(global-set-key [C-right] 'screen-bottom)
+(global-set-key (kbd "<M-down>") 'tv/scroll-down)
+(global-set-key (kbd "<M-up>") 'tv/scroll-up)
+(global-set-key (kbd "<C-M-down>") 'tv/scroll-other-down)
+(global-set-key (kbd "<C-M-up>") 'tv/scroll-other-up)
+(global-set-key (kbd "C-c k") 'tv/insert-kbd-at-point)
 
 ;;; Help
 ;;
-(use-package help
-  :after tv-utils
-  :config
-  (progn
-    ;; Fix curly quotes in emacs-25
-    (and (boundp 'text-quoting-style)
-         (setq text-quoting-style 'grave))
-    ;; Since they use pp-buffer, it is not possible to override pp so
-    ;; we need to duplicate the whole function with modifications and
-    ;; override the original by advice.
-    ;; Test: (describe-variable 'load-history)
-    (advice-add 'describe-variable :override #'tv/describe-variable)))
+;; Fix curly quotes in emacs-25
+(when (boundp 'text-quoting-style)
+  (setq text-quoting-style 'grave))
+;; Since they use pp-buffer, it is not possible to override pp so
+;; we need to duplicate the whole function with modifications and
+;; override the original by advice.
+;; Test: (describe-variable 'load-history)
+(advice-add 'describe-variable :override #'tv/describe-variable)
 
 ;;; comment
 ;;
-(use-package newcomment
-  :config
-  (progn
-    ;; Change the behavior of `M-;' by commenting line.
-    ;; Much simpler than emacs-25 `comment-line'.
-    (defun comment--advice-dwim (old--fn &rest args)
-      (if (region-active-p)
-          (apply old--fn args)
-        (save-excursion
-          (goto-char (point-at-bol))
-          (push-mark (point-at-eol) t t)
-          (apply old--fn args))
-        (indent-region (point-at-bol) (point-at-eol))
-        (forward-line 1)
-        (back-to-indentation)))
-    (advice-add 'comment-dwim :around 'comment--advice-dwim)))
+(with-eval-after-load 'newcomment
+  ;; Change the behavior of `M-;' by commenting line.
+  ;; Much simpler than emacs-25 `comment-line'.
+  (defun comment--advice-dwim (old--fn &rest args)
+    (if (region-active-p)
+        (apply old--fn args)
+      (save-excursion
+        (goto-char (point-at-bol))
+        (push-mark (point-at-eol) t t)
+        (apply old--fn args))
+      (indent-region (point-at-bol) (point-at-eol))
+      (forward-line 1)
+      (back-to-indentation)))
+  (advice-add 'comment-dwim :around 'comment--advice-dwim))
 
 ;;; Woman/man
 ;;
-(use-package woman
-  :config
+(with-eval-after-load 'woman
   (setq woman-use-own-frame nil))
 
-(use-package man
-    :config
+(with-eval-after-load 'man
   (setq Man-notify-method 'pushy))
 
 ;; show-paren-mode
 ;;
-(use-package paren
-  :config
-  (progn
-    (show-paren-mode 1)
-    (setq show-paren-ring-bell-on-mismatch t)))
+(with-eval-after-load 'paren
+  (show-paren-mode 1)
+  (setq show-paren-ring-bell-on-mismatch t))
 
-(use-package electric
-  :config (electric-indent-mode -1))
+(with-eval-after-load 'electric
+  (electric-indent-mode -1))
 
 ;;; auto-compression-mode
 ;;
-(use-package jka-cmpr-hook
-  :config (auto-compression-mode 1))
+(with-eval-after-load 'jka-cmpr-hook
+  (auto-compression-mode 1))
 
-(use-package flymake
-  :config
+(with-eval-after-load 'flymake
   (if (> emacs-major-version 28)
       (customize-set-variable 'flymake-mode-line-lighter "🪰")
     (defvar flymake-mode-line-lighter "🪰")
@@ -493,8 +499,7 @@ So far, F can only be a symbol, not a lambda expression."))
 
 ;;; Shell script
 ;;
-(use-package sh-script
-    :config
+(with-eval-after-load 'sh-script
   (defun tv/set-sh-script-mode-name ()
     (setq-local mode-name (all-the-icons-alltheicon "script" :height 1.0 :v-adjust 0.0))
     (setq mode-line-process nil))
@@ -502,184 +507,157 @@ So far, F can only be a symbol, not a lambda expression."))
   (add-hook 'sh-mode-hook 'flymake-mode)
   (add-hook 'sh-mode-hook #'tv/set-sh-script-mode-name)
   ;; Use shellcheck as backend for flymake.
-  (use-package flymake-shellcheck
-      :ensure t
-      :commands (flymake-shellcheck-load)
-      :init
-      (add-hook 'sh-mode-hook 'flymake-shellcheck-load))
-  
-  :bind (:map sh-mode-map
-              ("RET" . newline-and-indent)
-              ("C-h f" . helm-info-bash)))
+  (autoload 'flymake-shellcheck-load "flymake-shellcheck.el")
+  (add-hook 'sh-mode-hook 'flymake-shellcheck-load)
+  (define-key sh-mode-map (kbd "RET") 'newline-and-indent)
+  (define-key sh-mode-map (kbd "C-h f") 'helm-info-bash))
 
 ;;; Auto-conf
 ;;
-(use-package autoconf-mode
-  :config
-  (add-to-list 'auto-mode-alist
-               '("\\.ac\\'\\|configure\\.in\\'" . autoconf-mode)))
-
-(use-package autotest-mode
-  :config
-  (add-to-list 'auto-mode-alist
-               '("\\.at\\'" . autotest-mode)))
-
-;;; Desktop-entry-mode
-;;
-(use-package desktop-entry-mode
-  :load-path "~/elisp/desktop-file-utils/"
-  :commands 'desktop-entry-mode
-  :config
-  (add-to-list 'auto-mode-alist
-               '("\\.desktop\\(\\.in\\)?$" . desktop-entry-mode)))
+(add-to-list 'auto-mode-alist '("\\.ac\\'\\|configure\\.in\\'" . autoconf-mode))
+(add-to-list 'auto-mode-alist '("\\.at\\'" . autotest-mode))
 
 ;;; Winner
 ;;
-(use-package winner
-  :config
-  (setq winner-boring-buffers '("*Completions*"
-                                "*Compile-Log*"
-                                "*inferior-lisp*"
-                                "*Fuzzy Completions*"
-                                "*Apropos*"
-                                "*Help*"
-                                "*cvs*"
-                                "*Buffer List*"
-                                "*Ibuffer*"
-                                "*mu4e-loading*"
-                                ))
-  (winner-mode 1)
-  (helm-define-key-with-subkeys
-      winner-mode-map (kbd "C-c <left>")
-      'left 'winner-undo '((right . winner-redo))
-      nil nil 3))
+(setq winner-boring-buffers '("*Completions*"
+                              "*Compile-Log*"
+                              "*inferior-lisp*"
+                              "*Fuzzy Completions*"
+                              "*Apropos*"
+                              "*Help*"
+                              "*cvs*"
+                              "*Buffer List*"
+                              "*Ibuffer*"
+                              "*mu4e-loading*"
+                              ))
+(winner-mode 1)
+(helm-define-key-with-subkeys
+    winner-mode-map (kbd "C-c <left>")
+    'left 'winner-undo '((right . winner-redo))
+    nil nil 3)
 
 ;;; All-the-icons and mode-line
 ;;
 ;; Don't forget to install necessary fonts with M-x
 ;; all-the-icons-install-fonts.
-(use-package all-the-icons
-  :ensure t
-  :config
-  (defun tv/git-branch-in-mode-line ()
-    (require 'helm-ls-git)
-    (when (and (buffer-file-name (current-buffer))
-               (fboundp 'helm-ls-git--branch)
-               (helm-ls-git-root-dir))
-      (format " (%s %s)"
-              (char-to-string #x29a9) ; (⦩) Needs a one line height char.
-              (propertize (helm-ls-git--branch) 'face '(:foreground "yellow")))))
+(defun tv/git-branch-in-mode-line ()
+(require 'helm-ls-git)
+(when (and (buffer-file-name (current-buffer))
+           (fboundp 'helm-ls-git--branch)
+           (helm-ls-git-root-dir))
+  (format " (%s %s)"
+          (char-to-string #x29a9) ; (⦩) Needs a one line height char.
+          (propertize (helm-ls-git--branch) 'face '(:foreground "yellow")))))
 
-  (defun tv/select-git-branches-menu ()
-    (let ((branchs (split-string (shell-command-to-string "git branch") "\n" t)))
-      (cl-loop with current
-               for b in branchs
-               for branch = (replace-regexp-in-string "[ ]" "" b)
-               when (string-match "\\`\\*" branch) do (setq current branch)
-               collect (vector branch
-                               `(lambda ()
-                                  (interactive)
-                                  (let ((real (replace-regexp-in-string "\\`\\*" "" ,branch)))
-                                    (if (string= ,branch ,current)
-                                        (message "Already on %s branch" real)
-                                      (shell-command (format "git checkout -q '%s'" real))
-                                      (message "Switched to %s branch" real)))))
-               into lst
-               finally return
-               (append '("Git branches")
-                       lst
-                       '("--" ["Git status" vc-dir])))))
+(defun tv/select-git-branches-menu ()
+  (let ((branchs (split-string (shell-command-to-string "git branch") "\n" t)))
+    (cl-loop with current
+             for b in branchs
+             for branch = (replace-regexp-in-string "[ ]" "" b)
+             when (string-match "\\`\\*" branch) do (setq current branch)
+             collect (vector branch
+                             `(lambda ()
+                                (interactive)
+                                (let ((real (replace-regexp-in-string "\\`\\*" "" ,branch)))
+                                  (if (string= ,branch ,current)
+                                      (message "Already on %s branch" real)
+                                    (shell-command (format "git checkout -q '%s'" real))
+                                    (message "Switched to %s branch" real)))))
+             into lst
+             finally return
+             (append '("Git branches")
+                     lst
+                     '("--" ["Git status" vc-dir])))))
 
-  (defun tv/custom-modeline-github-vc ()
-    (require 'helm-ls-git)
-    (let ((branch     
-           (when (and (buffer-file-name (current-buffer))
-                      (fboundp 'helm-ls-git--branch)
-                      (helm-ls-git-root-dir))
-             (helm-ls-git--branch)))
-          (status-color (if (string= (helm-ls-git-status) "")
-                            "SkyBlue" "yellow")))
-      (when branch
-        (concat
-         (propertize (format " %s" (all-the-icons-faicon "git")) 'face `(:height 1.2) 'display '(raise -0.1))
-         " · "
-         (propertize (format "%s" (all-the-icons-octicon "git-branch"))
-                     'face `(:height 1.3 :family ,(all-the-icons-octicon-family) :foreground "Deepskyblue3")
-                     'display '(raise -0.1))
-         (propertize (format " %s" branch)
-                     'face `(:height 0.9 :foreground ,status-color)
-                     'mouse-face 'highlight
-                     'help-echo "Mouse-1: Switch to branch"
-                     'local-map (make-mode-line-mouse-map
-                                 'mouse-1 (lambda ()
-                                            (interactive)
-                                            (popup-menu (tv/select-git-branches-menu)))))))))
-  
-  (setq-default mode-line-format '("%e"
-                                   mode-line-front-space
-                                   mode-line-mule-info
-                                   mode-line-client
-                                   mode-line-modified
-                                   mode-line-remote
-                                   mode-line-frame-identification
-                                   mode-line-buffer-identification
-                                   " "
-                                   mode-line-modes
-                                   " "
-                                   "%p %l/%c"
-                                   " "
-                                   (:eval (tv/custom-modeline-github-vc))
-                                   " "
-                                   mode-line-misc-info
-                                   mode-line-end-spaces))
-  (when (>= emacs-major-version 29)
-    ;; A new annoyance for each major version.
-    (set-face-attribute 'mode-line-active nil :inherit 'mode-line)
-    (set-face-attribute 'mode-line-inactive nil :inherit 'mode-line))
-  ;; Icons for file extensions.
-  (setf (alist-get "dat" all-the-icons-extension-icon-alist nil nil 'equal)
-        '(all-the-icons-faicon "bar-chart" :face all-the-icons-cyan :height 0.9 :v-adjust 0.0))
-  (add-to-list 'all-the-icons-extension-icon-alist
-               '("avi" all-the-icons-faicon "film" :face all-the-icons-blue))
-  (add-to-list 'all-the-icons-extension-icon-alist
-               '("3gp" all-the-icons-faicon "film" :face all-the-icons-blue))
-  (add-to-list 'all-the-icons-extension-icon-alist
-               '("m4v" all-the-icons-faicon "film" :face all-the-icons-blue))
-  (add-to-list 'all-the-icons-extension-icon-alist
-               '("xz" all-the-icons-octicon "file-binary"
-                 :v-adjust 0.0 :face all-the-icons-lmaroon))
-  (add-to-list 'all-the-icons-extension-icon-alist
-               '("eln" all-the-icons-octicon "file-binary"
-                 :v-adjust 0.0 :face all-the-icons-dsilver))
-  (add-to-list 'all-the-icons-extension-icon-alist
-               '("epub" all-the-icons-octicon "book"
-                 :v-adjust 0.0 :face all-the-icons-red-alt))
-  ;; Icons for modes.
-  (setf (alist-get 'sh-mode all-the-icons-mode-icon-alist)
-        '(all-the-icons-alltheicon "terminal" :face all-the-icons-purple :v-adjust 0.0))
-  (add-to-list 'all-the-icons-mode-icon-alist
-               '(diary-mode all-the-icons-faicon "calendar" :height 1.0
-                 :v-adjust -0.1 :face all-the-icons-yellow))
-  (add-to-list 'all-the-icons-mode-icon-alist
-               '(diary-fancy-display-mode all-the-icons-faicon "calendar" :height 1.0
-                 :v-adjust -0.1 :face all-the-icons-yellow))
-  (add-to-list 'all-the-icons-mode-icon-alist
-               '(calendar-mode all-the-icons-faicon "calendar" :height 1.0
-                 :v-adjust -0.1 :face all-the-icons-yellow))
-  (add-to-list 'all-the-icons-mode-icon-alist
-               '(Info-mode all-the-icons-faicon "info"
-                 :v-adjust -0.1 :face all-the-icons-purple))
-  ;; Regexp icons.
-  (setq all-the-icons-regexp-icon-alist
-        (append '(("^bookmark" all-the-icons-octicon "bookmark"
-                   :height 1.1 :v-adjust 0.0 :face all-the-icons-lpink))
-                (delete (assoc "bookmark" all-the-icons-regexp-icon-alist)
-                        all-the-icons-regexp-icon-alist))))
+(defun tv/custom-modeline-github-vc ()
+  (require 'helm-ls-git)
+  (let ((branch     
+         (when (and (buffer-file-name (current-buffer))
+                    (fboundp 'helm-ls-git--branch)
+                    (helm-ls-git-root-dir))
+           (helm-ls-git--branch)))
+        (status-color (if (string= (helm-ls-git-status) "")
+                          "SkyBlue" "yellow")))
+    (when branch
+      (concat
+       (propertize (format " %s" (all-the-icons-faicon "git")) 'face `(:height 1.2) 'display '(raise -0.1))
+       " · "
+       (propertize (format "%s" (all-the-icons-octicon "git-branch"))
+                   'face `(:height 1.3 :family ,(all-the-icons-octicon-family) :foreground "Deepskyblue3")
+                   'display '(raise -0.1))
+       (propertize (format " %s" branch)
+                   'face `(:height 0.9 :foreground ,status-color)
+                   'mouse-face 'highlight
+                   'help-echo "Mouse-1: Switch to branch"
+                   'local-map (make-mode-line-mouse-map
+                               'mouse-1 (lambda ()
+                                          (interactive)
+                                          (popup-menu (tv/select-git-branches-menu)))))))))
+
+(setq-default mode-line-format '("%e"
+                                 mode-line-front-space
+                                 mode-line-mule-info
+                                 mode-line-client
+                                 mode-line-modified
+                                 mode-line-remote
+                                 mode-line-frame-identification
+                                 mode-line-buffer-identification
+                                 " "
+                                 mode-line-modes
+                                 " "
+                                 "%p %l/%c"
+                                 " "
+                                 (:eval (tv/custom-modeline-github-vc))
+                                 " "
+                                 mode-line-misc-info
+                                 mode-line-end-spaces))
+(when (>= emacs-major-version 29)
+  ;; A new annoyance for each major version.
+  (set-face-attribute 'mode-line-active nil :inherit 'mode-line)
+  (set-face-attribute 'mode-line-inactive nil :inherit 'mode-line))
+;; Icons for file extensions.
+(setf (alist-get "dat" all-the-icons-extension-icon-alist nil nil 'equal)
+      '(all-the-icons-faicon "bar-chart" :face all-the-icons-cyan :height 0.9 :v-adjust 0.0))
+(add-to-list 'all-the-icons-extension-icon-alist
+             '("avi" all-the-icons-faicon "film" :face all-the-icons-blue))
+(add-to-list 'all-the-icons-extension-icon-alist
+             '("3gp" all-the-icons-faicon "film" :face all-the-icons-blue))
+(add-to-list 'all-the-icons-extension-icon-alist
+             '("m4v" all-the-icons-faicon "film" :face all-the-icons-blue))
+(add-to-list 'all-the-icons-extension-icon-alist
+             '("xz" all-the-icons-octicon "file-binary"
+               :v-adjust 0.0 :face all-the-icons-lmaroon))
+(add-to-list 'all-the-icons-extension-icon-alist
+             '("eln" all-the-icons-octicon "file-binary"
+               :v-adjust 0.0 :face all-the-icons-dsilver))
+(add-to-list 'all-the-icons-extension-icon-alist
+             '("epub" all-the-icons-octicon "book"
+               :v-adjust 0.0 :face all-the-icons-red-alt))
+;; Icons for modes.
+(setf (alist-get 'sh-mode all-the-icons-mode-icon-alist)
+      '(all-the-icons-alltheicon "terminal" :face all-the-icons-purple :v-adjust 0.0))
+(add-to-list 'all-the-icons-mode-icon-alist
+             '(diary-mode all-the-icons-faicon "calendar" :height 1.0
+               :v-adjust -0.1 :face all-the-icons-yellow))
+(add-to-list 'all-the-icons-mode-icon-alist
+             '(diary-fancy-display-mode all-the-icons-faicon "calendar" :height 1.0
+               :v-adjust -0.1 :face all-the-icons-yellow))
+(add-to-list 'all-the-icons-mode-icon-alist
+             '(calendar-mode all-the-icons-faicon "calendar" :height 1.0
+               :v-adjust -0.1 :face all-the-icons-yellow))
+(add-to-list 'all-the-icons-mode-icon-alist
+             '(Info-mode all-the-icons-faicon "info"
+               :v-adjust -0.1 :face all-the-icons-purple))
+;; Regexp icons.
+(setq all-the-icons-regexp-icon-alist
+      (append '(("^bookmark" all-the-icons-octicon "bookmark"
+                 :height 1.1 :v-adjust 0.0 :face all-the-icons-lpink))
+              (delete (assoc "bookmark" all-the-icons-regexp-icon-alist)
+                      all-the-icons-regexp-icon-alist)))
 
 ;;; Time
 ;;
-(use-package time
-  :config
+(with-eval-after-load 'time
   (defun tv/round-time-to-nearest-hour ()
     (let* ((time-string (format-time-string " %I:%M "))
            (split (split-string time-string ":"))
@@ -733,7 +711,7 @@ So far, F can only be a symbol, not a lambda expression."))
        icon)))
 
   ;; World-time
-  (when (eq display-time-world-list t) ; emacs-26+
+  (when (eq display-time-world-list t)  ; emacs-26+
     (setq display-time-world-list
           (let ((nyt (format-time-string "%z" nil "America/New_York"))
                 (gmt (format-time-string "%z" nil "Europe/London")))
@@ -761,11 +739,11 @@ So far, F can only be a symbol, not a lambda expression."))
   (add-to-list 'display-time-world-list '("Hongkong" "Hongkong"))
   (add-to-list 'display-time-world-list '("Indian/Antananarivo" "Antananarivo"))
   (add-to-list 'display-time-world-list '("Indian/Reunion" "Reunion"))
-  
+
   (setq display-time-24hr-format   t
         display-time-day-and-date  (null (display-graphic-p))
         display-time-string-forms
-        '( ;; date
+        '(;; date
           (if (and (not display-time-format) display-time-day-and-date)
               (format-time-string " %a%e %b " now)
             "")
@@ -773,8 +751,8 @@ So far, F can only be a symbol, not a lambda expression."))
           (concat
            (tv/custom-modeline-time)
            ;; `time-zone' is a let-bounded var in `display-time-update'.
-           (and time-zone (format "(%s)" time-zone)))))
-  (display-time))
+           (and time-zone (format "(%s)" time-zone))))))
+(display-time)
 
 ;;; Frame and window config.
 ;;
@@ -790,207 +768,194 @@ So far, F can only be a symbol, not a lambda expression."))
 ;; Cascadia is available at
 ;; https://github.com/microsoft/cascadia-code/releases and Fira is
 ;; available in linuxmint.
-(use-package frame
-  :config
-  (progn
-    ;; Need fonts-emojione package (apt)
-    ;; See (info "(elisp) Fontsets")
-    (when (member "Emoji One" (font-family-list))
-      (set-fontset-font
-       t 'symbol (font-spec :family "Emoji One") nil 'prepend))
-    (setq-default frame-background-mode 'dark)
-    (setq initial-frame-alist '((fullscreen . maximized)))
-    (setq frame-auto-hide-function 'delete-frame)
-    (defun tv/transparency-modify (arg)
-      "Increase Emacs frame transparency.
+;; Need fonts-emojione package (apt)
+;; See (info "(elisp) Fontsets")
+(when (member "Emoji One" (font-family-list))
+  (set-fontset-font
+   t 'symbol (font-spec :family "Emoji One") nil 'prepend))
+(setq-default frame-background-mode 'dark)
+(setq initial-frame-alist '((fullscreen . maximized)))
+(setq frame-auto-hide-function 'delete-frame)
+(defun tv/transparency-modify (arg)
+  "Increase Emacs frame transparency.
 With a prefix arg decrease transparency."
-      (interactive "P")
-      (when (window-system)
-        (let* ((ini-alpha (frame-parameter nil 'alpha))
-               (def-alpha (or ini-alpha 80))
-               (mod-alpha (if arg
-                              (min (+ def-alpha 10) 100)
-                            (max (- def-alpha 10)
-                                 frame-alpha-lower-limit)))) ; 20
-          (modify-frame-parameters nil (list (cons 'alpha mod-alpha)))
-          (message "Alpha[%s]" mod-alpha))))
-    
-    (if (or (daemonp)
-            (not (window-system))
-            (< emacs-major-version 24))
-        (setq default-frame-alist `((vertical-scroll-bars . nil)
-                                    (tool-bar-lines . 0)
-                                    (menu-bar-lines . 0)
-                                    (title . ,(format "%s-%s"
-                                                      (capitalize (invocation-name))
-                                                      emacs-version))
-                                    (cursor-color . "red")))
+  (interactive "P")
+  (when (window-system)
+    (let* ((ini-alpha (frame-parameter nil 'alpha))
+           (def-alpha (or ini-alpha 80))
+           (mod-alpha (if arg
+                          (min (+ def-alpha 10) 100)
+                        (max (- def-alpha 10)
+                             frame-alpha-lower-limit)))) ; 20
+      (modify-frame-parameters nil (list (cons 'alpha mod-alpha)))
+      (message "Alpha[%s]" mod-alpha))))
 
-      (setq default-frame-alist `((foreground-color . "Wheat")
-                                  (background-color . "Gray20")
-                                  (alpha . 100) ;; Needs compositing manager.
-                                  ;; New frames go in right corner.
-                                  (left . ,(- (* (window-width) 8) 160)) ; Chars are 8 bits long.
-                                  (vertical-scroll-bars . nil)
-                                  (title . ,(format "%s-%s"
-                                                    (capitalize (invocation-name))
-                                                    emacs-version))
-                                  (tool-bar-lines . 0)
-                                  (menu-bar-lines . 0)
-                                  (cursor-color . "red")
-                                  (fullscreen . nil)
-                                  )))
+(if (or (daemonp)
+        (not (window-system))
+        (< emacs-major-version 24))
+    (setq default-frame-alist `((vertical-scroll-bars . nil)
+                                (tool-bar-lines . 0)
+                                (menu-bar-lines . 0)
+                                (title . ,(format "%s-%s"
+                                                  (capitalize (invocation-name))
+                                                  emacs-version))
+                                (cursor-color . "red")))
 
-    ;; Special buffer display.
-    ;; Use `display-buffer-alist' instead of deprecated
-    ;; `special-display-regexps'. All entries must be dedicated to
-    ;; replicate `special-display-regexps' behavior.
-    (customize-set-variable 'display-buffer-alist
-                            (append '(("\\*Help"
-                                       ;; Avoid creating new frames
-                                       ;; when pressing buttons
-                                       ;; in help buffer.
-                                       (display-buffer-reuse-window
-                                        display-buffer-pop-up-frame)
-                                       (reusable-frames . 0)
-                                       (dedicated . t)
-                                       (pop-up-frame-parameters .
-                                        ((minibuffer . nil)
-                                         (width . 80)
-                                         (height . 24)
-                                         (left-fringe . 0)
-                                         (border-width . 0)
-                                         (menu-bar-lines . 0)
-                                         (tool-bar-lines . 0)
-                                         (unsplittable . t)
-                                         (top . 24)
-                                         (left . 450)
-                                         (background-color . "Lightsteelblue1")
-                                         (foreground-color . "black")
-                                         (alpha . nil)
-                                         (fullscreen . nil))))
-                                      ("\\*Compile-Log"
-                                       ;; Without these settings
-                                       ;; compile creates a new frame
-                                       ;; for each block compiled in file!
-                                       (display-buffer-reuse-window
-                                        display-buffer-pop-up-frame)
-                                       (reusable-frames . 0)
-                                       (dedicated . t)
-                                       (pop-up-frame-parameters .
-                                        ((minibuffer . nil)
-                                         (width . 85)
-                                         (height . 24)
-                                         (left-fringe . 0)
-                                         (border-width . 0)
-                                         (menu-bar-lines . 0)
-                                         (tool-bar-lines . 0)
-                                         (unsplittable . t)
-                                         (top . 24)
-                                         (left . 450)
-                                         (background-color . "Brown4")
-                                         (foreground-color . "black")
-                                         (alpha . nil)
-                                         (fullscreen . nil))))
-                                      ("\\*helm apt show\\*"
-                                       (display-buffer-pop-up-frame)
-                                       (dedicated . t)
-                                       (pop-up-frame-parameters .
-                                        ((minibuffer . nil)
-                                         (width . 80)
-                                         (height . 24)
-                                         (left-fringe . 0)
-                                         (border-width . 0)
-                                         (menu-bar-lines . 0)
-                                         (tool-bar-lines . 0)
-                                         (unsplittable . t)
-                                         (top . 24)
-                                         (left . 450)
-                                         (background-color . "Lightsteelblue4")
-                                         (foreground-color . "black")
-                                         (alpha . nil)
-                                         (fullscreen . nil))))
-                                      ("^\\*osm"
-                                       (display-buffer-same-window)
-                                       (dedicated . t)))
-                                    display-buffer-alist)))
-  :bind ("C-8" . tv/transparency-modify))
+  (setq default-frame-alist `((foreground-color . "Wheat")
+                              (background-color . "Gray20")
+                              (alpha . 100) ;; Needs compositing manager.
+                              ;; New frames go in right corner.
+                              (left . ,(- (* (window-width) 8) 160)) ; Chars are 8 bits long.
+                              (vertical-scroll-bars . nil)
+                              (title . ,(format "%s-%s"
+                                                (capitalize (invocation-name))
+                                                emacs-version))
+                              (tool-bar-lines . 0)
+                              (menu-bar-lines . 0)
+                              (cursor-color . "red")
+                              (fullscreen . nil)
+                              )))
 
-(use-package window
-  :no-require t
-  ;; Don't split windows horizontally.
-  :init (setq split-width-threshold nil)
-  (use-package helm
-    :config
-    (setq fit-window-to-buffer-horizontally 1)
-    (helm-define-key-with-subkeys global-map (kbd "C-x ^") ?^ 'enlarge-window
-                                  '((?ç . shrink-window)
-                                    (?} . enlarge-window-horizontally)
-                                    (?{ . shrink-window-horizontally))
-                                  (propertize "^:Enl.ver, }:Enl.hor, ç:Shr.ver, {:Shr.hor" 'face 'minibuffer-prompt))
-    (helm-define-key-with-subkeys global-map (kbd "C-x }") ?} 'enlarge-window-horizontally
-                                  '((?^ . enlarge-window)
-                                    (?ç . shrink-window)
-                                    (?{ . shrink-window-horizontally))
-                                  (propertize "^:Enl.ver, }:Enl.hor, ç:Shr.ver, {:Shr.hor" 'face 'minibuffer-prompt)))
-    :bind (("C-x C-²" . delete-window)
-           ("C-x C-&" . delete-other-windows)
-           ("C-x C-é" . split-window-vertically)
-           ("C-x C-\"" . split-window-horizontally)))
+;; Special buffer display.
+;; Use `display-buffer-alist' instead of deprecated
+;; `special-display-regexps'. All entries must be dedicated to
+;; replicate `special-display-regexps' behavior.
+(customize-set-variable 'display-buffer-alist
+                        (append '(("\\*Help"
+                                   ;; Avoid creating new frames
+                                   ;; when pressing buttons
+                                   ;; in help buffer.
+                                   (display-buffer-reuse-window
+                                    display-buffer-pop-up-frame)
+                                   (reusable-frames . 0)
+                                   (dedicated . t)
+                                   (pop-up-frame-parameters .
+                                    ((minibuffer . nil)
+                                     (width . 80)
+                                     (height . 24)
+                                     (left-fringe . 0)
+                                     (border-width . 0)
+                                     (menu-bar-lines . 0)
+                                     (tool-bar-lines . 0)
+                                     (unsplittable . t)
+                                     (top . 24)
+                                     (left . 450)
+                                     (background-color . "Lightsteelblue1")
+                                     (foreground-color . "black")
+                                     (alpha . nil)
+                                     (fullscreen . nil))))
+                                  ("\\*Compile-Log"
+                                   ;; Without these settings
+                                   ;; compile creates a new frame
+                                   ;; for each block compiled in file!
+                                   (display-buffer-reuse-window
+                                    display-buffer-pop-up-frame)
+                                   (reusable-frames . 0)
+                                   (dedicated . t)
+                                   (pop-up-frame-parameters .
+                                    ((minibuffer . nil)
+                                     (width . 85)
+                                     (height . 24)
+                                     (left-fringe . 0)
+                                     (border-width . 0)
+                                     (menu-bar-lines . 0)
+                                     (tool-bar-lines . 0)
+                                     (unsplittable . t)
+                                     (top . 24)
+                                     (left . 450)
+                                     (background-color . "Brown4")
+                                     (foreground-color . "black")
+                                     (alpha . nil)
+                                     (fullscreen . nil))))
+                                  ("\\*helm apt show\\*"
+                                   (display-buffer-pop-up-frame)
+                                   (dedicated . t)
+                                   (pop-up-frame-parameters .
+                                    ((minibuffer . nil)
+                                     (width . 80)
+                                     (height . 24)
+                                     (left-fringe . 0)
+                                     (border-width . 0)
+                                     (menu-bar-lines . 0)
+                                     (tool-bar-lines . 0)
+                                     (unsplittable . t)
+                                     (top . 24)
+                                     (left . 450)
+                                     (background-color . "Lightsteelblue4")
+                                     (foreground-color . "black")
+                                     (alpha . nil)
+                                     (fullscreen . nil))))
+                                  ("^\\*osm"
+                                   (display-buffer-same-window)
+                                   (dedicated . t)))
+                                display-buffer-alist))
+(global-set-key (kbd "C-8") 'tv/transparency-modify)
+
+;; Don't split windows horizontally.
+(setq split-width-threshold nil)
+(setq fit-window-to-buffer-horizontally 1)
+(helm-define-key-with-subkeys global-map (kbd "C-x ^") ?^ 'enlarge-window
+                              '((?ç . shrink-window)
+                                (?} . enlarge-window-horizontally)
+                                (?{ . shrink-window-horizontally))
+                              (propertize "^:Enl.ver, }:Enl.hor, ç:Shr.ver, {:Shr.hor" 'face 'minibuffer-prompt))
+(helm-define-key-with-subkeys global-map (kbd "C-x }") ?} 'enlarge-window-horizontally
+                              '((?^ . enlarge-window)
+                                (?ç . shrink-window)
+                                (?{ . shrink-window-horizontally))
+                              (propertize "^:Enl.ver, }:Enl.hor, ç:Shr.ver, {:Shr.hor" 'face 'minibuffer-prompt))
+(global-set-key (kbd "C-x C-²") 'delete-window)
+(global-set-key (kbd "C-x C-&") 'delete-other-windows)
+(global-set-key (kbd "C-x C-é") 'split-window-vertically)
+(global-set-key (kbd "C-x C-\"") 'split-window-horizontally)
 
 ;;; Use `net-utils-run-simple' in net-utils fns.
 ;;
-(use-package net-utils
-  :config
-  (progn
-    (defun ping (host)
-      "Ping HOST.
+(with-eval-after-load 'net-utils
+  (defun ping (host)
+    "Ping HOST.
 If your system's ping continues until interrupted, you can try setting
 `ping-program-options'."
-      (interactive "sPing host: ")
-      (let ((options
-             (if ping-program-options
-                 (append ping-program-options (list host))
-               (list host))))
-        (net-utils-run-simple
-         (concat "Ping" " " host)
-         ping-program
-         options)))
-
-    (defun run-dig (host)
-      "Run dig program."
-      (interactive "sLookup host: ")
+    (interactive "sPing host: ")
+    (let ((options
+           (if ping-program-options
+               (append ping-program-options (list host))
+             (list host))))
       (net-utils-run-simple
-       (concat "** "
-               (mapconcat 'identity
-                          (list "Dig" host dig-program)
-                          " ** "))
-       dig-program
-       (list host)))
-    (setq netstat-program "ss"
-          netstat-program-options '("-p" "-u" "-t" "-n"))))
+       (concat "Ping" " " host)
+       ping-program
+       options)))
+
+  (defun run-dig (host)
+    "Run dig program."
+    (interactive "sLookup host: ")
+    (net-utils-run-simple
+     (concat "** "
+             (mapconcat 'identity
+                        (list "Dig" host dig-program)
+                        " ** "))
+     dig-program
+     (list host)))
+  (setq netstat-program "ss"
+        netstat-program-options '("-p" "-u" "-t" "-n")))
 
 ;;; Org
 ;;
-(use-package org
-  :bind (("C-c a" . org-agenda)
-         ("C-c C-k" . org-capture))
-  :config (use-package org-config))
+(with-eval-after-load 'org
+  (require 'org-config))
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c C-k") 'org-capture)
 
 ;;; Dired
 ;;
-(use-package dired
-  :init (progn
-          (setq dired-dwim-target t)
-          (setq dired-auto-revert-buffer t)
-          (setq dired-backup-overwrite nil) ; nil, always, ask.
-          (setq dired-isearch-filenames 'dwim)
-          (setq dired-listing-switches (purecopy "-alh")))
-  :config
-  (use-package dired-extension)
-  (use-package wdired
-    :config (setq wdired-use-dired-vertical-movement 'sometimes))
-  :defer t)
+(with-eval-after-load 'dired
+  (setq dired-dwim-target t)
+  (setq dired-auto-revert-buffer t)
+  (setq dired-backup-overwrite nil) ; nil, always, ask.
+  (setq dired-isearch-filenames 'dwim)
+  (setq dired-listing-switches (purecopy "-alh"))
+  (setq wdired-use-dired-vertical-movement 'sometimes)
+  (require 'dired-extension))
 
 ;;; htmlize
 ;;
@@ -1000,510 +965,417 @@ If your system's ping continues until interrupted, you can try setting
 (autoload 'htmlize-many-files "htmlize" nil t)
 (autoload 'htmlize-many-files-dired "htmlize" nil t)
 
-;;; tv-utils fns
-;;
-(use-package tv-utils
-  :commands (tv/eval-region tv/restore-scratch-buffer)
-  :init (progn
-          (bind-key "C-M-!" 'tv/eval-region lisp-interaction-mode-map) 
-          (bind-key "C-M-!" 'tv/eval-region emacs-lisp-mode-map))
-  :config
-  (advice-add 'view-echo-area-messages :around 'tv/view-echo-area-messages)
-  (with-eval-after-load 'helm-core
-    (helm-define-key-with-subkeys global-map (kbd "C-h e")
-                                  ?e #'view-echo-area-messages
-                                  '((?q . tv/quit-echo-area-messages))))
-  :bind (("M-\""                  . tv/insert-double-quote)
-         ("C-M-`"                 . tv/insert-double-backquote)
-         ("C-M-("                 . tv/move-pair-forward)
-         ("C-M-\""                . tv/insert-double-quote-and-close-forward)
-         ("C-M-)"                 . tv/insert-pair-and-close-forward)
-         ("<f5> c"                . tv/toggle-calendar)
-         ([remap kill-whole-line] . tv/kill-whole-line)
-         ([remap kill-line]       . tv/kill-line)
-         ([remap delete-char]     . tv/delete-char)
-         ([remap c-electric-delete-forward] . tv/delete-char)
-         ("C-<"                   . other-window-backward)
-         ("C->"                   . other-window-forward)
-         ([C-left]                . screen-top)
-         ([C-right]               . screen-bottom)
-         ("<M-down>"              . tv/scroll-down)
-         ("<M-up>"                . tv/scroll-up)
-         ("<C-M-down>"            . tv/scroll-other-down)
-         ("<C-M-up>"              . tv/scroll-other-up)
-         ("C-c k"                 . tv/insert-kbd-at-point)))
-
 ;;; Ledger
 ;;
-(use-package ledger-mode
-  :ensure t
-  :init
-  (setenv "LEDGER_PAGER" "cat")
-  (add-to-list 'auto-mode-alist '("\\.dat\\'" . ledger-mode))
-  :commands (ledger-mode csv2ledger ledger-position)
-  :config (use-package ledger-config
-            :init
-            (require 'helm-lib)
-            (require 'helm-mode)))
+(autoload 'ledger-mode "ledger-mode.el" nil t)
+(autoload 'csv2ledger "ledger-mode.el" nil t)
+(autoload 'ledger-position "ledger-mode.el" nil t)
+(setenv "LEDGER_PAGER" "cat")
+(add-to-list 'auto-mode-alist '("\\.dat\\'" . ledger-mode))
 
 ;;; Rectangle
 ;;
-(use-package rectangle-utils
-  :bind (("C-x r e"       . rectangle-utils-extend-rectangle-to-end)
-         ("C-x r h"       . rectangle-utils-menu)
-         ("C-x r <right>" . rectangle-utils-insert-at-right)))
+(autoload 'rectangle-utils-insert-at-right         "rectangle-utils.el" nil t)
+(autoload 'rectangle-utils-menu                    "rectangle-utils.el" nil t)
+(autoload 'rectangle-utils-extend-rectangle-to-end "rectangle-utils.el" nil t)
+(global-set-key (kbd "C-x r e") 'rectangle-utils-extend-rectangle-to-end)
+(global-set-key (kbd "C-x r h") 'rectangle-utils-menu)
+(global-set-key (kbd "C-x r <right>") 'rectangle-utils-insert-at-right)
 
 ;;; Zop-to-char
 ;;
-(use-package zop-to-char
-  :commands (zop-to-char zop-up-to-char)
-  :init
-  (progn
-    (setq zop-to-char-prec-keys '(left ?\C-b ?\M-a)
-          zop-to-char-next-keys '(right ?\C-f ?\M-e)))
-  :bind ([remap zap-to-char] . zop-to-char))
+(autoload 'zop-to-char "zop-to-char.el" nil t)
+(autoload 'zop-up-to-char "zop-to-char.el" nil t)
+(with-eval-after-load 'zop-to-char
+  (setq zop-to-char-prec-keys '(left ?\C-b ?\M-a)
+        zop-to-char-next-keys '(right ?\C-f ?\M-e)))
+(global-set-key [remap zap-to-char] 'zop-to-char)
 
 ;;; Iedit
 ;;
 ;; Installed from source in site-lisp.
-(use-package iedit
-  :config
-  (defun iedit-narrow-to-defun (arg)
-    (interactive "P")
-    (require 'iedit)
-    (save-window-excursion
-      (save-restriction
-        (narrow-to-defun)
-        (iedit-mode arg))))
-  (setq iedit-increment-format-string "%03d")
-  :bind (("C-²" . iedit-narrow-to-defun)
-         ("C-;" . iedit-mode)
-         :map isearch-mode-map
-         ("C-;" . iedit-mode-from-isearch)))
+(autoload 'iedit-mode "iedit.el" nil t)
+(autoload 'iedit-rectangle-mode "iedit-rect.el" nil t)
+(defun iedit-narrow-to-defun (arg)
+  (interactive "P")
+  (require 'iedit)
+  (save-window-excursion
+    (save-restriction
+      (narrow-to-defun)
+      (iedit-mode arg))))
+(with-eval-after-load 'iedit
+  (setq iedit-increment-format-string "%03d"))
+(global-set-key (kbd "C-²") 'iedit-narrow-to-defun)
+(global-set-key (kbd "C-;") 'iedit-mode)
 
-(use-package iedit-rect
-  :config
-  (setq iedit-increment-format-string "%03d")
-  :bind (([C-return] . iedit-rectangle-mode)
-         :map ctl-x-r-map
-         ("RET" . iedit-rectangle-mode)))
+(with-eval-after-load 'iedit-rect
+  (setq iedit-increment-format-string "%03d"))
+(global-set-key [C-return] 'iedit-rectangle-mode)
 
 ;;; Emamux
 ;;
-(use-package emamux
-  :ensure t
-  :init (setq emamux:completing-read-type 'helm)
-  :config (setq emamux:get-buffers-regexp
-                "^\\(buffer[0-9]+\\): +\\([0-9]+\\) +\\(bytes\\): +[\"]\\(.*\\)[\"]"
-                emamux:show-buffers-with-index nil)
-  :bind (("C-c y" . emamux:yank-from-list-buffers)
-         ("C-c s" . emamux:send-command)))
+(autoload 'emamux:send-command           "emamux.el" nil t)
+(autoload 'emamux:yank-from-list-buffers "emamux.el" nil t)
+(with-eval-after-load 'emamux
+  (setq emamux:completing-read-type 'helm)
+  (setq emamux:get-buffers-regexp
+        "^\\(buffer[0-9]+\\): +\\([0-9]+\\) +\\(bytes\\): +[\"]\\(.*\\)[\"]"
+        emamux:show-buffers-with-index nil))
+(global-set-key (kbd "C-c y") 'emamux:yank-from-list-buffers)
+(global-set-key (kbd "C-c s") 'emamux:send-command)
 
 ;;; Eldoc
 ;;
-(use-package eldoc
-    :init
-  (progn
-    (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-    (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
-    (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
-    (add-hook 'eshell-mode-hook 'turn-on-eldoc-mode))
-  :config
-  (when (fboundp 'elisp--highlight-function-argument)
-    (defun tv/before-elisp--highlight-function-argument (old--fn &rest args)
-      (let ((sym    (nth 0 args))
-            (argstr (substitute-command-keys (nth 1 args)))
-            (index  (nth 2 args))
-            (prefix (nth 3 args)))
-        (apply old--fn args)))
-    (advice-add 'elisp--highlight-function-argument
-                :around #'tv/before-elisp--highlight-function-argument))
-  :diminish eldoc-mode)
+(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+(add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
+(add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
+(add-hook 'eshell-mode-hook 'turn-on-eldoc-mode)
+(setq eldoc-minor-mode-string nil)
+
+(when (fboundp 'elisp--highlight-function-argument)
+  (defun tv/before-elisp--highlight-function-argument (old--fn &rest args)
+    (let ((sym    (nth 0 args))
+          (argstr (substitute-command-keys (nth 1 args)))
+          (index  (nth 2 args))
+          (prefix (nth 3 args)))
+      (apply old--fn args)))
+  (advice-add 'elisp--highlight-function-argument
+              :around #'tv/before-elisp--highlight-function-argument))
 
 ;;; Python config
 ;;
-(use-package python
-  :no-require t
-  :init
-  (progn
-    (use-package gud
-      :config
-      (and (boundp 'gud-pdb-command-name)
-           (setq gud-pdb-command-name "ipdb3")))
-    (setq
-     python-shell-interpreter "ipython3"
-     python-shell-interpreter-args "-i --autoindent --simple-prompt --InteractiveShell.display_page=True"
-     python-shell-prompt-regexp "In \\[[0-9]+\\]: "
-     python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: ")
-    (add-hook 'python-mode-hook 'flymake-mode) ;; Needs pyflakes
-    (add-hook 'python-mode-hook
-              (lambda ()
-                (setq-local mode-name "py")
-                (define-key python-mode-map (kbd "C-c C-i") 'helm-semantic-or-imenu)
-                (define-key python-mode-map (kbd "C-m") 'newline-and-indent)
-                (define-key python-mode-map (kbd "C-c '") 'flymake-goto-next-error))))
-  :config
-  (defun tv/run-or-switch-to-python-shell ()
-    (interactive)
-    (let* ((buf (ignore-errors (python-shell-get-process-or-error t)))
-           (proc-buf (and buf (process-buffer buf)))
-           (win (and proc-buf (get-buffer-window proc-buf 'visible))))
-      (cond ((and proc-buf win)
-             (quit-window nil win))
-            (proc-buf (pop-to-buffer proc-buf nil t))
-            (t (call-interactively #'run-python)))))
-  :bind ("<f11> p" . tv/run-or-switch-to-python-shell))
+(when (boundp 'gud-pdb-command-name)
+  (setq gud-pdb-command-name "ipdb3"))
+(setq python-shell-interpreter "ipython3"
+      python-shell-interpreter-args "-i --autoindent --simple-prompt --InteractiveShell.display_page=True"
+      python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+      python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: ")
+(add-hook 'python-mode-hook 'flymake-mode) ;; Needs pyflakes
+(add-hook 'python-mode-hook
+          (lambda ()
+            (setq-local mode-name "py")
+            (define-key python-mode-map (kbd "C-c C-i") 'helm-semantic-or-imenu)
+            (define-key python-mode-map (kbd "C-m") 'newline-and-indent)
+            (define-key python-mode-map (kbd "C-c '") 'flymake-goto-next-error)))
+(defun tv/run-or-switch-to-python-shell ()
+  (interactive)
+  (let* ((buf (ignore-errors (python-shell-get-process-or-error t)))
+         (proc-buf (and buf (process-buffer buf)))
+         (win (and proc-buf (get-buffer-window proc-buf 'visible))))
+    (cond ((and proc-buf win)
+           (quit-window nil win))
+          (proc-buf (pop-to-buffer proc-buf nil t))
+          (t (call-interactively #'run-python)))))
+(global-set-key (kbd "<f11> p") 'tv/run-or-switch-to-python-shell)
 
 ;;; Tramp-config
 ;;
-(use-package tramp
-  :defer t
-  :no-require t
-  :config
-  (progn
-    ;; scp is better for copying large files but not working with many
-    ;; files.
-    (setq tramp-default-method "ssh")
-    ;; (setq tramp-verbose 10 tramp-debug-to-file t helm-tramp-verbose 10)
-    ;; No messages
-    (setq tramp-message-show-message nil)
+(with-eval-after-load 'tramp
+  ;; scp is better for copying large files but not working with many
+  ;; files.
+  (setq tramp-default-method "ssh")
+  ;; (setq tramp-verbose 10 tramp-debug-to-file t helm-tramp-verbose 10)
+  ;; No messages
+  (setq tramp-message-show-message nil)
 
-    (setq tramp-use-ssh-controlmaster-options nil)
+  (setq tramp-use-ssh-controlmaster-options nil)
 
-    (when (boundp 'tramp-use-scp-direct-remote-copying)
-      (setq tramp-use-scp-direct-remote-copying t))
-    
-    ;; Allow connecting as root on all remote Linux machines except this one.
-    ;; Use e.g /sudo:host:/path
-    (add-to-list 'tramp-default-proxies-alist
-                 '("\\`thievol\\'" "\\`root\\'" "/ssh:%h:"))
+  (when (boundp 'tramp-use-scp-direct-remote-copying)
+    (setq tramp-use-scp-direct-remote-copying t))
 
-    (add-to-list 'tramp-default-proxies-alist
-                 '("\\`thievolrem\\'" "\\`root\\'" "/ssh:%h:"))
+  ;; Allow connecting as root on all remote Linux machines except this one.
+  ;; Use e.g /sudo:host:/path
+  (add-to-list 'tramp-default-proxies-alist
+               '("\\`thievol\\'" "\\`root\\'" "/ssh:%h:"))
 
-    (add-to-list 'tramp-default-proxies-alist
-                 '((regexp-quote (system-name)) nil nil))
+  (add-to-list 'tramp-default-proxies-alist
+               '("\\`thievolrem\\'" "\\`root\\'" "/ssh:%h:"))
 
-    ;; (when (boundp 'tramp-save-ad-hoc-proxies)
-    ;;   (setq tramp-save-ad-hoc-proxies t))
+  (add-to-list 'tramp-default-proxies-alist
+               '((regexp-quote (system-name)) nil nil))
 
-    ;; Connect to my freebox as 'freebox' user.
-    (add-to-list 'tramp-default-user-alist
-                 '("ftp" "\\`mafreebox\\.freebox\\.fr\\'" "freebox"))))
+  ;; (when (boundp 'tramp-save-ad-hoc-proxies)
+  ;;   (setq tramp-save-ad-hoc-proxies t))
 
-;;; Ange-ftp
-;;
-(use-package ange-ftp
-  :init
-  (progn
-    ;; Following used to work with previous emacs version but is now broken.
-    ;; (setq ange-ftp-try-passive-mode t)
-    ;; (setq ange-ftp-passive-host-alist '(("mafreebox.freebox.fr" . "on")))
-    ;; So use now directly pftp.
-    (setq ange-ftp-ftp-program-name "pftp"))
-  :no-require t)
+  ;; Connect to my freebox as 'freebox' user.
+  (add-to-list 'tramp-default-user-alist
+               '("ftp" "\\`mafreebox\\.freebox\\.fr\\'" "freebox"))
+  (setq ange-ftp-ftp-program-name "pftp"))
 
 ;;; Calendar and diary
 ;;
-(use-package calendar
-  :config
-  (progn
-    ;; Disable the fucking org bindings in emacs-28
-    (when (fboundp 'org--setup-calendar-bindings)
-      (fset 'org--setup-calendar-bindings 'ignore))
-    (setq diary-file "~/.emacs.d/diary")
-    (unless (fboundp 'fancy-diary-display) ; Fix emacs-25.
-      (defalias 'fancy-diary-display 'diary-fancy-display))
-    (defface tv/calendar-blocks
+(with-eval-after-load 'calendar
+  ;; Disable the fucking org bindings in emacs-28
+  (when (fboundp 'org--setup-calendar-bindings)
+    (fset 'org--setup-calendar-bindings 'ignore))
+  (setq diary-file "~/.emacs.d/diary")
+  (unless (fboundp 'fancy-diary-display) ; Fix emacs-25.
+    (defalias 'fancy-diary-display 'diary-fancy-display))
+  (defface tv/calendar-blocks
       '((t (:background "ForestGreen")))
-      "Face used to highlight diary blocks in calendar."
-      :group 'calendar)
-    ;; Add a different face in diary entry like this:
-    ;; %%(diary-block 8 2 2021 13 2 2021 'tv/calendar-blocks-1)
-    (defface tv/calendar-blocks-1
+    "Face used to highlight diary blocks in calendar."
+    :group 'calendar)
+  ;; Add a different face in diary entry like this:
+  ;; %%(diary-block 8 2 2021 13 2 2021 'tv/calendar-blocks-1)
+  (defface tv/calendar-blocks-1
       '((t (:background "DarkOliveGreen")))
-      "Face used to highlight diary blocks in calendar."
-      :group 'calendar)
-    (setq calendar-date-style 'european)
-    (setq calendar-mark-diary-entries-flag t)
-    (setq calendar-mark-holidays-flag t)
-    (setq holiday-bahai-holidays nil)
-    (setq holiday-hebrew-holidays nil)
-    (setq holiday-islamic-holidays nil)
-    (setq holiday-oriental-holidays nil)
+    "Face used to highlight diary blocks in calendar."
+    :group 'calendar)
+  (setq calendar-date-style 'european)
+  (setq calendar-mark-diary-entries-flag t)
+  (setq calendar-mark-holidays-flag t)
+  (setq holiday-bahai-holidays nil)
+  (setq holiday-hebrew-holidays nil)
+  (setq holiday-islamic-holidays nil)
+  (setq holiday-oriental-holidays nil)
 
-    (setq diary-display-function 'diary-fancy-display)
-    (add-hook 'diary-list-entries-hook 'diary-sort-entries t)
-    (add-hook 'calendar-today-visible-hook 'calendar-mark-today)
-    (add-hook 'initial-calendar-window-hook 'mark-diary-entries)
-    (setq mark-holidays-in-calendar t)
-    (setq diary-number-of-entries 4)
+  (setq diary-display-function 'diary-fancy-display)
+  (add-hook 'diary-list-entries-hook 'diary-sort-entries t)
+  (add-hook 'calendar-today-visible-hook 'calendar-mark-today)
+  (add-hook 'initial-calendar-window-hook 'mark-diary-entries)
+  (setq mark-holidays-in-calendar t)
+  (setq diary-number-of-entries 4)
 
-    ;; calendar-date-style is set [HERE]:
-    (setq calendar-week-start-day 1
-          calendar-day-name-array
-          ["Dimanche" "Lundi" "Mardi"
-           "Mercredi" "Jeudi" "Vendredi" "Samedi"]
-          ;; FIXME there is a bug in calendar that break diary when
-          ;; abbreviated names are different than US.
-          ;; calendar-day-abbrev-array
-          ;; ["Dim" "Lun" "Mar" "Mer" "Jeu" "Ven" "Sam"]
-          ;; calendar-day-header-array
-          ;; ["Di" "Lu" "Ma" "Me" "Je" "Ve" "Sa"]
-          ;; calendar-month-abbrev-array
-          ;; ["Jan" "Fév" "Mar" "Avr" "Mai" "Juin" "Juil" "Aou" "Sep" "Oct" "Nov" "Déc"]
-          calendar-month-name-array
-          ["Janvier" "Février" "Mars" "Avril"
-           "Mai" "Juin" "Juillet" "Août" "Septembre"
-           "Octobre" "Novembre" "Décembre"])
+  ;; calendar-date-style is set [HERE]:
+  (setq calendar-week-start-day 1
+        calendar-day-name-array
+        ["Dimanche" "Lundi" "Mardi"
+                    "Mercredi" "Jeudi" "Vendredi" "Samedi"]
+        ;; FIXME there is a bug in calendar that break diary when
+        ;; abbreviated names are different than US.
+        ;; calendar-day-abbrev-array
+        ;; ["Dim" "Lun" "Mar" "Mer" "Jeu" "Ven" "Sam"]
+        ;; calendar-day-header-array
+        ;; ["Di" "Lu" "Ma" "Me" "Je" "Ve" "Sa"]
+        ;; calendar-month-abbrev-array
+        ;; ["Jan" "Fév" "Mar" "Avr" "Mai" "Juin" "Juil" "Aou" "Sep" "Oct" "Nov" "Déc"]
+        calendar-month-name-array
+        ["Janvier" "Février" "Mars" "Avril"
+                   "Mai" "Juin" "Juillet" "Août" "Septembre"
+                   "Octobre" "Novembre" "Décembre"])
 
-    (defvar holiday-french-holidays nil
-      "French holidays")
+  (defvar holiday-french-holidays nil
+    "French holidays")
 
-    (setq holiday-french-holidays
-          `((holiday-fixed 1 1 "Jour de l'an")
-            (holiday-fixed 2 14 "Fête des amoureux")
-            (holiday-fixed 5 1 "Fête du travail")
-            (holiday-fixed 5 8 "Victoire")
-            (holiday-float 5 0 -1 "Fête des Mères")
-            (holiday-float 6 0 3 "Fête des Pères")
-            (holiday-fixed 7 14 "Fête nationale")
-            (holiday-fixed 8 15 "Assomption")
-            (holiday-fixed 10 31 "Halloween")
-            (holiday-easter-etc -47 "Mardi Gras")
-            (holiday-fixed 11 11 "Armistice")
-            (holiday-fixed 11 1 "Toussaint")
-            (holiday-fixed 12 25 "Noël")
-            (holiday-easter-etc 0 "Pâques")
-            (holiday-easter-etc 1 "Pâques")
-            (holiday-easter-etc 39 "Ascension")
-            (holiday-easter-etc 49 "Pentecôte")
-            (holiday-easter-etc 50 "Pentecôte")
-            (holiday-float 3 0 -1 "Heure d'été")
-            (holiday-float 10 0 -1 "Heure d'hiver")))
+  (setq holiday-french-holidays
+        `((holiday-fixed 1 1 "Jour de l'an")
+          (holiday-fixed 2 14 "Fête des amoureux")
+          (holiday-fixed 5 1 "Fête du travail")
+          (holiday-fixed 5 8 "Victoire")
+          (holiday-float 5 0 -1 "Fête des Mères")
+          (holiday-float 6 0 3 "Fête des Pères")
+          (holiday-fixed 7 14 "Fête nationale")
+          (holiday-fixed 8 15 "Assomption")
+          (holiday-fixed 10 31 "Halloween")
+          (holiday-easter-etc -47 "Mardi Gras")
+          (holiday-fixed 11 11 "Armistice")
+          (holiday-fixed 11 1 "Toussaint")
+          (holiday-fixed 12 25 "Noël")
+          (holiday-easter-etc 0 "Pâques")
+          (holiday-easter-etc 1 "Pâques")
+          (holiday-easter-etc 39 "Ascension")
+          (holiday-easter-etc 49 "Pentecôte")
+          (holiday-easter-etc 50 "Pentecôte")
+          (holiday-float 3 0 -1 "Heure d'été")
+          (holiday-float 10 0 -1 "Heure d'hiver")))
 
-    (setq calendar-holidays `(,@holiday-solar-holidays
-                              ,@holiday-french-holidays))
+  (setq calendar-holidays `(,@holiday-solar-holidays
+                            ,@holiday-french-holidays))
 
-    (defun tv/calendar-diary-or-holiday (arg)
-      "A single command for diary and holiday entries."
-      ;; Assume diary and holidays are shown in calendar.
-      (interactive "p")
-      (let* ((ovs (overlays-at (point)))
-             (props (cl-loop for ov in ovs
-                             for prop = (cadr (overlay-properties ov))
-                             when (memq prop '(diary holiday diary-anniversary
-                                                     tv/calendar-blocks tv/calendar-blocks-1))
-                             collect prop)))
-        (cond ((and (or (memq 'diary props)
-                        (memq 'tv/calendar-blocks props)
-                        (memq 'tv/calendar-blocks-1 props)
-                        (memq 'diary-anniversary props))
-                    (memq 'holiday props))
-               (cl-letf (((symbol-function 'message) #'ignore))
-                 (diary-view-entries arg))
-               (calendar-cursor-holidays))
-              ((or (memq 'diary props)
-                   (memq 'tv/calendar-blocks props)
-                   (memq 'tv/calendar-blocks-1 props)
-                   (memq 'diary-anniversary props))
-               (cl-letf (((symbol-function 'message) #'ignore))
-                 (diary-view-entries arg)))
-              ((memq 'holiday props)
-               (calendar-cursor-holidays))
-              (t (message "Nothing special on this date")))))
+  (defun tv/calendar-diary-or-holiday (arg)
+    "A single command for diary and holiday entries."
+    ;; Assume diary and holidays are shown in calendar.
+    (interactive "p")
+    (let* ((ovs (overlays-at (point)))
+           (props (cl-loop for ov in ovs
+                           for prop = (cadr (overlay-properties ov))
+                           when (memq prop '(diary holiday diary-anniversary
+                                             tv/calendar-blocks tv/calendar-blocks-1))
+                           collect prop)))
+      (cond ((and (or (memq 'diary props)
+                      (memq 'tv/calendar-blocks props)
+                      (memq 'tv/calendar-blocks-1 props)
+                      (memq 'diary-anniversary props))
+                  (memq 'holiday props))
+             (cl-letf (((symbol-function 'message) #'ignore))
+               (diary-view-entries arg))
+             (calendar-cursor-holidays))
+            ((or (memq 'diary props)
+                 (memq 'tv/calendar-blocks props)
+                 (memq 'tv/calendar-blocks-1 props)
+                 (memq 'diary-anniversary props))
+             (cl-letf (((symbol-function 'message) #'ignore))
+               (diary-view-entries arg)))
+            ((memq 'holiday props)
+             (calendar-cursor-holidays))
+            (t (message "Nothing special on this date")))))
 
-    (define-key calendar-mode-map (kbd "C-<right>") 'calendar-forward-month)
-    (define-key calendar-mode-map (kbd "C-<left>")  'calendar-backward-month)
-    (define-key calendar-mode-map (kbd "RET")       'tv/calendar-diary-or-holiday)
-    (use-package appt
-      :config
-      (progn
-        (setq appt-display-format 'echo ; Values: 'echo, 'window or nil.
-              appt-warning-time-regexp "warn ?\\([0-9]+\\)") 
-        (add-hook 'emacs-startup-hook 'appt-activate))))
-  :defer t)
+  (define-key calendar-mode-map (kbd "C-<right>") 'calendar-forward-month)
+  (define-key calendar-mode-map (kbd "C-<left>")  'calendar-backward-month)
+  (define-key calendar-mode-map (kbd "RET")       'tv/calendar-diary-or-holiday)
+  (require 'appt)
+  (setq appt-display-format 'echo ; Values: 'echo, 'window or nil.
+        appt-warning-time-regexp "warn ?\\([0-9]+\\)") 
+  (add-hook 'emacs-startup-hook 'appt-activate))
 
 ;;; Bookmarks
 ;;
-(use-package bookmark
-  :init
-  (progn
-    (add-hook 'bookmark-bmenu-mode-hook 'hl-line-mode)
-    (setq bookmark-bmenu-toggle-filenames nil)
-    (setq bookmark-default-file "~/.emacs.d/.emacs.bmk")
-    (setq bookmark-automatically-show-annotations nil))
-  :config
-  (progn
-    ;; Write directly to bmk file instead of writing to a "
-    ;; *bookmarks*" buffer and then writing to bmk file.
-    (defun tv/advice--bookmark-write-file (file)
-      "Write `bookmark-alist' to FILE."
-      (let ((reporter (make-progress-reporter
-                       (format "Saving bookmarks to file %s..." file))))
-        (with-current-buffer (find-file-noselect file)
-          (let ((vc (cond
-                     ((null bookmark-version-control) nil)
-                     ((eq 'never bookmark-version-control) 'never)
-                     ((eq 'nospecial bookmark-version-control) version-control)
-                     (t t))))
-            (when (version-control-safe-local-p vc)
-              (setq-local version-control vc)))
-          (goto-char (point-min))
-          (condition-case err
-              (progn
-                (delete-region (point-min) (point-max))
-                (let ((coding-system-for-write
-                       (or coding-system-for-write
-                           bookmark-file-coding-system
-                           'utf-8-emacs))
-                      (print-length nil)
-                      (print-level nil)
-                      ;; See bug #12503 for why we bind `print-circle'.  Users
-                      ;; can define their own bookmark types, which can result in
-                      ;; arbitrary Lisp objects being stored in bookmark records,
-                      ;; and some users create objects containing circularities.
-                      (print-circle t))
-                  (insert "(")
-                  ;; Rather than a single call to `pp' we make one per bookmark.
-                  ;; Apparently `pp' has a poor algorithmic complexity, so this
-                  ;; scales a lot better.  bug#4485.
-                  (dolist (i bookmark-alist) (pp i (current-buffer)))
-                  (insert ")\n")
-                  ;; Make sure the specified encoding can safely encode the
-                  ;; bookmarks.  If it cannot, suggest utf-8-emacs as default.
-                  (with-coding-priority '(utf-8-emacs)
-                    (setq coding-system-for-write
-                          (select-safe-coding-system (point-min) (point-max)
-                                                     (list t coding-system-for-write))))
-                  (goto-char (point-min))
-                  (bookmark-insert-file-format-version-stamp coding-system-for-write)
-                  (setq bookmark-file-coding-system coding-system-for-write)
-                  (save-buffer)))
-            (file-error (message "Can't write %s" file)))
-          (kill-buffer (current-buffer)))
-        (progress-reporter-done reporter)))
-    (advice-add 'bookmark-write-file :override #'tv/advice--bookmark-write-file)
-    (and (boundp 'bookmark-bmenu-use-header-line)
-         (setq bookmark-bmenu-use-header-line nil))
-    ;; This for unknow reasons add a orange point in fringe when
-    ;; switching to HFF from a bookmark and then quitting, not sure
-    ;; what this feature is for and what the benefit is, so disable it.
-    (and (boundp 'bookmark-set-fringe-mark)
-         (setq bookmark-set-fringe-mark nil))))
+(with-eval-after-load 'bookmark
+  (add-hook 'bookmark-bmenu-mode-hook 'hl-line-mode)
+  (setq bookmark-bmenu-toggle-filenames nil)
+  (setq bookmark-default-file "~/.emacs.d/.emacs.bmk")
+  (setq bookmark-automatically-show-annotations nil)
+  (and (boundp 'bookmark-bmenu-use-header-line)
+       (setq bookmark-bmenu-use-header-line nil))
+  ;; This for unknow reasons add a orange point in fringe when
+  ;; switching to HFF from a bookmark and then quitting, not sure
+  ;; what this feature is for and what the benefit is, so disable it.
+  (and (boundp 'bookmark-set-fringe-mark)
+       (setq bookmark-set-fringe-mark nil))
+  ;; Write directly to bmk file instead of writing to a "
+  ;; *bookmarks*" buffer and then writing to bmk file.
+  (defun tv/advice--bookmark-write-file (file)
+    "Write `bookmark-alist' to FILE."
+    (let ((reporter (make-progress-reporter
+                     (format "Saving bookmarks to file %s..." file))))
+      (with-current-buffer (find-file-noselect file)
+        (let ((vc (cond
+                    ((null bookmark-version-control) nil)
+                    ((eq 'never bookmark-version-control) 'never)
+                    ((eq 'nospecial bookmark-version-control) version-control)
+                    (t t))))
+          (when (version-control-safe-local-p vc)
+            (setq-local version-control vc)))
+        (goto-char (point-min))
+        (condition-case err
+            (progn
+              (delete-region (point-min) (point-max))
+              (let ((coding-system-for-write
+                     (or coding-system-for-write
+                         bookmark-file-coding-system
+                         'utf-8-emacs))
+                    (print-length nil)
+                    (print-level nil)
+                    ;; See bug #12503 for why we bind `print-circle'.  Users
+                    ;; can define their own bookmark types, which can result in
+                    ;; arbitrary Lisp objects being stored in bookmark records,
+                    ;; and some users create objects containing circularities.
+                    (print-circle t))
+                (insert "(")
+                ;; Rather than a single call to `pp' we make one per bookmark.
+                ;; Apparently `pp' has a poor algorithmic complexity, so this
+                ;; scales a lot better.  bug#4485.
+                (dolist (i bookmark-alist) (pp i (current-buffer)))
+                (insert ")\n")
+                ;; Make sure the specified encoding can safely encode the
+                ;; bookmarks.  If it cannot, suggest utf-8-emacs as default.
+                (with-coding-priority '(utf-8-emacs)
+                  (setq coding-system-for-write
+                        (select-safe-coding-system (point-min) (point-max)
+                                                   (list t coding-system-for-write))))
+                (goto-char (point-min))
+                (bookmark-insert-file-format-version-stamp coding-system-for-write)
+                (setq bookmark-file-coding-system coding-system-for-write)
+                (save-buffer)))
+          (file-error (message "Can't write %s" file)))
+        (kill-buffer (current-buffer)))
+      (progress-reporter-done reporter)))
+  (advice-add 'bookmark-write-file :override #'tv/advice--bookmark-write-file))
 
 ;;; git-gutter-mode
 ;;
-(use-package git-gutter
-  :init
-  (progn
-    ;; Activate live update timer.
-    (customize-set-variable 'git-gutter:update-interval 1)
-    ;; Always a 0 width margin when no changes.
-    (setq git-gutter:hide-gutter t)
-    ;; Not sure why I would like to have git-gutter runs when listing
-    ;; buffers or such, did I miss something?
-    (setq git-gutter:update-commands nil)
-    (bind-key [remap vc-dir] 'git-gutter:popup-hunk)
-    ;; Stage current hunk
-    (bind-key [remap vc-create-tag] 'git-gutter:stage-hunk)
-    ;; Revert current hunk
-    (bind-key (kbd "C-x v r") 'git-gutter:revert-hunk)
-    ;; Toggle whitespace changes view
-    (bind-key (kbd "C-c _") 'git-gutter:toggle-space-view))
-  :diminish (git-gutter-mode " 🐱")
-  :config
-  (progn
-    (defun tv/git-gutter:popup-diff-quit ()
-      (interactive)
-      (with-selected-window (get-buffer-window git-gutter:popup-buffer)
-        (View-quit)))
-    ;; (setq git-gutter:diff-option "-b")
-    (global-git-gutter-mode) ; Enable live update.
-    (helm-define-key-with-subkeys
-        global-map (kbd "C-x v n") ?n 'git-gutter:next-hunk '((?p . git-gutter:previous-hunk)))
-    (helm-define-key-with-subkeys
-        global-map (kbd "C-x v p") ?p 'git-gutter:previous-hunk '((?n . git-gutter:next-hunk)))
-    (helm-define-key-with-subkeys
-        global-map (kbd "C-x v d") nil 'git-gutter:popup-hunk '((?n . git-gutter:next-hunk)
-                                                                (?d . git-gutter:next-hunk)
-                                                                (?p . git-gutter:previous-hunk)
-                                                                (?q . tv/git-gutter:popup-diff-quit)))))
+(autoload 'global-git-gutter-mode "git-gutter.el" nil t)
+(global-git-gutter-mode) ; Enable live update.
+(setq git-gutter:lighter " 🐱")
+;; Activate live update timer.
+(customize-set-variable 'git-gutter:update-interval 1)
+;; Always a 0 width margin when no changes.
+(setq git-gutter:hide-gutter t)
+;; Not sure why I would like to have git-gutter runs when listing
+;; buffers or such, did I miss something?
+(setq git-gutter:update-commands nil)
+(global-set-key [remap vc-dir] 'git-gutter:popup-hunk)
+;; Stage current hunk
+(global-set-key [remap vc-create-tag] 'git-gutter:stage-hunk)
+;; Revert current hunk
+(global-set-key (kbd "C-x v r") 'git-gutter:revert-hunk)
+;; Toggle whitespace changes view
+(global-set-key (kbd "C-c _") 'git-gutter:toggle-space-view)
+
+(defun tv/git-gutter:popup-diff-quit ()
+  (interactive)
+  (with-selected-window (get-buffer-window git-gutter:popup-buffer)
+    (View-quit)))
+;; (setq git-gutter:diff-option "-b")
+
+(helm-define-key-with-subkeys
+    global-map (kbd "C-x v n") ?n 'git-gutter:next-hunk '((?p . git-gutter:previous-hunk)))
+(helm-define-key-with-subkeys
+    global-map (kbd "C-x v p") ?p 'git-gutter:previous-hunk '((?n . git-gutter:next-hunk)))
+(helm-define-key-with-subkeys
+    global-map (kbd "C-x v d") nil 'git-gutter:popup-hunk '((?n . git-gutter:next-hunk)
+                                                            (?d . git-gutter:next-hunk)
+                                                            (?p . git-gutter:previous-hunk)
+                                                            (?q . tv/git-gutter:popup-diff-quit)))
 
 ;;; Addressbook
 ;;
-(use-package addressbook-bookmark
-  :commands (addressbook-turn-on-mail-completion
-             addressbook-bookmark-set
-             addressbook-mu4e-bookmark
-             addressbook-bmenu-edit
-             addressbook-bookmark-jump))
+(autoload 'addressbook-turn-on-mail-completion "addressbook-bookmark.el" nil t)
+(autoload 'addressbook-bookmark-set            "addressbook-bookmark.el" nil t)
+(autoload 'addressbook-mu4e-bookmark           "addressbook-bookmark.el" nil t)
+(autoload 'addressbook-bmenu-edit              "addressbook-bookmark.el" nil t)
+(autoload 'addressbook-bookmark-jump           "addressbook-bookmark.el" nil t)
 
 ;;; W3m
 ;;
-(use-package w3m
-  :ensure t
-  :commands (w3m-toggle-inline-image w3m-region w3m-browse-url)
-  :init (require 'config-w3m)
-  :bind
-  (("<f7> h" . w3m)
-   :map w3m-mode-map
-   ("M-<right>" . w3m-next-buffer)
-   ("M-<left>" . w3m-previous-buffer)
-   ("V" . helm-w3m-bookmarks)
-   ("M" . w3m-view-url-with-browse-url)
-   ("M-q" . tv/w3m-fill-region-or-paragraph)
-   ("<down>" . next-line)
-   ("<up>" . previous-line)
-   ("RET" . tv/w3m-RET)
-   ("<backspace>" . tv/scroll-up)
-   :map w3m-lynx-like-map
-   ("S-<right>" . w3m-view-this-url-new-session)))
+(with-eval-after-load 'w3m
+  (require 'config-w3m)
+  (define-key w3m-mode-map (kbd "M-<right>")      'w3m-next-buffer)
+  (define-key w3m-mode-map (kbd "M-<left>")       'w3m-previous-buffer)
+  (define-key w3m-mode-map (kbd "V")              'helm-w3m-bookmarks)
+  (define-key w3m-mode-map (kbd "M")              'w3m-view-url-with-browse-url)
+  (define-key w3m-mode-map (kbd "M-q")            'tv/w3m-fill-region-or-paragraph)
+  (define-key w3m-mode-map (kbd "<down>")         'next-line)
+  (define-key w3m-mode-map (kbd "<up>")           'previous-line)
+  (define-key w3m-mode-map (kbd "RET")            'tv/w3m-RET)
+  (define-key w3m-mode-map (kbd "<backspace>")    'tv/scroll-up)
+  (define-key w3m-lynx-like-map (kbd "S-<right>") 'w3m-view-this-url-new-session))
+(global-set-key (kbd "<f7> h") 'w3m)
 
 ;;; Mu4e
 ;;
-(use-package mu4e
-    :config
-  (progn (require 'tv-mu4e-config)
-         (addressbook-turn-on-mail-completion))
-  :bind ("<f8>" . mu4e))
+(require 'mu4e)
+(require 'tv-mu4e-config)
+(addressbook-turn-on-mail-completion)
+(global-set-key (kbd "<f8>") 'mu4e)
 
 ;;; Auth-source
 ;;
-(use-package auth-source
-  :no-require t
-  :config (setq auth-sources '("~/.authinfo.gpg" "~/.netrc")
-                ;; Don't ask to save password in auth-source file when
-                ;; entering a password from tramp.
-                auth-source-save-behavior nil))
-
-;;; esh-toggle
-;;
-(use-package esh-toggle
-  :commands (eshell-toggle-cd eshell-toggle)
-  :bind (("<f2>" . eshell-toggle)
-         ("<S-f2>" . eshell-toggle-cd)))
+(with-eval-after-load 'auth-sources
+  (setq auth-sources '("~/.authinfo.gpg" "~/.netrc")
+        ;; Don't ask to save password in auth-source file when
+        ;; entering a password from tramp.
+        auth-source-save-behavior nil))
 
 ;;; Whitespace-mode
 ;;
-(use-package whitespace
-  :commands 'whitespace-mode
-  :config (progn
-            (add-to-list 'whitespace-style 'lines-tail)
-            (setq whitespace-line-column 80))
-  :bind ("C-c W" . whitespace-mode))
+(autoload 'whitespace-mode "whitespace-mode.el" nil t)
+(with-eval-after-load 'whitespace-mode
+  (add-to-list 'whitespace-style 'lines-tail)
+  (setq whitespace-line-column 80))
+(global-set-key (kbd "C-c W") 'whitespace-mode)
 
-;;; markdown-mode
+;;; markdown-mode (autoloaded by package)
 ;;
-(use-package markdown-mode
-  :ensure t
-  :mode (("\\.markdown$" . markdown-mode)
-         ("\\.md$" . markdown-mode)
-         ("\\.mdpp$" . markdown-mode)))
-
-(use-package ffap
-  :config
-  ;; See issue #2003 in helm
+(with-eval-after-load 'markdown-mode
+  (setq auto-mode-alist
+        (append '(("\\.markdown$" . markdown-mode)
+                  ("\\.md$" . markdown-mode)
+                  ("\\.mdpp$" . markdown-mode))
+                auto-mode-alist)))
+;;; ffap
+;;
+(with-eval-after-load 'ffap
   (setq ffap-url-unwrap-remote '("ftp" "file"))
   (dolist (var '(ffap-machine-p-known
                  ffap-machine-p-local
@@ -1514,503 +1386,375 @@ If your system's ping continues until interrupted, you can try setting
     (setcdr (assq 'file ffap-string-at-point-mode-alist)
             '("--:\\\\$+<>@-Z_[:alpha:]~*?" "<@" "@>;.,!:"))))
 
+;;; esh-toggle
+;;
+(autoload 'eshell-toggle-cd "esh-toggle.el" nil t)
+(autoload 'eshell-toggle "esh-toggle.el" nil t)
+(global-set-key (kbd "<f2>") 'eshell-toggle)
+(global-set-key (kbd "<S-f2>") 'eshell-toggle-cd)
+
 ;;; Eshell-config
 ;;
-(use-package eshell
-  :commands (eshell eshell-command)  
-  :init
-  (progn
-    ;; Eshell-prompt
-    (setq eshell-prompt-function
-          (lambda nil
-            (let ((pwd (eshell/pwd)))
-              (with-temp-buffer
-                (let* ((default-directory (file-name-as-directory pwd))
-                       (proc (process-file
-                              "git" nil t nil
-                              "symbolic-ref" "HEAD" "--short"))
-                       (id (propertize (if (= (user-uid) 0) " # " " $ ")
-                                       'face 'default))
-                       detached branch status)
-                  (unless (= proc 0)
+(autoload 'eshell "eshell.el" nil t)
+(autoload 'eshell-command "eshell.el" nil t)
+
+(setq eshell-prompt-function
+      (lambda nil
+        (let ((pwd (eshell/pwd)))
+          (with-temp-buffer
+            (let* ((default-directory (file-name-as-directory pwd))
+                   (proc (process-file
+                          "git" nil t nil
+                          "symbolic-ref" "HEAD" "--short"))
+                   (id (propertize (if (= (user-uid) 0) " # " " $ ")
+                                   'face 'default))
+                   detached branch status)
+              (unless (= proc 0)
+                (erase-buffer)
+                (setq detached t)
+                (setq proc (process-file
+                            "git" nil t nil
+                            "rev-parse" "--short" "HEAD")))
+              (if (= proc 0)
+                  (progn
+                    (setq branch (replace-regexp-in-string
+                                  "\n" "" (buffer-string)))
                     (erase-buffer)
-                    (setq detached t)
                     (setq proc (process-file
-                                "git" nil t nil
-                                "rev-parse" "--short" "HEAD")))
-                  (if (= proc 0)
-                      (progn
-                        (setq branch (replace-regexp-in-string
-                                      "\n" "" (buffer-string)))
-                        (erase-buffer)
-                        (setq proc (process-file
-                                    "git" nil t nil "status" "--porcelain"))
-                        (setq status (pcase (buffer-string)
-                                       ((and str (guard (and (not (string= str ""))
-                                                             (= proc 0))))
-                                        (if (string-match "\\`[?]" str) "?" "*"))
-                                       (_ "")))
-                        (format "%s@%s:%s(%s%s)%s"
-                                (getenv "USER") (system-name)
-                                (propertize (abbreviate-file-name pwd) 'face 'italic)
-                                (propertize (format
-                                             "%s%s"
-                                             (if detached "detached@" "")
-                                             branch)
-                                            'face '((:foreground "red")))
-                                (propertize status
-                                            'face `((:foreground
-                                                     ,(if (string= "?" status)
-                                                          "OrangeRed" "gold1"))))
-                                id))
-                    (format "%s@%s:%s%s"
+                                "git" nil t nil "status" "--porcelain"))
+                    (setq status (pcase (buffer-string)
+                                   ((and str (guard (and (not (string= str ""))
+                                                         (= proc 0))))
+                                    (if (string-match "\\`[?]" str) "?" "*"))
+                                   (_ "")))
+                    (format "%s@%s:%s(%s%s)%s"
                             (getenv "USER") (system-name)
                             (propertize (abbreviate-file-name pwd) 'face 'italic)
-                            id)))))))
-    (setq eshell-password-prompt-regexp
+                            (propertize (format
+                                         "%s%s"
+                                         (if detached "detached@" "")
+                                         branch)
+                                        'face '((:foreground "red")))
+                            (propertize status
+                                        'face `((:foreground
+                                                 ,(if (string= "?" status)
+                                                      "OrangeRed" "gold1"))))
+                            id))
+                (format "%s@%s:%s%s"
+                        (getenv "USER") (system-name)
+                        (propertize (abbreviate-file-name pwd) 'face 'italic)
+                        id)))))))
+(setq eshell-password-prompt-regexp
       "\\(\\(?:adgangskode\\|contrase\\(?:\\(?:ny\\|ñ\\)a\\)\\|geslo\\|h\\(?:\\(?:asł\\|esl\\)o\\)\\|iphasiwedi\\|jelszó\\|l\\(?:ozinka\\|ösenord\\)\\|[Mm]\\(?:ot de passe\\|ật khẩu\\)\\|pa\\(?:rola\\|s\\(?:ahitza\\|s\\(?: phrase\\|code\\|ord\\|phrase\\|wor[dt]\\)\\|vorto\\)\\)\\|s\\(?:alasana\\|enha\\|laptažodis\\)\\|wachtwoord\\|лозинка\\|пароль\\|ססמה\\|كلمة السر\\|गुप्तशब्द\\|शब्दकूट\\|গুপ্তশব্দ\\|পাসওয়ার্ড\\|ਪਾਸਵਰਡ\\|પાસવર્ડ\\|ପ୍ରବେଶ ସଙ୍କେତ\\|கடவுச்சொல்\\|సంకేతపదము\\|ಗುಪ್ತಪದ\\|അടയാളവാക്ക്\\|රහස්පදය\\|ពាក្យសម្ងាត់\\|パスワード\\|密[码碼]\\|암호\\)\\).*:.*\\'")
 
-    ;; Compatibility 24.2/24.3
-    (unless (or (fboundp 'eshell-pcomplete)
-                (>= emacs-major-version 27))
-      (defalias 'eshell-pcomplete 'pcomplete))
-    (unless (or (fboundp 'eshell-complete-lisp-symbol)
-                (>= emacs-major-version 27))
-      (defalias 'eshell-complete-lisp-symbol 'lisp-complete-symbol))
+;; Compatibility 24.2/24.3
+(unless (or (fboundp 'eshell-pcomplete)
+            (>= emacs-major-version 27))
+  (defalias 'eshell-pcomplete 'pcomplete))
+(unless (or (fboundp 'eshell-complete-lisp-symbol)
+            (>= emacs-major-version 27))
+  (defalias 'eshell-complete-lisp-symbol 'lisp-complete-symbol))
 
-    (add-hook 'eshell-mode-hook
-              (lambda ()
-                (setq eshell-pwd-convert-function
-                      (lambda (f)
-                        (if (file-equal-p (file-truename f) "/")
-                            "/" f)))
-                ;; This is needed for eshell-command (otherwise initial history is empty).
-                (eshell-read-history eshell-history-file-name)
-                ;; Helm completion with pcomplete
-                (setq eshell-cmpl-ignore-case t
-                      eshell-hist-ignoredups t)
-                (eshell-cmpl-initialize)
-                ;; Make `completion-at-point' use
-                ;; bash-completion which works
-                ;; mostly all (no eshell aliases).
-                (setq-local completion-at-point-functions '(bash-completion-eshell-capf))
-                ;; Completion on aliases among other things. It's
-                ;; pretty unclear which map to use, at least it
-                ;; changes nearly at each emacs version :-(.
-                (define-key eshell-hist-mode-map (kbd "C-c TAB") 'helm-esh-pcomplete)
-                ;; Helm completion on eshell history.
-                (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)
-                (when (boundp 'eshell-hist-mode-map)
-                  (define-key eshell-hist-mode-map (kbd "M-p") 'helm-eshell-history))
-                ;; Eshell prompt
-                (set-face-attribute 'eshell-prompt nil :foreground "Gold1")))
+(add-hook 'eshell-mode-hook
+          (lambda ()
+            (setq eshell-pwd-convert-function
+                  (lambda (f)
+                    (if (file-equal-p (file-truename f) "/")
+                        "/" f)))
+            ;; This is needed for eshell-command (otherwise initial history is empty).
+            (eshell-read-history eshell-history-file-name)
+            ;; Helm completion with pcomplete
+            (setq eshell-cmpl-ignore-case t
+                  eshell-hist-ignoredups t)
+            (eshell-cmpl-initialize)
+            ;; Make `completion-at-point' use
+            ;; bash-completion which works
+            ;; mostly all (no eshell aliases).
+            (setq-local completion-at-point-functions '(bash-completion-eshell-capf))
+            ;; Completion on aliases among other things. It's
+            ;; pretty unclear which map to use, at least it
+            ;; changes nearly at each emacs version :-(.
+            (define-key eshell-hist-mode-map (kbd "C-c TAB") 'helm-esh-pcomplete)
+            ;; Helm completion on eshell history.
+            (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)
+            (when (boundp 'eshell-hist-mode-map)
+              (define-key eshell-hist-mode-map (kbd "M-p") 'helm-eshell-history))
+            ;; Eshell prompt
+            (set-face-attribute 'eshell-prompt nil :foreground "Gold1")))
 
-    ;; Eshell history size
-    (setq eshell-history-size 1000) ; Same as env var HISTSIZE.
+;; Eshell history size
+(setq eshell-history-size 1000)       ; Same as env var HISTSIZE.
 
-    ;; Eshell-banner
-    (setq eshell-banner-message "")
+;; Eshell-banner
+(setq eshell-banner-message "")
 
-    ;; Eshell-et-ansi-color
-    (ignore-errors
-      (dolist (i (list 'eshell-handle-ansi-color
-                       'eshell-handle-control-codes
-                       'eshell-watch-for-password-prompt))
-        (add-to-list 'eshell-output-filter-functions i)))
+;; Eshell-et-ansi-color
+(ignore-errors
+  (dolist (i (list 'eshell-handle-ansi-color
+                   'eshell-handle-control-codes
+                   'eshell-watch-for-password-prompt))
+    (add-to-list 'eshell-output-filter-functions i)))
 
-    ;; Eshell-save-history-on-exit
-    ;; Possible values: t (always save), 'never, 'ask (default)
-    (setq eshell-save-history-on-exit t)
+;; Eshell-save-history-on-exit
+;; Possible values: t (always save), 'never, 'ask (default)
+(setq eshell-save-history-on-exit t)
 
-    ;; Eshell-directory
-    (setq eshell-directory-name "/home/thierry/.emacs.d/eshell/")
+;; Eshell-directory
+(setq eshell-directory-name "/home/thierry/.emacs.d/eshell/")
 
-    ;; Eshell-visual
-    (setq eshell-term-name "eterm-color")
-    (with-eval-after-load "em-term"
-      (dolist (i '("tmux" "htop" "ipython" "alsamixer" "git-log" "tig" "w3mman" "mutt"))
-        (add-to-list 'eshell-visual-commands i)))
-    ;; Eshell modifiers
-    (with-eval-after-load "em-pred"
-      (defun tv/advice--eshell-pred-substitute (&optional repeat)
-        "Return a modifier function that will substitute matches."
-        (let ((delim (char-after))
-              match replace end)
-          (forward-char)
-          (setq end (eshell-find-delimiter delim delim nil nil t)
-                match (buffer-substring-no-properties (point) end))
-          (goto-char (1+ end))
-          (setq end (or (eshell-find-delimiter delim delim nil nil t) (point))
-                replace (buffer-substring-no-properties (point) end))
-          (goto-char (1+ end))
-          (if repeat
-              (lambda (lst)
-                (mapcar
-                 (lambda (str)
-                   (let ((i 0))
-                     (while (setq i (string-match match str i))
-                       (setq str (replace-match replace t nil str))))
-                   str)
-                 lst))
-            (lambda (lst)
-              (mapcar
-               (lambda (str)
-                 (if (string-match match str)
-                     (setq str (replace-match replace t nil str)))
-                 str)
-               lst)))))
-      ;; Allow empty string in substitution e.g. echo foo.el(:gs/.el//)
-      (advice-add 'eshell-pred-substitute :override #'tv/advice--eshell-pred-substitute)
-      ;; Fix echo, perhaps using as alias *echo is even better.
-      (setq eshell-plain-echo-behavior t)))
-  :bind ("C-!" . eshell-command))
+;; Eshell-visual
+(setq eshell-term-name "eterm-color")
 
-(use-package display-line-numbers
-    :commands (display-line-numbers-mode
-               global-display-line-numbers-mode)
-    :config
-    (setq display-line-numbers-type 'relative))
+(with-eval-after-load "em-term"
+  (dolist (i '("tmux" "htop" "ipython" "alsamixer" "git-log" "tig" "w3mman" "mutt"))
+    (add-to-list 'eshell-visual-commands i)))
+
+;; Eshell modifiers
+(with-eval-after-load "em-pred"
+  (defun tv/advice--eshell-pred-substitute (&optional repeat)
+    "Return a modifier function that will substitute matches."
+    (let ((delim (char-after))
+          match replace end)
+      (forward-char)
+      (setq end (eshell-find-delimiter delim delim nil nil t)
+            match (buffer-substring-no-properties (point) end))
+      (goto-char (1+ end))
+      (setq end (or (eshell-find-delimiter delim delim nil nil t) (point))
+            replace (buffer-substring-no-properties (point) end))
+      (goto-char (1+ end))
+      (if repeat
+          (lambda (lst)
+            (mapcar
+             (lambda (str)
+               (let ((i 0))
+                 (while (setq i (string-match match str i))
+                   (setq str (replace-match replace t nil str))))
+               str)
+             lst))
+        (lambda (lst)
+          (mapcar
+           (lambda (str)
+             (if (string-match match str)
+                 (setq str (replace-match replace t nil str)))
+             str)
+           lst)))))
+  ;; Allow empty string in substitution e.g. echo foo.el(:gs/.el//)
+  (advice-add 'eshell-pred-substitute :override #'tv/advice--eshell-pred-substitute)
+  ;; Fix echo, perhaps using as alias *echo is even better.
+  (setq eshell-plain-echo-behavior t))
+
+(global-set-key (kbd "C-!") 'eshell-command)
+
+;;; display-line-numbers
+;;
+(autoload 'global-display-line-numbers-mode "display-line-numbers.el")
+(autoload 'global-display-line-numbers-mode "display-line-numbers.el")
+
+(with-eval-after-load 'display-line-numbers
+  (setq display-line-numbers-type 'relative))
 
 ;;; Outline-mode
 ;;
-(use-package outline
-  :defer t
-  :requires helm
-  :config
-  (progn
-    (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-p")
-                                  ?p 'outline-previous-visible-heading
-                                  '((?n . outline-next-visible-heading)))
-    (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-n")
-                                  ?n 'outline-next-visible-heading
-                                  '((?p . outline-previous-visible-heading)))
-    (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-f")
-                                  ?f 'outline-forward-same-level
-                                  '((?b . outline-backward-same-level)))
-    (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-b")
-                                  ?b 'outline-backward-same-level
-                                  '((?f . outline-forward-same-level)))))
+(with-eval-after-load 'outline
+  (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-p")
+                                ?p 'outline-previous-visible-heading
+                                '((?n . outline-next-visible-heading)))
+  (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-n")
+                                ?n 'outline-next-visible-heading
+                                '((?p . outline-previous-visible-heading)))
+  (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-f")
+                                ?f 'outline-forward-same-level
+                                '((?b . outline-backward-same-level)))
+  (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-b")
+                                ?b 'outline-backward-same-level
+                                '((?f . outline-forward-same-level))))
 
 ;;; Flyspell
 ;;
-(use-package ispell
-  :init
-  (progn
-    (setq-default ispell-program-name "aspell")
-    (setq ispell-local-dictionary "francais"))
-  :config
-  (progn
-    (defun tv/toggle-flyspell (arg)
-      "Toggle `flyspell-mode'." 
-      (interactive "P")
-      (if (and flyspell-mode (null arg))
-          (progn
-            (flyspell-mode -1)
-            (message "Flyspell Mode disabled"))
-        (flyspell-mode 1)
-        (unwind-protect
-            (progn
-              (when (fboundp 'helm-autoresize-mode)
-                (helm-autoresize-mode 1))
-              (let ((dic (completing-read "Dictionary: " '("english" "francais"))))
-                (ispell-change-dictionary dic)
-                (flyspell-delete-all-overlays)
-                (message "Starting new Ispell process aspell with %s dictionary..." dic)))
-          (when (fboundp 'helm-autoresize-mode)
-            (helm-autoresize-mode -1))))))
-  :bind ("C-c @" . tv/toggle-flyspell))
+(with-eval-after-load 'ispell
+  (setq-default ispell-program-name "aspell")
+  (setq ispell-local-dictionary "francais"))
 
-;;; Semantic
-;;
-(use-package semantic
-  :config
-  (progn
-    ;; Don't use this with elisp, prefer native imenu.
-    (add-hook 'semantic-mode-hook
-              ;; My patched lisp/cedet/semantic/bovine/el.el.
-              (lambda ()
-                (load-file "~/elisp/el.el")
-                (when (fboundp 'semantic-default-elisp-setup)
-                  (semantic-default-elisp-setup))))
-    (semantic-mode 1))
-  :disabled t)
-
-;;; Which function
-;;
-(use-package which-func
-  :commands 'which-function
-  :config
-  (progn
-    (defun tv/which-func ()
-      (interactive)
-      (message "[%s]" (which-function))))
-  :bind (:map emacs-lisp-mode-map
-              ("C-c ?" . tv/which-func)))
+(defun tv/toggle-flyspell (arg)
+  "Toggle `flyspell-mode'." 
+  (interactive "P")
+  (require 'flyspell)
+  (if (and flyspell-mode (null arg))
+      (progn
+        (flyspell-mode -1)
+        (message "Flyspell Mode disabled"))
+    (flyspell-mode 1)
+    (unwind-protect
+         (progn
+           (when (fboundp 'helm-autoresize-mode)
+             (helm-autoresize-mode 1))
+           (let ((dic (completing-read "Dictionary: " '("english" "francais"))))
+             (ispell-change-dictionary dic)
+             (flyspell-delete-all-overlays)
+             (message "Starting new Ispell process aspell with %s dictionary..." dic)))
+      (when (fboundp 'helm-autoresize-mode)
+        (helm-autoresize-mode -1)))))
+(global-set-key (kbd "C-c @") 'tv/toggle-flyspell)
 
 ;;; Shell
 ;;
-(use-package shell
-  :requires helm
-  :config
-  (progn
-    (defun comint--advice-send-eof (&rest _args)
-      (let ((win (selected-window)))
-        (kill-buffer) (delete-window win)))
-    (advice-add 'comint-send-eof :after 'comint--advice-send-eof))
-  :bind (("<f11> s h" . shell)
-         :map shell-mode-map
-         ("M-p" . helm-comint-input-ring)))
+(global-set-key (kbd "<f11> s h") 'shell)
+
+(with-eval-after-load 'comint
+  (defun comint--advice-send-eof (&rest _args)
+    (let ((win (selected-window)))
+      (kill-buffer) (delete-window win)))
+  (advice-add 'comint-send-eof :after 'comint--advice-send-eof))
+
+(with-eval-after-load 'shell
+  (define-key shell-mode-map (kbd "M-p") 'helm-comint-input-ring))
 
 ;;; Elisp/lisp
 ;;
-(use-package lisp-mode
-  :config
-  (progn
-    (defun tv/set-mode-name (name)
-      (setq-local mode-name name))
-    (defun tv/set-lisp-interaction-name ()
-      (tv/set-mode-name (all-the-icons-fileicon "lisp")))
-    (defun tv/set-emacs-lisp-name ()
-      (tv/set-mode-name (all-the-icons-fileicon "elisp")))
-    (add-hook 'lisp-interaction-mode-hook #'tv/set-lisp-interaction-name)
-    (add-hook 'emacs-lisp-mode-hook #'tv/set-emacs-lisp-name)
+(defun tv/set-mode-name (name)
+  (setq-local mode-name name))
+(defun tv/set-lisp-interaction-name ()
+  (tv/set-mode-name (all-the-icons-fileicon "lisp")))
+(defun tv/set-emacs-lisp-name ()
+  (tv/set-mode-name (all-the-icons-fileicon "elisp")))
+(add-hook 'lisp-interaction-mode-hook #'tv/set-lisp-interaction-name)
+(add-hook 'emacs-lisp-mode-hook #'tv/set-emacs-lisp-name)
 
-    (use-package cl-indent
-        :config
-      ;; Fix indentation in CL functions (cl-flet/loop etc...).
-      (setq lisp-indent-function #'common-lisp-indent-function
-            lisp-simple-loop-indentation 1
-            lisp-loop-keyword-indentation 9 ;; Align cl-loop clauses.
-            lisp-loop-forms-indentation 9) ;; Align cl-loop next clauses.
-      (let ((l '((cl-flet ((&whole 4 &rest (&whole 1 &lambda &body)) &body))
-                 (cl-flet* . cl-flet)
-                 (cl-labels . cl-flet)
-                 (cl-macrolet . cl-flet))))
-        (dolist (el l)
-          (put (car el) 'common-lisp-indent-function
-               (if (symbolp (cdr el))
-                   (get (cdr el) 'common-lisp-indent-function)
-                 (car (cdr el)))))))
-    
-    (defun goto-scratch ()
-      (interactive)
-      (switch-to-buffer "*scratch*"))
+;; Fix indentation in CL functions (cl-flet/loop etc...).
+(setq lisp-indent-function #'common-lisp-indent-function
+      lisp-simple-loop-indentation 1
+      lisp-loop-keyword-indentation 9 ;; Align cl-loop clauses.
+      lisp-loop-forms-indentation 9) ;; Align cl-loop next clauses.
+(let ((l '((cl-flet ((&whole 4 &rest (&whole 1 &lambda &body)) &body))
+           (cl-flet* . cl-flet)
+           (cl-labels . cl-flet)
+           (cl-macrolet . cl-flet))))
+  (dolist (el l)
+    (put (car el) 'common-lisp-indent-function
+         (if (symbolp (cdr el))
+             (get (cdr el) 'common-lisp-indent-function)
+           (car (cdr el))))))
 
-    ;; Add fontification to some functions
-    (cl-dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
-      (font-lock-add-keywords
-       mode
-       '(("(\\<\\(cl-dolist\\)\\>" 1 font-lock-keyword-face))))
+(defun goto-scratch ()
+  (interactive)
+  (switch-to-buffer "*scratch*"))
 
-    (defvar tv/autofill-modes '(emacs-lisp-mode
-                                lisp-interaction-mode
-                                sh-mode))
-    (defun tv/point-in-comment-p (pos)
-      "Returns non-nil if POS is in a comment."
-      (eq 'comment (syntax-ppss-context (syntax-ppss pos))))
+;; Add fontification to some functions
+(cl-dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
+  (font-lock-add-keywords
+   mode
+   '(("(\\<\\(cl-dolist\\)\\>" 1 font-lock-keyword-face))))
 
-    (defun tv/point-in-docstring-p (pos)
-      "Returns non-nil if POS is in a docstring."
-      (and (eq 'string (syntax-ppss-context (syntax-ppss pos)))
-           (eq (get-text-property (point) 'face) 'font-lock-doc-face)))
+(defvar tv/autofill-modes '(emacs-lisp-mode
+                            lisp-interaction-mode
+                            sh-mode))
+(defun tv/point-in-comment-p (pos)
+  "Returns non-nil if POS is in a comment."
+  (eq 'comment (syntax-ppss-context (syntax-ppss pos))))
 
-    (defun tv/turn-on-auto-fill-mode-maybe ()
-      "Enable auto-fill-mode only in comments or docstrings.
+(defun tv/point-in-docstring-p (pos)
+  "Returns non-nil if POS is in a docstring."
+  (and (eq 'string (syntax-ppss-context (syntax-ppss pos)))
+       (eq (get-text-property (point) 'face) 'font-lock-doc-face)))
+
+(defun tv/turn-on-auto-fill-mode-maybe ()
+  "Enable auto-fill-mode only in comments or docstrings.
 Variable adaptive-fill-mode is disabled when a docstring field is detected."
-      (when (memq major-mode tv/autofill-modes)
-        (let ((in-docstring (tv/point-in-docstring-p (point))))
-          (setq adaptive-fill-mode (not in-docstring))
-          (auto-fill-mode
-           (if (or (tv/point-in-comment-p (point))
-                   in-docstring)
-               1 -1)))))
-    ;; Maybe turn on auto-fill-mode when a comment or docstring field
-    ;; is detected. Ensure the hook is appended otherwise things like
-    ;; eldoc-eval will not work.
-    (add-hook 'post-command-hook #'tv/turn-on-auto-fill-mode-maybe t)
-    
-    ;; Fold docstrings
-    ;;
-    (defun tv/on-docstring-quoted-symbol-p ()
-      (or (equal (get-text-property (point) 'face)
-                 '(font-lock-constant-face font-lock-doc-face))
-          (memql (char-after) '(?` ?'))))
+  (when (memq major-mode tv/autofill-modes)
+    (let ((in-docstring (tv/point-in-docstring-p (point))))
+      (setq adaptive-fill-mode (not in-docstring))
+      (auto-fill-mode
+       (if (or (tv/point-in-comment-p (point))
+               in-docstring)
+           1 -1)))))
+;; Maybe turn on auto-fill-mode when a comment or docstring field
+;; is detected. Ensure the hook is appended otherwise things like
+;; eldoc-eval will not work.
+(add-hook 'post-command-hook #'tv/turn-on-auto-fill-mode-maybe t)
 
-    (defun tv/on-unneeded-backslash-p ()
-      (equal (get-text-property (point) 'help-echo)
-             "This \\ has no effect"))
+(defun tv/pp-eval-or-expand-last-sexp (&optional arg)
+  "Eval sexp at point, with ARG macroexpand it."
+  (interactive "P")
+  (if arg
+      (pp-macroexpand-last-sexp nil)
+    (pp-eval-last-sexp nil)))
 
-    (defun tv/goto-docstring-beg-or-end (arg)
-      "Return point value at beginning or end of docstring.
-If ARG is 1 goto end of docstring, -1 goto beginning."
-      (when (or (tv/point-in-docstring-p (point))
-                (tv/on-docstring-quoted-symbol-p)
-                (tv/on-unneeded-backslash-p))
-        (while (or (tv/point-in-docstring-p (point))
-                   (tv/on-docstring-quoted-symbol-p)
-                   (tv/on-unneeded-backslash-p))
-          (forward-char arg))
-        (if (< arg 0)
-            (back-to-indentation)
-          (while (not (tv/point-in-docstring-p (point))) (forward-char -1)))
-        (point)))
-
-    (defun tv/beginning-of-docstring ()
-      "Move to beginning of docstring and return `point'."
-      (tv/goto-docstring-beg-or-end -1))
-
-    (defun tv/end-of-docstring ()
-      "Move to beginning of docstring and return point."
-      (tv/goto-docstring-beg-or-end 1))
-
-    (defun tv/fold-docstring ()
-      "Fold docstring."
-      (interactive)
-      (let ((beg (save-excursion (tv/beginning-of-docstring)))
-            (end (save-excursion (tv/end-of-docstring))))
-        (add-text-properties (1+ beg) (1- end) '(display "[⃛]"))
-        (set-buffer-modified-p nil)))
-    (define-key emacs-lisp-mode-map (kbd "C-c f") 'tv/fold-docstring)
-
-    (defun tv/unfold-docstring ()
-      "Unfold docstring."
-      (interactive)
-      (let ((beg (or (previous-single-property-change (point) 'display)
-                     (point)))
-            (end (or (next-single-property-change (point) 'display)
-                     (point))))
-        (remove-text-properties beg end '(display))
-        (set-buffer-modified-p nil)))
-    (define-key emacs-lisp-mode-map (kbd "C-c u") 'tv/unfold-docstring)
-
-    (defun tv/clean-backslashes-in-docstrings ()
-      (interactive)
-      (save-excursion
-        (goto-char (point-min))
-        (while (re-search-forward "\\s\\" nil t)
-          (forward-char -1)
-          (if (and (tv/on-unneeded-backslash-p)
-                   (save-excursion (tv/point-in-docstring-p (1+ (point)))))
-              (delete-char 1)
-            (forward-char 1)))))
-    (define-key emacs-lisp-mode-map (kbd "C-c \\") 'tv/clean-backslashes-in-docstrings)
-
-    (defun tv/next-unquoted-backslash-in-regexps ()
-      (interactive)
-      (let ((pos (point))
-            found)
-        (catch 'break
-          (while (re-search-forward "\\s\\" nil t)
-            (catch 'continue
-              (forward-char -1)
-              (if (and (tv/on-unneeded-backslash-p)
-                       (not (tv/point-in-docstring-p (1+ (point)))))
-                  (throw 'break (setq found t))
-                (forward-char 1)
-                (throw 'continue t))))
-          (unless found (goto-char pos) (message "No wrong backslashes found")))))
-    
-    (defun tv/pp-eval-or-expand-last-sexp (&optional arg)
-      "Eval sexp at point, with ARG macroexpand it."
-      (interactive "P")
-      (if arg
-          (pp-macroexpand-last-sexp nil)
-        (pp-eval-last-sexp nil))))
-
-  :bind (("<f11> s c" . goto-scratch)
-         ("<S-f12>" . cancel-debug-on-entry)
-         ("M-:" . pp-eval-expression)
-         :map
-         emacs-lisp-mode-map
-         ("RET" . newline-and-indent)
-         ("C-c C-c b" . byte-compile-file)
-         ("<next>" . forward-page)
-         ("<prior>" . backward-page)
-         ("C-M-j" . backward-kill-sexp)
-         ("M-e" . tv/pp-eval-or-expand-last-sexp)
-         ("C-c C-a" . tv/align-let)
-         :map
-         lisp-interaction-mode-map
-         ("RET" . newline-and-indent)
-         ("C-M-j" . backward-kill-sexp)
-         ("M-e" . tv/pp-eval-or-expand-last-sexp)
-         ("C-c C-a" . tv/align-let)
-         :map
-         lisp-mode-map
-         ("RET" . newline-and-indent)))
-
-;;; face-remap - font size <C-fn-up/down>.
-;;
-(use-package face-remap
-  :bind (("C--" . text-scale-decrease)
-         ("C-+" . text-scale-increase)))
+(global-set-key (kbd "<f11> s c") 'goto-scratch)
+(global-set-key (kbd "<S-f12>") 'cancel-debug-on-entry)
+(global-set-key (kbd "M-:") 'pp-eval-expression)
+(define-key emacs-lisp-mode-map (kbd "RET") 'newline-and-indent)
+(define-key emacs-lisp-mode-map (kbd "C-c C-c b") 'byte-compile-file)
+(define-key emacs-lisp-mode-map (kbd "<next>") 'forward-page)
+(define-key emacs-lisp-mode-map (kbd "<prior>") 'backward-page)
+(define-key emacs-lisp-mode-map (kbd "C-M-j") 'backward-kill-sexp)
+(define-key emacs-lisp-mode-map (kbd "M-e") 'tv/pp-eval-or-expand-last-sexp)
+(define-key emacs-lisp-mode-map (kbd "C-c C-a") 'tv/align-let)
+(define-key lisp-interaction-mode-map (kbd "RET") 'newline-and-indent)
+(define-key lisp-interaction-mode-map (kbd "C-M-j") 'backward-kill-sexp)
+(define-key lisp-interaction-mode-map (kbd "M-e") 'tv/pp-eval-or-expand-last-sexp)
+(define-key lisp-interaction-mode-map (kbd "C-c C-a") 'tv/align-let)
+(define-key lisp-mode-map (kbd "RET") 'newline-and-indent)
 
 ;;; Org toc for github
 ;;
-(use-package toc-org
-  :commands (toc-org-insert-toc)  
-  :ensure t
-  :config (add-hook 'org-mode-hook 'toc-org-enable))
+(autoload 'toc-org-enable "toc-org.el" nil t)
+(autoload 'toc-org-insert-toc "toc-org.el" nil t)
+(with-eval-after-load 'org
+  (add-hook 'org-mode-hook 'toc-org-enable))
 
 ;;; Rectangle edit
 ;;
-(use-package rectangle-edit :commands 'rectangle-edit)
+(autoload 'rectangle-edit "rectangle-edit.el" nil t)
 
 ;;; Bash completion
 ;;
-(use-package bash-completion
-    :ensure t
-    :config
-  (add-hook 'shell-dynamic-complete-functions
-            'bash-completion-dynamic-complete)
-  
-  ;; Used as CAPF in eshell.
-  (defun bash-completion-eshell-capf ()
-    (bash-completion-dynamic-complete-nocomint
-     (save-excursion (eshell-bol) (point))
-     (point) t)))
+(autoload 'bash-completion-dynamic-complete "bash-completion.el" nil t)
+(add-hook 'shell-dynamic-complete-functions
+          'bash-completion-dynamic-complete)
+
+;; Used as CAPF in eshell.
+(defun bash-completion-eshell-capf ()
+  (require 'bash-completion)
+  (bash-completion-dynamic-complete-nocomint
+   (save-excursion (eshell-bol) (point))
+   (point) t))
 
 ;;; Log-view (only used with RCS)
 ;;
-(use-package log-view
-  :config
-  (defun tv/log-view-fontify ()
-    (font-lock-add-keywords nil '(("^revision [0-9.]*" . font-lock-comment-face)
-                                  ("[a-zA-Z ]*:" . font-lock-type-face))))
-  (add-hook 'log-view-mode-hook 'tv/log-view-fontify))
+(defun tv/log-view-fontify ()
+  (font-lock-add-keywords nil '(("^revision [0-9.]*" . font-lock-comment-face)
+                                ("[a-zA-Z ]*:" . font-lock-type-face))))
+(add-hook 'log-view-mode-hook 'tv/log-view-fontify)
 
 ;;; Wgrep
 ;;
 ;; Needs only two files, wgrep.el and wgrep-helm.el, they are
-;; installed in ~/elisp.
-(use-package wgrep-helm
-  :config
+;; installed in ~/elisp, it is loaded by helm.
+(with-eval-after-load 'wgrep
   (setq wgrep-enable-key "\C-x\C-q"))
 
 ;;; psession
 ;;
-(use-package psession
-  :config
-  (psession-savehist-mode 1)
-  (psession-mode 1)
-  (setq psession-save-buffers-unwanted-buffers-regexp
-        "\\(\\.org\\|diary\\|\\.jpg\\|\\.png\\|\\*image-native-display\\*\\)$"))
+(autoload 'psession-mode "psession.el" nil t)
+(autoload 'psession-savehist-mode "psession.el" nil t)
+(psession-mode 1)
+(psession-savehist-mode 1)
+(setq psession-save-buffers-unwanted-buffers-regexp
+      "\\(\\.org\\|diary\\|\\.jpg\\|\\.png\\|\\*image-native-display\\*\\)$")
 
 ;;; Imenu
 ;;
-(use-package imenu
-  :defer t
-  :config
-  ;; Allow browsing use-package definitions in init files.
-  (defun tv/imenu-add-extras-generic-expr ()
-    (add-to-list
-     'imenu-generic-expression
-     '("Use package" "^\\s-*(\\(?:straight-\\)?use-package\\s-+'?\\(\\(?:\\sw\\|\\s_\\|\\\\.\\)+\\)[[:space:]\n]*[^)]*" 1))
-    (add-to-list
-     'imenu-generic-expression
-     '("Helm make command"
-       "^\\s-*(\\(?:helm-make-\\)?\\(?:persistent-\\)?command-from-action\\s-+'?\\(\\(?:\\sw\\|\\s_\\|\\\\.\\)+\\)[[:space:]\n]*[^)]*" 1)))
-  (add-hook 'emacs-lisp-mode-hook #'tv/imenu-add-extras-generic-expr))
+;; Allow browsing use-package definitions in init files.
+(defun tv/imenu-add-extras-generic-expr ()
+  (require 'imenu)
+  (add-to-list
+   'imenu-generic-expression
+   '("Use package" "^\\s-*(\\(?:straight-\\)?use-package\\s-+'?\\(\\(?:\\sw\\|\\s_\\|\\\\.\\)+\\)[[:space:]\n]*[^)]*" 1))
+  (add-to-list
+   'imenu-generic-expression
+   '("Helm make command"
+     "^\\s-*(\\(?:helm-make-\\)?\\(?:persistent-\\)?command-from-action\\s-+'?\\(\\(?:\\sw\\|\\s_\\|\\\\.\\)+\\)[[:space:]\n]*[^)]*" 1)))
+(add-hook 'emacs-lisp-mode-hook #'tv/imenu-add-extras-generic-expr)
 
 ;;; Undo-tree
 ;;
@@ -2018,89 +1762,70 @@ If ARG is 1 goto end of docstring, -1 goto beginning."
 ;; dependencie as the ELPA version is deprecated (0.7.5).
 ;; Version 0.8.2 has persistent history by default.
 ;; Undo-tree.el and queue.el are now in ~/elisp.
-(use-package undo-tree
-  :diminish undo-tree-mode
-  :config
-  (setq undo-tree-auto-save-history nil)
-  ;; undo-tree history files have their own directory otherwise they
-  ;; are added in current directory for each file.
-  ;; (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree-history")))
-  (defun git-gutter:undo-tree-undo (&rest _args)
-    (when git-gutter-mode
-      (run-with-idle-timer 0.1 nil 'git-gutter)))
-  (advice-add 'undo-tree-undo :after 'git-gutter:undo-tree-undo)
-  (advice-add 'undo-tree-redo :after 'git-gutter:undo-tree-undo)
-
-  (global-undo-tree-mode 1))
+(require 'undo-tree)
+(global-undo-tree-mode 1)
+(setq undo-tree-auto-save-history nil)
+(setq undo-tree-mode-lighter nil)
+;; undo-tree history files have their own directory otherwise they
+;; are added in current directory for each file.
+;; (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree-history")))
+(defun git-gutter:undo-tree-undo (&rest _args)
+  (when git-gutter-mode
+    (run-with-idle-timer 0.1 nil 'git-gutter)))
+(advice-add 'undo-tree-undo :after 'git-gutter:undo-tree-undo)
+(advice-add 'undo-tree-redo :after 'git-gutter:undo-tree-undo)
 
 ;;; Isearch-light
 ;;
-(use-package isl
-  :config
-  (setq isl-before-position-string "≤"
-        isl-after-position-string "≥")
-  :bind (("C-s" . isl-search)
-         ("C-z" . isl-narrow-to-defun)
-         ("C-M-s" . isl-resume)))
+(autoload 'isl-search "isl.el" nil t)
+(autoload 'isl-narrow-to-defun "isl.el" nil t)
+(autoload 'isl-resume "isl.el" nil t)
+(global-set-key (kbd "C-s") 'isl-search)
+(global-set-key (kbd "C-z") 'isl-narrow-to-defun)
+(global-set-key (kbd "C-M-s") 'isl-resume)
 
 ;;; Yaml-mode
 ;;
-(use-package yaml-mode
-  :ensure t
-  :config (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode)))
-
-;;; OSM (openstreetmap package)
-;;
-(use-package osm
-    :config
-  (unless (fboundp 'json-available-p)
-    (defun json-available-p ()
-      (fboundp 'json-parse-string))))
+(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
 
 ;;; Edebug
 ;;
-(use-package edebug
-    :config
-  ;; Setup edebug for helm
+(with-eval-after-load 'edebug
   (setq edebug-trace t
         edebug-initial-mode 'trace
         edebug-sit-for-seconds 2))
 
 ;;; Wfnames
 ;;
-(use-package wfnames
-    :commands 'wfnames-setup-buffer
-    :config
-    (setq wfnames-create-parent-directories t
-          wfnames-interactive-rename nil))
+(autoload 'wfnames-setup-buffer "wfnames.el" nil t)
+(with-eval-after-load 'wfnames
+  (setq wfnames-create-parent-directories t
+        wfnames-interactive-rename nil))
 
 ;;; Boxquote
 ;;
-(use-package boxquote)
-
-;;; Gnus
-;;
-(use-package gnus
-    :config
-  (setq gnus-init-file "~/.emacs.d/.gnus.el")
-  (addressbook-turn-on-mail-completion)
-  :bind (("<f9>" . gnus)
-         :map
-         gnus-summary-mode-map
-         ("M-q" . gnus-article-fill-long-lines)
-         ("n" . gnus-summary-next-article)
-         ("N" . gnus-summary-next-unread-article)
-         ("p" . gnus-summary-prev-article)
-         ("P" . gnus-summary-prev-unread-article)))
+(autoload 'boxquote-region "boxquote.el" nil t)
+(autoload 'boxquote-defun "boxquote.el" nil t)
+(autoload 'boxquote-unbox "boxquote.el" nil t)
 
 ;;; Tree-sitter
 ;;
-(use-package treesit
-    :if (and (fboundp 'treesit-available-p)
-             (treesit-available-p))
-    :config
-    (setq treesit-extra-load-path '("/usr/local/lib"))
-    (add-hook 'python-mode-hook 'python-ts-mode))
+(when (and (fboundp 'treesit-available-p)
+           (treesit-available-p))
+  (setq treesit-extra-load-path '("/usr/local/lib"))
+  (add-hook 'python-mode-hook 'python-ts-mode))
+
+;;; Gnus
+;;
+(global-set-key (kbd "<f9>") 'gnus)
+(setq gnus-init-file "~/.emacs.d/.gnus.el")
+(with-eval-after-load 'gnus-sum
+  (define-key gnus-summary-mode-map (kbd "M-q") 'gnus-article-fill-long-lines)
+  (define-key gnus-summary-mode-map (kbd "N") 'gnus-summary-next-unread-article)
+  (define-key gnus-summary-mode-map (kbd "n") 'gnus-summary-next-article)
+  (define-key gnus-summary-mode-map (kbd "P") 'gnus-summary-prev-unread-article)
+  (define-key gnus-summary-mode-map (kbd "p") 'gnus-summary-prev-article))
+
 
 ;; Kill buffer and windows
 (defun tv/kill-buffer-and-windows (arg)
