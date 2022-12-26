@@ -17,21 +17,6 @@
         native-comp-async-report-warnings-errors 'silent))
 
 (setq inhibit-startup-echo-area-message "thierry")
-(setq use-package-verbose t)
-
-;;; Functions to switch to xfce presentation mode
-;;
-(defun tv/xfce-presentation-mode-1 (val)
-  (call-process "xfconf-query" nil nil nil
-                "xfconf-query" "-c" "xfce4-power-manager"
-                "-p" "/xfce4-power-manager/presentation-mode"
-                "-s" val))
-
-(defun tv/xfce-presentation-mode-start ()
-  (tv/xfce-presentation-mode-1 "true"))
-
-(defun tv/xfce-presentation-mode-stop ()
-  (tv/xfce-presentation-mode-1 "false"))
 
 ;;; package.el
 ;;
