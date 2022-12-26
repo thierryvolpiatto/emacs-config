@@ -1345,7 +1345,7 @@ If your system's ping continues until interrupted, you can try setting
 
 ;;; Whitespace-mode
 ;;
-(autoload 'whitespace-mode "whitespace-mode.el" nil t)
+(autoload 'whitespace-mode "whitespace.el" nil t)
 (with-eval-after-load 'whitespace-mode
   (add-to-list 'whitespace-style 'lines-tail)
   (setq whitespace-line-column 80))
