@@ -18,9 +18,8 @@
 
 (setq inhibit-startup-echo-area-message "thierry")
 
-;;; package.el
-;;
-;;; Melpa/Elpa
+
+;;; Packages.el config.
 ;;
 ;; Emacs-26
 (unless (boundp 'package-quickstart)
@@ -285,7 +284,7 @@ So far, F can only be a symbol, not a lambda expression."))
 (setq line-move-visual nil)
 
 
-;;; Use package declarations
+;;; Package configurations.
 
 ;;; Info
 ;;
@@ -454,6 +453,8 @@ So far, F can only be a symbol, not a lambda expression."))
 (with-eval-after-load 'jka-cmpr-hook
   (auto-compression-mode 1))
 
+;;; Flymake
+;;
 (with-eval-after-load 'flymake
   (if (> emacs-major-version 28)
       (customize-set-variable 'flymake-mode-line-lighter "🪰")
@@ -1837,7 +1838,7 @@ With a prefix arg ask with completion which buffer to kill."
                          'unspecified))
            do (set-face-attribute f nil :extend t)))
 
-;; Fix unreadable diff/ediff in emacs-27
+;; Fix unreadable diff/ediff in emacs-27+
 (when (>= emacs-major-version 27)
   (with-eval-after-load 'diff-mode
     (set-face-attribute 'diff-refine-added nil :background 'unspecified)
