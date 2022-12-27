@@ -9,15 +9,6 @@
              (format "%.2f" time))))
 (add-hook 'emacs-startup-hook #'tv/emacs-load-time 99)
 
-(when (and (fboundp 'native-comp-available-p)
-           (native-comp-available-p))
-  (setq native-comp-deferred-compilation t
-        native-comp-async-query-on-exit t
-        native-comp-async-jobs-number 4
-        native-comp-async-report-warnings-errors 'silent))
-
-(setq inhibit-startup-echo-area-message "thierry")
-
 
 ;;; Packages.el config.
 ;;
@@ -284,7 +275,16 @@ So far, F can only be a symbol, not a lambda expression."))
 (setq line-move-visual nil)
 
 
-;;; Package configurations.
+;;;; Package configurations.
+
+;;; Isearch-light
+;;
+(autoload 'isl-search "isl.el" nil t)
+(autoload 'isl-narrow-to-defun "isl.el" nil t)
+(autoload 'isl-resume "isl.el" nil t)
+(global-set-key (kbd "C-s") 'isl-search)
+(global-set-key (kbd "C-z") 'isl-narrow-to-defun)
+(global-set-key (kbd "C-M-s") 'isl-resume)
 
 ;;; Info
 ;;
@@ -366,11 +366,27 @@ So far, F can only be a symbol, not a lambda expression."))
   (setq browse-url-firefox-program "firefox"
         browse-url-browser-function 'helm-browse-url-firefox))
 
-;;; Ediff
+;;; Dif/Ediff
 ;;
 (setq ediff-window-setup-function 'ediff-setup-windows-plain
       ediff-split-window-function 'split-window-horizontally
       ediff-show-ancestor         nil)
+
+;; Fix unreadable diff/ediff in emacs-27+
+(when (>= emacs-major-version 27)
+  (with-eval-after-load 'diff-mode
+    (set-face-attribute 'diff-refine-added nil :background 'unspecified)
+    (set-face-attribute 'diff-refine-removed nil :background 'unspecified)
+    (set-face-attribute 'diff-refine-changed nil :background 'unspecified))
+  (with-eval-after-load 'ediff-init
+    (set-face-attribute 'ediff-fine-diff-A nil :background 'unspecified)
+    (set-face-attribute 'ediff-fine-diff-B nil :background 'unspecified))
+  (with-eval-after-load 'hl-line
+    (set-face-attribute 'hl-line nil :extend t))
+  (set-face-attribute 'region nil :extend t))
+
+;; diff buffers read-only
+(setq diff-default-read-only t)
 
 ;;; tv-utils fns
 ;;
@@ -439,12 +455,14 @@ So far, F can only be a symbol, not a lambda expression."))
 (with-eval-after-load 'man
   (setq Man-notify-method 'pushy))
 
-;; show-paren-mode
+;;; show-paren-mode
 ;;
 (with-eval-after-load 'paren
   (show-paren-mode 1)
   (setq show-paren-ring-bell-on-mismatch t))
 
+;;; Electric-mode (disable)
+;;
 (with-eval-after-load 'electric
   (electric-indent-mode -1))
 
@@ -895,7 +913,21 @@ With a prefix arg decrease transparency."
 (global-set-key (kbd "C-x C-é") 'split-window-vertically)
 (global-set-key (kbd "C-x C-\"") 'split-window-horizontally)
 
-;;; Use `net-utils-run-simple' in net-utils fns.
+(defun tv/kill-buffer-and-windows (arg)
+  "Kill current-buffer and delete its window.
+With a prefix arg ask with completion which buffer to kill."
+  (interactive "P")
+  (let* ((buffer (if arg
+                     (read-buffer "Kill buffer: " (current-buffer) t)
+                   (current-buffer)))
+         (windows (get-buffer-window-list buffer nil t)))
+    (when (kill-buffer buffer)
+      (dolist (win windows)
+        (when (window-live-p win)
+          (ignore-errors (delete-window win)))))))
+(helm-define-key-with-subkeys global-map (kbd "C-x k") ?k 'tv/kill-buffer-and-windows)
+
+;;; Net-utils
 ;;
 (with-eval-after-load 'net-utils
   (defun ping (host)
@@ -1719,15 +1751,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 (with-eval-after-load 'wgrep
   (setq wgrep-enable-key "\C-x\C-q"))
 
-;;; psession
-;;
-(autoload 'psession-mode "psession.el" nil t)
-(autoload 'psession-savehist-mode "psession.el" nil t)
-(psession-mode 1)
-(psession-savehist-mode 1)
-(setq psession-save-buffers-unwanted-buffers-regexp
-      "\\(\\.org\\|diary\\|\\.jpg\\|\\.png\\|\\*image-native-display\\*\\)$")
-
 ;;; Imenu
 ;;
 ;; Allow browsing use-package definitions in init files.
@@ -1760,15 +1783,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
     (run-with-idle-timer 0.1 nil 'git-gutter)))
 (advice-add 'undo-tree-undo :after 'git-gutter:undo-tree-undo)
 (advice-add 'undo-tree-redo :after 'git-gutter:undo-tree-undo)
-
-;;; Isearch-light
-;;
-(autoload 'isl-search "isl.el" nil t)
-(autoload 'isl-narrow-to-defun "isl.el" nil t)
-(autoload 'isl-resume "isl.el" nil t)
-(global-set-key (kbd "C-s") 'isl-search)
-(global-set-key (kbd "C-z") 'isl-narrow-to-defun)
-(global-set-key (kbd "C-M-s") 'isl-resume)
 
 ;;; Yaml-mode
 ;;
@@ -1819,47 +1833,14 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   ;; loaded.
   (require 'emms-config))
 
-
-;; Kill buffer and windows
-(defun tv/kill-buffer-and-windows (arg)
-  "Kill current-buffer and delete its window.
-With a prefix arg ask with completion which buffer to kill."
-  (interactive "P")
-  (let* ((buffer (if arg
-                     (read-buffer "Kill buffer: " (current-buffer) t)
-                   (current-buffer)))
-         (windows (get-buffer-window-list buffer nil t)))
-    (when (kill-buffer buffer)
-      (dolist (win windows)
-        (when (window-live-p win)
-          (ignore-errors (delete-window win)))))))
-(helm-define-key-with-subkeys global-map (kbd "C-x k") ?k 'tv/kill-buffer-and-windows)
-
-;; Fix issue with the new :extend face attribute in emacs-27
-;; Prefer to extend to EOL as in previous emacs.
-(defun tv/extend-faces-matching (regexp)
-  (cl-loop for f in (face-list)
-           for face = (symbol-name f)
-           when (and (string-match regexp face)
-                     (eq (face-attribute f :extend t 'default)
-                         'unspecified))
-           do (set-face-attribute f nil :extend t)))
-
-;; Fix unreadable diff/ediff in emacs-27+
-(when (>= emacs-major-version 27)
-  (with-eval-after-load 'diff-mode
-    (set-face-attribute 'diff-refine-added nil :background 'unspecified)
-    (set-face-attribute 'diff-refine-removed nil :background 'unspecified)
-    (set-face-attribute 'diff-refine-changed nil :background 'unspecified))
-  (with-eval-after-load 'ediff-init
-    (set-face-attribute 'ediff-fine-diff-A nil :background 'unspecified)
-    (set-face-attribute 'ediff-fine-diff-B nil :background 'unspecified))
-  (with-eval-after-load 'hl-line
-    (set-face-attribute 'hl-line nil :extend t))
-  (set-face-attribute 'region nil :extend t))
-
-;; diff buffers read-only
-(setq diff-default-read-only t)
+;;; psession
+;;
+(autoload 'psession-mode "psession.el" nil t)
+(autoload 'psession-savehist-mode "psession.el" nil t)
+(psession-mode 1)
+(psession-savehist-mode 1)
+(setq psession-save-buffers-unwanted-buffers-regexp
+      "\\(\\.org\\|diary\\|\\.jpg\\|\\.png\\|\\*image-native-display\\*\\)$")
 
 ;; Link now scratch buffer to file
 (tv/restore-scratch-buffer)

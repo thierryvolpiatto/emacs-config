@@ -1773,6 +1773,18 @@ Don't bind this to global-map but to `byzanz-record-mode-map' instead."
     (remove-hook 'kill-buffer-hook 'tv-save-place)
     (remove-hook 'find-file-hook 'tv-save-place-restore-pos)))
 
+;;; Set extend attr on faces if needed
+;;
+(defun tv/extend-faces-matching (regexp)
+  "Allow setting `extend' attribute on faces matching REGEXP."
+  (cl-loop for f in (face-list)
+           for face = (symbol-name f)
+           when (and (string-match regexp face)
+                     (eq (face-attribute f :extend t 'default)
+                         'unspecified))
+           do (set-face-attribute f nil :extend t)))
+
+
 (provide 'tv-utils)
 
 ;; Local Variables:
