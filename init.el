@@ -12,15 +12,6 @@
 
 ;;; Packages.el config.
 ;;
-;; Emacs-26
-(unless (boundp 'package-quickstart)
-  (load-file (expand-file-name "early-init.el" user-emacs-directory))
-  (package-initialize))
-
-;; Need to update manually package-quickstart.el with
-;; `package-quickstart-refresh' after each update.
-;; (when (boundp 'package-quickstart) (setq package-quickstart t))
-
 (defun tv/fix-selected-packages ()
   (interactive)
   (package-initialize)
