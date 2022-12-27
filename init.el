@@ -1327,9 +1327,10 @@ If your system's ping continues until interrupted, you can try setting
 
 ;;; Mu4e
 ;;
-(require 'mu4e)
-(require 'tv-mu4e-config)
-(addressbook-turn-on-mail-completion)
+(autoload 'mu4e "mu4e.el" nil t)
+(with-eval-after-load 'mu4e
+  (require 'tv-mu4e-config)
+  (addressbook-turn-on-mail-completion))
 (global-set-key (kbd "<f8>") 'mu4e)
 
 ;;; Auth-source

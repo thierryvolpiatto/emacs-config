@@ -60,7 +60,7 @@
                              ("Send command to Tmux" . emamux:send-command)))
         :buffer "*helm bash history*"))
 
-;;; Use-package declarations.
+;;; Package declarations.
 ;;
 ;; Helm-mode is loading nearly everything.
 (add-hook 'helm-mode-hook
