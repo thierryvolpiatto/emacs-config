@@ -43,7 +43,7 @@
 ;; Increase GC
 (setq gc-cons-threshold 20000000)
 
-;;; Emacs customize have it's own file
+;;; Emacs customize own file
 ;;
 (setq custom-file "~/.emacs.d/.emacs-custom.el")
 (load custom-file)
@@ -60,13 +60,15 @@
 
 ;;; Global settings
 ;;
-;;  Global bindings
-(global-set-key (kbd "C-z")   nil) ; Disable `suspend-frame'.
-(global-set-key (kbd "<f11>") nil)
-(global-set-key (kbd "C-c R") (lambda () (interactive) (revert-buffer t t)))
-(global-set-key [remap save-buffers-kill-terminal] 'tv/stop-emacs) ; C-x C-c
 
-;; y-or-n-p
+;; Disable annoying bindings
+(global-set-key (kbd "C-z")   nil) ; Disable `suspend-frame'.
+(global-set-key (kbd "<f11>") nil) ; Disable `toggle-frame-fullscreen'
+
+;; Revert-buffer
+(global-set-key (kbd "C-c R") (lambda () (interactive) (revert-buffer t t)))
+
+;; y-or-n-p everywhere
 (fset 'yes-or-no-p 'y-or-n-p)
 
 ;; Stop/restart emacs
@@ -101,11 +103,12 @@ Restart works only on graphic display."
                      kill-emacs-query-functions)
            kill-emacs-query-functions)))
     (tv/stop-emacs-1)))
+(global-set-key [remap save-buffers-kill-terminal] 'tv/stop-emacs) ; C-x C-c
 
-;; Add-newline-at-end-of-files
+;; Add newline at end of files
 (setq require-final-newline t)
 
-;; Limite-max-lisp
+;; Limit max lisp
 (setq max-lisp-eval-depth 40000
       max-specpdl-size    100000)
 
@@ -150,12 +153,6 @@ Restart works only on graphic display."
       delete-old-versions t)
 (setq tramp-backup-directory-alist backup-directory-alist)
 
-;; Trash
-;; `move-file-to-trash' doesn't use `substitute-in-file-name' to extract
-;; value of XDG_DATA_HOME, so ensure this is unset in emacs.
-(setenv "XDG_DATA_HOME")
-;; (setq delete-by-moving-to-trash t)
-
 ;; Start-emacs-server
 ;;
 (autoload 'server-running-p "server.el")
@@ -170,7 +167,7 @@ Restart works only on graphic display."
       select-enable-clipboard t
       select-enable-primary nil)
 
-;; Enable-commands-disabled-by-default
+;; Enable some commands disabled by default
 (put 'narrow-to-region 'disabled nil)          ; C-x n n
 (put 'narrow-to-page 'disabled nil)            ; C-x n p
 (put 'scroll-left 'disabled nil)               ; C-x > or <
@@ -189,14 +186,6 @@ Restart works only on graphic display."
   (setq set-message-function nil
         clear-message-function nil)
   (remove-hook 'minibuffer-setup-hook 'minibuffer-error-initialize))
-
-;; History variables
-(setq history-delete-duplicates t)
-(setq history-length            100)
-(put 'file-name-history 'history-length 1000)
-
-;; Limit M-x history to 50.
-(put 'extended-command-history 'history-length 50)
 
 (setq report-emacs-bug-no-explanations t
       comint-prompt-read-only          t
@@ -236,46 +225,31 @@ Restart works only on graphic display."
   (setq while-no-input-ignore-events
         (append '(file-notify dbus-event) while-no-input-ignore-events)))
 
+;; Don't beep even with visible-bell (debian)
+(setq ring-bell-function 'ignore)
+
+;; moves point by logical lines.
+(setq line-move-visual nil)
+
 
 ;;; Compatibility
 ;;
 ;;
-;; For `osm' (open street map)
+;; For `osm' in skitour (open street map)
 (unless (fboundp 'json-available-p)
   (defun json-available-p ()
     (fboundp 'json-parse-string)))
 
-(unless (fboundp 'with-eval-after-load)
-  (defmacro with-eval-after-load (file &rest body)
-    "Execute BODY after FILE is loaded.
-FILE is normally a feature name, but it can also be a file name,
-in cl-case that file does not provide any feature."
-    (declare (indent 1) (debug t))
-    `(eval-after-load ,file (lambda () ,@body))))
-
-;; Fix compatibility with emacs 24.3.
-;; Avoid rebuilding all the autoloads just for this when switching to 24.3.
-(unless (fboundp 'function-put)
-  (defalias 'function-put
-    ;; We don't want people to just use `put' because we can't conveniently
-    ;; hook into `put' to remap old properties to new ones.  But for now, there's
-    ;; no such remapping, so we just call `put'.
-    (lambda (f prop value) (put f prop value))
-    "Set function F's property PROP to VALUE.
-The namespace for PROP is shared with symbols.
-So far, F can only be a symbol, not a lambda expression."))
-
-;; Fix slow helm frame popup in emacs-26 helm issue #1976
-(when (= emacs-major-version 26)
-  (setq x-wait-for-event-timeout nil))
-
-;; Don't beep even with visible-bell (debian)
-(setq ring-bell-function 'ignore)
-
-(setq line-move-visual nil)
-
 
 ;;;; Package configurations.
+
+;;; History
+;;
+(setq history-delete-duplicates t)
+(setq history-length            100)
+(put 'file-name-history 'history-length 1000)
+;; Limit M-x history to 50.
+(put 'extended-command-history 'history-length 50)
 
 ;;; Isearch-light
 ;;
