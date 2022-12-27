@@ -1,4 +1,10 @@
-;;; mu4e-config.el --- Config for mu4e. -*- lexical-binding: t -*-
+;;; tv-mu4e-config.el --- Config for mu4e. -*- lexical-binding: t -*-
+
+;;; Commentary:
+
+;; WARNING: Don't rename this file!
+;; This file should not be renamed to mu4e-config.el as mu4e have now
+;; a file named like this.
 
 ;;; Code:
 
@@ -489,4 +495,4 @@ if one may help."
 
 (provide 'tv-mu4e-config)
 
-;;; mu4e-config.el ends here
+;;; tv-mu4e-config.el ends here
