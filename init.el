@@ -7,6 +7,8 @@
   (let ((time (float-time (time-subtract (current-time) tv/startup-time))))
     (message "Emacs config loaded in %s seconds"
              (format "%.2f" time))))
+;; In addition to the time the config takes to load, this measure the
+;; time took by psession to restore various things.
 (add-hook 'emacs-startup-hook #'tv/emacs-load-time 99)
 
 
