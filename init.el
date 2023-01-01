@@ -1776,13 +1776,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 (autoload 'boxquote-defun "boxquote.el" nil t)
 (autoload 'boxquote-unbox "boxquote.el" nil t)
 
-;;; Tree-sitter
-;;
-(when (and (fboundp 'treesit-available-p)
-           (treesit-available-p))
-  (setq treesit-extra-load-path '("/usr/local/lib"))
-  (add-hook 'python-mode-hook 'python-ts-mode))
-
 ;;; Gnus
 ;;
 (global-set-key (kbd "<f9>") 'gnus)
