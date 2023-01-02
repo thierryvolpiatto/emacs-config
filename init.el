@@ -1770,12 +1770,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   (setq wfnames-create-parent-directories t
         wfnames-interactive-rename nil))
 
-;;; Boxquote
-;;
-(autoload 'boxquote-region "boxquote.el" nil t)
-(autoload 'boxquote-defun "boxquote.el" nil t)
-(autoload 'boxquote-unbox "boxquote.el" nil t)
-
 ;;; Gnus
 ;;
 (global-set-key (kbd "<f9>") 'gnus)
