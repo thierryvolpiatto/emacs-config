@@ -967,6 +967,10 @@ If your system's ping continues until interrupted, you can try setting
 (global-set-key (kbd "C-x r h") 'rectangle-utils-menu)
 (global-set-key (kbd "C-x r <right>") 'rectangle-utils-insert-at-right)
 
+;;; Rectangle edit
+;;
+(autoload 'rectangle-edit "rectangle-edit.el" nil t)
+
 ;;; Zop-to-char
 ;;
 (autoload 'zop-to-char "zop-to-char.el" nil t)
@@ -1681,10 +1685,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;
 (with-eval-after-load 'org
   (add-hook 'org-mode-hook 'toc-org-enable))
-
-;;; Rectangle edit
-;;
-(autoload 'rectangle-edit "rectangle-edit.el" nil t)
 
 ;;; Bash completion
 ;;
