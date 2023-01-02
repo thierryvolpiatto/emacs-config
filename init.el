@@ -942,14 +942,6 @@ If your system's ping continues until interrupted, you can try setting
   (setq wdired-use-dired-vertical-movement 'sometimes)
   (require 'dired-extension))
 
-;;; htmlize
-;;
-(autoload 'htmlize-buffer "htmlize" nil t)
-(autoload 'htmlize-region "htmlize" nil t)
-(autoload 'htmlize-file "htmlize" nil t)
-(autoload 'htmlize-many-files "htmlize" nil t)
-(autoload 'htmlize-many-files-dired "htmlize" nil t)
-
 ;;; Ledger
 ;;
 (autoload 'ledger-mode "ledger-mode.el" nil t)

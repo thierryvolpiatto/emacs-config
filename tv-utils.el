@@ -7,7 +7,6 @@
 
 (declare-function helm-find-files-1             "ext:helm-files.el")
 (declare-function mailcap-extension-to-mime     "mailcap.el")
-(declare-function htmlize-file                  "htmlize.el")
 (declare-function calendar-exit                 "calendar.el")
 (declare-function helm-region-active-p          "ext:helm-lib.el")
 (declare-function helm-basename                 "ext:helm-lib.el")
@@ -261,20 +260,6 @@ depending the value of N is positive or negative."
                (cl-incf count))
            ,seq)
      (progress-reporter-done progress-reporter)))
-
-;; Send current buffer htmlized to web browser.
-;;;###autoload
-(defun tv/htmlize-buffer-to-browser ()
-  (interactive)
-  (let* ((fname           (concat "/tmp/" (symbol-name (cl-gensym "emacs2browser"))))
-         (html-fname      (concat fname ".html"))
-         (buffer-contents (buffer-substring (point-min) (point-max))))
-    (with-current-buffer (find-file-noselect fname)
-      (insert buffer-contents)
-      (save-buffer)
-      (kill-buffer))
-    (htmlize-file fname html-fname)
-    (browse-url (format "file://%s" html-fname))))
 
 ;; key-for-calendar 
 (defvar tv/calendar-alive nil)
