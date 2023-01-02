@@ -76,68 +76,6 @@
             (message "Failed to unmount %s" mp))
         (message "No existing remote filesystem to unmount!")))))
 
-;; get-ip 
-;; get my external ip
-;;;###autoload
-(defun get-external-ip ()
-  (interactive)
-  (with-current-buffer (url-retrieve-synchronously "http://checkip.dyndns.org/")
-    (let ((data (xml-parse-region (point-min) (point-max))))
-      (car (last
-            (split-string
-             (car (last (assoc 'body (assoc 'html data))))))))))
-
-;; network-info 
-(defun tv/network-info (network)
-  (let ((info (cl-loop for (i . n) in (network-interface-list)
-                       when (string= network i)
-                       return (network-interface-info i))))
-    (when info
-      (cl-destructuring-bind (address broadcast netmask mac state)
-          info
-        (list :address address :broadcast broadcast
-              :netmask netmask :mac (cdr mac) :state state)))))
-
-;;;###autoload
-(defun tv/network-state (network &optional arg)
-  (interactive (list (read-string "Network: " "wlan0")
-                     "\np"))
-  (let* ((info (car (last (cl-getf (tv/network-info network) :state))))
-         (state (if info (symbol-name info) "down")))
-    (if arg (message "%s is %s" network state) state)))
-
-;; Benchmark
-(defmacro tv/time (&rest body)
-  "Return a list (time result) of time execution of BODY and result of BODY."
-  (declare (indent 0))
-  `(let ((tm (float-time)))
-     (reverse
-      (list
-       ,@body
-       (- (float-time) tm)))))
-
-;; Show-current-face 
-;;;###autoload
-(defun whatis-face ()
-  (interactive)
-  (message "CurrentFace: %s"
-           (get-text-property (point) 'face)))
-
-;; mcp 
-;;;###autoload
-(defun tv/mcp (file &optional dests)
-  "Copy FILE in DESTS directories."
-  (interactive "fFile: ")
-  (unless dests
-    (setq dests
-          (helm-read-file-name "Directory: "
-                               :marked-candidates t
-                               :test 'file-directory-p
-                               :noret t)))
-  (cl-loop for dir in dests
-           do
-           (copy-file file (file-name-as-directory dir) t)))
-
 ;;; move-to-window-line 
 ;;
 ;;;###autoload
@@ -170,40 +108,6 @@ depending the value of N is positive or negative."
   (other-window n 0)
   (select-frame-set-input-focus (selected-frame)))
 
-;;; Stardict
-;;
-;;;###autoload
-(defun translate-at-point (arg)
-  (interactive "P")
-  (let* ((word (if arg
-                   (read-string "Translate Word: ")
-                   (thing-at-point 'word)))
-         (tooltip-hide-delay 30)
-         (result
-          (condition-case nil
-              (shell-command-to-string (format "LC_ALL=\"fr_FR.UTF-8\" sdcv -n %s" word))
-            (error nil))))
-    (setq result (replace-regexp-in-string "^\\[ color=\"blue\">\\|</font>\\|\\]" "" result))
-    (if result
-        (with-current-buffer (get-buffer-create "*Dict*")
-          (erase-buffer)
-          (save-excursion
-            (insert result) (fill-region (point-min) (point-max)))
-          ;; Assume dict buffer is in `special-display-buffer-names'.
-          (switch-to-buffer-other-frame "*Dict*")
-          (view-mode 1))
-        (message "Nothing found."))))
-
-;;; Get-mime-type-of-file
-;;
-;;;###autoload
-(defun file-mime-type (fname &optional arg)
-  "Get the mime-type of fname"
-  (interactive "fFileName: \np")
-  (if arg
-      (message "%s" (mailcap-extension-to-mime (file-name-extension fname t)))
-      (mailcap-extension-to-mime (file-name-extension fname t))))
-
 ;;; Eval-region
 ;;
 ;;
@@ -226,40 +130,6 @@ depending the value of N is positive or negative."
                                     (format "`%s'" x))
                                 (reverse store))
                         "\n- "))))
-
-;;; Time-functions 
-(cl-defun tv/time-date-in-n-days (days &key (separator "-") french)
-  "Return the date in string form in n +/-DAYS."
-  (let* ((days-in-sec       (* 3600 (* (+ days) 24)))
-         (interval-days-sec (if (< days 0)
-                                (+ (float-time (current-time)) days-in-sec)
-                                (- (float-time (current-time)) days-in-sec)))
-         (sec-to-time       (seconds-to-time interval-days-sec))
-         (time-dec          (decode-time sec-to-time))
-         (year              (int-to-string (nth 5 time-dec)))
-         (month             (if (= (% (nth 4 time-dec) 10) 0)
-                                (int-to-string (nth 4 time-dec))
-                                (substring (int-to-string (/ (float (nth 4 time-dec)) 100)) 2)))
-         (day-str           (if (= (% (nth 3 time-dec) 10) 0)
-                                (int-to-string (nth 3 time-dec))
-                                (substring (int-to-string (/ (float (nth 3 time-dec)) 100)) 2)))
-         (day               (if (< (length day-str) 2) (concat day-str "0") day-str))
-         (result            (list year month day)))
-    (if french
-        (mapconcat 'identity (reverse result) separator)
-        (mapconcat 'identity result separator))))
-
-;; mapc-with-progress-reporter 
-(defmacro mapc-with-progress-reporter (message func seq)
-  `(let* ((max               (length ,seq))
-          (progress-reporter (make-progress-reporter (message ,message) 0 max))
-          (count             0))
-     (mapc #'(lambda (x)
-               (progress-reporter-update progress-reporter count)
-               (funcall ,func x)
-               (cl-incf count))
-           ,seq)
-     (progress-reporter-done progress-reporter)))
 
 ;; key-for-calendar 
 (defvar tv/calendar-alive nil)
@@ -401,25 +271,6 @@ depending the value of N is positive or negative."
                                   unread-command-events)))
                  (throw 'break nil))))))))
 
-;;; Insert-an-image-at-point
-;;;###autoload
-(defun tv/insert-image-at-point (image)
-  (interactive (list (read-file-name "Image: " "~/Images")))
-  (let* ((win (selected-window))
-         (img (save-match-data
-                (apply #'create-image image
-                       (and (image-type-available-p 'imagemagick)
-                            `(imagemagick nil :height ,(* (- (window-height win) 1)
-                                                          (frame-char-height))))))))
-    (insert-image img)))
-
-;;;###autoload
-(defun tv/show-img-from-fname-at-point ()
-  (interactive)
-  (let ((img (thing-at-point 'sexp)))
-    (forward-line)
-    (tv/insert-image-at-point img)))
-
 (defun tv/view-echo-area-messages (old--fn &rest args)
   (let ((win (get-buffer-window (messages-buffer) 'visible)))
     (cond ((and win (one-window-p))
@@ -507,25 +358,6 @@ Ignore text read-only at bol i.e. prompts."
           (buffer-string)
         "Gpg error while verifying signature"))))
 
-;; Insert-log-from-patch
-;;;###autoload
-(defun tv/insert-log-from-patch (patch)
-  (interactive (list (helm-read-file-name
-                      "Patch: "
-                      :preselect ".*[Pp]atch.*")))
-  (let (beg end data)
-    (with-current-buffer (find-file-noselect patch)
-      (goto-char (point-min))
-      (while (re-search-forward "^#" nil t) (forward-line 1))
-      (setq beg (point))
-      (when (re-search-forward "^diff" nil t)
-        (forward-line 0) (skip-chars-backward "\\s*|\n*")
-        (setq end (point)))
-      (setq data (buffer-substring beg end))
-      (kill-buffer))
-    (insert data)
-    (delete-file patch)))
-
 ;; Switch indenting lisp style.
 ;;;###autoload
 (defun toggle-lisp-indent ()
@@ -537,31 +369,6 @@ Ignore text read-only at bol i.e. prompts."
         (message "Switching to Emacs lisp indenting style."))
     (setq lisp-indent-function #'common-lisp-indent-function-1)
     (message "Switching to Common lisp indenting style.")))
-
-;; C-mode conf
-(defvar c-mode-map)
-;;;###autoload
-(defun tv/cc-this-file ()
-  (interactive)
-  (when (eq major-mode 'c-mode)
-    (let* ((iname (buffer-file-name (current-buffer)))
-           (oname (file-name-sans-extension iname)))
-      (compile (format "make -k %s" oname)))))
-(add-hook 'c-mode-hook #'(lambda ()
-                           (declare (special c-mode-map))
-                           (define-key c-mode-map (kbd "C-c C-c") 'tv/cc-this-file)))
-
-;; Insert line numbers in region
-;;;###autoload
-(defun tv/insert-lineno-in-region (beg end)
-  (interactive "r")
-  (save-restriction
-    (narrow-to-region beg end)
-    (goto-char (point-min))
-    (cl-loop while (re-search-forward "^.*$" nil t)
-             for count from 1 do
-             (replace-match
-              (concat (format "%d " count) (match-string 0))))))
 
 ;; Permutations (Too slow)
 
@@ -589,158 +396,6 @@ Ignore text read-only at bol i.e. prompts."
                    do (insert (concat i "\n")))
           (pop-to-buffer (current-buffer)))
         result)))
-
-;; Verlan.
-;;;###autoload
-(defun tv/reverse-chars-in-region (beg end)
-  "Verlan region. Unuseful but funny"
-  (interactive "r")
-  (save-restriction
-    (narrow-to-region beg end)
-    (goto-char (point-min))
-    (while (not (eobp))
-      (let* ((bl (point-at-bol))
-             (el (point-at-eol))
-             (cur-line (buffer-substring bl el))
-             (split (cl-loop for i across cur-line collect i)))
-        (delete-region bl el)
-        (cl-loop for i in (reverse split) do (insert i)))
-      (forward-line 1))))
-
-;; Interface to df command-line.
-;;
-;;;###autoload
-(defun dfh (directory)
-  "Interface to df -h command line.
-If a prefix arg is given choose directory, otherwise use `default-directory'."
-  (interactive (list (if current-prefix-arg
-                         (helm-read-file-name
-                          "Directory: " :test 'file-directory-p)
-                         default-directory)))
-  (require 'dired-extension) ; for tv/get-disk-info
-  (let ((df-info (tv/get-disk-info directory t)))
-    (pop-to-buffer (get-buffer-create "*df info*"))
-    (erase-buffer)
-    (insert (format "*Volume Info for `%s'*\n\nDevice: %s\nMaxSize: \
-%s\nUsed: %s\nAvailable: %s\nCapacity in use: %s\nMount point: %s"
-                    directory
-                    (cl-getf df-info :device)
-                    (cl-getf df-info :blocks)
-                    (cl-getf df-info :used)
-                    (cl-getf df-info :available)
-                    (cl-getf df-info :capacity)
-                    (cl-getf df-info :mount-point)))
-    (view-mode 1)))
-
-;; Interface to du (directory size)
-;;;###autoload
-(defun duh (directory)
-  (interactive "DDirectory: ")
-  (let* ((lst
-          (with-temp-buffer
-            (apply #'call-process "du" nil t nil
-                   (list "-h" (expand-file-name directory)))
-            (split-string (buffer-string) "\n" t)))
-         (result (mapconcat 'identity
-                            (reverse (split-string (car (last lst))
-                                                   " \\|\t")) " => ")))
-    (if (called-interactively-p 'interactive) 
-        (message "%s" result) result)))
-
-;; Euro million
-;;;###autoload
-(defun euro-million ()
-  (interactive)
-  (let* ((star-num #'(lambda (limit)
-                       ;; Get a random number between 1 to 12.
-                       (let ((n 0))
-                         (while (= n 0) (setq n (random limit)))
-                         n)))
-         (get-stars #'(lambda ()
-                        ;; Return a list of 2 differents numbers from 1 to 12.
-                        (let* ((str1 (number-to-string (funcall star-num 12)))
-                               (str2 (let ((n (number-to-string (funcall star-num 12))))
-                                       (while (string= n str1)
-                                         (setq n (number-to-string (funcall star-num 12))))
-                                       n)))
-                          (list str1 str2))))      
-         (result #'(lambda ()
-                     ;; Collect random numbers without  dups.
-                     (cl-loop repeat 5
-                              for r = (funcall star-num 51)
-                              if (not (member r L))
-                              collect r into L
-                              else
-                              collect (let ((n (funcall star-num 51)))
-                                        (while (memq n L)
-                                          (setq n (funcall star-num 51)))
-                                        n) into L
-                                        finally return L)))
-         (inhibit-read-only t))
-    (with-current-buffer (get-buffer-create "*Euro million*")
-      (erase-buffer)
-      (insert "Grille aléatoire pour l'Euro Million\n\n")
-      (cl-loop with ls = (cl-loop repeat 5 collect (funcall result))  
-               for i in ls do
-               (progn
-                 (insert (mapconcat #'(lambda (x)
-                                        (let ((elm (number-to-string x)))
-                                          (if (= (length elm) 1) (concat elm " ") elm)))
-                                    i " "))
-                 (insert " Stars: ")
-                 (insert (mapconcat 'identity (funcall get-stars) " "))
-                 (insert "\n"))
-               finally do (progn (pop-to-buffer "*Euro million*")
-                                 (special-mode))))))
-
-;; Just an example to use `url-retrieve'
-;;;###autoload
-(defun tv/download-file-async (url &optional noheaders to)
-  (let ((noheaders noheaders) (to to))
-    (url-retrieve url #'(lambda (status)
-                          (if (plist-get status :error)
-                              (signal (car status) (cadr status))
-                              (switch-to-buffer (current-buffer))
-                              (let ((inhibit-read-only t))
-                                (goto-char (point-min))
-                                ;; remove headers
-                                (when noheaders
-                                  (save-excursion
-                                    (re-search-forward "^$")
-                                    (forward-line 1)
-                                    (delete-region (point-min) (point))))
-                                (when to
-                                  (write-file to)
-                                  (kill-buffer (current-buffer)))))))))
-
-;; Tool to take all sexps matching regexps in buffer and bring
-;; them at point. Useful to reorder defvar, defcustoms etc...
-;;;###autoload
-(defun tv/group-sexp-matching-regexp-at-point (arg regexp)
-  "Take all sexps matching REGEXP and put them at point.
-The sexps are searched after point, unless ARG.
-In this case, sexps are searched before point."
-  (interactive "P\nsRegexp: ")
-  (let ((pos (point))
-        (fun (if arg 're-search-backward 're-search-forward))
-        (sep (and (y-or-n-p "Separate sexp with newline? ") "\n")))
-    (cl-loop while (funcall fun regexp nil t)
-             do (progn
-                  (beginning-of-defun)
-                  (let ((beg (point))
-                        (end (save-excursion (end-of-defun) (point))))
-                    (save-excursion
-                      (forward-line -1)
-                      (when (search-forward "###autoload" (point-at-eol) t)
-                        (setq beg (point-at-bol))))
-                    (kill-region beg end)
-                    (delete-blank-lines))
-                  (save-excursion
-                    (goto-char pos)
-                    (yank)
-                    (insert (concat "\n" sep))
-                    (setq pos (point))))
-             finally do (goto-char pos))))
 
 ;; Check paren errors
 ;;;###autoload
@@ -872,20 +527,6 @@ Use a prefix arg to specify ARG."
 (global-set-key (kbd "C-c -") 'tv/rotate-windows)
 
 ;;;###autoload
-(defun tv/delete-duplicate-lines (beg end &optional arg)
-  "Delete duplicate lines in region omiting new lines.
-With a prefix arg remove new lines."
-  (interactive "r\nP")
-  (save-excursion
-    (save-restriction
-      (narrow-to-region beg end)
-      (let ((lines (helm-fast-remove-dups
-                    (split-string (buffer-string) "\n" arg)
-                    :test 'equal)))
-        (delete-region (point-min) (point-max))
-        (cl-loop for l in lines do (insert (concat l "\n")))))))
-
-;;;###autoload
 (defun tv/break-long-string-list-at-point (arg)
   (interactive "p")
   (when (and (looking-at "(")
@@ -908,89 +549,6 @@ With a prefix arg remove new lines."
   (insert (format "(kbd \"%s\")" (help-key-description key nil)))
   (message nil))
 
-;; some tar fn to use in eshell aliases.
-;;;###autoload
-(defun tar-gunzip (file)
-  (shell-command
-   (format "tar czvf $(basename %s).tar.gz $(basename %s)"
-           file file)))
-
-;;;###autoload
-(defun tar-bunzip (file)
-  (shell-command
-   (format "tar cjvf $(basename %s).tar.bz $(basename %s)"
-           file file)))
-
-;;;###autoload
-(defun tar-xz (file)
-  (shell-command
-   (format "tar cJvf $(basename %s).tar.xz $(basename %s)"
-           file file)))
-
-;;;###autoload
-(defun tv/resize-img (input-file percent-size output-file)
-  (interactive (let* ((in (read-file-name "Input file: " "~/Images"))
-                      (pcge (read-string "Resize percentage: " "25"))
-                      (of (read-file-name "Output file: " nil in nil in)))
-                 (list in pcge of)))
-  (shell-command (format "convert %s -resize %s%% %s"
-                         input-file
-                         percent-size
-                         output-file)))
-
-;;;###autoload
-(defun tv/split-freeboxvpn-config (file dir)
-  (interactive (list (helm-read-file-name
-                      "ConfigFile: "
-                      :initial-input "~/Téléchargements/"
-                      :must-match t
-                      :preselect ".*\\.ovpn")
-                     (read-directory-name
-                      "SplitToDirectory: " "~/openvpn/")))
-  (unless (file-directory-p dir) (mkdir dir t))
-  (let ((ca (expand-file-name "ca.crt" dir))
-        (client (expand-file-name "client.crt" dir))
-        (key (expand-file-name "client.key" dir))
-        (newfile (expand-file-name (helm-basename file) dir))
-        ca-crt cli-crt key-key cfg beg end)
-    (with-current-buffer (find-file-noselect file)
-      (goto-char (point-min))
-      (when (re-search-forward "^<ca>" nil t)
-        (setq cfg (buffer-substring-no-properties
-                   (point-min) (point-at-bol)))
-        (forward-line 1) (setq beg (point))
-        (re-search-forward "^</ca>" nil t)
-        (forward-line 0) (setq end (point))
-        (setq ca-crt (buffer-substring-no-properties beg end)))
-      (when (re-search-forward "^<cert>" nil t)
-        (forward-line 1) (setq beg (point))
-        (re-search-forward "^</cert>" nil t)
-        (forward-line 0) (setq end (point))
-        (setq cli-crt (buffer-substring-no-properties beg end)))
-      (when (re-search-forward "^<key>" nil t)
-        (forward-line 1) (setq beg (point))
-        (re-search-forward "^</key>" nil t)
-        (forward-line 0) (setq end (point))
-        (setq key-key (buffer-substring-no-properties beg end)))
-      (kill-buffer))
-    (cl-loop for f in `(,ca ,client ,key)
-             for c in `(,ca-crt ,cli-crt ,key-key)
-             do
-             (with-current-buffer (find-file-noselect f)
-               (erase-buffer)
-               (insert c)
-               (save-buffer)
-               (kill-buffer)))
-    (with-current-buffer (find-file-noselect newfile)
-      (erase-buffer)
-      (insert cfg
-              "ca ca.crt\n"
-              "cert client.crt\n"
-              "key client.key\n")
-      (save-buffer)
-      (kill-buffer))))
-
-
 (cl-defun tv/get-passwd-from-auth-sources (host &key user port)
   "Retrieve a password for auth-info file.
 Arg `host' is machine in auth-info file."
@@ -1012,33 +570,6 @@ Arg `host' is machine in auth-info file."
       (message "Warning: text will be echoed"))))
 (advice-add 'eshell-send-invisible :override #'tv/advice--eshell-send-invisible)
 
-(defvar tv/freesms-default-url
-  "https://smsapi.free-mobile.fr/sendmsg?user=%s&pass=%s&msg=%s")
-;;;###autoload
-(defun tv/freesms-notify (login msg)
-  (interactive (list
-                (completing-read "User: " '("thierry" "rachel"))
-                (read-string "Message: ")))
-  (setq msg (url-hexify-string msg))
-  (let* ((host  (format "freesms%s" login))
-         (user (plist-get (car (auth-source-search :host host)) :user))
-         (pwd   (tv/get-passwd-from-auth-sources host :user user)))
-    (with-current-buffer (url-retrieve-synchronously
-                          (format tv/freesms-default-url user pwd msg))
-      (goto-char (point-min))
-      (let* ((rcode (nth 1 (split-string (buffer-substring-no-properties
-                                          (point-at-bol) (point-at-eol)))))
-             (rcode-msg
-              (cond ((string= "200" rcode) "Le SMS a été envoyé sur votre mobile.")
-                    ((string= "400" rcode) "Un des paramètres obligatoires est manquant.")
-                    ((string= "402" rcode) "Trop de SMS ont été envoyés en trop peu de temps.")
-                    ((string= "403" rcode) "Le service n'est pas activé sur l'espace abonné, ou login / clé incorrect.")
-                    ((string= "500" rcode) "Erreur côté serveur. Veuillez réessayer ultérieurement.")
-                    (t "Unknow error"))))
-        (if (string= rcode-msg "200")
-            (message rcode-msg)
-            (error rcode-msg))))))
-
 ;;; Scroll functions
 (defun tv/scroll-down ()
   (interactive)
@@ -1055,23 +586,6 @@ Arg `host' is machine in auth-info file."
 (defun tv/scroll-other-up ()
   (interactive)
   (scroll-other-window -1))
-
-(defun tv/update-helm-only-symbol (dir)
-  (cl-loop for f in (directory-files dir t "\\.el\\'")
-           do (with-current-buffer (find-file-noselect f)
-                (save-excursion
-                  (goto-char (point-min))
-                  (let (fun)
-                    (while (re-search-forward "(with-helm-alive-p" nil t)
-                      (when (setq fun (which-function))
-                        (end-of-defun)
-                        (unless (looking-at "(put")
-                          (insert (format "(put '%s 'helm-only t)\n" fun))))))))))
-
-(defun tv/thing-at-point-number ()
-  (save-excursion
-    (when (re-search-forward "[0-9]\\{1,6\\}" (min (+ (point) 6) (point-at-eol)) t)
-      (string-to-number (match-string-no-properties 0)))))
 
 ;;;###autoload
 (defun tv/restore-scratch-buffer ()
@@ -1228,25 +742,6 @@ Used by the Mailto script used from firefox."
      (* 2 (sqrt
            (+ (expt L2 2)
               (expt (/ L2 (tan (degrees-to-radians (/ 180 holes)))) 2)))))))
-
-(defun tv/sum-region (beg end)
-  (interactive "r")
-  (let ((data (buffer-substring beg end))
-        result)
-    (with-temp-buffer
-      (save-excursion (insert data))
-      (setq result
-            (cl-loop while (re-search-forward "\\([0-9]+[.]?[0-9]*\\)" nil t)
-                     concat (concat (replace-regexp-in-string " " "" (match-string 0)) "+") into op
-                     finally return (calc-eval (replace-regexp-in-string "+$" "" op))
-                     )))
-    (kill-new result)
-    (message "result: %s" result)))
-(global-set-key (kbd "C-M-+") 'tv/sum-region)
-
-(defun tv/get-group-prefix (group)
-  "Extract :prefix value from defgroup GROUP definition."
-  (get (intern-soft group) 'custom-prefix))
 
 (defun tv/describe-variable (variable &optional buffer frame)
   (interactive
