@@ -1345,7 +1345,6 @@ If your system's ping continues until interrupted, you can try setting
 
 ;;; Whitespace-mode
 ;;
-(autoload 'whitespace-mode "whitespace.el" nil t)
 (with-eval-after-load 'whitespace-mode
   (add-to-list 'whitespace-style 'lines-tail)
   (setq whitespace-line-column 80))
@@ -1533,9 +1532,6 @@ If your system's ping continues until interrupted, you can try setting
 
 ;;; display-line-numbers
 ;;
-(autoload 'global-display-line-numbers-mode "display-line-numbers.el")
-(autoload 'global-display-line-numbers-mode "display-line-numbers.el")
-
 (with-eval-after-load 'display-line-numbers
   (setq display-line-numbers-type 'relative))
 
@@ -1683,8 +1679,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 
 ;;; Org toc for github
 ;;
-(autoload 'toc-org-enable "toc-org.el" nil t)
-(autoload 'toc-org-insert-toc "toc-org.el" nil t)
 (with-eval-after-load 'org
   (add-hook 'org-mode-hook 'toc-org-enable))
 
@@ -1694,7 +1688,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 
 ;;; Bash completion
 ;;
-(autoload 'bash-completion-dynamic-complete "bash-completion.el" nil t)
 (add-hook 'shell-dynamic-complete-functions
           'bash-completion-dynamic-complete)
 
