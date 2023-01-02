@@ -894,40 +894,11 @@ With a prefix arg ask with completion which buffer to kill."
           (ignore-errors (delete-window win)))))))
 (helm-define-key-with-subkeys global-map (kbd "C-x k") ?k 'tv/kill-buffer-and-windows)
 
-;;; Net-utils
-;;
-(with-eval-after-load 'net-utils
-  (defun ping (host)
-    "Ping HOST.
-If your system's ping continues until interrupted, you can try setting
-`ping-program-options'."
-    (interactive "sPing host: ")
-    (let ((options
-           (if ping-program-options
-               (append ping-program-options (list host))
-             (list host))))
-      (net-utils-run-simple
-       (concat "Ping" " " host)
-       ping-program
-       options)))
-
-  (defun run-dig (host)
-    "Run dig program."
-    (interactive "sLookup host: ")
-    (net-utils-run-simple
-     (concat "** "
-             (mapconcat 'identity
-                        (list "Dig" host dig-program)
-                        " ** "))
-     dig-program
-     (list host)))
-  (setq netstat-program "ss"
-        netstat-program-options '("-p" "-u" "-t" "-n")))
-
 ;;; Org
 ;;
 (with-eval-after-load 'org
-  (require 'org-config))
+  (require 'org-config)
+  (add-hook 'org-mode-hook 'toc-org-enable))
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c C-k") 'org-capture)
 
@@ -1672,11 +1643,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 (define-key lisp-interaction-mode-map (kbd "M-e") 'tv/pp-eval-or-expand-last-sexp)
 (define-key lisp-interaction-mode-map (kbd "C-c C-a") 'tv/align-let)
 (define-key lisp-mode-map (kbd "RET") 'newline-and-indent)
-
-;;; Org toc for github
-;;
-(with-eval-after-load 'org
-  (add-hook 'org-mode-hook 'toc-org-enable))
 
 ;;; Bash completion
 ;;
