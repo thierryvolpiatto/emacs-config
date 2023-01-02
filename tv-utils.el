@@ -1,4 +1,4 @@
-;;; tv-utils.el --- Some useful functions for Emacs. -*- lexical-binding: t -*- 
+;;; tv-utils.el --- Some useful functions for Emacs. -*- lexical-binding: t -*-
 ;; 
 
 ;;; Code:
@@ -601,87 +601,6 @@ Arg `host' is machine in auth-info file."
             (<= (buffer-size) 2))
     (insert ";;; -*- coding: utf-8; mode: lisp-interaction; lexical-binding: t -*-\n;;\n;; SCRATCH BUFFER\n;; ==============\n\n")))
 
-;;; wttr.in weather report
-;;
-(defvar wttr-weather-history nil)
-(defvar wttr-weather-default-location "Guillestre")
-(defvar wttr-weather-last-location nil)
-;;;###autoload
-(defun wttr-weather (place)
-  "Weather forecast with wttr.in.
-With a prefix arg refresh buffer if some.
-See <https://github.com/chubin/wttr.in>."
-  (interactive (list (read-string (format "Place (%s): "
-                                          wttr-weather-default-location)
-                                  nil
-                                  'wttr-weather-history
-                                  wttr-weather-default-location)))
-  (let ((buf (get-buffer-create (format "*wttr.in %s*" place))))
-    (switch-to-buffer buf)
-    (when current-prefix-arg
-      (set (make-local-variable 'wttr-weather-last-location) nil))
-    (unless wttr-weather-last-location
-      (wttr-weather-update place)
-      (wttr-weather-mode)
-      (set (make-local-variable 'wttr-weather-last-location) place))))
-
-(defun wttr-weather-update (place)
-  (let* ((inhibit-read-only t)
-         ansi
-         (data
-          (with-temp-buffer
-            (call-process
-             "curl" nil '(t t) nil
-             "-s" (format "fr.wttr.in/~%s?m" (shell-quote-argument place)))
-            (goto-char (point-min))
-            ;; Try to replace 256 colors seq like this
-            ;; "\033[38;5;226m" => "\033[33m" or sequence ending with
-            ;; ;5m (animated) which Emacs-28 replace by a crapy box.
-            ;; "\033[38;5;228;5m" => "\033[33m".
-            ;; Thanks to Jim Porter for explanations in Emacs bug#54774.
-            (while (re-search-forward "\\(38;5;\\([0-9]+\\);?[0-9]?\\)m" nil t)
-              ;; If we have ansi sequences, that's mean we had weather
-              ;; output, otherwise we have a simple message notifying
-              ;; weather report is not available.
-              (setq ansi t)
-              ;; Need a 256 color ansi library, emacs supports only basic
-              ;; ansi colors as now, so replace all 38;5 foreground
-              ;; specs by simple ansi sequences.
-              ;; Emacs-29 supports 256 color but still have bad support for
-              ;; animated ansi sequences, so better use basic colors.
-              (replace-match (pcase (match-string 2)
-                               ("190"            "31")  ;; red
-                               ((or "118" "154") "32")  ;; green
-                               ((or "226" "228") "33")  ;; yellow
-                               ("202"            "34")  ;; blue
-                               ("214"            "35")  ;; magenta
-                               ((or "220" "111") "36")  ;; cyan
-                               ("208"            "37")  ;; white
-                               (_                "0"))  ;; Avoid box face
-                             t t nil 1))
-            (ansi-color-apply (buffer-string)))))
-    (erase-buffer)
-    (save-excursion
-      (if data
-          (insert data)
-        ;; Probaly check error status instead (it is 52).
-        (insert "Empy reply from server"))
-      (forward-line -1)
-      (when (and ansi ; Keep notification when no weather report.
-                 (re-search-backward "^$" nil t))
-        (delete-region (point) (point-max))))
-    (while (re-search-forward "\\s\\" (point-at-eol) t) (replace-match ""))
-    (goto-char (point-at-eol))
-    (insert (format-time-string " le %d/%m/%Y à %H:%M:%S"))))
-
-(defun wttr-weather-revert-fn (_ignore-auto _no_confirm)
-  (wttr-weather-update wttr-weather-last-location))
-
-(define-derived-mode wttr-weather-mode special-mode "wttr"
-  (make-local-variable 'wttr-weather-last-location)
-  (set (make-local-variable 'revert-buffer-function) 'wttr-weather-revert-fn))
-(put 'wttr-weather-mode 'no-helm-mx t)
-
 ;;;###autoload
 (defun tv/insert-info-command-from-current-node-at-point ()
   (interactive)
@@ -1177,82 +1096,6 @@ file-local variable.\n")
         (goto-char (point-min))
         (indent-region (point-min) (point-max))))))
 
-;;; Record Emacs screencast with byzanz.
-;;
-(defgroup byzanz-record nil "Record screencast."
-          :group 'multimedia)
-
-;;;###autoload
-(defun byzanz-record (file)
-  "Record a screencast with byzanz."
-  (interactive "FRecord to file: ")
-  (let* ((height  (number-to-string (+ (frame-pixel-height)
-                                       ;; minibuf+mode-line
-                                       40)))
-         (width   (number-to-string (frame-pixel-width)))
-         (process (start-process "byzanz" "*byzanz log*"
-                                 "byzanz-record"
-                                 "--exec=sleep 1000000"
-                                 "--delay=5"
-                                 "-c" "-w" width "-h" height file)))
-    (byzanz-record-mode 1)
-    (set-process-sentinel
-     process (lambda (_proc event)
-               (when (string= event "finished\n")
-                 (byzanz-record-mode -1)
-                 (message "Screencast recorded to `%s'" file))))))
-
-(defun byzanz-record-stop ()
-  "Stop byzanz recording.
-Don't bind this to global-map but to `byzanz-record-mode-map' instead."
-  (interactive)
-  (call-process "killall" nil nil nil "sleep"))
-
-(defvar byzanz-record-mode-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "S-<f12>") 'byzanz-record-stop)
-    map))
-
-(define-minor-mode byzanz-record-mode
-    "A minor mode to stop byzanz-record."
-  :group 'byzanz-record
-  :global t
-  (message "Byzanz started recording, hit `S-<f12>' to stop"))
-(put 'byzanz-record-mode 'no-helm-mx t)
-
-;;; Save places - A simple replacement of saveplace.el
-;;
-;; Places are saved and restored by psession!
-(defvar tv-save-place-cache (make-hash-table :test 'equal))
-(defvar tv-save-place-ignore-file-regexps '("\\.git/" "-autoloads.el\\'"))
-(defun tv-save-place ()
-  (let ((file (buffer-file-name))
-        pos)
-    (when (and file
-               (cl-loop for re in tv-save-place-ignore-file-regexps
-                        never (string-match re file)))
-      (widen)
-      (setq pos (point))
-      (unless (<= pos 1)
-        (puthash file pos tv-save-place-cache)))))
-
-(defun tv-save-place-restore-pos ()
-  (let* ((file (buffer-file-name))
-         (pos (gethash file tv-save-place-cache)))
-    (when pos (goto-char pos))))
-
-;;;###autoload
-(define-minor-mode tv-save-place-mode
-    "Save position in files."
-  :group 'convenience
-  :global t
-  (if tv-save-place-mode
-      (progn
-        (add-hook 'kill-buffer-hook 'tv-save-place)
-        (add-hook 'find-file-hook 'tv-save-place-restore-pos 100))
-    (remove-hook 'kill-buffer-hook 'tv-save-place)
-    (remove-hook 'find-file-hook 'tv-save-place-restore-pos)))
-
 ;;; Set extend attr on faces if needed
 ;;
 (defun tv/extend-faces-matching (regexp)

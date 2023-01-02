@@ -355,6 +355,19 @@ Restart works only on graphic display."
 ;; diff buffers read-only
 (setq diff-default-read-only t)
 
+;;; Save place
+;;
+(autoload 'tv-save-place-mode "tv-save-place.el" nil t)
+(tv-save-place-mode 1)
+
+;;; Byzanz - screencast ffrom Emacs
+;;
+(autoload 'byzanz-record "tv-byzanz.el" nil t)
+
+;;; wttr weather
+;;
+(autoload 'wttr-weather "wttr-weather.el" nil t)
+
 ;;; tv-utils fns
 ;;
 (require 'tv-utils)
@@ -365,7 +378,7 @@ Restart works only on graphic display."
 (helm-define-key-with-subkeys global-map (kbd "C-h e")
                               ?e #'view-echo-area-messages
                               '((?q . tv/quit-echo-area-messages)))
-(tv-save-place-mode 1)
+
 (global-set-key (kbd "M-\"") 'tv/insert-double-quote)
 (global-set-key (kbd "C-M-`") 'tv/insert-double-backquote)
 (global-set-key (kbd "C-M-(") 'tv/move-pair-forward)
