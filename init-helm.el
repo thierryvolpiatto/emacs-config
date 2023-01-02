@@ -551,20 +551,21 @@ new directory."
 
 ;;; Helm-elisp
 ;;
-(with-eval-after-load 'helm-elisp
-  (setq helm-show-completion-display-function #'helm-display-buffer-in-own-frame
-        helm-apropos-fuzzy-match    t
-        helm-lisp-fuzzy-completion  t
-        helm-apropos-show-short-doc t)
-  (helm-multi-key-defun helm-multi-lisp-complete-at-point
+(helm-multi-key-defun helm-multi-lisp-complete-at-point
       "Multi key function for completion in emacs lisp buffers.
 First call indent, second complete symbol, third complete fname."
     '(helm-lisp-indent
       helm-lisp-completion-at-point
       helm-complete-file-name-at-point)
     0.3)
-  (define-key emacs-lisp-mode-map (kbd "TAB") 'helm-multi-lisp-complete-at-point)
-  (define-key lisp-interaction-mode-map (kbd "TAB") 'helm-multi-lisp-complete-at-point))
+(define-key emacs-lisp-mode-map (kbd "TAB") 'helm-multi-lisp-complete-at-point)
+(define-key lisp-interaction-mode-map (kbd "TAB") 'helm-multi-lisp-complete-at-point)
+
+(with-eval-after-load 'helm-elisp
+  (setq helm-show-completion-display-function #'helm-display-buffer-in-own-frame
+        helm-apropos-fuzzy-match    t
+        helm-lisp-fuzzy-completion  t
+        helm-apropos-show-short-doc t))
 
 ;;; Helm-locate
 ;;
