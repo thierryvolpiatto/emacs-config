@@ -1019,53 +1019,6 @@ file-local variable.\n")
               ;; Return the text we displayed.
 	      (buffer-string))))))))
 
-;; Start org-agenda asynchronously.
-;; Just a proof of concept for async.el.
-(defun tv/org-agenda-async ()
-  (interactive)
-  (require 'org-agenda)
-  (async-start
-   `(lambda ()
-      (require 'org-agenda)
-      (setq org-agenda-files ',org-agenda-files)
-      (org-agenda-list)
-      (buffer-string))
-   (lambda (result)
-     (switch-to-buffer-other-window "*Org Agenda*")
-     (mapc 'find-file-noselect (org-agenda-files))
-     (with-current-buffer "*Org Agenda*"
-       (let ((inhibit-read-only t))
-         (erase-buffer)
-         (insert (car result))
-         (map-text-properties (cdr result)))
-       (org-agenda-mode)))))
-
-(defun map-text-properties (props)
-  (let ((plist (caddr props)))
-    (while plist
-      (put-text-property (1+ (nth 0 props))
-                         (1+ (nth 1 props))
-                         (car plist)
-                         (let ((value (cadr plist)))
-                           (cond ((and (consp value)
-                                       (stringp (car value)))
-                                  (with-temp-buffer
-                                    (insert (car value))
-                                    (map-text-properties (cdr value))
-                                    (buffer-string)))
-                                 ((and (consp value) (memq 'marker value))
-                                  (let ((marker (set-marker
-                                                 (make-marker)
-                                                 (cl-loop for i in value
-                                                          thereis (and (numberp i) i))
-                                                 (get-buffer (mapconcat 'symbol-name (last value) "")))))
-                                    (set-marker-insertion-type marker t)
-                                    marker))
-                                 (t value))))
-      (setq plist (cddr plist)))
-    (when props
-      (map-text-properties (nthcdr 3 props)))))
-
 ;;;###autoload
 (defun tv/align-let ()
   "Align let forms."
