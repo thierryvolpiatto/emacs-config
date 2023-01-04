@@ -7,10 +7,6 @@
   (let ((time (float-time (time-subtract (current-time) tv/startup-time))))
     (message "Emacs config loaded in %s seconds"
              (format "%.2f" time))))
-;; In addition to the time the config takes to load, this measure the
-;; time took by psession to restore various things.
-(add-hook 'emacs-startup-hook #'tv/emacs-load-time 99)
-
 
 ;;; Packages.el config.
 ;;
@@ -33,8 +29,10 @@
   ;; Add all at end of `load-path' to avoid conflicts.
   (add-to-list 'load-path (file-name-as-directory i) t))
 
-;; Increase GC
-(setq gc-cons-threshold 20000000)
+;;; gc-cons-threshold settings with gcmh-mode
+;;
+(gcmh-mode 1)
+(setcdr (assq 'gcmh-mode minor-mode-alist) '(" ⛏"))
 
 ;;; Emacs customize own file
 ;;
@@ -44,12 +42,17 @@
 ;;; VC
 ;;
 ;; Possible values for vc backends: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
-(setq vc-handled-backends '(RCS Git)
-      vc-follow-symlinks t
-      vc-ignore-dir-regexp
-      (format "\\(%s\\)\\|\\(%s\\)"
-              vc-ignore-dir-regexp
-              tramp-file-name-regexp))
+(setq vc-handled-backends nil)
+;; Let's psession loading buffers before setting this (much faster).
+;; When it is needed to run e.g. vc-annotate revert buffer before proceding.
+(add-hook 'emacs-startup-hook (lambda ()
+                                (setq vc-handled-backends '(RCS Git)
+                                      vc-follow-symlinks t
+                                      vc-ignore-dir-regexp
+                                      (format "\\(%s\\)\\|\\(%s\\)"
+                                              vc-ignore-dir-regexp
+                                              tramp-file-name-regexp)))
+          100)
 
 ;;; Global settings
 ;;
@@ -1751,6 +1754,10 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   ;; When helm-emms will load and require emms, config will be
   ;; loaded.
   (require 'emms-config))
+
+;;; Load time
+;;
+(tv/emacs-load-time)
 
 ;;; psession
 ;;
