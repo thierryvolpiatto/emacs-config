@@ -21,11 +21,15 @@
 (declare-function which-function                "which-func.el")
 (declare-function tramp-get-completion-function "tramp")
 (declare-function help--symbol-completion-table "help-fns.el")
-(declare-function describe-variable-custom-version-info "help-fns.el")
 (declare-function org-agenda-mode "org-agenda.el")
+(declare-function message-goto-to       "message.el")
+(declare-function message-insert-header "message.el")
+(declare-function message-goto-subject  "message.el")
+(declare-function help-fns-short-filename          "help-fns.el")
+(declare-function help-fns--run-describe-functions "help-fns.el")
 
 (defvar tramp-methods)
-
+(defvar help-fns-describe-variable-functions)
 ;;; Sshfs
 ;;
 ;;
@@ -628,12 +632,6 @@ Arg `host' is machine in auth-info file."
         (push (buffer-substring-no-properties beg (point-max))
               result))
       (nreverse result))))
-
-(defun message-goto-in-reply-to ()
-  "Move point to the In-Reply-To header."
-  (interactive)
-  (push-mark)
-  (message-position-on-field "In-Reply-To" "Subject"))
 
 (defun tv/insert-headers-from-string (str)
   "Add headers from STR in message buffer.
