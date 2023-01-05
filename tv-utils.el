@@ -575,18 +575,19 @@ Arg `host' is machine in auth-info file."
 (advice-add 'eshell-send-invisible :override #'tv/advice--eshell-send-invisible)
 
 ;;; Scroll functions
+;;;###autoload
 (defun tv/scroll-down ()
   (interactive)
   (scroll-down -1))
-
+;;;###autoload
 (defun tv/scroll-up ()
   (interactive)
   (scroll-down 1))
-
+;;;###autoload
 (defun tv/scroll-other-down ()
   (interactive)
   (scroll-other-window 1))
-
+;;;###autoload
 (defun tv/scroll-other-up ()
   (interactive)
   (scroll-other-window -1))
