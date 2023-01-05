@@ -572,7 +572,6 @@ Arg `host' is machine in auth-info file."
 	(process-send-string (eshell-interactive-process)
 			     (concat str "\n"))
       (message "Warning: text will be echoed"))))
-(advice-add 'eshell-send-invisible :override #'tv/advice--eshell-send-invisible)
 
 ;;; Scroll functions
 ;;;###autoload

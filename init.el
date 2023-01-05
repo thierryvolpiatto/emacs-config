@@ -1420,6 +1420,7 @@ With a prefix arg ask with completion which buffer to kill."
 
 (add-hook 'eshell-mode-hook
           (lambda ()
+            (require 'tv-utils)
             (setq eshell-pwd-convert-function
                   (lambda (f)
                     (if (file-equal-p (file-truename f) "/")
@@ -1443,7 +1444,8 @@ With a prefix arg ask with completion which buffer to kill."
             (when (boundp 'eshell-hist-mode-map)
               (define-key eshell-hist-mode-map (kbd "M-p") 'helm-eshell-history))
             ;; Eshell prompt
-            (set-face-attribute 'eshell-prompt nil :foreground "Gold1")))
+            (set-face-attribute 'eshell-prompt nil :foreground "Gold1")
+            (advice-add 'eshell-send-invisible :override #'tv/advice--eshell-send-invisible)))
 
 ;; Eshell history size
 (setq eshell-history-size 1000)       ; Same as env var HISTSIZE.
