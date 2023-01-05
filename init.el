@@ -32,7 +32,7 @@
 ;;; gc-cons-threshold settings with gcmh-mode
 ;;
 (gcmh-mode 1)
-(setcdr (assq 'gcmh-mode minor-mode-alist) '(" ⛏"))
+(setcdr (assq 'gcmh-mode minor-mode-alist) '(" 🧹"))
 
 ;;; Emacs customize own file
 ;;
