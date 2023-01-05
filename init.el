@@ -407,11 +407,6 @@ Restart works only on graphic display."
 ;; Fix curly quotes in emacs-25
 (when (boundp 'text-quoting-style)
   (setq text-quoting-style 'grave))
-;; Since they use pp-buffer, it is not possible to override pp so
-;; we need to duplicate the whole function with modifications and
-;; override the original by advice.
-;; Test: (describe-variable 'load-history)
-(advice-add 'describe-variable :override #'tv/describe-variable)
 
 ;;; comment
 ;;
