@@ -797,9 +797,7 @@ Used by the Mailto script used from firefox."
 		  (if (< (+ (length print-rep) (point) (- line-beg)) 68)
 		      (insert " " print-rep)
 		    (terpri)
-                    ;; >>>>>>>>>>>adviced block
                     (tv/pp val)
-                    ;; >>>>>>>>>>>>>>>>>>>>>
                     ;; Remove trailing newline.
                     (and (= (char-before) ?\n) (delete-char -1)))
 		  (let* ((sv (get variable 'standard-value))
@@ -813,14 +811,7 @@ Used by the Mailto script used from firefox."
                                (not (equal origval :help-eval-error)))
 		      (princ "\nOriginal value was \n")
 		      (setq from (point))
-		      (if (and (symbolp origval) (not (booleanp origval)))
-			  (let* ((rep (cl-prin1-to-string origval))
-				 (print-rep (format-message "`%s'" rep)))
-			    (insert print-rep))
-			(cl-prin1 origval))
-                      (save-restriction
-                        (narrow-to-region from (point))
-                        (save-excursion (pp-buffer)))
+                      (tv/pp origval)
 		      (if (< (point) (+ from 20))
 			  (delete-region (1- from) from)))))))
 	    (terpri)
@@ -841,15 +832,8 @@ Used by the Mailto script used from firefox."
 		    (if (eq val global-val)
 			(princ "the same.")
 		      (terpri)
-		      ;; Fixme: pp can take an age if you happen to
-		      ;; ask for a very large expression.  We should
-		      ;; probably print it raw once and check it's a
-		      ;; sensible size before prettyprinting.  -- fx
 		      (let ((from (point)))
-                        (cl-prin1 global-val)
-                        (save-restriction
-                          (narrow-to-region from (point))
-                          (save-excursion (pp-buffer)))
+                        (tv/pp global-val)
 			;; See previous comment for this function.
 			;; (help-xref-on-pp from (point))
 			(if (< (point) (+ from 20))
