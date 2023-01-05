@@ -152,9 +152,9 @@
 (with-eval-after-load 'org-crypt
   (org-crypt-use-before-save-magic)
   (setq org-crypt-key "08FDB07A7433A7F2")
-  (setq org-crypt-disable-auto-save t) ;'encrypt)
-  (define-key org-mode-map (kbd "C-c e") 'org-encrypt-entry)
-  (define-key org-mode-map (kbd "C-c d") 'org-decrypt-entry))
+  (setq org-crypt-disable-auto-save t)) ;'encrypt)
+(define-key org-mode-map (kbd "C-c e") 'org-encrypt-entry)
+(define-key org-mode-map (kbd "C-c d") 'org-decrypt-entry)
 
 ;; fontify source code
 (setq org-src-fontify-natively t)
