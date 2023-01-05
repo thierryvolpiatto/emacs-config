@@ -407,6 +407,8 @@ Restart works only on graphic display."
 ;; Fix curly quotes in emacs-25
 (when (boundp 'text-quoting-style)
   (setq text-quoting-style 'grave))
+;; Advice describe-variable.
+(require 'describe-variable)
 
 ;;; comment
 ;;
