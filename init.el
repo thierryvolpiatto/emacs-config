@@ -957,6 +957,9 @@ With a prefix arg ask with completion which buffer to kill."
 ;;; Iedit
 ;;
 ;; Installed from source in site-lisp.
+;; It is patched to allow sexp replacements in
+;;`iedit-replace-occurrences', see:
+;; ~/labo/github/iedit/iedit-lib.el:908 in iedit_read_string branch.
 (autoload 'iedit-mode "iedit.el" nil t)
 (autoload 'iedit-rectangle-mode "iedit-rect.el" nil t)
 (defun iedit-narrow-to-defun (arg)
