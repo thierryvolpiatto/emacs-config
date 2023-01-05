@@ -1358,9 +1358,6 @@ With a prefix arg ask with completion which buffer to kill."
 
 ;;; Eshell-config
 ;;
-(autoload 'eshell "eshell.el" nil t)
-(autoload 'eshell-command "eshell.el" nil t)
-
 (setq eshell-prompt-function
       (lambda nil
         (let ((pwd (eshell/pwd)))
