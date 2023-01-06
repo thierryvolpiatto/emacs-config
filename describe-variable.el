@@ -1,4 +1,4 @@
-;;; describe-variable.el --- Advice describe-variable
+;;; describe-variable.el --- Advice describe-variable -*- lexical-binding: t -*-
 
 ;;; Code:
 
