@@ -151,7 +151,7 @@ Restart works only on graphic display."
 
 ;; Start-emacs-server
 ;;
-(autoload 'server-running-p "server.elc")
+(autoload 'server-running-p "server")
 (add-hook 'after-init-hook (lambda ()
                              (unless (or (daemonp) (server-running-p))
                                (server-start)
@@ -249,9 +249,9 @@ Restart works only on graphic display."
 
 ;;; Isearch-light
 ;;
-(autoload 'isl-search "isl.el" nil t)
-(autoload 'isl-narrow-to-defun "isl.el" nil t)
-(autoload 'isl-resume "isl.el" nil t)
+(autoload 'isl-search "isl" nil t)
+(autoload 'isl-narrow-to-defun "isl" nil t)
+(autoload 'isl-resume "isl" nil t)
 (global-set-key (kbd "C-s") 'isl-search)
 (global-set-key (kbd "C-z") 'isl-narrow-to-defun)
 (global-set-key (kbd "C-M-s") 'isl-resume)
@@ -303,7 +303,7 @@ Restart works only on graphic display."
 ;;
 ;; Need to be called before helm config.
 ;; Temporary fix for emacs bug 58919.
-(autoload 'dired-async-mode "dired-async.el" nil t)
+(autoload 'dired-async-mode "dired-async" nil t)
 (when (< emacs-major-version 29)
   (with-eval-after-load 'async
     (setq async-child-init "~/.emacs.d/fix-copy-directory.el")))
@@ -312,7 +312,7 @@ Restart works only on graphic display."
 
 ;;; Helm
 ;;
-(autoload 'helm-define-key-with-subkeys "helm-core.el")
+(autoload 'helm-define-key-with-subkeys "helm-core")
 (require 'init-helm)
 
 ;;; Term - ansi-term
@@ -360,16 +360,16 @@ Restart works only on graphic display."
 
 ;;; Save place
 ;;
-(autoload 'tv-save-place-mode "tv-save-place.el" nil t)
+(autoload 'tv-save-place-mode "tv-save-place" nil t)
 (tv-save-place-mode 1)
 
 ;;; Byzanz - screencast ffrom Emacs
 ;;
-(autoload 'byzanz-record "tv-byzanz.el" nil t)
+(autoload 'byzanz-record "tv-byzanz" nil t)
 
 ;;; wttr weather
 ;;
-(autoload 'wttr-weather "wttr-weather.el" nil t)
+(autoload 'wttr-weather "wttr-weather" nil t)
 
 ;;; tv-utils fns
 ;;
@@ -491,7 +491,7 @@ Restart works only on graphic display."
   (add-hook 'sh-mode-hook 'flymake-mode)
   (add-hook 'sh-mode-hook #'tv/set-sh-script-mode-name)
   ;; Use shellcheck as backend for flymake.
-  (autoload 'flymake-shellcheck-load "flymake-shellcheck.el")
+  (autoload 'flymake-shellcheck-load "flymake-shellcheck")
   (add-hook 'sh-mode-hook 'flymake-shellcheck-load)
   (define-key sh-mode-map (kbd "RET") 'newline-and-indent)
   (define-key sh-mode-map (kbd "C-h f") 'helm-info-bash))
@@ -928,29 +928,29 @@ With a prefix arg ask with completion which buffer to kill."
 
 ;;; Ledger
 ;;
-(autoload 'ledger-mode "ledger-mode.el" nil t)
-(autoload 'csv2ledger "ledger-mode.el" nil t)
-(autoload 'ledger-position "ledger-mode.el" nil t)
+(autoload 'ledger-mode "ledger-mode" nil t)
+(autoload 'csv2ledger "ledger-config" nil t)
+(autoload 'ledger-position "ledger-config" nil t)
 (setenv "LEDGER_PAGER" "cat")
 (add-to-list 'auto-mode-alist '("\\.dat\\'" . ledger-mode))
 
 ;;; Rectangle
 ;;
-(autoload 'rectangle-utils-insert-at-right         "rectangle-utils.el" nil t)
-(autoload 'rectangle-utils-menu                    "rectangle-utils.el" nil t)
-(autoload 'rectangle-utils-extend-rectangle-to-end "rectangle-utils.el" nil t)
+(autoload 'rectangle-utils-insert-at-right         "rectangle-utils" nil t)
+(autoload 'rectangle-utils-menu                    "rectangle-utils" nil t)
+(autoload 'rectangle-utils-extend-rectangle-to-end "rectangle-utils" nil t)
 (global-set-key (kbd "C-x r e") 'rectangle-utils-extend-rectangle-to-end)
 (global-set-key (kbd "C-x r h") 'rectangle-utils-menu)
 (global-set-key (kbd "C-x r <right>") 'rectangle-utils-insert-at-right)
 
 ;;; Rectangle edit
 ;;
-(autoload 'rectangle-edit "rectangle-edit.el" nil t)
+(autoload 'rectangle-edit "rectangle-edit" nil t)
 
 ;;; Zop-to-char
 ;;
-(autoload 'zop-to-char "zop-to-char.el" nil t)
-(autoload 'zop-up-to-char "zop-to-char.el" nil t)
+(autoload 'zop-to-char "zop-to-char" nil t)
+(autoload 'zop-up-to-char "zop-to-char" nil t)
 (with-eval-after-load 'zop-to-char
   (setq zop-to-char-prec-keys '(left ?\C-b ?\M-a)
         zop-to-char-next-keys '(right ?\C-f ?\M-e)))
@@ -962,8 +962,8 @@ With a prefix arg ask with completion which buffer to kill."
 ;; It is patched to allow sexp replacements in
 ;;`iedit-replace-occurrences', see:
 ;; ~/labo/github/iedit/iedit-lib.el:908 in iedit_read_string branch.
-(autoload 'iedit-mode "iedit.el" nil t)
-(autoload 'iedit-rectangle-mode "iedit-rect.el" nil t)
+(autoload 'iedit-mode "iedit" nil t)
+(autoload 'iedit-rectangle-mode "iedit-rect" nil t)
 (defun iedit-narrow-to-defun (arg)
   (interactive "P")
   (require 'iedit)
@@ -982,8 +982,8 @@ With a prefix arg ask with completion which buffer to kill."
 
 ;;; Emamux
 ;;
-(autoload 'emamux:send-command           "emamux.el" nil t)
-(autoload 'emamux:yank-from-list-buffers "emamux.el" nil t)
+(autoload 'emamux:send-command           "emamux" nil t)
+(autoload 'emamux:yank-from-list-buffers "emamux" nil t)
 (with-eval-after-load 'emamux
   (setq emamux:completing-read-type 'helm)
   (setq emamux:get-buffers-regexp
@@ -1252,7 +1252,7 @@ With a prefix arg ask with completion which buffer to kill."
 
 ;;; git-gutter-mode
 ;;
-(autoload 'global-git-gutter-mode "git-gutter.el" nil t)
+(autoload 'global-git-gutter-mode "git-gutter" nil t)
 (global-git-gutter-mode) ; Enable live update.
 (setq git-gutter:lighter " 🐱")
 ;; Activate live update timer.
@@ -1288,11 +1288,11 @@ With a prefix arg ask with completion which buffer to kill."
 
 ;;; Addressbook
 ;;
-(autoload 'addressbook-turn-on-mail-completion "addressbook-bookmark.el" nil t)
-(autoload 'addressbook-bookmark-set            "addressbook-bookmark.el" nil t)
-(autoload 'addressbook-mu4e-bookmark           "addressbook-bookmark.el" nil t)
-(autoload 'addressbook-bmenu-edit              "addressbook-bookmark.el" nil t)
-(autoload 'addressbook-bookmark-jump           "addressbook-bookmark.el" nil t)
+(autoload 'addressbook-turn-on-mail-completion "addressbook-bookmark" nil t)
+(autoload 'addressbook-bookmark-set            "addressbook-bookmark" nil t)
+(autoload 'addressbook-mu4e-bookmark           "addressbook-bookmark" nil t)
+(autoload 'addressbook-bmenu-edit              "addressbook-bookmark" nil t)
+(autoload 'addressbook-bookmark-jump           "addressbook-bookmark" nil t)
 
 ;;; W3m
 ;;
@@ -1312,7 +1312,7 @@ With a prefix arg ask with completion which buffer to kill."
 
 ;;; Mu4e
 ;;
-(autoload 'mu4e "mu4e.el" nil t)
+(autoload 'mu4e "mu4e" nil t)
 (with-eval-after-load 'mu4e
   (require 'tv-mu4e-config)
   (addressbook-turn-on-mail-completion))
@@ -1356,8 +1356,8 @@ With a prefix arg ask with completion which buffer to kill."
 
 ;;; esh-toggle
 ;;
-(autoload 'eshell-toggle-cd "esh-toggle.el" nil t)
-(autoload 'eshell-toggle "esh-toggle.el" nil t)
+(autoload 'eshell-toggle-cd "esh-toggle" nil t)
+(autoload 'eshell-toggle "esh-toggle" nil t)
 (global-set-key (kbd "<f2>") 'eshell-toggle)
 (global-set-key (kbd "<S-f2>") 'eshell-toggle-cd)
 
@@ -1731,7 +1731,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 
 ;;; Wfnames
 ;;
-(autoload 'wfnames-setup-buffer "wfnames.el" nil t)
+(autoload 'wfnames-setup-buffer "wfnames" nil t)
 (with-eval-after-load 'wfnames
   (setq wfnames-create-parent-directories t
         wfnames-interactive-rename nil))
@@ -1760,8 +1760,8 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 
 ;;; psession
 ;;
-(autoload 'psession-mode "psession.el" nil t)
-(autoload 'psession-savehist-mode "psession.el" nil t)
+(autoload 'psession-mode "psession" nil t)
+(autoload 'psession-savehist-mode "psession" nil t)
 (psession-mode 1)
 (psession-savehist-mode 1)
 (setq psession-save-buffers-unwanted-buffers-regexp
