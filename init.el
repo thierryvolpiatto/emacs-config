@@ -151,7 +151,7 @@ Restart works only on graphic display."
 
 ;; Start-emacs-server
 ;;
-(autoload 'server-running-p "server.el")
+(autoload 'server-running-p "server.elc")
 (add-hook 'after-init-hook (lambda ()
                              (unless (or (daemonp) (server-running-p))
                                (server-start)
