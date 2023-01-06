@@ -5,55 +5,12 @@
 (require 'help-fns)
 (require 'pp)
 
-(defun tv/pp (object &optional stream)
-  (let ((fn (lambda (ob &optional stream)
-              (princ (pp-to-string ob)
-                     (or stream standard-output))
-              (terpri)))
-        (print-quoted t)
-        (print-circle t)
-        prefix suffix map-fn looping)
-    (cond ((ring-p object)
-           (setq looping nil))
-          ((consp object)
-           (setq prefix "\n("
-                 suffix ")"
-                 map-fn 'mapc
-                 looping t))
-          ((vectorp object)
-           (setq prefix "\n["
-                 suffix "]"
-                 map-fn 'mapc
-                 looping t))
-          ((hash-table-p object)
-           (setq prefix (format "#s(hash-table size %s test %s rehash-size %s rehash-threshold %s data\n"
-                                (hash-table-size object)
-                                (hash-table-test object)
-                                (hash-table-rehash-size object)
-                                (hash-table-rehash-threshold object))
-                 suffix ")"
-                 map-fn 'maphash
-                 fn `(lambda (k v &optional stream)
-                       (funcall ,fn k stream)
-                       (funcall ,fn v stream))
-                 looping t)))
-    (if looping
-        (progn
-          (insert prefix)
-          (funcall map-fn fn object)
-          (cl-letf (((point) (1- (point))))
-            (insert suffix)))
-      (funcall fn object stream))))
+(defvar describe-variable--offset-value 800)
 
-;; This is the Emacs-28.2 version of `describe-variable' but with the
-;; inefficient block of code using `pp-buffer' replaced with tv/pp.
-;; With advice:
-;; (benchmark-run 1 (describe-variable 'load-history))
-;; (0.938096707 0 0.0)
-;; Without advice:
-;; (benchmark-run 1 (describe-variable 'load-history))
-;; (12.380366787 0 0.0)
 (defun tv/describe-variable (variable &optional buffer frame)
+  "Optimized `describe-variable' version.
+It is based on emacs-28.2 version of `describe-variable'.
+Large values are not pretty printed."
   (interactive
    (let ((v (variable-at-point))
 	 (enable-recursive-minibuffers t)
@@ -140,7 +97,16 @@
 		  (if (< (+ (length print-rep) (point) (- line-beg)) 68)
 		      (insert " " print-rep)
 		    (terpri)
-                    (tv/pp val)
+                    (let ((buf (current-buffer)))
+                      (with-temp-buffer
+                        (lisp-mode-variables nil)
+                        (set-syntax-table emacs-lisp-mode-syntax-table)
+                        (insert print-rep)
+                        (unless (> (- (point-max) (point-min)) describe-variable--offset-value)
+                          (pp-buffer))
+                        (let ((pp-buffer (current-buffer)))
+                          (with-current-buffer buf
+                            (insert-buffer-substring pp-buffer)))))
                     ;; Remove trailing newline.
                     (and (= (char-before) ?\n) (delete-char -1)))
 		  (let* ((sv (get variable 'standard-value))
@@ -154,7 +120,15 @@
                                (not (equal origval :help-eval-error)))
 		      (princ "\nOriginal value was \n")
 		      (setq from (point))
-                      (tv/pp origval)
+		      (if (and (symbolp origval) (not (booleanp origval)))
+			  (let* ((rep (cl-prin1-to-string origval))
+				 (print-rep (format-message "`%s'" rep)))
+			    (insert print-rep))
+			(cl-prin1 origval))
+                      (save-restriction
+                        (narrow-to-region from (point))
+                        (unless (> (- (point) from) describe-variable--offset-value)
+                          (save-excursion (pp-buffer))))
 		      (if (< (point) (+ from 20))
 			  (delete-region (1- from) from)))))))
 	    (terpri)
@@ -175,8 +149,17 @@
 		    (if (eq val global-val)
 			(princ "the same.")
 		      (terpri)
+                      ;; FIXED:
+		      ;; Fixme: pp can take an age if you happen to
+		      ;; ask for a very large expression.  We should
+		      ;; probably print it raw once and check it's a
+		      ;; sensible size before prettyprinting.  -- fx
 		      (let ((from (point)))
-                        (tv/pp global-val)
+                        (cl-prin1 global-val)
+                        (save-restriction
+                          (narrow-to-region from (point))
+                          (unless (> (- (point) from) describe-variable--offset-value)
+                            (save-excursion (pp-buffer))))
 			;; See previous comment for this function.
 			;; (help-xref-on-pp from (point))
 			(if (< (point) (+ from 20))
@@ -185,7 +168,8 @@
 
 	    ;; If the value is large, move it to the end.
 	    (with-current-buffer standard-output
-	      (when (> (count-lines (point-min) (point-max)) 10)
+	      (when (or (> (- (point-max) (point-min)) describe-variable--offset-value)
+                        (> (count-lines (point-min) (point-max)) 10))
 		;; Note that setting the syntax table like below
 		;; makes forward-sexp move over a `'s' at the end
 		;; of a symbol.
@@ -229,6 +213,7 @@
 	    (with-current-buffer standard-output
 	      ;; Return the text we displayed.
 	      (buffer-string))))))))
+
 
 (advice-add 'describe-variable :override #'tv/describe-variable)
 
