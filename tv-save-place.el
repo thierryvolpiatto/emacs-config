@@ -7,6 +7,8 @@
 
 ;;; Code:
 
+(eval-when-compile (require 'cl-lib))
+
 ;; Places are saved and restored by psession!
 (defvar tv-save-place-cache (make-hash-table :test 'equal))
 (defvar tv-save-place-ignore-file-regexps '("\\.git/" "-autoloads.el\\'"))
