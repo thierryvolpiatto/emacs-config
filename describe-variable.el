@@ -53,7 +53,8 @@
   (interactive)
   (let ((inhibit-read-only t)
         (sym (save-excursion (goto-char (point-min)) (symbol-at-point)))
-        beg end)
+        (buf (current-buffer))
+        beg end pp-buf)
     (save-excursion
       (goto-char (point-min))
       (when (re-search-forward "^Value: ?$" nil t)
@@ -61,12 +62,20 @@
         (setq beg (point))
         (setq end (save-excursion
                     (goto-char (point-max))
-                    (button-start (previous-button (point) t))))))
+                    (point)))))
     (when (and beg end)
       (message "Prettifying value...")
       (goto-char beg)
       (delete-region beg end)
-      (tv/pp (symbol-value sym) (current-buffer))
+      (with-temp-buffer
+        (lisp-data-mode)
+        (tv/pp (symbol-value sym) (current-buffer))
+        (with-syntax-table emacs-lisp-mode-syntax-table
+          (font-lock-ensure (point-min) (point-max)))
+        (setq pp-buf (current-buffer))
+        (with-current-buffer buf
+          (save-excursion
+            (insert-buffer-substring pp-buf))))
       (message "Prettifying value done"))))
 
 (defun tv/describe-variable (variable &optional buffer frame)
