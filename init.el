@@ -409,6 +409,7 @@ Restart works only on graphic display."
   (setq text-quoting-style 'grave))
 ;; Advice describe-variable.
 (require 'describe-variable)
+(define-key help-mode-map (kbd "C-c e") 'tv/pp-value-in-help)
 
 ;;; comment
 ;;

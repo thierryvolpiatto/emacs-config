@@ -2,10 +2,72 @@
 
 ;;; Code:
 
+(require 'help)
 (require 'help-fns)
 (require 'pp)
 
 (defvar describe-variable--offset-value 800)
+
+(defun tv/pp (object &optional stream)
+  (let ((fn (lambda (ob &optional stream)
+              (princ (pp-to-string ob)
+                     (or stream standard-output))
+              (terpri)))
+        (print-quoted t)
+        (print-circle t)
+        prefix suffix map-fn looping
+        (standard-output (or stream (current-buffer))))
+    (cond ((ring-p object)
+           (setq looping nil))
+          ((consp object)
+           (setq prefix "\n("
+                 suffix ")"
+                 map-fn 'mapc
+                 looping t))
+          ((vectorp object)
+           (setq prefix "\n["
+                 suffix "]"
+                 map-fn 'mapc
+                 looping t))
+          ((hash-table-p object)
+           (setq prefix (format "#s(hash-table size %s test %s rehash-size %s rehash-threshold %s data\n"
+                                (hash-table-size object)
+                                (hash-table-test object)
+                                (hash-table-rehash-size object)
+                                (hash-table-rehash-threshold object))
+                 suffix ")"
+                 map-fn 'maphash
+                 fn `(lambda (k v &optional stream)
+                       (funcall ,fn k stream)
+                       (funcall ,fn v stream))
+                 looping t)))
+    (if looping
+        (with-current-buffer standard-output
+          (insert prefix)
+          (funcall map-fn fn object)
+          (cl-letf (((point) (1- (point))))
+            (insert suffix)))
+      (funcall fn object stream))))
+
+(defun tv/pp-value-in-help ()
+  (interactive)
+  (let ((inhibit-read-only t)
+        (sym (save-excursion (goto-char (point-min)) (symbol-at-point)))
+        beg end)
+    (save-excursion
+      (goto-char (point-min))
+      (when (re-search-forward "^Value: ?$" nil t)
+        (forward-line 1)
+        (setq beg (point))
+        (setq end (save-excursion
+                    (goto-char (point-max))
+                    (button-start (previous-button (point) t))))))
+    (when (and beg end)
+      (message "Prettifying value...")
+      (goto-char beg)
+      (delete-region beg end)
+      (tv/pp (symbol-value sym) (current-buffer))
+      (message "Prettifying value done"))))
 
 (defun tv/describe-variable (variable &optional buffer frame)
   "Optimized `describe-variable' version.
