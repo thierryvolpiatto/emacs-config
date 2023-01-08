@@ -149,10 +149,9 @@
 	  (lambda () (set-face-attribute 'org-agenda-date-weekend nil :foreground "red")))
 
 ;; org-crypt 
-(with-eval-after-load 'org-crypt
-  (org-crypt-use-before-save-magic)
-  (setq org-crypt-key "08FDB07A7433A7F2")
-  (setq org-crypt-disable-auto-save t)) ;'encrypt)
+(org-crypt-use-before-save-magic)
+(setq org-crypt-key "08FDB07A7433A7F2")
+(setq org-crypt-disable-auto-save t)
 (define-key org-mode-map (kbd "C-c e") 'org-encrypt-entry)
 (define-key org-mode-map (kbd "C-c d") 'org-decrypt-entry)
 
