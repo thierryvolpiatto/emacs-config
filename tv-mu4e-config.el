@@ -136,7 +136,14 @@
       read-mail-command    'mu4e
       gnus-dired-mail-mode 'mu4e-user-agent)
 
-(define-key mu4e-main-mode-map "q"   'quit-window)
+;; Disable mu4e-modeline-mode when quitting.
+(defun tv/mu4e-quit-window ()
+  (interactive)
+  (quit-window)
+  (when (fboundp 'mu4e-modeline-mode)
+    (mu4e-modeline-mode -1)))
+
+(define-key mu4e-main-mode-map "q"   'tv/mu4e-quit-window)
 (define-key mu4e-main-mode-map "Q"   'mu4e-quit)
 (define-key mu4e-main-mode-map "\C-s" 'helm-mu)
 (define-key mu4e-main-mode-map [remap mu4e-headers-search] 'tv/mu4e-headers-search)
