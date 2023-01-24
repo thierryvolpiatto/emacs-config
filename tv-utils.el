@@ -408,16 +408,15 @@ Ignore text read-only at bol i.e. prompts."
   (let (pos-err)
     (save-excursion
       (goto-char (point-min))
-      (catch 'error
-        (condition-case err
-            (forward-list 9999)
-          (error
-           (throw 'error
-             (setq pos-err (cl-caddr err)))))))
+      (condition-case err
+          (forward-list 9999)
+        (error
+         (setq pos-err (cl-caddr err))
+         nil)))
     (if pos-err
         (message "Paren error found in sexp starting at %s"
                  (goto-char pos-err))
-        (message "No paren error found"))))
+      (message "No paren error found"))))
 
 ;;; Generate strong passwords.
 ;;
