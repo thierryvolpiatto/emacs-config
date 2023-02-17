@@ -1018,7 +1018,8 @@ With a prefix arg ask with completion which buffer to kill."
 (setq python-shell-interpreter "ipython3"
       python-shell-interpreter-args "-i --autoindent --simple-prompt --InteractiveShell.display_page=True"
       python-shell-prompt-regexp "In \\[[0-9]+\\]: "
-      python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: ")
+      python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+      python-flymake-command "pyflakes3")
 (add-hook 'python-mode-hook 'flymake-mode) ;; Needs pyflakes
 (add-hook 'python-mode-hook
           (lambda ()
@@ -1766,6 +1767,10 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   ;; When helm-emms will load and require emms, config will be
   ;; loaded.
   (require 'emms-config))
+
+;;; Eglot
+;;
+(autoload 'eglot "eglot" nil t)
 
 ;;; Load time
 ;;

@@ -46,7 +46,7 @@
 
 (defun tv/emms-mode-line-icon-function ()
   (let* ((pls  (emms-mode-line-playlist-current))
-         (icon (if (string-match "\\` *[`]http://" pls) "📻" "🎜")))
+         (icon (if (string-match "\\` *[`]http://" pls) "📻" "🎵")))
     (concat " " emms-mode-line-icon-before-format icon pls)))
 
 (setq emms-mode-line-mode-line-function 'tv/emms-mode-line-icon-function)
