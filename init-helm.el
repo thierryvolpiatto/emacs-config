@@ -25,7 +25,7 @@
       helm-autoresize-min-height                20   ; it is %.
       helm-debug-root-directory                 "/home/thierry/tmp/helm-debug"
       helm-follow-mode-persistent               t
-      helm-candidate-number-limit               500
+      helm-candidate-number-limit               50
       helm-visible-mark-prefix                  "✓")
 (set-face-foreground 'helm-mark-prefix "Gold1")
 (add-to-list 'helm-sources-using-default-as-input 'helm-source-info-bash)
@@ -72,8 +72,11 @@
                          '(helm-flex)) ;; emacs-26.
                         ((assq 'flex completion-styles-alist)
                          '(flex)))))) ;; emacs-27+.
+
 (setq helm-completion-mode-string " ⎈")
+
 (helm-mode 1)
+
 (setq helm-completing-read-handlers-alist
       '((find-tag . helm-completing-read-default-find-tag)
         (xref-find-definitions . helm-completing-read-default-find-tag)
@@ -93,9 +96,19 @@
         (basic-save-buffer . helm-read-file-name-handler-1)
         (write-file . (default helm-read-file-name-handler-1))
         (write-region . (default helm-read-file-name-handler-1))))
+
 ;; Fix CAP with LSP in python.
 (add-to-list 'helm-completion-styles-alist '(python-mode . (emacs helm flex)))
 (add-to-list 'helm-completion-styles-alist '(wfnames-mode . (emacs helm flex)))
+
+;; Allow using `completions-detailed' in these commands. Just a proof
+;; of concept as helm-apropos is displaying all these infos in a much
+;; better way and faster.
+(dolist (f '(describe-symbol describe-variable describe-function))
+  (add-to-list 'helm-completion-styles-alist `(,f . (emacs helm flex))))
+
+(when (boundp 'completions-detailed)
+  (setq completions-detailed t))
 
 ;;; Helm-adaptive
 ;;
