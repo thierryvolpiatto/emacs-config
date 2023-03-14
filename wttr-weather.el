@@ -32,7 +32,7 @@ See <https://github.com/chubin/wttr.in>."
           (with-temp-buffer
             (call-process
              "curl" nil '(t t) nil
-             "-s" (format "fr.wttr.in/~%s?m" (shell-quote-argument place)))
+             "-s" (format "fr.wttr.in/%s?m" (replace-regexp-in-string " " "+" place)))
             (goto-char (point-min))
             ;; Try to replace 256 colors seq like this
             ;; "\033[38;5;226m" => "\033[33m" or sequence ending with
