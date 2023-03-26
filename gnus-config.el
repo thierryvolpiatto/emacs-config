@@ -34,12 +34,11 @@
                                       ;; machine label port xxx login xxx password xxx
                                       (nnimap "posteo" ; Label for reference in .authinfo for machine name.
                                        (nnimap-address "posteo.de")
+                                       ;; Don't load mime parts when receiving mail, only text part, use
+                                       ;; instead `A-C' to see entire mail.
                                        (nnimap-fetch-partial-articles "text/"))
                                       ;; (nntp "news.gwene.org")
                                       ))
-
-;; [1] Don't load mime parts when receiving mail, only text part, use
-;; instead `A-C' to see entire mail.
 
 ;; Change "From" field according to "To" field on reply.
 (setq gnus-posting-styles
