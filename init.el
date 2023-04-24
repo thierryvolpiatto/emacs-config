@@ -1050,6 +1050,9 @@ With a prefix arg ask with completion which buffer to kill."
 
   (setq tramp-use-ssh-controlmaster-options nil)
 
+  (when (boundp 'tramp-allow-unsafe-temporary-files)
+    (setq tramp-allow-unsafe-temporary-files t))
+  
   (when (boundp 'tramp-use-scp-direct-remote-copying)
     (setq tramp-use-scp-direct-remote-copying t))
 
