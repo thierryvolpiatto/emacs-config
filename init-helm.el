@@ -145,8 +145,24 @@
     (when (null kill-ring)
       (error "kill-ring is nil!!"))
     (emamux:set-buffer candidate 0))
+  
+  (defun helm-ring-split-block (string)
+    (with-temp-buffer
+      (insert string)
+      (goto-char (point-min))
+      (let ((x (point)))
+        (catch 'break
+          (while (not (eobp))
+            (condition-case _err
+                (progn
+                  (forward-sexp)
+                  (kill-new (buffer-substring x (setq x (point)))))
+              (error (throw 'break nil))))))))
+
   (add-to-list 'helm-kill-ring-actions '("Emamux copy" . helm/emamux:copy-from-kill-ring) t)
   (add-to-list 'helm-kill-ring-actions '("Emamux send command" . emamux:send-command) t)
+  (add-to-list 'helm-kill-ring-actions '("Split block" . helm-ring-split-block) t)
+  
   (define-key helm-kill-ring-map (kbd "C-d") 'helm-kill-ring-run-persistent-delete))
 
 ;;; Helm-buffers
