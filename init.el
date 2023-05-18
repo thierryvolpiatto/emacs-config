@@ -1741,10 +1741,10 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 
 ;;; Edebug
 ;;
-(with-eval-after-load 'edebug
-  (setq edebug-trace t
-        edebug-initial-mode 'trace
-        edebug-sit-for-seconds 2))
+;; (with-eval-after-load 'edebug
+;;   (setq edebug-trace t
+;;         edebug-initial-mode 'trace
+;;         edebug-sit-for-seconds 2))
 
 ;;; Wfnames
 ;;
@@ -1774,6 +1774,11 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Eglot
 ;;
 (autoload 'eglot "eglot" nil t)
+
+;;; Kmacros
+;;
+(with-eval-after-load 'kmacro
+  (global-set-key (kbd "S-<f3>") 'kmacro-set-counter))
 
 ;;; Load time
 ;;

@@ -25,7 +25,7 @@
       helm-autoresize-min-height                20   ; it is %.
       helm-debug-root-directory                 "/home/thierry/tmp/helm-debug"
       helm-follow-mode-persistent               t
-      helm-candidate-number-limit               50
+      helm-candidate-number-limit               500
       helm-visible-mark-prefix                  "✓")
 (set-face-foreground 'helm-mark-prefix "Gold1")
 (add-to-list 'helm-sources-using-default-as-input 'helm-source-info-bash)
@@ -696,7 +696,7 @@ First call indent, second complete symbol, third complete fname."
 (global-set-key (kbd "C-h a")                        'helm-apropos)
 (global-set-key (kbd "C-h C-d")                      'helm-debug-open-last-log)
 (global-set-key (kbd "<f5> s")                       'helm-find)
-(global-set-key (kbd "S-<f3>")                       'helm-execute-kmacro)
+(global-set-key (kbd "S-<f4>")                       'helm-execute-kmacro)
 (global-set-key (kbd "C-c i")                        'helm-imenu-in-all-buffers)
 (global-set-key (kbd "C-c C-i")                      'helm-imenu)
 (global-set-key (kbd "<f11>")                        nil)
