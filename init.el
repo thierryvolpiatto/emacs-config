@@ -1044,6 +1044,7 @@ With a prefix arg ask with completion which buffer to kill."
   ;; scp is better for copying large files but not working with many
   ;; files.
   (setq tramp-default-method "ssh")
+  (setq tramp-verbose 0)
   ;; (setq tramp-verbose 10 tramp-debug-to-file t helm-tramp-verbose 10)
   ;; No messages
   (setq tramp-message-show-message nil)
@@ -1073,7 +1074,12 @@ With a prefix arg ask with completion which buffer to kill."
   ;; Connect to my freebox as 'freebox' user.
   (add-to-list 'tramp-default-user-alist
                '("ftp" "\\`mafreebox\\.freebox\\.fr\\'" "freebox"))
-  (setq ange-ftp-ftp-program-name "pftp"))
+  (setq ange-ftp-ftp-program-name "pftp")
+
+  ;; See (info "(tramp) Remote processes")
+  (add-to-list 'tramp-connection-properties
+               (list (regexp-quote "/ssh:")
+                     "direct-async-process" t)))
 
 ;;; Calendar and diary
 ;;

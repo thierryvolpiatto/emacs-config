@@ -266,19 +266,6 @@
         image-dired-cmd-pngnq-program "pngquant"
         image-dired-cmd-pngnq-options '("--ext" "-nq8.png" "%t"))
   
-  ;; (defun helm-ff-wfnames (_candidate)
-  ;; (let ((marked (helm-marked-candidates :with-wildcard t)))
-  ;; (wfnames-setup-buffer marked)))
-  
-  ;; (helm-make-command-from-action helm-run-wfnames
-  ;; "Run wfnames from HFF."
-  ;; 'helm-ff-wfnames)
-  ;; (define-key helm-find-files-map (kbd "C-x C-q") 'helm-run-wfnames)
-  
-  ;; (setq helm-find-files-actions
-  ;; (helm-append-at-nth
-  ;; helm-find-files-actions
-  ;; '(("Edit filename(s)" . helm-ff-wfnames)) 2))
   (setq helm-ff-edit-marked-files-fn #'helm-ff-wfnames)
   
   (defun helm-ff-dragon (files)
