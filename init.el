@@ -919,12 +919,13 @@ With a prefix arg ask with completion which buffer to kill."
 ;;; Dired
 ;;
 (with-eval-after-load 'dired
-  (setq dired-dwim-target t)
-  (setq dired-auto-revert-buffer t)
-  (setq dired-backup-overwrite nil) ; nil, always, ask.
-  (setq dired-isearch-filenames 'dwim)
-  (setq dired-listing-switches (purecopy "-alh"))
-  (setq wdired-use-dired-vertical-movement 'sometimes)
+  (setq dired-dwim-target t
+        dired-auto-revert-buffer t
+        dired-backup-overwrite nil ; nil, always, ask.
+        dired-isearch-filenames 'dwim
+        dired-listing-switches (purecopy "-alh")
+        dired-create-destination-dirs 'ask
+        wdired-use-dired-vertical-movement 'sometimes)
   (require 'dired-extension))
 
 ;;; Ledger
