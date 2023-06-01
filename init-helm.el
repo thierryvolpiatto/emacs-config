@@ -126,8 +126,7 @@
 (with-eval-after-load 'helm-utils
   ;; Popup buffer-name or filename in grep/moccur/imenu-all etc...
   (helm-popup-tip-mode 1)
-  (setq helm-highlight-matches-around-point-max-lines   '(30 . 30)
-        helm-window-show-buffers-function #'helm-window-mosaic-fn)
+  (setq helm-highlight-matches-around-point-max-lines   '(30 . 30))
   (add-hook 'find-file-hook 'helm-save-current-pos-to-mark-ring))
 
 ;;; Helm-sys
@@ -256,7 +255,8 @@
         helm-ff-eshell-unwanted-aliases '("sudo" "cdu" "man"
                                           "gpg-pubkey-export-armor" "gpg-secretkey-export-armor")
         helm-ff-drag-and-drop-default-directory "/home/thierry/Bureau/"
-        helm-file-name-history-hide-deleted t)
+        helm-file-name-history-hide-deleted t
+        helm-ff-ignore-following-on-directory t)
   
   (customize-set-variable 'helm-ff-nohighlight-matches nil)
   

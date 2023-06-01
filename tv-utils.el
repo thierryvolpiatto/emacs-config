@@ -700,6 +700,44 @@ Used by the Mailto script used from firefox."
                          'unspecified))
            do (set-face-attribute f nil :extend t)))
 
+;;; Replace dots in filenames
+;;
+(defun tv/collect-file-exts-in-buffer ()
+  (let ((exts '()))
+    (save-excursion
+      (goto-char (point-min))
+      (while (not (eobp))
+        (when-let ((ext (file-name-extension
+                         (buffer-substring-no-properties
+                          (point-at-bol) (point-at-eol)))))
+          (unless (member ext exts)
+            (push ext exts)))
+        (forward-line 1)))
+    exts))
+
+(defun tv/replace-dots-in-fnames-1 (strings)
+  (let ((regexp (regexp-opt strings)))
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward "\\." nil t)
+        (unless (looking-at-p regexp) (replace-match "_"))))))
+
+(defun tv/replace-dots-in-fnames (&optional edit-exts)
+  "Replace dots in filenames except the dots preceding file extension.
+
+Meant to be used in buffers containg only filenames e.g. wfnames buffers.
+With a prefix arg prompt to edit file extensions."
+  (interactive "P")
+  (let* ((defs    (tv/collect-file-exts-in-buffer))
+         (strings (and edit-exts
+                       (read-from-minibuffer
+                        "Strings: "
+                        nil nil nil nil
+                        (mapconcat #'identity defs " ")))))
+    (when (or defs (and strings (not (string= strings ""))))
+      (tv/replace-dots-in-fnames-1 (if strings
+                                       (split-string strings)
+                                     defs)))))
 
 (provide 'tv-utils)
 
