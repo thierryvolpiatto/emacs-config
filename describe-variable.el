@@ -85,9 +85,7 @@
       (when (re-search-forward "^Value: ?$" nil t)
         (forward-line 1)
         (setq beg (point))
-        (setq end (save-excursion
-                    (goto-char (point-max))
-                    (point)))))
+        (setq end (point-max))))
     (tv/pp-region beg end sym)))
 
 (defun tv/describe-variable (variable &optional buffer frame)
