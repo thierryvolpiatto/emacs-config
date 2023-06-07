@@ -49,12 +49,37 @@
             (insert suffix)))
       (funcall fn object stream))))
 
+(defun tv/pp-region (beg end &optional sym)
+  (let ((inhibit-read-only t)
+        (buf (current-buffer))
+        val pp-buf)
+    (when (and beg end)
+      (message "Prettifying region...")
+      (goto-char beg)
+      (setq val (if sym
+                    (symbol-value sym)
+                  (save-excursion
+                    (with-syntax-table emacs-lisp-mode-syntax-table
+                      (read (current-buffer))))))
+      (delete-region beg end)
+      (with-temp-buffer
+        (lisp-data-mode)
+        (tv/pp val (current-buffer))
+        (with-syntax-table emacs-lisp-mode-syntax-table
+          (font-lock-ensure (point-min) (point-max)))
+        (setq pp-buf (current-buffer))
+        (with-current-buffer buf
+          (save-excursion
+            (insert-buffer-substring pp-buf))))
+      (message "Prettifying region done"))))
+
 (defun tv/pp-value-in-help ()
   (interactive)
   (let ((inhibit-read-only t)
-        (sym (save-excursion (goto-char (point-min)) (symbol-at-point)))
-        (buf (current-buffer))
-        beg end pp-buf)
+        (sym (save-excursion
+               (goto-char (point-min))
+               (symbol-at-point)))
+        beg end)
     (save-excursion
       (goto-char (point-min))
       (when (re-search-forward "^Value: ?$" nil t)
@@ -63,20 +88,7 @@
         (setq end (save-excursion
                     (goto-char (point-max))
                     (point)))))
-    (when (and beg end)
-      (message "Prettifying value...")
-      (goto-char beg)
-      (delete-region beg end)
-      (with-temp-buffer
-        (lisp-data-mode)
-        (tv/pp (symbol-value sym) (current-buffer))
-        (with-syntax-table emacs-lisp-mode-syntax-table
-          (font-lock-ensure (point-min) (point-max)))
-        (setq pp-buf (current-buffer))
-        (with-current-buffer buf
-          (save-excursion
-            (insert-buffer-substring pp-buf))))
-      (message "Prettifying value done"))))
+    (tv/pp-region beg end sym)))
 
 (defun tv/describe-variable (variable &optional buffer frame)
   "Optimized `describe-variable' version.
