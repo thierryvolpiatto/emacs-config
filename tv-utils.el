@@ -530,14 +530,18 @@ Use a prefix arg to specify ARG."
 (global-set-key (kbd "C-c -") 'tv/rotate-windows)
 
 ;;;###autoload
-(defun tv/break-long-string-list-at-point (arg)
+(defun tv/pp-sexp (&optional arg)
   (interactive "p")
   (when (and (looking-at "(")
              (> (point-at-eol) (+ (point) 50)))
     (save-excursion
-      (while (and (re-search-forward "\"[^\"]*\"" nil t arg)
+      (forward-char 1)
+      (while (and (ignore-errors (forward-sexp) t)
                   (not (looking-at ")")))
-        (newline-and-indent)))))
+        (when (> (current-column) (or goal-column fill-column))
+          (if arg ; interactive
+              (newline-and-indent)
+            (newline)))))))
 
 ;; Stollen somewhere.
 ;;;###autoload
