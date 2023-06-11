@@ -30,6 +30,8 @@
 
 (defvar tramp-methods)
 (defvar help-fns-describe-variable-functions)
+(defvar Info-current-file)
+(defvar Info-current-node)
 ;;; Sshfs
 ;;
 ;;
@@ -611,6 +613,7 @@ Arg `host' is machine in auth-info file."
 ;;;###autoload
 (defun tv/insert-info-command-from-current-node-at-point ()
   (interactive)
+  (require 'info)
   (let ((buf (get-buffer "*info*")))
     (when (and buf (buffer-live-p buf))
       (insert
