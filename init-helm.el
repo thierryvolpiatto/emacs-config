@@ -85,6 +85,7 @@
         (tmm-menubar)
         (find-file)
         (execute-extended-command)
+        (shell) ; Fixed by c04b867a but completion is useless here.
         (cancel-debug-on-entry)
         (org-capture . helm-org-completing-read-tags)
         (org-set-tags . helm-org-completing-read-tags)
