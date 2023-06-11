@@ -259,7 +259,8 @@ If entries are already pointed, skip."
                               ("SAMSE" . ":brico:mont-dauphin")
                               ("WELDOM EMBRUN" . ":brico:mont-dauphin")
                               ("GEMAP" . ":brico:mont-dauphin")
-                              ("LOGITEL POUR: Rachel Bourdin" . ":rachel:virement")))
+                              ("LOGITEL POUR: Rachel Bourdin" . ":rachel:virement")
+                              ("Solimut" . ":assurance:maladie:mutuelle")))
 
 ;;;###autoload
 (defun ledger/update-associations ()
