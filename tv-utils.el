@@ -722,15 +722,16 @@ Used by the Mailto script used from firefox."
         (forward-line 1)))
     exts))
 
-(defun tv/replace-dots-in-fnames-1 (strings)
+(defun tv/normalize-fnames-1 (strings)
   (let ((regexp (regexp-opt strings)))
     (save-excursion
       (goto-char (point-min))
-      (while (re-search-forward "\\." nil t)
+      (while (re-search-forward "[. ]" nil t)
         (unless (looking-at-p regexp) (replace-match "_"))))))
 
-(defun tv/replace-dots-in-fnames (&optional edit-exts)
-  "Replace dots in filenames except the dots preceding file extension.
+(defun tv/normalize-fnames (&optional edit-exts)
+  "Replace dots and spaces in filenames by \"_\".
+Ignore dots preceding file extension.
 
 Meant to be used in buffers containg only filenames e.g. wfnames buffers.
 With a prefix arg prompt to edit file extensions."
@@ -742,9 +743,9 @@ With a prefix arg prompt to edit file extensions."
                         nil nil nil nil
                         (mapconcat #'identity defs " ")))))
     (when (or defs (and strings (not (string= strings ""))))
-      (tv/replace-dots-in-fnames-1 (if strings
-                                       (split-string strings)
-                                     defs)))))
+      (tv/normalize-fnames-1 (if strings
+                                 (split-string strings)
+                               defs)))))
 
 (provide 'tv-utils)
 
