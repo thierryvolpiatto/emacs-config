@@ -736,6 +736,8 @@ Ignore dots preceding file extension.
 Meant to be used in buffers containg only filenames e.g. wfnames buffers.
 With a prefix arg prompt to edit file extensions."
   (interactive "P")
+  (cl-assert (memq major-mode '(wfnames-mode wdired-mode)) nil
+             "No filenames to modify in this buffer")
   (let* ((defs    (tv/collect-file-exts-in-buffer))
          (strings (and edit-exts
                        (read-from-minibuffer
