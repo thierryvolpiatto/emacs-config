@@ -561,8 +561,7 @@ Restart works only on graphic display."
                     (fboundp 'helm-ls-git--branch)
                     (helm-ls-git-root-dir))
            (helm-ls-git--branch)))
-        (status-color (if (string= (helm-ls-git-status) "")
-                          "SkyBlue" "yellow")))
+        (status-color "SkyBlue"))
     (when branch
       (concat
        (propertize (format " %s" (all-the-icons-faicon "git")) 'face `(:height 1.2) 'display '(raise -0.1))
