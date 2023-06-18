@@ -486,7 +486,9 @@ Restart works only on graphic display."
 ;;
 (with-eval-after-load 'sh-script
   (defun tv/set-sh-script-mode-name ()
-    (setq-local mode-name (all-the-icons-alltheicon "script" :height 1.0 :v-adjust 0.0))
+    (setq-local mode-name (if (fboundp 'all-the-icons-alltheicon)
+                              (all-the-icons-alltheicon "script" :height 1.0 :v-adjust 0.0)
+                            "Sh "))
     (setq mode-line-process nil))
   (add-to-list 'auto-mode-alist '("\\.bashrc\\'" . sh-mode))
   (add-hook 'sh-mode-hook 'flymake-mode)
@@ -578,66 +580,69 @@ Restart works only on graphic display."
                                           (interactive)
                                           (popup-menu (tv/select-git-branches-menu)))))))))
 
-(setq-default mode-line-format '("%e"
-                                 mode-line-front-space
-                                 mode-line-mule-info
-                                 mode-line-client
-                                 mode-line-modified
-                                 mode-line-remote
-                                 mode-line-frame-identification
-                                 mode-line-buffer-identification
-                                 " "
-                                 mode-line-modes
-                                 " "
-                                 "%p %l/%c"
-                                 " "
-                                 (:eval (tv/custom-modeline-github-vc))
-                                 " "
-                                 mode-line-misc-info
-                                 mode-line-end-spaces))
+(with-eval-after-load 'all-the-icons
+  (setq-default mode-line-format '("%e"
+                                   mode-line-front-space
+                                   mode-line-mule-info
+                                   mode-line-client
+                                   mode-line-modified
+                                   mode-line-remote
+                                   mode-line-frame-identification
+                                   mode-line-buffer-identification
+                                   " "
+                                   mode-line-modes
+                                   " "
+                                   "%p %l/%c"
+                                   " "
+                                   (:eval (tv/custom-modeline-github-vc))
+                                   " "
+                                   mode-line-misc-info
+                                   mode-line-end-spaces))
+
+  ;; Icons for file extensions.
+  (setf (alist-get "dat" all-the-icons-extension-icon-alist nil nil 'equal)
+        '(all-the-icons-faicon "bar-chart" :face all-the-icons-cyan :height 0.9 :v-adjust 0.0))
+  (add-to-list 'all-the-icons-extension-icon-alist
+               '("avi" all-the-icons-faicon "film" :face all-the-icons-blue))
+  (add-to-list 'all-the-icons-extension-icon-alist
+               '("3gp" all-the-icons-faicon "film" :face all-the-icons-blue))
+  (add-to-list 'all-the-icons-extension-icon-alist
+               '("m4v" all-the-icons-faicon "film" :face all-the-icons-blue))
+  (add-to-list 'all-the-icons-extension-icon-alist
+               '("xz" all-the-icons-octicon "file-binary"
+                 :v-adjust 0.0 :face all-the-icons-lmaroon))
+  (add-to-list 'all-the-icons-extension-icon-alist
+               '("eln" all-the-icons-octicon "file-binary"
+                 :v-adjust 0.0 :face all-the-icons-dsilver))
+  (add-to-list 'all-the-icons-extension-icon-alist
+               '("epub" all-the-icons-octicon "book"
+                 :v-adjust 0.0 :face all-the-icons-red-alt))
+  ;; Icons for modes.
+  (setf (alist-get 'sh-mode all-the-icons-mode-icon-alist)
+        '(all-the-icons-alltheicon "terminal" :face all-the-icons-purple :v-adjust 0.0))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(diary-mode all-the-icons-faicon "calendar" :height 1.0
+                 :v-adjust -0.1 :face all-the-icons-yellow))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(diary-fancy-display-mode all-the-icons-faicon "calendar" :height 1.0
+                 :v-adjust -0.1 :face all-the-icons-yellow))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(calendar-mode all-the-icons-faicon "calendar" :height 1.0
+                 :v-adjust -0.1 :face all-the-icons-yellow))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(Info-mode all-the-icons-faicon "info"
+                 :v-adjust -0.1 :face all-the-icons-purple))
+  ;; Regexp icons.
+  (setq all-the-icons-regexp-icon-alist
+        (append '(("^bookmark" all-the-icons-octicon "bookmark"
+                   :height 1.1 :v-adjust 0.0 :face all-the-icons-lpink))
+                (delete (assoc "bookmark" all-the-icons-regexp-icon-alist)
+                        all-the-icons-regexp-icon-alist))))
+
 (when (>= emacs-major-version 29)
   ;; A new annoyance for each major version.
   (set-face-attribute 'mode-line-active nil :inherit 'mode-line)
   (set-face-attribute 'mode-line-inactive nil :inherit 'mode-line))
-;; Icons for file extensions.
-(setf (alist-get "dat" all-the-icons-extension-icon-alist nil nil 'equal)
-      '(all-the-icons-faicon "bar-chart" :face all-the-icons-cyan :height 0.9 :v-adjust 0.0))
-(add-to-list 'all-the-icons-extension-icon-alist
-             '("avi" all-the-icons-faicon "film" :face all-the-icons-blue))
-(add-to-list 'all-the-icons-extension-icon-alist
-             '("3gp" all-the-icons-faicon "film" :face all-the-icons-blue))
-(add-to-list 'all-the-icons-extension-icon-alist
-             '("m4v" all-the-icons-faicon "film" :face all-the-icons-blue))
-(add-to-list 'all-the-icons-extension-icon-alist
-             '("xz" all-the-icons-octicon "file-binary"
-               :v-adjust 0.0 :face all-the-icons-lmaroon))
-(add-to-list 'all-the-icons-extension-icon-alist
-             '("eln" all-the-icons-octicon "file-binary"
-               :v-adjust 0.0 :face all-the-icons-dsilver))
-(add-to-list 'all-the-icons-extension-icon-alist
-             '("epub" all-the-icons-octicon "book"
-               :v-adjust 0.0 :face all-the-icons-red-alt))
-;; Icons for modes.
-(setf (alist-get 'sh-mode all-the-icons-mode-icon-alist)
-      '(all-the-icons-alltheicon "terminal" :face all-the-icons-purple :v-adjust 0.0))
-(add-to-list 'all-the-icons-mode-icon-alist
-             '(diary-mode all-the-icons-faicon "calendar" :height 1.0
-               :v-adjust -0.1 :face all-the-icons-yellow))
-(add-to-list 'all-the-icons-mode-icon-alist
-             '(diary-fancy-display-mode all-the-icons-faicon "calendar" :height 1.0
-               :v-adjust -0.1 :face all-the-icons-yellow))
-(add-to-list 'all-the-icons-mode-icon-alist
-             '(calendar-mode all-the-icons-faicon "calendar" :height 1.0
-               :v-adjust -0.1 :face all-the-icons-yellow))
-(add-to-list 'all-the-icons-mode-icon-alist
-             '(Info-mode all-the-icons-faicon "info"
-               :v-adjust -0.1 :face all-the-icons-purple))
-;; Regexp icons.
-(setq all-the-icons-regexp-icon-alist
-      (append '(("^bookmark" all-the-icons-octicon "bookmark"
-                 :height 1.1 :v-adjust 0.0 :face all-the-icons-lpink))
-              (delete (assoc "bookmark" all-the-icons-regexp-icon-alist)
-                      all-the-icons-regexp-icon-alist)))
 
 ;;; Time
 ;;
@@ -1589,9 +1594,13 @@ With a prefix arg ask with completion which buffer to kill."
 (defun tv/set-mode-name (name)
   (setq-local mode-name name))
 (defun tv/set-lisp-interaction-name ()
-  (tv/set-mode-name (all-the-icons-fileicon "lisp")))
+  (if (fboundp 'all-the-icons-fileicon)
+      (tv/set-mode-name (all-the-icons-fileicon "lisp"))
+    "Lisp"))
 (defun tv/set-emacs-lisp-name ()
-  (tv/set-mode-name (all-the-icons-fileicon "elisp")))
+  (if (fboundp 'all-the-icons-fileicon)
+      (tv/set-mode-name (all-the-icons-fileicon "elisp"))
+    "Elisp"))
 (add-hook 'lisp-interaction-mode-hook #'tv/set-lisp-interaction-name)
 (add-hook 'emacs-lisp-mode-hook #'tv/set-emacs-lisp-name)
 
