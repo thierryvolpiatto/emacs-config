@@ -96,7 +96,8 @@
         (dired-do-hardlink . helm-read-file-name-handler-1)
         (basic-save-buffer . helm-read-file-name-handler-1)
         (write-file . (default helm-read-file-name-handler-1))
-        (write-region . (default helm-read-file-name-handler-1))))
+        (write-region . (default helm-read-file-name-handler-1))
+        (all-the-icons-insert . helm-mode-all-the-icons-handler)))
 
 ;; Fix CAP with LSP in python.
 (add-to-list 'helm-completion-styles-alist '(python-mode . (emacs helm flex)))
