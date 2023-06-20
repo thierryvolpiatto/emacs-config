@@ -1631,6 +1631,14 @@ With a prefix arg ask with completion which buffer to kill."
                                    ;; will not switch to that buffer. 
                                    (string-match "\\`\\*[Hh]elm" (buffer-name buffer))))
 
+;; Switch to prev/next buffers by scrolling horizontally, this modify
+;; the behavior of `mwheel-scroll'.
+(setq mwheel-scroll-left-function (lambda (&optional _arg _set-minimum)
+                                    (switch-to-prev-buffer)))
+(setq mwheel-scroll-right-function (lambda (&optional _arg _set-minimum)
+                                     (switch-to-next-buffer)))
+(setq mouse-wheel-tilt-scroll t)
+
 ;; Add fontification to some functions
 (cl-dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
   (font-lock-add-keywords
