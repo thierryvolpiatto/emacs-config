@@ -1629,7 +1629,7 @@ With a prefix arg ask with completion which buffer to kill."
                                    ;; If that function returns
                                    ;; non-nil, `switch-to-prev/next-buffer'
                                    ;; will not switch to that buffer. 
-                                   (string-match "\\`\\*[Hh]elm" (buffer-name buffer))))
+                                   (not (buffer-file-name buffer))))
 
 ;; Switch to prev/next buffers by scrolling horizontally, this modify
 ;; the behavior of `mwheel-scroll'.
