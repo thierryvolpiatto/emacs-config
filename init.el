@@ -18,7 +18,10 @@
 
 ;;; load-path
 ;;
-(dolist (i '("~/elisp/"
+(defvar all-the-icons-svg (not (directory-files "/usr/local/share/emacs/site-lisp" nil "all-the-icons")))
+
+(dolist (i `("~/elisp/"
+             ,(and all-the-icons-svg "~/elisp/all-the-icons.el")
              "~/elisp/autoconf-mode"
              "~/elisp/desktop-file-utils"
              "~/elisp/tex-utils"
@@ -27,7 +30,8 @@
              "~/.emacs.d/emacs-config/"
              ))
   ;; Add all at end of `load-path' to avoid conflicts.
-  (add-to-list 'load-path (file-name-as-directory i) t))
+  (when (stringp i)
+    (add-to-list 'load-path (file-name-as-directory i) t)))
 
 ;;; gc-cons-threshold settings with gcmh-mode
 ;;
@@ -527,6 +531,7 @@ Restart works only on graphic display."
 ;;
 ;; Don't forget to install necessary fonts with M-x
 ;; all-the-icons-install-fonts.
+
 (defun tv/git-branch-in-mode-line ()
   (require 'helm-ls-git)
   (when (and (buffer-file-name (current-buffer))
@@ -564,13 +569,31 @@ Restart works only on graphic display."
                     (helm-ls-git-root-dir))
            (helm-ls-git--branch)))
         (status-color "SkyBlue"))
+  (let* ((branch
+          (when (and (buffer-file-name (current-buffer))
+                     (fboundp 'helm-ls-git--branch)
+                     (helm-ls-git-root-dir))
+            (helm-ls-git--branch)))
+         (status-color    "SkyBlue")
+         (git-icon        (if (and all-the-icons-svg
+                                   (fboundp 'all-the-icons-fontawesome-4))
+                              (all-the-icons-fontawesome-4 "git")
+                            (all-the-icons-faicon "git")))
+         (git-branch-icon (if all-the-icons-svg
+                              (all-the-icons-devopicons "git-branch")
+                            (all-the-icons-octicon "git-branch"))))
     (when branch
       (concat
-       (propertize (format " %s" (all-the-icons-faicon "git")) 'face `(:height 1.2) 'display '(raise -0.1))
+       (if all-the-icons-svg
+           (propertize (format " %s" git-icon) 'face '(:height 1.2))
+         (propertize (format " %s" git-icon) 'face '(:height 1.2) 'display '(raise -0.1)))
        " · "
-       (propertize (format "%s" (all-the-icons-octicon "git-branch"))
-                   'face `(:height 1.3 :family ,(all-the-icons-octicon-family) :foreground "Deepskyblue3")
-                   'display '(raise -0.1))
+       (if all-the-icons-svg
+           (propertize (format "%s" git-branch-icon)
+                       'face '(:height 1.3 :foreground "Deepskyblue3"))
+         (propertize (format "%s" git-branch-icon)
+                       'face `(:height 1.3 :family ,(all-the-icons-octicon-family) :foreground "Deepskyblue3")
+                       'display '(raise -0.1)))
        (propertize (format " %s" branch)
                    'face `(:height 0.9 :foreground ,status-color)
                    'mouse-face 'highlight
@@ -578,7 +601,8 @@ Restart works only on graphic display."
                    'local-map (make-mode-line-mouse-map
                                'mouse-1 (lambda ()
                                           (interactive)
-                                          (popup-menu (tv/select-git-branches-menu)))))))))
+                                          (popup-menu (tv/select-git-branches-menu))))))))))
+
 
 (with-eval-after-load 'all-the-icons
   (setq-default mode-line-format '("%e"
@@ -599,45 +623,46 @@ Restart works only on graphic display."
                                    mode-line-misc-info
                                    mode-line-end-spaces))
 
-  ;; Icons for file extensions.
-  (setf (alist-get "dat" all-the-icons-extension-icon-alist nil nil 'equal)
-        '(all-the-icons-faicon "bar-chart" :face all-the-icons-cyan :height 0.9 :v-adjust 0.0))
-  (add-to-list 'all-the-icons-extension-icon-alist
-               '("avi" all-the-icons-faicon "film" :face all-the-icons-blue))
-  (add-to-list 'all-the-icons-extension-icon-alist
-               '("3gp" all-the-icons-faicon "film" :face all-the-icons-blue))
-  (add-to-list 'all-the-icons-extension-icon-alist
-               '("m4v" all-the-icons-faicon "film" :face all-the-icons-blue))
-  (add-to-list 'all-the-icons-extension-icon-alist
-               '("xz" all-the-icons-octicon "file-binary"
-                 :v-adjust 0.0 :face all-the-icons-lmaroon))
-  (add-to-list 'all-the-icons-extension-icon-alist
-               '("eln" all-the-icons-octicon "file-binary"
-                 :v-adjust 0.0 :face all-the-icons-dsilver))
-  (add-to-list 'all-the-icons-extension-icon-alist
-               '("epub" all-the-icons-octicon "book"
-                 :v-adjust 0.0 :face all-the-icons-red-alt))
-  ;; Icons for modes.
-  (setf (alist-get 'sh-mode all-the-icons-mode-icon-alist)
-        '(all-the-icons-alltheicon "terminal" :face all-the-icons-purple :v-adjust 0.0))
-  (add-to-list 'all-the-icons-mode-icon-alist
-               '(diary-mode all-the-icons-faicon "calendar" :height 1.0
-                 :v-adjust -0.1 :face all-the-icons-yellow))
-  (add-to-list 'all-the-icons-mode-icon-alist
-               '(diary-fancy-display-mode all-the-icons-faicon "calendar" :height 1.0
-                 :v-adjust -0.1 :face all-the-icons-yellow))
-  (add-to-list 'all-the-icons-mode-icon-alist
-               '(calendar-mode all-the-icons-faicon "calendar" :height 1.0
-                 :v-adjust -0.1 :face all-the-icons-yellow))
-  (add-to-list 'all-the-icons-mode-icon-alist
-               '(Info-mode all-the-icons-faicon "info"
-                 :v-adjust -0.1 :face all-the-icons-purple))
-  ;; Regexp icons.
-  (setq all-the-icons-regexp-icon-alist
-        (append '(("^bookmark" all-the-icons-octicon "bookmark"
-                   :height 1.1 :v-adjust 0.0 :face all-the-icons-lpink))
-                (delete (assoc "bookmark" all-the-icons-regexp-icon-alist)
-                        all-the-icons-regexp-icon-alist))))
+  (unless all-the-icons-svg
+    ;; Icons for file extensions.
+    (setf (alist-get "dat" all-the-icons-extension-icon-alist nil nil 'equal)
+          '(all-the-icons-faicon "bar-chart" :face all-the-icons-cyan :height 0.9 :v-adjust 0.0))
+    (add-to-list 'all-the-icons-extension-icon-alist
+                 '("avi" all-the-icons-faicon "film" :face all-the-icons-blue))
+    (add-to-list 'all-the-icons-extension-icon-alist
+                 '("3gp" all-the-icons-faicon "film" :face all-the-icons-blue))
+    (add-to-list 'all-the-icons-extension-icon-alist
+                 '("m4v" all-the-icons-faicon "film" :face all-the-icons-blue))
+    (add-to-list 'all-the-icons-extension-icon-alist
+                 '("xz" all-the-icons-octicon "file-binary"
+                   :v-adjust 0.0 :face all-the-icons-lmaroon))
+    (add-to-list 'all-the-icons-extension-icon-alist
+                 '("eln" all-the-icons-octicon "file-binary"
+                   :v-adjust 0.0 :face all-the-icons-dsilver))
+    (add-to-list 'all-the-icons-extension-icon-alist
+                 '("epub" all-the-icons-octicon "book"
+                   :v-adjust 0.0 :face all-the-icons-red-alt))
+    ;; Icons for modes.
+    (setf (alist-get 'sh-mode all-the-icons-mode-icon-alist)
+          '(all-the-icons-alltheicon "terminal" :face all-the-icons-purple :v-adjust 0.0))
+    (add-to-list 'all-the-icons-mode-icon-alist
+                 '(diary-mode all-the-icons-faicon "calendar" :height 1.0
+                   :v-adjust -0.1 :face all-the-icons-yellow))
+    (add-to-list 'all-the-icons-mode-icon-alist
+                 '(diary-fancy-display-mode all-the-icons-faicon "calendar" :height 1.0
+                   :v-adjust -0.1 :face all-the-icons-yellow))
+    (add-to-list 'all-the-icons-mode-icon-alist
+                 '(calendar-mode all-the-icons-faicon "calendar" :height 1.0
+                   :v-adjust -0.1 :face all-the-icons-yellow))
+    (add-to-list 'all-the-icons-mode-icon-alist
+                 '(Info-mode all-the-icons-faicon "info"
+                   :v-adjust -0.1 :face all-the-icons-purple))
+    ;; Regexp icons.
+    (setq all-the-icons-regexp-icon-alist
+          (append '(("^bookmark" all-the-icons-octicon "bookmark"
+                     :height 1.1 :v-adjust 0.0 :face all-the-icons-lpink))
+                  (delete (assoc "bookmark" all-the-icons-regexp-icon-alist)
+                          all-the-icons-regexp-icon-alist)))))
 
 (when (>= emacs-major-version 29)
   ;; A new annoyance for each major version.
