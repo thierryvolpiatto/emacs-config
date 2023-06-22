@@ -18,10 +18,10 @@
 
 ;;; load-path
 ;;
-(defvar all-the-icons-svg (not (directory-files "/usr/local/share/emacs/site-lisp" nil "all-the-icons")))
+(defvar all-the-icons-svg (not (directory-files "~/.emacs.d/elpa/" nil "all-the-icons")))
 
 (dolist (i `("~/elisp/"
-             ,(and all-the-icons-svg "~/elisp/all-the-icons.el")
+             ,(and all-the-icons-svg "~/elisp/all-the-icons")
              "~/elisp/autoconf-mode"
              "~/elisp/desktop-file-utils"
              "~/elisp/tex-utils"
@@ -532,6 +532,9 @@ Restart works only on graphic display."
 ;; Don't forget to install necessary fonts with M-x
 ;; all-the-icons-install-fonts.
 
+(when all-the-icons-svg
+  (load-file "/home/thierry/elisp/all-the-icons/all-the-icons-autoloads.el"))
+
 (defun tv/git-branch-in-mode-line ()
   (require 'helm-ls-git)
   (when (and (buffer-file-name (current-buffer))
@@ -603,7 +606,6 @@ Restart works only on graphic display."
                                           (interactive)
                                           (popup-menu (tv/select-git-branches-menu))))))))))
 
-
 (with-eval-after-load 'all-the-icons
   (setq-default mode-line-format '("%e"
                                    mode-line-front-space
@@ -623,7 +625,19 @@ Restart works only on graphic display."
                                    mode-line-misc-info
                                    mode-line-end-spaces))
 
-  (unless all-the-icons-svg
+  (if all-the-icons-svg
+      (progn
+        ;; Video icons
+        (add-to-list 'all-the-icons-extension-icon-alist
+                     '("avi" fontawesome-4 "film" :face all-the-icons-blue))
+        (add-to-list 'all-the-icons-extension-icon-alist
+                     '("3gp" fontawesome-4 "film" :face all-the-icons-blue))
+        (add-to-list 'all-the-icons-extension-icon-alist
+                     '("m4v" fontawesome-4 "film" :face all-the-icons-blue))
+        (add-to-list 'all-the-icons-extension-icon-alist
+                     '("mp4" fontawesome-4 "film" :face all-the-icons-blue))
+        (add-to-list 'all-the-icons-extension-icon-alist
+                     '("mkv" fontawesome-4 "film" :face all-the-icons-blue)))
     ;; Icons for file extensions.
     (setf (alist-get "dat" all-the-icons-extension-icon-alist nil nil 'equal)
           '(all-the-icons-faicon "bar-chart" :face all-the-icons-cyan :height 0.9 :v-adjust 0.0))
