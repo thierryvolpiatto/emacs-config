@@ -18,7 +18,8 @@
 
 ;;; load-path
 ;;
-(defvar all-the-icons-svg (not (directory-files "~/.emacs.d/elpa/" nil "all-the-icons")))
+
+(defvar all-the-icons-svg (eq (cadr (assoc 'all-the-icons package-load-list)) nil))
 
 (dolist (i `("~/elisp/"
              ,(and all-the-icons-svg "~/elisp/all-the-icons")
@@ -637,7 +638,19 @@ Restart works only on graphic display."
         (add-to-list 'all-the-icons-extension-icon-alist
                      '("mp4" fontawesome-4 "film" :face all-the-icons-blue))
         (add-to-list 'all-the-icons-extension-icon-alist
-                     '("mkv" fontawesome-4 "film" :face all-the-icons-blue)))
+                     '("mkv" fontawesome-4 "film" :face all-the-icons-blue))
+        ;; Files and directories
+        (setq all-the-icons-dir-icon-alist
+              (append '(("^\\.[^.]+" fluentui-system-icons "folder"))
+                      (delete '("\\.[^.]+" fluentui-system-icons "folder")
+                              all-the-icons-dir-icon-alist)))
+        (setq all-the-icons-regexp-icon-alist
+              (append '(("^.bash_profile" octicons "terminal" :face all-the-icons-purple)
+                        ("^.bash_aliases" octicons "terminal" :face all-the-icons-purple)
+                        ("^.bashrc"       octicons "terminal" :face all-the-icons-purple)
+                        ("^.profile"       octicons "terminal" :face all-the-icons-purple))
+                      (delete '("^\\." fontawesome-4 "cog") all-the-icons-regexp-icon-alist)
+                      '(("^\\." fontawesome-4 "cog")))))
     ;; Icons for file extensions.
     (setf (alist-get "dat" all-the-icons-extension-icon-alist nil nil 'equal)
           '(all-the-icons-faicon "bar-chart" :face all-the-icons-cyan :height 0.9 :v-adjust 0.0))
