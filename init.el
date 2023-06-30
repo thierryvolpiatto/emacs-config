@@ -639,6 +639,8 @@ Restart works only on graphic display."
                      '("mp4" fontawesome-4 "film" :face all-the-icons-blue))
         (add-to-list 'all-the-icons-extension-icon-alist
                      '("mkv" fontawesome-4 "film" :face all-the-icons-blue))
+        (add-to-list 'all-the-icons-extension-icon-alist
+                     '("torrent" material-icons "cloud_download" :face all-the-icons-green))
         ;; Files and directories
         (setq all-the-icons-dir-icon-alist
               (append '(("^\\.[^.]+" fluentui-system-icons "folder"))
@@ -1730,17 +1732,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   (if arg
       (pp-macroexpand-last-sexp nil)
     (pp-eval-last-sexp nil)))
-
-(defun tv/beg-of-defun-and-back ()
-  "Back and forth between mark and beginning of defun."
-  (interactive)
-  (if (eq last-command this-command)
-      (progn
-        (goto-char (mark))
-        (setq this-command nil))
-    (push-mark)  
-    (beginning-of-defun)))
-
 (global-set-key (kbd "<f11> s c")                     'goto-scratch)
 (global-set-key (kbd "<S-f12>")                       'cancel-debug-on-entry)
 (global-set-key (kbd "M-:")                           'pp-eval-expression)
@@ -1751,8 +1742,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 (define-key emacs-lisp-mode-map (kbd "C-M-j")         'backward-kill-sexp)
 (define-key emacs-lisp-mode-map (kbd "M-e")           'tv/pp-eval-or-expand-last-sexp)
 (define-key emacs-lisp-mode-map (kbd "C-c C-a")       'tv/align-let)
-(define-key emacs-lisp-mode-map (kbd "C-M-a")         'tv/beg-of-defun-and-back)
-(define-key lisp-interaction-mode-map (kbd "C-M-a")   'tv/beg-of-defun-and-back)
 (define-key lisp-interaction-mode-map (kbd "RET")     'newline-and-indent)
 (define-key lisp-interaction-mode-map (kbd "C-M-j")   'backward-kill-sexp)
 (define-key lisp-interaction-mode-map (kbd "M-e")     'tv/pp-eval-or-expand-last-sexp)
