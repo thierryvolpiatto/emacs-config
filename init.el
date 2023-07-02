@@ -1852,16 +1852,17 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 (with-eval-after-load 'kmacro
   (global-set-key (kbd "S-<f3>") 'kmacro-set-counter))
 
-;;; `exchange-point-and-mark' doesn't activate mark when it is not active.
-;;
+;;; modify `exchange-point-and-mark' so that it doesn't activate mark
+;;  when it is not already active.
 (defun tv/exchange-point-and-mark (&optional arg)
   "Put the mark where point is now, and point where the mark is now.
-This command works even when the mark is not active,
-and do NOT reactivates the mark unlike the original command.
 
 If Transient Mark mode is on, a prefix ARG deactivates the mark
-if it is active, and otherwise avoids reactivating it.  If
-Transient Mark mode is off, a prefix ARG enables Transient Mark
+if it is active and activates it if it is inactive, without prefix ARG
+this command doesn't reactivate the mark if it was inactive and
+doesn't deactivate it if it was active.
+
+If Transient Mark mode is off, a prefix ARG enables Transient Mark
 mode temporarily."
   (interactive "P")
   (let ((omark (mark t))
