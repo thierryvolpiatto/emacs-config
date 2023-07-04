@@ -34,11 +34,6 @@
   (when (stringp i)
     (add-to-list 'load-path (file-name-as-directory i) t)))
 
-;;; gc-cons-threshold settings with gcmh-mode
-;;
-(gcmh-mode 1)
-(setcdr (assq 'gcmh-mode minor-mode-alist) '(" 🧹"))
-
 ;;; Emacs customize own file
 ;;
 (setq custom-file "~/.emacs.d/.emacs-custom.el")
@@ -671,6 +666,9 @@ Restart works only on graphic display."
     (add-to-list 'all-the-icons-extension-icon-alist
                  '("epub" all-the-icons-octicon "book"
                    :v-adjust 0.0 :face all-the-icons-red-alt))
+    (add-to-list 'all-the-icons-extension-icon-alist
+                 '("torrent" all-the-icons-material "cloud_upload"
+                   :v-adjust 0.0 :face all-the-icons-lgreen))
     ;; Icons for modes.
     (setf (alist-get 'sh-mode all-the-icons-mode-icon-alist)
           '(all-the-icons-alltheicon "terminal" :face all-the-icons-purple :v-adjust 0.0))

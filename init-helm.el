@@ -121,7 +121,7 @@
 ;;; Helm-bookmark
 ;;
 (with-eval-after-load 'helm-bookmark
-  (setq helm-bookmark-use-icon t))
+  (customize-set-variable 'helm-bookmark-use-icon t))
 
 ;;; Helm-utils
 ;;
@@ -180,8 +180,8 @@
                                     helm-source-buffer-not-found)
         helm-boring-buffer-regexp-list
         '("\\` " "\\`\\*helm" "\\`\\*Echo Area" "\\`\\*Minibuf"
-          "\\`\\*Messages" "\\`\\*Magit" "\\`\\*git-gutter" "\\`\\*Help" "\\`\\*skitour")
-        helm-buffers-show-icons t)
+          "\\`\\*Messages" "\\`\\*Magit" "\\`\\*git-gutter" "\\`\\*Help" "\\`\\*skitour"))
+  (customize-set-variable 'helm-buffers-show-icons t)
 
   (define-key helm-buffer-map (kbd "C-d") 'helm-buffer-run-kill-persistent)
   
@@ -623,8 +623,8 @@ First call indent, second complete symbol, third complete fname."
                '("Use package" . (all-the-icons-octicon
                                   "package" :face font-lock-keyword-face)))
   (customize-set-variable 'helm-imenu-lynx-style-map t)
-  (setq helm-imenu-use-icon t
-        helm-imenu-hide-item-type-name t))
+  (customize-set-variable 'helm-imenu-use-icon t)
+  (customize-set-variable 'helm-imenu-hide-item-type-name t))
 
 ;;; Helm-misc
 ;;
