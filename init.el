@@ -332,7 +332,7 @@ Restart works only on graphic display."
 ;;
 ;;
 (with-eval-after-load 'browse-url
-  ;; See avail browser at ~/labo/github/helm/helm-net.el:253
+  ;; See avail browser at ~/work/github/helm/helm-net.el:253
   (setq browse-url-firefox-program "firefox"
         browse-url-browser-function 'helm-browse-url-firefox))
 
@@ -558,7 +558,7 @@ Restart works only on graphic display."
              finally return
              (append '("Git branches")
                      lst
-                     '("--" ["Git status" vc-dir])))))
+                     '("--" ["Git status" helm-browse-project])))))
 
 (defun tv/custom-modeline-github-vc ()
   (require 'helm-ls-git)
@@ -669,6 +669,19 @@ Restart works only on graphic display."
     (add-to-list 'all-the-icons-extension-icon-alist
                  '("torrent" all-the-icons-material "cloud_upload"
                    :v-adjust 0.0 :face all-the-icons-lgreen))
+    (add-to-list 'all-the-icons-extension-icon-alist
+                 '("gitignore" all-the-icons-alltheicon "git" :height 1.0  :face all-the-icons-lred))
+    ;; Icons for directories
+    (add-to-list 'all-the-icons-dir-icon-alist
+                 '("Vidéos" all-the-icons-faicon "film" :height 0.9 :v-adjust -0.1))
+    (add-to-list 'all-the-icons-dir-icon-alist
+                 '("Musique" all-the-icons-faicon "music" :height 1.0 :v-adjust -0.1))
+    (add-to-list 'all-the-icons-dir-icon-alist
+                 '("Images" all-the-icons-faicon "picture-o" :height 0.9 :v-adjust -0.2))
+    (add-to-list 'all-the-icons-dir-icon-alist
+                 '("Téléchargements" all-the-icons-faicon "cloud-download" :height 0.9 :v-adjust -0.1))
+    (add-to-list 'all-the-icons-dir-icon-alist
+                 '("Bureau" all-the-icons-octicon "device-desktop" :height 1.0 :v-adjust -0.1))
     ;; Icons for modes.
     (setf (alist-get 'sh-mode all-the-icons-mode-icon-alist)
           '(all-the-icons-alltheicon "terminal" :face all-the-icons-purple :v-adjust 0.0))
@@ -1019,7 +1032,7 @@ With a prefix arg ask with completion which buffer to kill."
 ;; Installed from source in site-lisp.
 ;; It is patched to allow sexp replacements in
 ;;`iedit-replace-occurrences', see:
-;; ~/labo/github/iedit/iedit-lib.el:908 in iedit_read_string branch.
+;; ~/work/github/iedit/iedit-lib.el:908 in iedit_read_string branch.
 (autoload 'iedit-mode "iedit" nil t)
 (autoload 'iedit-rectangle-mode "iedit-rect" nil t)
 (defun iedit-narrow-to-defun (arg)

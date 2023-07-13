@@ -519,7 +519,7 @@ new directory."
   (require 'isl)
   (setq helm-scroll-amount 4)
   (setq helm-find-function-default-project
-        '("~/labo/emacs/lisp/" "~/labo/github/"))
+        '("~/work/emacs/lisp/" "~/work/github/"))
   (helm-help-define-key "C-x" 'exchange-point-and-mark)
   (helm-help-define-key "C-l" 'recenter-top-bottom)
   (helm-help-define-key "C-s" nil)
@@ -589,7 +589,7 @@ First call indent, second complete symbol, third complete fname."
 ;;; Helm-locate
 ;;
 (with-eval-after-load 'helm-locate
-  (setq helm-locate-fuzzy-match t))
+  (setq helm-locate-fuzzy-match nil))
 
 ;;; Helm-org
 ;;
