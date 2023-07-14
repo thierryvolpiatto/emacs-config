@@ -137,13 +137,14 @@ Restart works only on graphic display."
 ;;; emacs-backup-config
 ;;
 (defun tv/backup-file-p (file)
-  (or (normal-backup-enable-predicate file)
-      (and (locate-dominating-file file ".git") t)))
+  (and (normal-backup-enable-predicate file)
+       (null (locate-dominating-file file ".git"))))
 
 (setq backup-directory-alist '(("" . "~/.emacs.d/emacs_backup"))
       backup-enable-predicate #'tv/backup-file-p
       backup-by-copying t
       version-control t
+      vc-make-backup-files nil
       kept-old-versions 2
       kept-new-versions 20
       delete-old-versions t)
