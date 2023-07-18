@@ -258,7 +258,8 @@
                                           "gpg-pubkey-export-armor" "gpg-secretkey-export-armor")
         helm-ff-drag-and-drop-default-directory "/home/thierry/Bureau/"
         helm-file-name-history-hide-deleted t
-        helm-ff-ignore-following-on-directory t)
+        helm-ff-ignore-following-on-directory t
+        helm-ff-rsync-progress-bar-style 'bar)
   
   (customize-set-variable 'helm-ff-nohighlight-matches nil)
   
