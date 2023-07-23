@@ -563,14 +563,12 @@ Restart works only on graphic display."
 
 (defun tv/custom-modeline-github-vc ()
   (require 'helm-ls-git)
-  (let ((branch     
-         (when (and (buffer-file-name (current-buffer))
-                    (fboundp 'helm-ls-git--branch)
-                    (helm-ls-git-root-dir))
-           (helm-ls-git--branch)))
-        (status-color "SkyBlue"))
-  (let* ((branch
-          (when (and (buffer-file-name (current-buffer))
+  (let* ((fname (buffer-file-name (current-buffer)))
+         (branch
+          (when (and fname
+                     ;; Don't do fancy things on remote files, tramp
+                     ;; is enough slow.
+                     (not (file-remote-p fname))
                      (fboundp 'helm-ls-git--branch)
                      (helm-ls-git-root-dir))
             (helm-ls-git--branch)))
@@ -592,8 +590,8 @@ Restart works only on graphic display."
            (propertize (format "%s" git-branch-icon)
                        'face '(:height 1.3 :foreground "Deepskyblue3"))
          (propertize (format "%s" git-branch-icon)
-                       'face `(:height 1.3 :family ,(all-the-icons-octicon-family) :foreground "Deepskyblue3")
-                       'display '(raise -0.1)))
+                     'face `(:height 1.3 :family ,(all-the-icons-octicon-family) :foreground "Deepskyblue3")
+                     'display '(raise -0.1)))
        (propertize (format " %s" branch)
                    'face `(:height 0.9 :foreground ,status-color)
                    'mouse-face 'highlight
@@ -601,7 +599,7 @@ Restart works only on graphic display."
                    'local-map (make-mode-line-mouse-map
                                'mouse-1 (lambda ()
                                           (interactive)
-                                          (popup-menu (tv/select-git-branches-menu))))))))))
+                                          (popup-menu (tv/select-git-branches-menu)))))))))
 
 (with-eval-after-load 'all-the-icons
   (setq-default mode-line-format '("%e"

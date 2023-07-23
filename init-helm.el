@@ -103,11 +103,11 @@
 (add-to-list 'helm-completion-styles-alist '(python-mode . (emacs helm flex)))
 (add-to-list 'helm-completion-styles-alist '(wfnames-mode . (emacs helm flex)))
 
-;; Allow using `completions-detailed' in these commands. Just a proof
-;; of concept as helm-apropos is displaying all these infos in a much
-;; better way and faster.
-(dolist (f '(describe-symbol describe-variable describe-function))
-  (add-to-list 'helm-completion-styles-alist `(,f . (emacs helm flex))))
+;; `completions-detailed' works now with both
+;; `helm-completing-read-default-1' and
+;; `helm-completing-read-default-2'. To test it with *default-2 add
+;; the describe-* fns to helm-completion-styles-alist
+;; i.e. (fun . (emacs helm flex)).
 
 (when (boundp 'completions-detailed)
   (setq completions-detailed t))
