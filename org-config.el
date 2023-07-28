@@ -64,6 +64,11 @@
         ("b" "Bash" entry         (file+headline  "~/org/notes.org " "Bash")         "** %^{Title}\n  %i\n  %a" :prepend t)
         ("L" "Linux" entry        (file+headline  "~/org/notes.org"  "Linux")        "** %^{Title}\n  %i\n  %a" :prepend t)))
 
+;; Org-protocol
+;; See https://orgmode.org/worg/org-contrib/org-protocol.html for
+;; setting it up.
+(require 'org-protocol)
+
 ;; org-annotation-helper 
 ;; (require 'org-annotation-helper)
 
