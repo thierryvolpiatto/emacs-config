@@ -7,6 +7,11 @@
   (let ((time (float-time (time-subtract (current-time) tv/startup-time))))
     (message "Emacs config loaded in %s seconds"
              (format "%.2f" time))))
+
+;;; Gcmh-mode
+;;
+(gcmh-mode 1)
+
 
 ;;; Packages.el config.
 ;;
@@ -826,9 +831,15 @@ Restart works only on graphic display."
 (when (member "Emoji One" (font-family-list))
   (set-fontset-font
    t 'symbol (font-spec :family "Emoji One") nil 'prepend))
+
 (setq-default frame-background-mode 'dark)
+
 (setq initial-frame-alist '((fullscreen . maximized)))
 (setq frame-auto-hide-function 'delete-frame)
+
+(when (boundp 'other-window-scroll-default)
+  (setq other-window-scroll-default (lambda () (get-mru-window 'visible nil t))))
+
 (defun tv/transparency-modify (arg)
   "Increase Emacs frame transparency.
 With a prefix arg decrease transparency."
@@ -1853,9 +1864,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   ;; loaded.
   (require 'emms-config))
 
-;;; Eglot
-;;
-(autoload 'eglot "eglot" nil t)
 
 ;;; Kmacros
 ;;
