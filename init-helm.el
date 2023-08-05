@@ -5,6 +5,9 @@
 
 (require 'helm)
 ;; Only needed when installed from source.
+;; NOTE: package.el creates an autoload file without a provide whereas
+;; make creates it with a provide, so require helm-autoloads is
+;; supported only when building with make from source.
 (require 'helm-autoloads)
 (setq helm-input-idle-delay                     0.01
       helm-reuse-last-window-split-state        t
@@ -101,7 +104,10 @@
 
 ;; Fix CAP with LSP in python.
 (add-to-list 'helm-completion-styles-alist '(python-mode . (emacs helm flex)))
+
+;; Custom completion matching
 (add-to-list 'helm-completion-styles-alist '(wfnames-mode . (emacs helm flex)))
+(add-to-list 'helm-completion-styles-alist '(switch-to-buffer . helm-fuzzy))
 
 ;; `completions-detailed' works now with both
 ;; `helm-completing-read-default-1' and
@@ -171,7 +177,6 @@
 (with-eval-after-load 'helm-buffers
   (setq helm-buffers-favorite-modes
         (append helm-buffers-favorite-modes '(picture-mode artist-mode))
-        helm-buffers-fuzzy-matching       t
         helm-buffer-skip-remote-checking  t
         helm-buffer-max-length            22
         helm-buffers-end-truncated-string "…"
@@ -582,8 +587,6 @@ First call indent, second complete symbol, third complete fname."
 
 (with-eval-after-load 'helm-elisp
   (setq helm-show-completion-display-function #'helm-display-buffer-in-own-frame
-        helm-apropos-fuzzy-match    t
-        helm-lisp-fuzzy-completion  t
         helm-apropos-show-short-doc t))
 
 ;;; Helm-locate
