@@ -107,7 +107,7 @@
 
 ;; Custom completion matching
 (add-to-list 'helm-completion-styles-alist '(wfnames-mode . (emacs helm flex)))
-(add-to-list 'helm-completion-styles-alist '(switch-to-buffer . helm-fuzzy))
+(add-to-list 'helm-completion-styles-alist '(switch-to-buffer . (emacs helm flex)))
 
 ;; `completions-detailed' works now with both
 ;; `helm-completing-read-default-1' and

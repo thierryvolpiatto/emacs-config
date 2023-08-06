@@ -981,6 +981,8 @@ With a prefix arg ask with completion which buffer to kill."
                      (read-buffer "Kill buffer: " (current-buffer) t)
                    (current-buffer)))
          (windows (get-buffer-window-list buffer nil t)))
+    (with-current-buffer buffer
+      (set-buffer-modified-p nil)) ; Prevent asking in paranoiac 29+.
     (when (kill-buffer buffer)
       (dolist (win windows)
         (when (window-live-p win)
