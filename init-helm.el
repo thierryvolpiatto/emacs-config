@@ -107,7 +107,7 @@
 
 ;; Custom completion matching
 (add-to-list 'helm-completion-styles-alist '(wfnames-mode . (emacs helm flex)))
-(add-to-list 'helm-completion-styles-alist '(switch-to-buffer . (emacs helm flex)))
+(add-to-list 'helm-completion-styles-alist '(switch-to-buffer . helm-fuzzy))
 
 ;; `completions-detailed' works now with both
 ;; `helm-completing-read-default-1' and
@@ -610,13 +610,6 @@ First call indent, second complete symbol, third complete fname."
 (with-eval-after-load 'helm-find
   (setq helm-find-noerrors t))
 
-;;; Helm-elisp-package
-;;
-(with-eval-after-load 'helm-elisp-package
-  (setq helm-el-package-initial-filter 'installed
-        helm-el-package-autoremove-on-start t
-        helm-el-package-upgrade-on-start t))
-
 ;;; Helm-imenu
 ;;
 (with-eval-after-load 'helm-imenu
@@ -666,7 +659,6 @@ First call indent, second complete symbol, third complete fname."
 (define-key helm-command-map (kbd "x") 'helm-firefox-bookmarks)
 (define-key helm-command-map (kbd "#") 'helm-emms)
 (define-key helm-command-map (kbd "I") 'helm-imenu-in-all-buffers)
-(define-key helm-command-map (kbd "@") 'helm-list-elisp-packages-no-fetch)
 
 ;;; Global-map
 ;;

@@ -39,6 +39,9 @@
   (when (stringp i)
     (add-to-list 'load-path (file-name-as-directory i) t)))
 
+(with-eval-after-load 'find-func
+  (setq find-library-include-other-files nil))
+
 ;;; Emacs customize own file
 ;;
 (setq custom-file "~/.emacs.d/.emacs-custom.el")
