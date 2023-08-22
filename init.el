@@ -1824,6 +1824,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 (global-undo-tree-mode 1)
 (setq undo-tree-auto-save-history nil)
 (setq undo-tree-mode-lighter nil)
+(add-to-list 'undo-tree-incompatible-major-modes 'helm-major-mode)
 ;; undo-tree history files have their own directory otherwise they
 ;; are added in current directory for each file.
 ;; (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree-history")))

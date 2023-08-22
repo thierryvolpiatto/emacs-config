@@ -180,6 +180,7 @@
         helm-buffer-skip-remote-checking  t
         helm-buffer-max-length            22
         helm-buffers-end-truncated-string "…"
+        helm-buffers-fuzzy-matching t
         helm-buffers-maybe-switch-to-tab  t
         helm-mini-default-sources '(helm-source-buffers-list
                                     helm-source-buffer-not-found)
@@ -352,6 +353,20 @@ new directory."
   (defun helm-ff-csv2ledger (candidate)
     (csv2ledger "Socgen" candidate "/home/thierry/finance/ledger.dat"))
   
+  (defun helm/update-directory-autoloads (candidate)
+    (lambda (candidate)
+       (let ((default-directory helm-ff-default-directory)
+             (file
+              (read-file-name "Write autoload definitions to file: "
+                              helm-ff-default-directory
+                              nil nil nil
+                              (lambda (f)
+                                (string-match "autoloads\\|loaddefs" f)))))
+         (if (fboundp 'loaddefs-generate)
+             (loaddefs-generate default-directory file)
+           (let ((generated-autoload-file file))
+             (update-directory-autoloads default-directory))))))
+  
   ;; Add actions to `helm-source-find-files' IF:
   (cl-defmethod helm-setup-user-source ((source helm-source-ffiles))
     "Adds additional actions and settings to `helm-find-files'.
@@ -438,16 +453,7 @@ new directory."
     ;; update-directory-autoloads
     (helm-source-add-action-to-source-if
      "Update directory autoloads"
-     (lambda (candidate)
-       (require 'autoload)
-       (let ((default-directory helm-ff-default-directory)
-             (generated-autoload-file
-              (read-file-name "Write autoload definitions to file: "
-                              helm-ff-default-directory
-                              nil nil nil
-                              (lambda (f)
-                                (string-match "autoloads\\|loaddefs" f)))))
-         (update-directory-autoloads default-directory)))
+     #'helm/update-directory-autoloads
      source
      (lambda (candidate)
        (and (file-directory-p candidate)
