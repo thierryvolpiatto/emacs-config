@@ -135,9 +135,7 @@ Restart works only on graphic display."
 (prefer-coding-system 'utf-8)
 
 ;; Themes
-(defvar tv/theme-directory "~/.emacs.d/themes/")
-(unless (< emacs-major-version 24)
-  (setq custom-theme-directory tv/theme-directory))
+(setq custom-theme-directory "~/.emacs.d/themes/")
 
 ;; Load my favourite theme.
 (add-hook 'emacs-startup-hook (lambda () (load-theme 'naquadah)))
