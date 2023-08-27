@@ -138,7 +138,12 @@ Restart works only on graphic display."
 (setq custom-theme-directory "~/.emacs.d/themes/")
 
 ;; Load my favourite theme.
-(add-hook 'emacs-startup-hook (lambda () (load-theme 'naquadah)))
+;; (add-hook 'emacs-startup-hook (lambda () (load-theme 'naquadah)))
+(add-hook 'emacs-startup-hook (lambda () (load-theme 'ef-maris-dark)))
+;; (add-hook 'emacs-startup-hook (lambda ()
+;;                                 (if (fboundp 'ef-themes-load-random)
+;;                                     (ef-themes-load-random 'dark)
+;;                                   (load-theme 'naquadah))))
 
 ;;; emacs-backup-config
 ;;
@@ -841,12 +846,12 @@ Restart works only on graphic display."
 (when (boundp 'other-window-scroll-default)
   (setq other-window-scroll-default (lambda () (get-mru-window 'visible nil t))))
 
-(defun tv/transparency-modify (arg)
+(defun tv/transparency-modify-1 (arg)
   "Increase Emacs frame transparency.
-With a prefix arg decrease transparency."
-  (interactive "P")
+If ARG is non nil decrease transparency."
   (when (window-system)
-    (let* ((ini-alpha (frame-parameter nil 'alpha))
+    (let* ((ini-val   (frame-parameter nil 'alpha))
+           (ini-alpha (if (floatp ini-val) (round (* ini-val 100)) ini-val))
            (def-alpha (or ini-alpha 80))
            (mod-alpha (if arg
                           (min (+ def-alpha 10) 100)
@@ -854,6 +859,22 @@ With a prefix arg decrease transparency."
                              frame-alpha-lower-limit)))) ; 20
       (modify-frame-parameters nil (list (cons 'alpha mod-alpha)))
       (message "Alpha[%s]" mod-alpha))))
+
+(defun tv/transparency-modify-increase ()
+  (interactive)
+  (tv/transparency-modify-1 nil))
+
+(defun tv/transparency-modify-decrease ()
+  (interactive)
+  (tv/transparency-modify-1 'decrease))
+
+(helm-define-key-with-subkeys
+    global-map (kbd "C-8")
+    nil 'ignore '((?+ . tv/transparency-modify-increase)
+                  (?- . tv/transparency-modify-decrease))
+    (propertize "Increase/Decrease transparency (+/-)"
+                'face 'minibuffer-prompt)
+    nil 10)
 
 (if (or (daemonp)
         (not (window-system))
@@ -954,7 +975,6 @@ With a prefix arg decrease transparency."
                                    (display-buffer-same-window)
                                    (dedicated . t)))
                                 display-buffer-alist))
-(global-set-key (kbd "C-8") 'tv/transparency-modify)
 
 ;; Don't split windows horizontally.
 (setq split-width-threshold nil)
