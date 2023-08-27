@@ -189,29 +189,7 @@
           "\\`\\*Messages" "\\`\\*Magit" "\\`\\*git-gutter" "\\`\\*Help" "\\`\\*skitour"))
   (customize-set-variable 'helm-buffers-show-icons t)
 
-  (define-key helm-buffer-map (kbd "C-d") 'helm-buffer-run-kill-persistent)
-  
-  (cl-defmethod helm-setup-user-source ((source helm-source-buffers))
-    "Adds additional actions to `helm-source-buffers-list'.
-- Git status."
-    (setf (slot-value source 'candidate-number-limit) 300)
-    (helm-aif (slot-value source 'action)
-        (setf (slot-value source 'action)
-              (helm-append-at-nth
-               (if (symbolp it)
-                   (symbol-value it)
-                 it)
-               '(("Diff buffers" . helm-buffers-diff-buffers)) 4)))
-    (helm-source-add-action-to-source-if
-     "Git status"
-     (lambda (candidate)
-       (funcall helm-ls-git-status-command
-                (with-current-buffer candidate default-directory)))
-     source
-     (lambda (candidate)
-       (locate-dominating-file (with-current-buffer candidate default-directory)
-                               ".git"))
-     1)))
+  (define-key helm-buffer-map (kbd "C-d") 'helm-buffer-run-kill-persistent))
 
 ;;; Helm-files
 ;;
