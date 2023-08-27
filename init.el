@@ -138,12 +138,7 @@ Restart works only on graphic display."
 (setq custom-theme-directory "~/.emacs.d/themes/")
 
 ;; Load my favourite theme.
-;; (add-hook 'emacs-startup-hook (lambda () (load-theme 'naquadah)))
-(add-hook 'emacs-startup-hook (lambda () (load-theme 'ef-maris-dark)))
-;; (add-hook 'emacs-startup-hook (lambda ()
-;;                                 (if (fboundp 'ef-themes-load-random)
-;;                                     (ef-themes-load-random 'dark)
-;;                                   (load-theme 'naquadah))))
+(add-hook 'emacs-startup-hook (lambda () (load-theme 'naquadah t)))
 
 ;;; emacs-backup-config
 ;;
@@ -1673,19 +1668,6 @@ With a prefix arg ask with completion which buffer to kill."
       (when (fboundp 'helm-autoresize-mode)
         (helm-autoresize-mode -1)))))
 (global-set-key (kbd "C-c @") 'tv/toggle-flyspell)
-
-;;; Shell
-;;
-(global-set-key (kbd "<f11> s h") 'shell)
-
-(with-eval-after-load 'comint
-  (defun comint--advice-send-eof (&rest _args)
-    (let ((win (selected-window)))
-      (kill-buffer) (delete-window win)))
-  (advice-add 'comint-send-eof :after 'comint--advice-send-eof))
-
-(with-eval-after-load 'shell
-  (define-key shell-mode-map (kbd "M-p") 'helm-comint-input-ring))
 
 ;;; Elisp/lisp
 ;;

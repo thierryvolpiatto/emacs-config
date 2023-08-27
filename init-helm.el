@@ -82,8 +82,6 @@
 
 (setq helm-completing-read-handlers-alist
       '((find-tag . helm-completing-read-default-find-tag)
-        (xref-find-definitions . helm-completing-read-default-find-tag)
-        (xref-find-references . helm-completing-read-default-find-tag)
         (ggtags-find-tag-dwim . helm-completing-read-default-find-tag)
         (tmm-menubar)
         (find-file)
