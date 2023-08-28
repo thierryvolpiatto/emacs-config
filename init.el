@@ -136,8 +136,6 @@ Restart works only on graphic display."
 
 ;; Themes
 (setq custom-theme-directory "~/.emacs.d/themes/")
-
-;; Load my favourite theme.
 (add-hook 'emacs-startup-hook (lambda () (load-theme 'naquadah t)))
 
 ;;; emacs-backup-config
