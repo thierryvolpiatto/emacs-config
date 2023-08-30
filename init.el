@@ -1774,9 +1774,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 
 ;;; Bash completion
 ;;
-(add-hook 'shell-dynamic-complete-functions
-          'bash-completion-dynamic-complete)
-
 ;; Used as CAPF in eshell.
 (defun bash-completion-eshell-capf ()
   (require 'bash-completion)
