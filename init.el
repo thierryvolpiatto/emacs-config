@@ -1471,7 +1471,7 @@ With a prefix arg ask with completion which buffer to kill."
 ;;; Eshell-config
 ;;
 (setq eshell-prompt-function
-      (lambda nil
+      (lambda ()
         (let ((pwd (eshell/pwd)))
           (with-temp-buffer
             (let* ((default-directory (file-name-as-directory pwd))

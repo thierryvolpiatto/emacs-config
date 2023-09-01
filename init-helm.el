@@ -397,12 +397,13 @@ new directory."
             (string= (helm-basename candidate) ".")))
      1)
     ;; Setup recoll dirs
-    (helm-source-add-action-to-source-if
-     "Recoll index directory"
-     'helm-ff-recoll-index-directories
-     source
-     'file-directory-p
-     3)
+    (when (executable-find "recoll")
+      (helm-source-add-action-to-source-if
+       "Recoll index directory"
+       'helm-ff-recoll-index-directories
+       source
+       'file-directory-p
+       3))
     ;; Encrypt file
     (helm-source-add-action-to-source-if
      "Epa encrypt file"
