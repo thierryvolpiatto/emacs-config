@@ -70,7 +70,13 @@
 (global-set-key (kbd "<f11>") nil) ; Disable `toggle-frame-fullscreen'
 
 ;; Revert-buffer
-(global-set-key (kbd "C-c R") (lambda () (interactive) (revert-buffer t t)))
+(defun tv/revert-buffer-no-query ()
+  (interactive)
+  ;; Try to save excursion as Emacs-29 moves point nowhere after
+  ;; reverting.
+  (save-excursion
+    (revert-buffer t t)))
+(global-set-key (kbd "C-c R") #'tv/revert-buffer-no-query)
 
 ;; y-or-n-p everywhere
 (fset 'yes-or-no-p 'y-or-n-p)
