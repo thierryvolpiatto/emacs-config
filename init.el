@@ -1703,9 +1703,18 @@ With a prefix arg ask with completion which buffer to kill."
              (get (cdr el) 'common-lisp-indent-function)
            (car (cdr el))))))
 
-(defun goto-scratch ()
+(defun tv/toggle-scratch ()
   (interactive)
-  (switch-to-buffer "*scratch*"))
+  (let ((win (get-buffer-window "*scratch*" 'visible)))
+    (cond ((and win (> (length (window-list)) 1))
+           (delete-window win))
+          (t
+           (setq win (display-buffer
+                      (get-buffer "*scratch*")
+                      `((display-buffer-in-direction)
+                        (direction . left)
+                        (window-width . ,(/ (frame-width) 2)))))
+           (select-window win)))))
 
 ;; Affect `switch-to-prev/next-buffer' ane `next/previous-buffer'.
 (setq switch-to-prev-buffer-skip (lambda (_window buffer _bury-or-kill)
@@ -1762,7 +1771,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   (if arg
       (pp-macroexpand-last-sexp nil)
     (pp-eval-last-sexp nil)))
-(global-set-key (kbd "<f11> s c")                     'goto-scratch)
+(global-set-key (kbd "<f11> s c")                     'tv/toggle-scratch)
 (global-set-key (kbd "<S-f12>")                       'cancel-debug-on-entry)
 (global-set-key (kbd "M-:")                           'pp-eval-expression)
 (define-key emacs-lisp-mode-map (kbd "RET")           'newline-and-indent)
