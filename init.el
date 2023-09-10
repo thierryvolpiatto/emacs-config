@@ -1550,7 +1550,7 @@ With a prefix arg ask with completion which buffer to kill."
             ;; bash-completion which works
             ;; mostly all (no eshell aliases).
             (setq-local completion-at-point-functions '(bash-completion-eshell-capf))
-            ;; Completion on aliases among other things. It's
+            ;; Completion on eshell aliases among other things. It's
             ;; pretty unclear which map to use, at least it
             ;; changes nearly at each emacs version :-(.
             (define-key eshell-hist-mode-map (kbd "C-c TAB") 'helm-esh-pcomplete)
@@ -1703,12 +1703,17 @@ With a prefix arg ask with completion which buffer to kill."
              (get (cdr el) 'common-lisp-indent-function)
            (car (cdr el))))))
 
+(defvar tv--toggle-scratch-last-buffer nil)
 (defun tv/toggle-scratch ()
   (interactive)
   (let ((win (get-buffer-window "*scratch*" 'visible)))
-    (cond ((and win (> (length (window-list)) 1))
+    (cond ((and win (not (one-window-p)))
            (delete-window win))
+          ((and win (one-window-p))
+           (switch-to-buffer
+            (or tv--toggle-scratch-last-buffer (last-buffer))))
           (t
+           (setq tv--toggle-scratch-last-buffer (current-buffer))
            (setq win (display-buffer
                       (get-buffer "*scratch*")
                       `((display-buffer-in-direction)
@@ -1771,7 +1776,10 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   (if arg
       (pp-macroexpand-last-sexp nil)
     (pp-eval-last-sexp nil)))
-(global-set-key (kbd "<f11> s c")                     'tv/toggle-scratch)
+(helm-define-key-with-subkeys
+    global-map (kbd "<f11> s c")
+    nil 'tv/toggle-scratch
+    '((?c . delete-other-windows)) nil nil 5)
 (global-set-key (kbd "<S-f12>")                       'cancel-debug-on-entry)
 (global-set-key (kbd "M-:")                           'pp-eval-expression)
 (define-key emacs-lisp-mode-map (kbd "RET")           'newline-and-indent)
