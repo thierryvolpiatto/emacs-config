@@ -206,6 +206,10 @@
     (advice-add 'org-persist-read :around #'tv/advice--org-persist)
     (advice-add 'org-persist-gc :around #'tv/advice--org-persist)))
 
+;; Toc-org
+(when (fboundp 'toc-org-mode)
+  (add-hook 'org-mode-hook 'toc-org-mode))
+
 (provide 'org-config)
 
 ;;; org-config.el ends here

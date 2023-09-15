@@ -466,6 +466,7 @@ new directory."
 ;;
 (with-eval-after-load 'helm-lib
   (require 'isl)
+  (advice-add 'cl--print-table :override #'helm-source--cl--print-table '((depth . 100)))
   (setq helm-scroll-amount 4)
   (setq helm-find-function-default-project
         '("~/work/emacs/lisp/" "~/work/github/"))

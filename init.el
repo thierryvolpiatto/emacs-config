@@ -1012,8 +1012,7 @@ With a prefix arg ask with completion which buffer to kill."
 ;;; Org
 ;;
 (with-eval-after-load 'org
-  (require 'org-config)
-  (add-hook 'org-mode-hook 'toc-org-enable))
+  (require 'org-config))
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c C-k") 'org-capture)
 
@@ -1082,18 +1081,6 @@ With a prefix arg ask with completion which buffer to kill."
 (with-eval-after-load 'iedit-rect
   (setq iedit-increment-format-string "%03d"))
 (global-set-key [C-return] 'iedit-rectangle-mode)
-
-;;; Emamux
-;;
-(autoload 'emamux:send-command           "emamux" nil t)
-(autoload 'emamux:yank-from-list-buffers "emamux" nil t)
-(with-eval-after-load 'emamux
-  (setq emamux:completing-read-type 'helm)
-  (setq emamux:get-buffers-regexp
-        "^\\(buffer[0-9]+\\): +\\([0-9]+\\) +\\(bytes\\): +[\"]\\(.*\\)[\"]"
-        emamux:show-buffers-with-index nil))
-(global-set-key (kbd "C-c y") 'emamux:yank-from-list-buffers)
-(global-set-key (kbd "C-c s") 'emamux:send-command)
 
 ;;; Eldoc
 ;;
