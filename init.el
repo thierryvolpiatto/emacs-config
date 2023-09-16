@@ -273,42 +273,43 @@ Restart works only on graphic display."
 ;; When an empty string is in `Info-directory-list' info search by
 ;; default in .emacs.d, and if it finds a file with same name as
 ;; the info file it uses it even if it is not an info file, e.g. tramp.
-(setq Info-directory-list (delete "" Info-directory-list))
-;; Additional info directories
-(add-to-list 'Info-directory-list "/usr/local/share/info")
-(add-to-list 'Info-directory-list "/usr/share/info")
-(add-to-list 'Info-directory-list "~/elisp/info")
-;; Fancy faces in info.
-(defface tv/info-ref-item
+(with-eval-after-load 'info
+  (setq Info-directory-list (delete "" Info-directory-list))
+  ;; Additional info directories
+  (add-to-list 'Info-directory-list "/usr/local/share/info")
+  (add-to-list 'Info-directory-list "/usr/share/info")
+  (add-to-list 'Info-directory-list "~/elisp/info")
+  ;; Fancy faces in info.
+  (defface tv/info-ref-item
     '((((background dark)) :background "DimGray" :foreground "Gold")
       (((background light)) :background "firebrick" :foreground "LightGray"))
-  "Face for item stating with -- in info." :group 'Info :group 'faces)
+    "Face for item stating with -- in info." :group 'Info :group 'faces)
 
-(defvar tv/info-title-face 'tv/info-ref-item)
-(defvar tv/info-underline 'underline)
-(defvar info-unicode-quote-start (string 8216))
-(defvar info-unicode-quote-end (string 8217))
-(defvar info-unicode-quoted-regexp (format "[%s]\\([^%s%s]+\\)[%s]"
-                                           info-unicode-quote-start
-                                           info-unicode-quote-start
-                                           info-unicode-quote-end
-                                           info-unicode-quote-end
-                                           ))
-(defun tv/font-lock-doc-rules ()
-  (font-lock-add-keywords
-   nil `(("[^][\\s`]\\([^[](`'+\\)`']?[^][\\s']?" 1 font-lock-type-face)
-         (,info-unicode-quoted-regexp 1 font-lock-type-face)
-         ("^ --.*$" . tv/info-title-face)
-         ("[_]\\([^_]+\\)[_]" 1 tv/info-underline)
-         ("[\"]\\([^\"]*\\)[\"]" . font-lock-string-face)
-         ("\\*Warning:\\*" . font-lock-warning-face)
-         ("^ *\\([*•]\\) " 1 font-lock-variable-name-face)
-         ("^[[:upper:],]\\{2,\\}$" . font-lock-comment-face)
-         ("^[[:upper]][a-z- ]*:" . font-lock-variable-name-face)
-         )))
+  (defvar tv/info-title-face 'tv/info-ref-item)
+  (defvar tv/info-underline 'underline)
+  (defvar info-unicode-quote-start (string 8216))
+  (defvar info-unicode-quote-end (string 8217))
+  (defvar info-unicode-quoted-regexp (format "[%s]\\([^%s%s]+\\)[%s]"
+                                             info-unicode-quote-start
+                                             info-unicode-quote-start
+                                             info-unicode-quote-end
+                                             info-unicode-quote-end
+                                             ))
+  (defun tv/font-lock-doc-rules ()
+    (font-lock-add-keywords
+     nil `(("[^][\\s`]\\([^[](`'+\\)`']?[^][\\s']?" 1 font-lock-type-face)
+           (,info-unicode-quoted-regexp 1 font-lock-type-face)
+           ("^ --.*$" . tv/info-title-face)
+           ("[_]\\([^_]+\\)[_]" 1 tv/info-underline)
+           ("[\"]\\([^\"]*\\)[\"]" . font-lock-string-face)
+           ("\\*Warning:\\*" . font-lock-warning-face)
+           ("^ *\\([*•]\\) " 1 font-lock-variable-name-face)
+           ("^[[:upper:],]\\{2,\\}$" . font-lock-comment-face)
+           ("^[[:upper]][a-z- ]*:" . font-lock-variable-name-face)
+           )))
 
-(add-hook 'Info-mode-hook 'tv/font-lock-doc-rules)
-(define-key Info-mode-map [remap Info-index] 'helm-info-at-point)
+  (add-hook 'Info-mode-hook 'tv/font-lock-doc-rules)
+  (define-key Info-mode-map [remap Info-index] 'helm-info-at-point))
 
 ;;; Async
 ;;
