@@ -1882,6 +1882,10 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 (with-eval-after-load 'kmacro
   (global-set-key (kbd "S-<f3>") 'kmacro-set-counter))
 
+;;; Rainbow-mode (installed in elisp)
+;;
+(autoload 'rainbow-mode "rainbow-mode" nil t)
+
 ;;; modify `exchange-point-and-mark' so that it doesn't activate mark
 ;;  when it is not already active.
 (defun tv/exchange-point-and-mark (&optional arg)
