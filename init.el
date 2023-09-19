@@ -258,7 +258,7 @@ Restart works only on graphic display."
 ;; Limit M-x history to 50.
 (put 'extended-command-history 'history-length 50)
 
-;;; Isearch-light
+;;; Isearch-light (Installed in site-lisp with make)
 ;;
 (autoload 'isl-search "isl" nil t)
 (autoload 'isl-narrow-to-defun "isl" nil t)
@@ -1869,7 +1869,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   (define-key gnus-summary-mode-map (kbd "P") 'gnus-summary-prev-unread-article)
   (define-key gnus-summary-mode-map (kbd "p") 'gnus-summary-prev-article))
 
-;;; Emms
+;;; Emms (installed from source to avoid seq dependency)
 ;;
 (with-eval-after-load 'emms
   ;; When helm-emms will load and require emms, config will be
