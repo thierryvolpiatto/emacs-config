@@ -23,11 +23,7 @@
 
 ;;; load-path
 ;;
-
-(defvar all-the-icons-svg (eq (cadr (assoc 'all-the-icons package-load-list)) nil))
-
 (dolist (i `("~/elisp/"
-             ,(and all-the-icons-svg "~/elisp/all-the-icons")
              "~/elisp/autoconf-mode"
              "~/elisp/desktop-file-utils"
              "~/elisp/tex-utils"
@@ -541,9 +537,6 @@ Restart works only on graphic display."
 ;; Don't forget to install necessary fonts with M-x
 ;; all-the-icons-install-fonts.
 
-(when all-the-icons-svg
-  (load-file "/home/thierry/elisp/all-the-icons/all-the-icons-autoloads.el"))
-
 (defun tv/git-branch-in-mode-line ()
   (require 'helm-ls-git)
   (when (and (buffer-file-name (current-buffer))
@@ -585,25 +578,15 @@ Restart works only on graphic display."
                      (helm-ls-git-root-dir))
             (helm-ls-git--branch)))
          (status-color    "SkyBlue")
-         (git-icon        (if (and all-the-icons-svg
-                                   (fboundp 'all-the-icons-fontawesome-4))
-                              (all-the-icons-fontawesome-4 "git")
-                            (all-the-icons-faicon "git")))
-         (git-branch-icon (if all-the-icons-svg
-                              (all-the-icons-devopicons "git-branch")
-                            (all-the-icons-octicon "git-branch"))))
+         (git-icon        (all-the-icons-faicon "git"))
+         (git-branch-icon (all-the-icons-octicon "git-branch")))
     (when branch
       (concat
-       (if all-the-icons-svg
-           (propertize (format " %s" git-icon) 'face '(:height 1.2))
-         (propertize (format " %s" git-icon) 'face '(:height 1.2) 'display '(raise -0.1)))
+       (propertize (format " %s" git-icon) 'face '(:height 1.2) 'display '(raise -0.1))
        " · "
-       (if all-the-icons-svg
-           (propertize (format "%s" git-branch-icon)
-                       'face '(:height 1.3 :foreground "Deepskyblue3"))
-         (propertize (format "%s" git-branch-icon)
+       (propertize (format "%s" git-branch-icon)
                      'face `(:height 1.3 :family ,(all-the-icons-octicon-family) :foreground "Deepskyblue3")
-                     'display '(raise -0.1)))
+                     'display '(raise -0.1))
        (propertize (format " %s" branch)
                    'face `(:height 0.9 :foreground ,status-color)
                    'mouse-face 'highlight
@@ -632,33 +615,6 @@ Restart works only on graphic display."
                                    mode-line-misc-info
                                    mode-line-end-spaces))
 
-  (if all-the-icons-svg
-      (progn
-        ;; Video icons
-        (add-to-list 'all-the-icons-extension-icon-alist
-                     '("avi" fontawesome-4 "film" :face all-the-icons-blue))
-        (add-to-list 'all-the-icons-extension-icon-alist
-                     '("3gp" fontawesome-4 "film" :face all-the-icons-blue))
-        (add-to-list 'all-the-icons-extension-icon-alist
-                     '("m4v" fontawesome-4 "film" :face all-the-icons-blue))
-        (add-to-list 'all-the-icons-extension-icon-alist
-                     '("mp4" fontawesome-4 "film" :face all-the-icons-blue))
-        (add-to-list 'all-the-icons-extension-icon-alist
-                     '("mkv" fontawesome-4 "film" :face all-the-icons-blue))
-        (add-to-list 'all-the-icons-extension-icon-alist
-                     '("torrent" material-icons "cloud_download" :face all-the-icons-green))
-        ;; Files and directories
-        (setq all-the-icons-dir-icon-alist
-              (append '(("^\\.[^.]+" fluentui-system-icons "folder"))
-                      (delete '("\\.[^.]+" fluentui-system-icons "folder")
-                              all-the-icons-dir-icon-alist)))
-        (setq all-the-icons-regexp-icon-alist
-              (append '(("^.bash_profile" octicons "terminal" :face all-the-icons-purple)
-                        ("^.bash_aliases" octicons "terminal" :face all-the-icons-purple)
-                        ("^.bashrc"       octicons "terminal" :face all-the-icons-purple)
-                        ("^.profile"       octicons "terminal" :face all-the-icons-purple))
-                      (delete '("^\\." fontawesome-4 "cog") all-the-icons-regexp-icon-alist)
-                      '(("^\\." fontawesome-4 "cog")))))
     ;; Icons for file extensions.
     (setf (alist-get "dat" all-the-icons-extension-icon-alist nil nil 'equal)
           '(all-the-icons-faicon "bar-chart" :face all-the-icons-cyan :height 0.9 :v-adjust 0.0))
@@ -713,7 +669,7 @@ Restart works only on graphic display."
           (append '(("^bookmark" all-the-icons-octicon "bookmark"
                      :height 1.1 :v-adjust 0.0 :face all-the-icons-lpink))
                   (delete (assoc "bookmark" all-the-icons-regexp-icon-alist)
-                          all-the-icons-regexp-icon-alist)))))
+                          all-the-icons-regexp-icon-alist))))
 
 (when (>= emacs-major-version 29)
   ;; A new annoyance for each major version.
