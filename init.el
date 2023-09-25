@@ -170,9 +170,10 @@ Restart works only on graphic display."
 
 ;; Copy/paste
 (setq select-active-regions t)
-(setq x-select-enable-clipboard-manager nil
+(setq x-select-enable-clipboard-manager t
+      save-interprogram-paste-before-kill 72
       select-enable-clipboard t
-      select-enable-primary nil)
+      select-enable-primary t)
 
 ;; Enable some commands disabled by default
 (put 'narrow-to-region 'disabled nil)          ; C-x n n
