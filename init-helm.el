@@ -291,18 +291,17 @@ new directory."
     (csv2ledger "Socgen" candidate "/home/thierry/finance/ledger.dat"))
   
   (defun helm/update-directory-autoloads (candidate)
-    (lambda (candidate)
-       (let ((default-directory helm-ff-default-directory)
-             (file
-              (read-file-name "Write autoload definitions to file: "
-                              helm-ff-default-directory
-                              nil nil nil
-                              (lambda (f)
-                                (string-match "autoloads\\|loaddefs" f)))))
-         (if (fboundp 'loaddefs-generate)
-             (loaddefs-generate default-directory file)
-           (let ((generated-autoload-file file))
-             (update-directory-autoloads default-directory))))))
+    (let ((default-directory helm-ff-default-directory)
+          (file
+           (read-file-name "Write autoload definitions to file: "
+                           helm-ff-default-directory
+                           nil nil nil
+                           (lambda (f)
+                             (string-match "autoloads\\|loaddefs" f)))))
+      (if (fboundp 'loaddefs-generate)
+          (loaddefs-generate default-directory file)
+        (let ((generated-autoload-file file))
+          (update-directory-autoloads default-directory)))))
   
   ;; Add actions to `helm-source-find-files' IF:
   (cl-defmethod helm-setup-user-source ((source helm-source-ffiles))
