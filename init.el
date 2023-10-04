@@ -165,7 +165,7 @@ Restart works only on graphic display."
                                (setq server-raise-frame t))))
 
 ;; Copy/paste
-(setq select-active-regions t)
+(setq select-active-regions 'only)
 (setq x-select-enable-clipboard-manager t
       save-interprogram-paste-before-kill 72
       select-enable-clipboard t
