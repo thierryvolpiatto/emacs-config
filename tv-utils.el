@@ -466,8 +466,9 @@ the password will be of length (floor LIMIT)."
   "Generate a random password of (max 8 ARG) chars.
 Use a prefix arg to specify ARG."
   (interactive "p")
-  (message "New pwd `%s' saved to kill ring"
-           (kill-new (genpasswd (max 8 arg)))))
+  (let ((newpwd (genpasswd (max 8 arg))))
+    (kill-new newpwd)
+    (message "New pwd `%s' saved to kill ring" newpwd)))
 
 ;;;###autoload
 (defun tv/gen-socgen-passwd ()
