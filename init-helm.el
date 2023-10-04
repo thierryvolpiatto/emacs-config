@@ -597,7 +597,7 @@ First call indent, second complete symbol, third complete fname."
 ;;; Helm-command-map
 ;;
 ;;
-(define-key helm-command-map (kbd "g") 'helm-apt)
+(define-key helm-command-map (kbd "g") 'helm-apt-search)
 (define-key helm-command-map (kbd "z") 'helm-complex-command-history)
 (define-key helm-command-map (kbd "w") 'helm-w3m-bookmarks)
 (define-key helm-command-map (kbd "x") 'helm-firefox-bookmarks)
