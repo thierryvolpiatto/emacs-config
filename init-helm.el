@@ -143,31 +143,27 @@
 ;;
 (with-eval-after-load 'helm-ring
   (setq helm-kill-ring-threshold 1)
-  ;; Action for helm kill-ring
-  (defun helm/emamux:copy-from-kill-ring (candidate)
-    (require 'emamux)
-    (emamux:check-tmux-running)
-    (when (null kill-ring)
-      (error "kill-ring is nil!!"))
-    (emamux:set-buffer candidate 0))
   
+  ;; Actions for helm kill-ring
   (defun helm-ring-split-block (string)
     (with-temp-buffer
       (insert string)
       (goto-char (point-min))
-      (let ((x (point)))
-        (catch 'break
-          (while (not (eobp))
-            (condition-case _err
-                (progn
-                  (forward-sexp)
-                  (kill-new (buffer-substring x (setq x (point)))))
-              (error (throw 'break nil))))))))
+      (helm-awhile (read (current-buffer))
+        (kill-new (prin1-to-string it)))))
 
-  (add-to-list 'helm-kill-ring-actions '("Emamux copy" . helm/emamux:copy-from-kill-ring) t)
-  (add-to-list 'helm-kill-ring-actions '("Emamux send command" . emamux:send-command) t)
+  (defun helm-kill-ring-insert-hunk (hunk)
+    "Yank string HUNK copied from a diff buffer."
+    (helm-kill-ring-action-yank-1
+     (with-temp-buffer
+       (insert hunk)
+       (goto-char (point-min))
+       (while (re-search-forward "^[+-]" nil t)
+         (replace-match ""))
+       (buffer-string))))
+
   (add-to-list 'helm-kill-ring-actions '("Split block" . helm-ring-split-block) t)
-  
+  (add-to-list 'helm-kill-ring-actions '("Insert hunk" . helm-kill-ring-insert-hunk) t)
   (define-key helm-kill-ring-map (kbd "C-d") 'helm-kill-ring-run-persistent-delete))
 
 ;;; Helm-buffers
