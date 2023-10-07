@@ -750,6 +750,61 @@ With a prefix arg prompt to edit file extensions."
                                  (split-string strings)
                                defs)))))
 
+(defun advice--register-read-with-preview (prompt)
+  "Read and return a register name, possibly showing existing registers.
+Prompt with the string PROMPT.  If `register-alist' and
+`register-preview-delay' are both non-nil, display a window
+listing existing registers after `register-preview-delay' seconds.
+If `help-char' (or a member of `help-event-list') is pressed,
+display such a window regardless."
+  (let* ((buffer "*Register Preview*")
+         (pat "")
+         (msg (if (eq this-command 'insert-register)
+                  "Insert register `%s'"
+                "Overwrite register `%s'"))
+         result timer)
+    (register-preview buffer)
+    (unwind-protect
+         (progn
+           (minibuffer-with-setup-hook
+               (lambda ()
+                 (setq timer
+                       (run-with-idle-timer
+                        0.1 'repeat
+                        (lambda ()
+                          (with-selected-window (minibuffer-window)
+                            (let ((input (minibuffer-contents)))
+                              (when (> (length input) 1)
+                                (setq input (substring input 0 1))
+                                (delete-minibuffer-contents)
+                                (insert input))
+                              (when (not (string= input pat))
+                                (setq pat input))))
+                          (with-current-buffer buffer
+                            (let ((ov (make-overlay (point-min) (point-min))))
+                              (goto-char (point-min))
+                              (if (string= pat "")
+                                  (remove-overlays)
+                                (if (re-search-forward (concat "^" pat) nil t)
+                                    (progn (move-overlay
+                                            ov
+                                            (match-beginning 0) (pos-eol))
+                                           (overlay-put ov 'face 'match)
+                                           (with-selected-window (minibuffer-window)
+                                             (minibuffer-message msg pat)))
+                                  (with-selected-window (minibuffer-window)
+                                    (minibuffer-message
+                                     "Register `%s' contains no text" pat))))))))))
+             (setq result (read-from-minibuffer prompt)))
+           (cl-assert (and result (not (string= result "")))
+                      nil "No register specified")
+           (string-to-char result))
+      (when timer (cancel-timer timer))
+      (let ((w (get-buffer-window buffer)))
+        (and (window-live-p w) (delete-window w)))
+      (and (get-buffer buffer) (kill-buffer buffer)))))
+(advice-add 'register-read-with-preview :override #'advice--register-read-with-preview)
+
 (provide 'tv-utils)
 
 ;; Local Variables:
