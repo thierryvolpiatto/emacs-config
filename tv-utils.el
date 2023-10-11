@@ -751,19 +751,28 @@ With a prefix arg prompt to edit file extensions."
                                defs)))))
 
 (defun register-preview-next-forward-line (arg)
-  (let ((fn (if (> arg 0) 'eobp 'bobp))
-        (pos (if (> arg 0) (point-min) (point-max)))
+  (let ((fn (if (> arg 0) #'eobp #'bobp))
+        (posfn (if (> arg 0)
+                   #'point-min
+                 (lambda () (1- (point-max)))))
         str)
     (with-current-buffer "*Register Preview*"
-    (let ((ovs (overlays-in (point-min) (point-max))))
-      (goto-char (if ovs (overlay-start (car ovs)) (point-min)))
-      (and ovs (forward-line arg))
-      (when (funcall fn) (goto-char pos))
-      (setq str (buffer-substring-no-properties (pos-bol) (1+ (pos-bol))))
-      (remove-overlays)
-      (with-selected-window (minibuffer-window)
-        (delete-minibuffer-contents)
-        (insert str))))))
+      (let ((ovs (overlays-in (point-min) (point-max)))
+            pos)
+        (goto-char (if ovs
+                       (overlay-start (car ovs))
+                     (point-min)))
+        (setq pos (point))
+        (and ovs (forward-line arg))
+        (when (and (funcall fn)
+                   (or (> arg 0) (eql pos (point))))
+          (goto-char (funcall posfn)))
+        (setq str (buffer-substring-no-properties
+                   (pos-bol) (1+ (pos-bol))))
+        (remove-overlays)
+        (with-selected-window (minibuffer-window)
+          (delete-minibuffer-contents)
+          (insert str))))))
 
 (defun register-preview-next ()
   (interactive)
@@ -806,7 +815,7 @@ display such a window regardless."
                (lambda ()
                  (setq timer
                        (run-with-idle-timer
-                        0.1 'repeat
+                        0.01 'repeat
                         (lambda ()
                           (with-selected-window (minibuffer-window)
                             (let ((input (minibuffer-contents)))
