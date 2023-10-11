@@ -750,6 +750,29 @@ With a prefix arg prompt to edit file extensions."
                                  (split-string strings)
                                defs)))))
 
+(defun register-preview-next-forward-line (arg)
+  (let ((fn (if (> arg 0) 'eobp 'bobp))
+        (pos (if (> arg 0) (point-min) (point-max)))
+        str)
+    (with-current-buffer "*Register Preview*"
+    (let ((ovs (overlays-in (point-min) (point-max))))
+      (goto-char (if ovs (overlay-start (car ovs)) (point-min)))
+      (and ovs (forward-line arg))
+      (when (funcall fn) (goto-char pos))
+      (setq str (buffer-substring-no-properties (pos-bol) (1+ (pos-bol))))
+      (remove-overlays)
+      (with-selected-window (minibuffer-window)
+        (delete-minibuffer-contents)
+        (insert str))))))
+
+(defun register-preview-next ()
+  (interactive)
+  (register-preview-next-forward-line 1))
+
+(defun register-preview-previous ()
+  (interactive)
+  (register-preview-next-forward-line -1))
+
 (defun advice--register-read-with-preview (prompt)
   "Read and return a register name, possibly showing existing registers.
 Prompt with the string PROMPT.  If `register-alist' and
@@ -762,8 +785,21 @@ display such a window regardless."
          (msg (if (eq this-command 'insert-register)
                   "Insert register `%s'"
                 "Overwrite register `%s'"))
+         (map (let ((m (make-sparse-keymap)))
+                (set-keymap-parent m minibuffer-local-map)
+                m))
          result timer)
-    (register-preview buffer)
+    (dolist (k (cons help-char help-event-list))
+      (define-key map
+          (vector k) (lambda ()
+                       (interactive)
+                       (unless (get-buffer-window buffer)
+                         (with-selected-window (minibuffer-selected-window)
+                           (register-preview buffer 'show-empty))))))
+    (define-key map (kbd "<down>") 'register-preview-next)
+    (define-key map (kbd "<up>") 'register-preview-previous)
+    (when register-preview-delay
+      (register-preview buffer))
     (unwind-protect
          (progn
            (minibuffer-with-setup-hook
@@ -780,22 +816,33 @@ display such a window regardless."
                                 (insert input))
                               (when (not (string= input pat))
                                 (setq pat input))))
-                          (with-current-buffer buffer
-                            (let ((ov (make-overlay (point-min) (point-min))))
-                              (goto-char (point-min))
-                              (if (string= pat "")
-                                  (remove-overlays)
-                                (if (re-search-forward (concat "^" pat) nil t)
-                                    (progn (move-overlay
-                                            ov
-                                            (match-beginning 0) (pos-eol))
-                                           (overlay-put ov 'face 'match)
-                                           (with-selected-window (minibuffer-window)
-                                             (minibuffer-message msg pat)))
+                          (if (get-buffer-window buffer)
+                              (with-current-buffer buffer
+                                (let ((ov (make-overlay (point-min) (point-min))))
+                                  (goto-char (point-min))
+                                  (if (string= pat "")
+                                      (remove-overlays)
+                                    (if (re-search-forward (concat "^" pat) nil t)
+                                        (progn (move-overlay
+                                                ov
+                                                (match-beginning 0) (pos-eol))
+                                               (overlay-put ov 'face 'match)
+                                               (with-selected-window (minibuffer-window)
+                                                 (minibuffer-message msg pat)))
+                                      (with-selected-window (minibuffer-window)
+                                        (minibuffer-message
+                                         "Register `%s' contains no text" pat))))))
+                            (unless (string= pat "")
+                              (let ((strs (mapcar (lambda (x)
+                                                    (string (car x)))
+                                                  register-alist)))
+                                (if (member pat strs)
+                                    (with-selected-window (minibuffer-window)
+                                      (minibuffer-message msg pat))
                                   (with-selected-window (minibuffer-window)
                                     (minibuffer-message
                                      "Register `%s' contains no text" pat))))))))))
-             (setq result (read-from-minibuffer prompt)))
+             (setq result (read-from-minibuffer prompt nil map)))
            (cl-assert (and result (not (string= result "")))
                       nil "No register specified")
            (string-to-char result))
