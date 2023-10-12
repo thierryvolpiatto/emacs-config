@@ -628,7 +628,7 @@ First call indent, second complete symbol, third complete fname."
 (global-set-key (kbd "M-s")                          nil)
 (global-set-key (kbd "M-s")                          'helm-occur-visible-buffers)
 (global-set-key (kbd "<f6> h")                       'helm-emms)
-(define-key global-map [remap jump-to-register]      'helm-register)
+(define-key global-map [remap bookmark-bmenu-list]   'helm-register)
 (define-key global-map [remap list-buffers]          'helm-mini)
 (define-key global-map [remap dabbrev-expand]        'helm-dabbrev)
 (define-key global-map [remap find-tag]              'helm-etags-select)
