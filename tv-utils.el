@@ -782,6 +782,40 @@ With a prefix arg prompt to edit file extensions."
   (interactive)
   (register-preview-next-forward-line -1))
 
+(defun register-type (register)
+  (pcase (cdr register)
+    ((pred stringp) 'string)
+    ((pred markerp) 'marker)
+    ((pred numberp) 'number)
+    ((and reg (pred consp) (guard (window-configuration-p (car reg)))) 'window)
+    ((and reg (pred consp) (guard (frameset-p (car reg)))) 'frame)
+    (_ 'unknow)))
+
+(defun register-of-type-alist (types)
+  (if (memq 'all types)
+      register-alist
+    (cl-loop for register in register-alist
+           when (memq (register-type register) types)
+           collect register)))
+
+(defun register-preview-1 (buffer &optional show-empty types)
+  "Pop up a window showing the registers preview in BUFFER.
+If SHOW-EMPTY is non-nil, show the window even if no registers.
+Format of each entry is controlled by the variable `register-preview-function'."
+  (when (or show-empty (consp register-alist))
+    (with-current-buffer-window
+     buffer
+     (cons 'display-buffer-below-selected
+	   '((window-height . fit-window-to-buffer)
+	     (preserve-size . (nil . t))))
+     nil
+     (with-current-buffer standard-output
+       (setq cursor-in-non-selected-windows nil)
+       (mapc (lambda (elem)
+               (when (get-register (car elem))
+                 (insert (funcall register-preview-function elem))))
+             (register-of-type-alist (or types '(all))))))))
+
 (defun advice--register-read-with-preview (prompt)
   "Read and return a register name, possibly showing existing registers.
 Prompt with the string PROMPT.  If `register-alist' and
@@ -791,9 +825,14 @@ If `help-char' (or a member of `help-event-list') is pressed,
 display such a window regardless."
   (let* ((buffer "*Register Preview*")
          (pat "")
-         (msg (if (eq this-command 'insert-register)
-                  "Insert register `%s'"
-                "Overwrite register `%s'"))
+         (msg (pcase this-command
+                (`insert-register "Insert register `%s'")
+                (`jump-to-register "Jump to register `%s'")
+                (_ "Overwrite register `%s'")))
+         (types (pcase this-command
+                  (`insert-register '(string number))
+                  (`jump-to-register '(window frame marker))
+                  (`_ '(all))))
          (map (let ((m (make-sparse-keymap)))
                 (set-keymap-parent m minibuffer-local-map)
                 m))
@@ -804,11 +843,11 @@ display such a window regardless."
                        (interactive)
                        (unless (get-buffer-window buffer)
                          (with-selected-window (minibuffer-selected-window)
-                           (register-preview buffer 'show-empty))))))
+                           (register-preview-1 buffer 'show-empty types))))))
     (define-key map (kbd "<down>") 'register-preview-next)
     (define-key map (kbd "<up>") 'register-preview-previous)
     (when register-preview-delay
-      (register-preview buffer))
+      (register-preview-1 buffer nil types))
     (unwind-protect
          (progn
            (minibuffer-with-setup-hook
