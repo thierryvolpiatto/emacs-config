@@ -750,7 +750,7 @@ With a prefix arg prompt to edit file extensions."
                                  (split-string strings)
                                defs)))))
 
-(defun register-preview-next-forward-line (arg)
+(defun register-preview-forward-line (arg)
   (let ((fn (if (> arg 0) #'eobp #'bobp))
         (posfn (if (> arg 0)
                    #'point-min
@@ -776,11 +776,11 @@ With a prefix arg prompt to edit file extensions."
 
 (defun register-preview-next ()
   (interactive)
-  (register-preview-next-forward-line 1))
+  (register-preview-forward-line 1))
 
 (defun register-preview-previous ()
   (interactive)
-  (register-preview-next-forward-line -1))
+  (register-preview-forward-line -1))
 
 (defun register-type (register)
   (pcase (cdr register)
