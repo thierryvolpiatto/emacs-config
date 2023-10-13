@@ -1871,6 +1871,11 @@ mode temporarily."
 (global-unset-key (kbd "C-x C-x"))
 (global-set-key (kbd "C-x C-x") 'tv/exchange-point-and-mark)
 
+;;; registers
+;;
+(with-eval-after-load 'register
+  (require 'register-preview))
+
 ;;; Load time
 ;;
 (tv/emacs-load-time)
