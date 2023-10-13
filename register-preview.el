@@ -70,9 +70,7 @@ Format of each entry is controlled by the variable `register-preview-function'."
 
 (defun advice--register-read-with-preview (prompt)
   "Read and return a register name, possibly showing existing registers.
-Prompt with the string PROMPT.  If `register-alist' and
-`register-preview-delay' are both non-nil, display a window
-listing existing registers after `register-preview-delay' seconds.
+Prompt with the string PROMPT.
 If `help-char' (or a member of `help-event-list') is pressed,
 display such a window regardless."
   (let* ((buffer "*Register Preview*")
@@ -98,7 +96,7 @@ display such a window regardless."
                            (register-preview-1 buffer 'show-empty types))))))
     (define-key map (kbd "<down>") 'register-preview-next)
     (define-key map (kbd "<up>") 'register-preview-previous)
-    (when register-preview-delay
+    (unless executing-kbd-macro
       (register-preview-1 buffer nil types))
     (unwind-protect
          (progn
