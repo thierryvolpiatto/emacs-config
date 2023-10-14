@@ -75,18 +75,17 @@ If `help-char' (or a member of `help-event-list') is pressed,
 display such a window regardless."
   (let* ((buffer "*Register Preview*")
          (pat "")
-         (msg (pcase this-command
-                (`insert-register "Insert register `%s'")
-                (`jump-to-register "Jump to register `%s'")
-                (_ "Overwrite register `%s'")))
-         (types (pcase this-command
-                  (`insert-register '(string number))
-                  (`jump-to-register '(window frame marker))
-                  (`_ '(all))))
          (map (let ((m (make-sparse-keymap)))
                 (set-keymap-parent m minibuffer-local-map)
                 m))
-         result timer)
+         types msg result timer)
+    (pcase this-command
+      (`insert-register (setq types '(string number)
+                              msg   "Insert register `%s'"))
+      (`jump-to-register (setq types '(window frame marker)
+                               msg   "Jump to register `%s'"))
+      (`_ (setq types '(all)
+                msg   "Overwrite register `%s'")))
     (dolist (k (cons help-char help-event-list))
       (define-key map
           (vector k) (lambda ()
