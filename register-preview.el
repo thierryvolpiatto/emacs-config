@@ -95,7 +95,9 @@ display such a window regardless."
                          (with-selected-window (minibuffer-selected-window)
                            (register-preview-1 buffer 'show-empty types))))))
     (define-key map (kbd "<down>") 'register-preview-next)
-    (define-key map (kbd "<up>") 'register-preview-previous)
+    (define-key map (kbd "<up>")   'register-preview-previous)
+    (define-key map (kbd "C-n")    'register-preview-next)
+    (define-key map (kbd "C-p")    'register-preview-previous)
     (unless executing-kbd-macro
       (register-preview-1 buffer nil types))
     (unwind-protect
