@@ -2,6 +2,11 @@
 
 ;;; code:
 
+(eval-when-compile (require 'cl-lib))
+(require 'register)
+
+(declare-function frameset-p "frameset")
+
 (defun register-preview-forward-line (arg)
   (let ((fn (if (> arg 0) #'eobp #'bobp))
         (posfn (if (> arg 0)
@@ -35,6 +40,7 @@
   (register-preview-forward-line -1))
 
 (defun register-type (register)
+  (require 'frameset)
   (pcase (cdr register)
     ((pred stringp) 'string)
     ((pred markerp) 'marker)
