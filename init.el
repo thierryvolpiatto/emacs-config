@@ -1826,7 +1826,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   (define-key gnus-summary-mode-map (kbd "P") 'gnus-summary-prev-unread-article)
   (define-key gnus-summary-mode-map (kbd "p") 'gnus-summary-prev-article))
 
-;;; Emms (installed from source to avoid seq dependency)
+;;; Emms (install it from source for Emacs < 28 to avoid seq dependency)
 ;;
 (with-eval-after-load 'emms
   ;; When helm-emms will load and require emms, config will be
