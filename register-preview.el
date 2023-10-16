@@ -53,8 +53,8 @@
   (if (memq 'all types)
       register-alist
     (cl-loop for register in register-alist
-           when (memq (register-type register) types)
-           collect register)))
+             when (memq (register-type register) types)
+             collect register)))
 
 (defun register-preview-1 (buffer &optional show-empty types)
   "Pop up a window showing the registers preview in BUFFER.
@@ -74,6 +74,17 @@ Format of each entry is controlled by the variable `register-preview-function'."
                  (insert (funcall register-preview-function elem))))
              (register-of-type-alist (or types '(all))))))))
 
+(defun register-preview-get-defaults (action)
+  (cl-loop for s in '("a" "b" "c" "d" "e" "f" "g"
+                      "h" "i" "j" "k" "l" "m" "n"
+                      "o" "p" "q" "r" "s" "t" "u"
+                      "v" "w" "x" "y" "z")
+           for pred = (if (memq action '(insert jump))
+                          #'not
+                        #'identity) 
+           unless (funcall pred (assoc (string-to-char s) register-alist))
+           collect s))
+
 (defun advice--register-read-with-preview (prompt)
   "Read and return a register name, possibly showing existing registers.
 Prompt with the string PROMPT.
@@ -84,14 +95,17 @@ display such a window regardless."
          (map (let ((m (make-sparse-keymap)))
                 (set-keymap-parent m minibuffer-local-map)
                 m))
-         types msg result timer)
+         types msg result timer act)
     (pcase this-command
       (`insert-register (setq types '(string number)
-                              msg   "Insert register `%s'"))
+                              msg   "Insert register `%s'"
+                              act   'insert))
       (`jump-to-register (setq types '(window frame marker)
-                               msg   "Jump to register `%s'"))
+                               msg   "Jump to register `%s'"
+                               act   'jump))
       (`_ (setq types '(all)
-                msg   "Overwrite register `%s'")))
+                msg   "Overwrite register `%s'"
+                act   'set)))
     (dolist (k (cons help-char help-event-list))
       (define-key map
           (vector k) (lambda ()
@@ -125,8 +139,8 @@ display such a window regardless."
                               (with-current-buffer buffer
                                 (let ((ov (make-overlay (point-min) (point-min))))
                                   (goto-char (point-min))
-                                  (if (string= pat "")
-                                      (remove-overlays)
+                                  (remove-overlays)
+                                  (unless (string= pat "")
                                     (if (re-search-forward (concat "^" pat) nil t)
                                         (progn (move-overlay
                                                 ov
@@ -147,7 +161,8 @@ display such a window regardless."
                                   (with-selected-window (minibuffer-window)
                                     (minibuffer-message
                                      "Register `%s' contains no text" pat))))))))))
-             (setq result (read-from-minibuffer prompt nil map)))
+             (setq result (read-from-minibuffer
+                           prompt nil map nil nil (register-preview-get-defaults act))))
            (cl-assert (and result (not (string= result "")))
                       nil "No register specified")
            (string-to-char result))
