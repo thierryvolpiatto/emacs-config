@@ -79,15 +79,13 @@ Format of each entry is controlled by the variable `register-preview-function'."
 ;; according to the keyboard and the locale in use. Also many chars
 ;; are missing but maybe those (only letters) are enough for default. 
 (defun register-preview-get-defaults (action)
-  (cl-loop for s in '("a" "b" "c" "d" "e" "f" "g"
-                      "h" "i" "j" "k" "l" "m" "n"
-                      "o" "p" "q" "r" "s" "t" "u"
-                      "v" "w" "x" "y" "z")
-           for pred = (if (memq action '(insert jump))
-                          #'not
-                        #'identity) 
-           unless (funcall pred (assoc (string-to-char s) register-alist))
-           collect s))
+  (unless (memq action '(insert jump))
+    (cl-loop for s in '("a" "b" "c" "d" "e" "f" "g"
+                        "h" "i" "j" "k" "l" "m" "n"
+                        "o" "p" "q" "r" "s" "t" "u"
+                        "v" "w" "x" "y" "z")
+             unless (assoc (string-to-char s) register-alist)
+             collect s)))
 
 (defun advice--register-read-with-preview (prompt)
   "Read and return a register name, possibly showing existing registers.
