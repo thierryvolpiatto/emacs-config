@@ -74,6 +74,10 @@ Format of each entry is controlled by the variable `register-preview-function'."
                  (insert (funcall register-preview-function elem))))
              (register-of-type-alist (or types '(all))))))))
 
+;; FIXME: This is hardcoded to a list probably wrong for many keyboards,
+;; probably there is something in Emacs to extract such a list
+;; according to the keyboard and the locale in use. Also many chars
+;; are missing but maybe those (only letters) are enough for default. 
 (defun register-preview-get-defaults (action)
   (cl-loop for s in '("a" "b" "c" "d" "e" "f" "g"
                       "h" "i" "j" "k" "l" "m" "n"
