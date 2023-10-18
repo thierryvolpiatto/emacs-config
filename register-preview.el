@@ -97,16 +97,16 @@ display such a window regardless."
                 (set-keymap-parent m minibuffer-local-map)
                 m))
          types msg result timer act)
-    (pcase this-command
-      (`insert-register (setq types '(string number)
-                              msg   "Insert register `%s'"
-                              act   'insert))
-      (`jump-to-register (setq types '(window frame marker)
-                               msg   "Jump to register `%s'"
-                               act   'jump))
-      (`_ (setq types '(all)
-                msg   "Overwrite register `%s'"
-                act   'set)))
+    (cl-case this-command
+      (insert-register (setq types '(string number)
+                             msg   "Insert register `%s'"
+                             act   'insert))
+      (jump-to-register (setq types '(window frame marker)
+                              msg   "Jump to register `%s'"
+                              act   'jump))
+      (t (setq types '(all)
+               msg   "Overwrite register `%s'"
+               act   'set)))
     (dolist (k (cons help-char help-event-list))
       (define-key map
           (vector k) (lambda ()
