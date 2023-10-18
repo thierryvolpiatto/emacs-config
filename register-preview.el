@@ -7,6 +7,12 @@
 
 (declare-function frameset-p "frameset")
 
+(defvar register-preview-default-keys '("a" "b" "c" "d" "e" "f" "g"
+                                        "h" "i" "j" "k" "l" "m" "n"
+                                        "o" "p" "q" "r" "s" "t" "u"
+                                        "v" "w" "x" "y" "z")
+  "The keys to use for setting a new register.")
+
 (defun register-preview-forward-line (arg)
   (let ((fn (if (> arg 0) #'eobp #'bobp))
         (posfn (if (> arg 0)
@@ -74,16 +80,9 @@ Format of each entry is controlled by the variable `register-preview-function'."
                  (insert (funcall register-preview-function elem))))
              (register-of-type-alist (or types '(all))))))))
 
-;; FIXME: This is hardcoded to a list probably wrong for many keyboards,
-;; probably there is something in Emacs to extract such a list
-;; according to the keyboard and the locale in use. Also many chars
-;; are missing but maybe those (only letters) are enough for default. 
 (defun register-preview-get-defaults (action)
   (unless (memq action '(insert jump))
-    (cl-loop for s in '("a" "b" "c" "d" "e" "f" "g"
-                        "h" "i" "j" "k" "l" "m" "n"
-                        "o" "p" "q" "r" "s" "t" "u"
-                        "v" "w" "x" "y" "z")
+    (cl-loop for s in register-preview-default-keys
              unless (assoc (string-to-char s) register-alist)
              collect s)))
 
