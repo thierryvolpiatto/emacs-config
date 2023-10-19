@@ -96,7 +96,7 @@ display such a window regardless."
          (map (let ((m (make-sparse-keymap)))
                 (set-keymap-parent m minibuffer-local-map)
                 m))
-         types msg result timer act)
+         types msg result timer act win)
     (cl-case this-command
       (insert-register (setq types '(string number)
                              msg   "Insert register `%s'"
@@ -136,8 +136,8 @@ display such a window regardless."
                                 (insert input))
                               (when (not (string= input pat))
                                 (setq pat input))))
-                          (if (get-buffer-window buffer)
-                              (with-current-buffer buffer
+                          (if (setq win (get-buffer-window buffer))
+                              (with-selected-window win
                                 (let ((ov (make-overlay (point-min) (point-min))))
                                   (goto-char (point-min))
                                   (remove-overlays)
