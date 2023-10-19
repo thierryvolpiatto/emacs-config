@@ -13,6 +13,9 @@
                                         "v" "w" "x" "y" "z")
   "The keys to use for setting a new register.")
 
+(defvar register-use-preview t
+  "Always show register preview when non nil.")
+
 (defun register-preview-forward-line (arg)
   (let ((fn (if (> arg 0) #'eobp #'bobp))
         (posfn (if (> arg 0)
@@ -118,7 +121,7 @@ display such a window regardless."
     (define-key map (kbd "<up>")   'register-preview-previous)
     (define-key map (kbd "C-n")    'register-preview-next)
     (define-key map (kbd "C-p")    'register-preview-previous)
-    (unless executing-kbd-macro
+    (unless (or executing-kbd-macro (null register-use-preview))
       (register-preview-1 buffer nil types))
     (unwind-protect
          (progn
