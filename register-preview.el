@@ -17,28 +17,31 @@
   "Always show register preview when non nil.")
 
 (defun register-preview-forward-line (arg)
-  (let ((fn (if (> arg 0) #'eobp #'bobp))
-        (posfn (if (> arg 0)
-                   #'point-min
-                 (lambda () (1- (point-max)))))
-        str)
-    (with-current-buffer "*Register Preview*"
-      (let ((ovs (overlays-in (point-min) (point-max)))
-            pos)
-        (goto-char (if ovs
-                       (overlay-start (car ovs))
-                     (point-min)))
-        (setq pos (point))
-        (and ovs (forward-line arg))
-        (when (and (funcall fn)
-                   (or (> arg 0) (eql pos (point))))
-          (goto-char (funcall posfn)))
-        (setq str (buffer-substring-no-properties
-                   (pos-bol) (1+ (pos-bol))))
-        (remove-overlays)
-        (with-selected-window (minibuffer-window)
-          (delete-minibuffer-contents)
-          (insert str))))))
+  ;; Ensure user enter manually key in minibuffer when recording a macro.
+  (unless (or defining-kbd-macro executing-kbd-macro
+              (not (get-buffer-window "*Register Preview*" 'visible)))
+    (let ((fn (if (> arg 0) #'eobp #'bobp))
+          (posfn (if (> arg 0)
+                     #'point-min
+                     (lambda () (1- (point-max)))))
+          str)
+      (with-current-buffer "*Register Preview*"
+        (let ((ovs (overlays-in (point-min) (point-max)))
+              pos)
+          (goto-char (if ovs
+                         (overlay-start (car ovs))
+                         (point-min)))
+          (setq pos (point))
+          (and ovs (forward-line arg))
+          (when (and (funcall fn)
+                     (or (> arg 0) (eql pos (point))))
+            (goto-char (funcall posfn)))
+          (setq str (buffer-substring-no-properties
+                     (pos-bol) (1+ (pos-bol))))
+          (remove-overlays)
+          (with-selected-window (minibuffer-window)
+            (delete-minibuffer-contents)
+            (insert str)))))))
 
 (defun register-preview-next ()
   (interactive)
