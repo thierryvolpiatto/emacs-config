@@ -117,6 +117,8 @@ display such a window regardless."
     (setq strs (mapcar (lambda (x)
                          (string (car x)))
                        (register-of-type-alist types)))
+    (when (and (memq act '(insert jump)) (null strs))
+      (error "No register suitable for `%s'" act))
     (dolist (k (cons help-char help-event-list))
       (define-key map
           (vector k) (lambda ()
