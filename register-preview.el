@@ -72,19 +72,20 @@
   "Pop up a window showing the registers preview in BUFFER.
 If SHOW-EMPTY is non-nil, show the window even if no registers.
 Format of each entry is controlled by the variable `register-preview-function'."
-  (when (or show-empty (consp register-alist))
-    (with-current-buffer-window
-     buffer
-     (cons 'display-buffer-below-selected
-	   '((window-height . fit-window-to-buffer)
-	     (preserve-size . (nil . t))))
-     nil
-     (with-current-buffer standard-output
-       (setq cursor-in-non-selected-windows nil)
-       (mapc (lambda (elem)
-               (when (get-register (car elem))
-                 (insert (funcall register-preview-function elem))))
-             (register-of-type-alist (or types '(all))))))))
+  (let ((registers (register-of-type-alist (or types '(all)))))
+    (when (or show-empty (consp registers))
+      (with-current-buffer-window
+        buffer
+        (cons 'display-buffer-below-selected
+	      '((window-height . fit-window-to-buffer)
+	        (preserve-size . (nil . t))))
+        nil
+        (with-current-buffer standard-output
+          (setq cursor-in-non-selected-windows nil)
+          (mapc (lambda (elem)
+                  (when (get-register (car elem))
+                    (insert (funcall register-preview-function elem))))
+                registers))))))
 
 (defun register-preview-get-defaults (action)
   (unless (memq action '(insert jump))
