@@ -1833,6 +1833,25 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   ;; loaded.
   (require 'emms-config))
 
+;;; slime
+;;
+(with-eval-after-load 'slime
+  (setq inferior-lisp-program "/usr/bin/sbcl"
+        slime-net-coding-system 'utf-8-unix
+        slime-contribs '(slime-fancy slime-scratch)
+        slime-scratch-file "~/.emacs.d/slime-scratch.lisp"))
+
+;; common-lisp-info
+(require 'cl-info)
+(add-to-list 'Info-additional-directory-list "~/elisp/info/gcl-info/")
+
+(define-key global-map (kbd "<f11> l r") 'slime)
+(define-key global-map (kbd "<f11> l s") 'slime-scratch)
+
+(with-eval-after-load 'slime-scratch
+  (define-key slime-scratch-mode-map (kbd "C-i") 'helm-slime-complete))
+(with-eval-after-load 'slime-repl
+  (define-key slime-repl-mode-map (kbd "C-i") 'helm-slime-complete))
 
 ;;; Kmacros
 ;;
