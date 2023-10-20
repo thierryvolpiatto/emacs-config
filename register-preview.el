@@ -103,7 +103,7 @@ display such a window regardless."
          (map (let ((m (make-sparse-keymap)))
                 (set-keymap-parent m minibuffer-local-map)
                 m))
-         types msg result timer act win)
+         types msg result timer act win strs)
     (cl-case this-command
       (insert-register (setq types '(string number)
                              msg   "Insert register `%s'"
@@ -114,6 +114,9 @@ display such a window regardless."
       (t (setq types '(all)
                msg   "Overwrite register `%s'"
                act   'set)))
+    (setq strs (mapcar (lambda (x)
+                         (string (car x)))
+                       (register-of-type-alist types)))
     (dolist (k (cons help-char help-event-list))
       (define-key map
           (vector k) (lambda ()
@@ -160,15 +163,12 @@ display such a window regardless."
                                         (minibuffer-message
                                          "Register `%s' contains no text" pat))))))
                             (unless (string= pat "")
-                              (let ((strs (mapcar (lambda (x)
-                                                    (string (car x)))
-                                                  register-alist)))
-                                (if (member pat strs)
-                                    (with-selected-window (minibuffer-window)
-                                      (minibuffer-message msg pat))
+                              (if (member pat strs)
                                   (with-selected-window (minibuffer-window)
-                                    (minibuffer-message
-                                     "Register `%s' contains no text" pat))))))))))
+                                    (minibuffer-message msg pat))
+                                (with-selected-window (minibuffer-window)
+                                  (minibuffer-message
+                                   "Register `%s' contains no text" pat)))))))))
              (setq result (read-from-minibuffer
                            prompt nil map nil nil (register-preview-get-defaults act))))
            (cl-assert (and result (not (string= result "")))
