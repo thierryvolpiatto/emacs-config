@@ -17,6 +17,9 @@
   "Always show register preview when non nil.")
 
 (defun register-preview-forward-line (arg)
+  "Move to next or previous line in register preview buffer.
+If ARG is positive goto next line, if negative to previous.
+Do nothing when defining or executing kmacros."
   ;; Ensure user enter manually key in minibuffer when recording a macro.
   (unless (or defining-kbd-macro executing-kbd-macro
               (not (get-buffer-window "*Register Preview*" 'visible)))
@@ -44,14 +47,19 @@
             (insert str)))))))
 
 (defun register-preview-next ()
+  "Goto next line in register preview buffer."
   (interactive)
   (register-preview-forward-line 1))
 
 (defun register-preview-previous ()
+  "Goto previous line in register preview buffer."
   (interactive)
   (register-preview-forward-line -1))
 
 (defun register-type (register)
+  "Return REGISTER type.
+One of string, marker, number, window or frame.
+Returns unknow if REGISTER doesn't belong to one of these types."
   (require 'frameset)
   (pcase (cdr register)
     ((pred stringp) 'string)
@@ -62,6 +70,7 @@
     (_ 'unknow)))
 
 (defun register-of-type-alist (types)
+  "Filter `register-alist' according to TYPES."
   (if (memq 'all types)
       register-alist
     (cl-loop for register in register-alist
@@ -71,6 +80,8 @@
 (defun register-preview-1 (buffer &optional show-empty types)
   "Pop up a window showing the registers preview in BUFFER.
 If SHOW-EMPTY is non-nil, show the window even if no registers.
+Argument TYPES (a list) specify the types of register to show, when nil show all
+registers, see `register-type' for suitable types. 
 Format of each entry is controlled by the variable `register-preview-function'."
   (let ((registers (register-of-type-alist (or types '(all)))))
     (when (or show-empty (consp registers))
@@ -88,6 +99,8 @@ Format of each entry is controlled by the variable `register-preview-function'."
                 registers))))))
 
 (defun register-preview-get-defaults (action)
+  "Returns available keys in `register-preview-default-keys'.
+It is the keys not already token in `register-alist' according to ACTION."
   (unless (memq action '(insert jump))
     (cl-loop for s in register-preview-default-keys
              unless (assoc (string-to-char s) register-alist)

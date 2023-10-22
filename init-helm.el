@@ -19,7 +19,7 @@
                                                   helm-imenu-in-all-buffers)
       helm-actions-inherit-frame-settings       t
       helm-use-frame-when-more-than-two-windows t
-      helm-use-frame-when-dedicated-window      t
+      helm-use-frame-when-no-suitable-window    t
       helm-frame-background-color               "DarkSlateGray"
       helm-show-action-window-other-window      'left
       helm-allow-mouse                          t
