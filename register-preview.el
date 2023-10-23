@@ -5,7 +5,7 @@
 (eval-when-compile (require 'cl-lib))
 (require 'register)
 
-(declare-function frameset-p "frameset")
+(declare-function frameset-register-p "frameset")
 
 (defvar register-preview-default-keys '("a" "b" "c" "d" "e" "f" "g"
                                         "h" "i" "j" "k" "l" "m" "n"
@@ -62,11 +62,18 @@ One of string, marker, number, window or frame.
 Returns unknow if REGISTER doesn't belong to one of these types."
   (require 'frameset)
   (pcase (cdr register)
+    ;; FIXME: I have no idea how to set such a register, however they
+    ;; are mentionned in register-val-jump-to???
+    ('file 'file)
+    ('buffer 'buffer)
+    ('file-query 'file-query)
     ((pred stringp) 'string)
     ((pred markerp) 'marker)
     ((pred numberp) 'number)
     ((and reg (pred consp) (guard (window-configuration-p (car reg)))) 'window)
-    ((and reg (pred consp) (guard (frameset-p (car reg)))) 'frame)
+    ((and reg (guard (or (frameset-register-p reg)
+                         (frame-configuration-p reg))))
+          'frame)
     (_ 'unknow)))
 
 (defun register-of-type-alist (types)
@@ -121,7 +128,7 @@ display such a window regardless."
       (insert-register (setq types '(string number)
                              msg   "Insert register `%s'"
                              act   'insert))
-      (jump-to-register (setq types '(window frame marker)
+      (jump-to-register (setq types '(window frame marker file buffer file-query)
                               msg   "Jump to register `%s'"
                               act   'jump))
       (t (setq types '(all)
