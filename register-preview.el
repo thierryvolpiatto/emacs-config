@@ -13,6 +13,9 @@
 (defvar register-use-preview t
   "Always show register preview when non nil.")
 
+(defvar insert-register-types '(string number))
+(defvar jump-to-register-types '(window frame marker file buffer file-query))
+
 (defun register-preview-forward-line (arg)
   "Move to next or previous line in register preview buffer.
 If ARG is positive goto next line, if negative to previous.
@@ -55,21 +58,39 @@ Do nothing when defining or executing kmacros."
 
 (defun register-type (register)
   "Return REGISTER type.
-One of string, marker, number, window or frame.
-Returns unknow if REGISTER doesn't belong to one of these types."
-  (require 'frameset)
-  (pcase (cdr register)
-    ((and file (pred consp) (guard (eql 'file (car file)))) 'file)
-    ((and buf (pred consp) (guard (eql 'buffer (car buf)))) 'buffer)
-    ((and fileq (pred consp) (guard (eql 'file-query (car fileq)))) 'file-query)
-    ((pred stringp) 'string)
-    ((pred markerp) 'marker)
-    ((pred numberp) 'number)
-    ((and reg (pred consp) (guard (window-configuration-p (car reg)))) 'window)
-    ((and reg (guard (or (frameset-register-p reg)
-                         (frame-configuration-p reg))))
-          'frame)
-    (_ 'unknow)))
+Current register types actually returned are one of:
+- string
+- number
+- marker
+- buffer
+- file
+- file-query
+- window
+- frame
+
+One can add new type by adding the new type to one of
+`insert-register-types' or `jump-to-register-types' and define a new
+cl-defmethod matching this type. Predicate for type in new
+cl-defmethod should satisfy `cl-typep' otherwise the new type should
+be defined with `cl-deftype'."
+  ;; Call register--type against the register value.
+  (register--type (if (consp (cdr register))
+                     (cadr register)
+                   (cdr register))))
+
+(cl-defgeneric register--type (regval)
+  "Returns type of register value REGVAL."
+  (ignore regval))
+
+(cl-defmethod register--type ((_regval string)) 'string)
+(cl-defmethod register--type ((_regval number)) 'number)
+(cl-defmethod register--type ((_regval marker)) 'marker)
+(cl-defmethod register--type ((_regval (eql 'buffer))) 'buffer)
+(cl-defmethod register--type ((_regval (eql 'file))) 'file)
+(cl-defmethod register--type ((_regval (eql 'file-query))) 'file-query)
+(cl-defmethod register--type ((_regval window-configuration)) 'window)
+(cl-deftype frame-register () '(satisfies frameset-register-p))
+(cl-defmethod register--type :extra "frame-register" (_regval) 'frame)
 
 (defun register-of-type-alist (types)
   "Filter `register-alist' according to TYPES."
@@ -120,10 +141,10 @@ display such a window regardless."
                 m))
          types msg result timer act win strs)
     (cl-case this-command
-      (insert-register (setq types '(string number)
+      (insert-register (setq types insert-register-types
                              msg   "Insert register `%s'"
                              act   'insert))
-      (jump-to-register (setq types '(window frame marker file buffer file-query)
+      (jump-to-register (setq types jump-to-register-types
                               msg   "Jump to register `%s'"
                               act   'jump))
       (t (setq types '(all)
