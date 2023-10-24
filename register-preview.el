@@ -59,11 +59,9 @@ One of string, marker, number, window or frame.
 Returns unknow if REGISTER doesn't belong to one of these types."
   (require 'frameset)
   (pcase (cdr register)
-    ;; FIXME: I have no idea how to set such a register, however they
-    ;; are mentionned in register-val-jump-to???
-    ('file 'file)
-    ('buffer 'buffer)
-    ('file-query 'file-query)
+    ((and file (pred consp) (guard (eql 'file (car file)))) 'file)
+    ((and buf (pred consp) (guard (eql 'buffer (car buf)))) 'buffer)
+    ((and fileq (pred consp) (guard (eql 'file-query (car fileq)))) 'file-query)
     ((pred stringp) 'string)
     ((pred markerp) 'marker)
     ((pred numberp) 'number)
