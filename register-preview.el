@@ -7,10 +7,7 @@
 
 (declare-function frameset-register-p "frameset")
 
-(defvar register-preview-default-keys '("a" "b" "c" "d" "e" "f" "g"
-                                        "h" "i" "j" "k" "l" "m" "n"
-                                        "o" "p" "q" "r" "s" "t" "u"
-                                        "v" "w" "x" "y" "z")
+(defvar register-preview-default-keys (mapcar #'string (number-sequence ?a ?z))
   "The keys to use for setting a new register.")
 
 (defvar register-use-preview t
@@ -183,14 +180,14 @@ display such a window regardless."
                                                  (minibuffer-message msg pat)))
                                       (with-selected-window (minibuffer-window)
                                         (minibuffer-message
-                                         "Register `%s' contains no text" pat))))))
+                                         "Register `%s' is empty" pat))))))
                             (unless (string= pat "")
                               (if (member pat strs)
                                   (with-selected-window (minibuffer-window)
                                     (minibuffer-message msg pat))
                                 (with-selected-window (minibuffer-window)
                                   (minibuffer-message
-                                   "Register `%s' contains no text" pat)))))))))
+                                   "Register `%s' is empty" pat)))))))))
              (setq result (read-from-minibuffer
                            prompt nil map nil nil (register-preview-get-defaults act))))
            (cl-assert (and result (not (string= result "")))
