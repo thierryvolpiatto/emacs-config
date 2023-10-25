@@ -13,8 +13,24 @@
 (defvar register-use-preview t
   "Always show register preview when non nil.")
 
-(defvar insert-register-types '(string number))
-(defvar jump-to-register-types '(window frame marker file buffer file-query))
+(cl-defstruct register-preview-commands
+  "Store data for a specific register command."
+  types msg act)
+
+(defvar register-commands-data `((insert-register
+                                  .
+                                  ,(make-register-preview-commands
+                                    :types '(string number)
+                                    :msg "Insert register `%s'"
+                                    :act 'insert))
+                                 (jump-to-register
+                                  .
+                                  ,(make-register-preview-commands
+                                    :types  '(window frame marker
+                                              file buffer file-query)
+                                    :msg "Jump to register `%s'"
+                                    :act 'jump)))
+  "Customize data for a specific register command.")
 
 (defun register-preview-forward-line (arg)
   "Move to next or previous line in register preview buffer.
@@ -68,11 +84,11 @@ Current register types actually returned are one of:
 - window
 - frame
 
-One can add new type by adding the new type to one of
-`insert-register-types' or `jump-to-register-types' and define a new
-cl-defmethod matching this type. Predicate for type in new
-cl-defmethod should satisfy `cl-typep' otherwise the new type should
-be defined with `cl-deftype'."
+One can add new type to the corresponding
+`register-commands-data' entry and defining a new `cl-defmethod'
+matching this type. Predicate for type in new `cl-defmethod' should
+satisfy `cl-typep' otherwise the new type should be defined with
+`cl-deftype'."
   ;; Call register--type against the register value.
   (register--type (if (consp (cdr register))
                      (cadr register)
@@ -139,17 +155,15 @@ display such a window regardless."
          (map (let ((m (make-sparse-keymap)))
                 (set-keymap-parent m minibuffer-local-map)
                 m))
+         (data (cdr (assq this-command register-commands-data)))
          types msg result timer act win strs)
-    (cl-case this-command
-      (insert-register (setq types insert-register-types
-                             msg   "Insert register `%s'"
-                             act   'insert))
-      (jump-to-register (setq types jump-to-register-types
-                              msg   "Jump to register `%s'"
-                              act   'jump))
-      (t (setq types '(all)
-               msg   "Overwrite register `%s'"
-               act   'set)))
+    (if data
+        (setq types (register-preview-commands-types data)
+              msg   (register-preview-commands-msg   data)
+              act   (register-preview-commands-act   data))
+      (setq types '(all)
+            msg   "Overwrite register `%s'"
+            act   'set))
     (setq strs (mapcar (lambda (x)
                          (string (car x)))
                        (register-of-type-alist types)))
