@@ -26,7 +26,7 @@
                                  (jump-to-register
                                   .
                                   ,(make-register-preview-commands
-                                    :types  '(window frame marker
+                                    :types  '(window frame marker kmacro
                                               file buffer file-query)
                                     :msg "Jump to register `%s'"
                                     :act 'jump)))
@@ -107,6 +107,8 @@ satisfy `cl-typep' otherwise the new type should be defined with
 (cl-defmethod register--type ((_regval window-configuration)) 'window)
 (cl-deftype frame-register () '(satisfies frameset-register-p))
 (cl-defmethod register--type :extra "frame-register" (_regval) 'frame)
+(cl-deftype kmacro-register () '(satisfies kmacro-register-p))
+(cl-defmethod register--type :extra "kmacro-register" (_regval) 'kmacro)
 
 (defun register-of-type-alist (types)
   "Filter `register-alist' according to TYPES."
