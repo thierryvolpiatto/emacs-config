@@ -29,7 +29,25 @@
                                     :types  '(window frame marker kmacro
                                               file buffer file-query)
                                     :msg "Jump to register `%s'"
-                                    :act 'jump)))
+                                    :act 'jump))
+                                 (append-to-register
+                                  .
+                                  ,(make-register-preview-commands
+                                    :types '(string number)
+                                    :msg "Append to register `%s'"
+                                    :act 'modify))
+                                 (prepend-to-register
+                                  .
+                                  ,(make-register-preview-commands
+                                    :types '(string number)
+                                    :msg "Prepend to register `%s'"
+                                    :act 'modify))
+                                 (increment-register
+                                  .
+                                  ,(make-register-preview-commands
+                                    :types '(string number)
+                                    :msg "Increment register `%s'"
+                                    :act 'modify)))
   "Customize data for a specific register command.")
 
 (defun register-preview-forward-line (arg)
@@ -83,6 +101,7 @@ Current register types actually returned are one of:
 - file-query
 - window
 - frame
+- kmacro
 
 One can add new type to the corresponding
 `register-commands-data' entry and defining a new `cl-defmethod'
@@ -142,7 +161,7 @@ Format of each entry is controlled by the variable `register-preview-function'."
 (defun register-preview-get-defaults (action)
   "Returns available keys in `register-preview-default-keys'.
 It is the keys not already token in `register-alist' according to ACTION."
-  (unless (memq action '(insert jump))
+  (unless (memq action '(insert jump modify))
     (cl-loop for s in register-preview-default-keys
              unless (assoc (string-to-char s) register-alist)
              collect s)))
