@@ -1893,7 +1893,19 @@ mode temporarily."
 ;;; registers
 ;;
 (with-eval-after-load 'register
-  (require 'register-preview))
+  (require 'register-preview)
+  (add-to-list 'register-commands-data
+               `(register-delete
+                 .
+                 ,(make-register-preview-commands
+                   :types '(all)
+                   :msg "Delete register `%s'"
+                   :act 'delete)))
+  (defun register-delete (register)
+    (interactive (list (register-read-with-preview "Delete register: ")))
+    (setq register-alist (delete (assoc register register-alist)
+                                 register-alist)))
+  (define-key global-map (kbd "C-x r C-d") #'register-delete))
 
 ;;; Load time
 ;;
