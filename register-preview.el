@@ -30,6 +30,12 @@
                                               file buffer file-query)
                                     :msg "Jump to register `%s'"
                                     :act 'jump))
+                                 (view-register
+                                  .
+                                  ,(make-register-preview-commands
+                                    :types '(all)
+                                    :msg "View register `%s'"
+                                    :act 'view))
                                  (append-to-register
                                   .
                                   ,(make-register-preview-commands
