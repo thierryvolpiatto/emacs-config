@@ -236,8 +236,9 @@ display such a window regardless."
                                                 ov
                                                 (match-beginning 0) (pos-eol))
                                                (overlay-put ov 'face 'match)
-                                               (with-selected-window (minibuffer-window)
-                                                 (minibuffer-message msg pat)))
+                                               (when msg
+                                                 (with-selected-window (minibuffer-window)
+                                                   (minibuffer-message msg pat))))
                                       (with-selected-window (minibuffer-window)
                                         (minibuffer-message
                                          "Register `%s' is empty" pat))))))
