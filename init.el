@@ -8,10 +8,6 @@
     (message "Emacs config loaded in %s seconds"
              (format "%.2f" time))))
 
-;;; Gcmh-mode
-;;
-(gcmh-mode 1)
-
 
 ;;; Packages.el config.
 ;;
@@ -1905,7 +1901,21 @@ mode temporarily."
     (interactive (list (register-read-with-preview "Delete register: ")))
     (setq register-alist (delete (assoc register register-alist)
                                  register-alist)))
-  (define-key global-map (kbd "C-x r C-d") #'register-delete))
+
+  (defun set-current-buffer-to-register (register)
+    (interactive (list (register-read-with-preview "Set buffer to register: ")))
+    (set-register register `(buffer . ,(buffer-name))))
+  
+  (add-to-list 'register-commands-data
+               `(set-current-buffer-to-register
+                 .
+                 ,(make-register-preview-commands
+                   :types '(all)
+                   :msg "Set buffer to register `%s'"
+                   :act 'set)))
+
+  (define-key global-map (kbd "C-x r C-d") #'register-delete)
+  (define-key global-map (kbd "C-x r z")   #'set-current-buffer-to-register))
 
 ;;; Load time
 ;;
