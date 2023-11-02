@@ -517,8 +517,7 @@ new directory."
       "Multi key function for completion in emacs lisp buffers.
 First call indent, second complete symbol, third complete fname."
     '(helm-lisp-indent
-      helm-lisp-completion-at-point
-      helm-complete-file-name-at-point)
+      helm-lisp-completion-at-point)
     0.3)
 (define-key emacs-lisp-mode-map (kbd "TAB") 'helm-multi-lisp-complete-at-point)
 (define-key lisp-interaction-mode-map (kbd "TAB") 'helm-multi-lisp-complete-at-point)
