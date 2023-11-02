@@ -164,7 +164,8 @@
         ("/Posteo/Emacs-bug"      . ?b)
         ("/Posteo/github-helm"    . ?h)
         ("/Posteo/github-mu"      . ?m)
-        ("/Posteo/github-async"   . ?a)))
+        ("/Posteo/github-async"   . ?a)
+        ("/Posteo/Spam-Log"       . ?l)))
 
 ;;; Bookmarks
 (setq mu4e-bookmarks
