@@ -17,44 +17,40 @@
   "Store data for a specific register command."
   types msg act)
 
-(defvar register-commands-data `((insert-register
-                                  .
-                                  ,(make-register-preview-commands
-                                    :types '(string number)
-                                    :msg "Insert register `%s'"
-                                    :act 'insert))
-                                 (jump-to-register
-                                  .
-                                  ,(make-register-preview-commands
-                                    :types  '(window frame marker kmacro
-                                              file buffer file-query)
-                                    :msg "Jump to register `%s'"
-                                    :act 'jump))
-                                 (view-register
-                                  .
-                                  ,(make-register-preview-commands
-                                    :types '(all)
-                                    :msg "View register `%s'"
-                                    :act 'view))
-                                 (append-to-register
-                                  .
-                                  ,(make-register-preview-commands
-                                    :types '(string number)
-                                    :msg "Append to register `%s'"
-                                    :act 'modify))
-                                 (prepend-to-register
-                                  .
-                                  ,(make-register-preview-commands
-                                    :types '(string number)
-                                    :msg "Prepend to register `%s'"
-                                    :act 'modify))
-                                 (increment-register
-                                  .
-                                  ,(make-register-preview-commands
-                                    :types '(string number)
-                                    :msg "Increment register `%s'"
-                                    :act 'modify)))
-  "Customize data for a specific register command.")
+(cl-defgeneric register-commands-data (command)
+  "Returns a `register-preview-commands' object storing data for COMMAND."
+  (ignore command))
+(cl-defmethod register-commands-data ((_command (eql insert-register)))
+  (make-register-preview-commands
+   :types '(string number)
+   :msg "Insert register `%s'"
+   :act 'insert))
+(cl-defmethod register-commands-data ((_command (eql jump-to-register)))
+  (make-register-preview-commands
+   :types  '(window frame marker kmacro
+             file buffer file-query)
+   :msg "Jump to register `%s'"
+   :act 'jump))
+(cl-defmethod register-commands-data ((_command (eql view-register)))
+  (make-register-preview-commands
+   :types '(all)
+   :msg "View register `%s'"
+   :act 'view))
+(cl-defmethod register-commands-data ((_command (eql append-to-register)))
+  (make-register-preview-commands
+   :types '(string number)
+   :msg "Append to register `%s'"
+   :act 'modify))
+(cl-defmethod register-commands-data ((_command (eql prepend-to-register)))
+  (make-register-preview-commands
+   :types '(string number)
+   :msg "Prepend to register `%s'"
+   :act 'modify))
+(cl-defmethod register-commands-data ((_command (eql increment-register)))
+  (make-register-preview-commands
+   :types '(string number)
+   :msg "Increment register `%s'"
+   :act 'modify))
 
 (defun register-preview-forward-line (arg)
   "Move to next or previous line in register preview buffer.
@@ -182,7 +178,7 @@ display such a window regardless."
          (map (let ((m (make-sparse-keymap)))
                 (set-keymap-parent m minibuffer-local-map)
                 m))
-         (data (cdr (assq this-command register-commands-data)))
+         (data (register-commands-data this-command))
          types msg result timer act win strs)
     (if data
         (setq types (register-preview-commands-types data)

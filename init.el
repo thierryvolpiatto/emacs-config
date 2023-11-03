@@ -1890,29 +1890,26 @@ mode temporarily."
 ;;
 (with-eval-after-load 'register
   (require 'register-preview)
-  (add-to-list 'register-commands-data
-               `(register-delete
-                 .
-                 ,(make-register-preview-commands
-                   :types '(all)
-                   :msg "Delete register `%s'"
-                   :act 'delete)))
   (defun register-delete (register)
     (interactive (list (register-read-with-preview "Delete register: ")))
     (setq register-alist (delete (assoc register register-alist)
                                  register-alist)))
+  
+  (cl-defmethod register-commands-data ((_command (eql register-delete)))
+    (make-register-preview-commands
+     :types '(all)
+     :msg "Delete register `%s'"
+     :act 'delete))
 
   (defun set-current-buffer-to-register (register)
     (interactive (list (register-read-with-preview "Set buffer to register: ")))
     (set-register register `(buffer . ,(buffer-name))))
   
-  (add-to-list 'register-commands-data
-               `(set-current-buffer-to-register
-                 .
-                 ,(make-register-preview-commands
+  (cl-defmethod register-commands-data ((_command (eql set-current-buffer-to-register)))
+    (make-register-preview-commands
                    :types '(all)
                    :msg "Set buffer to register `%s'"
-                   :act 'set)))
+                   :act 'set))
 
   (define-key global-map (kbd "C-x r C-d") #'register-delete)
   (define-key global-map (kbd "C-x r z")   #'set-current-buffer-to-register))
