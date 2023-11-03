@@ -1901,18 +1901,18 @@ mode temporarily."
      :msg "Delete register `%s'"
      :act 'delete))
 
-  (defun set-current-buffer-to-register (register)
-    (interactive (list (register-read-with-preview "Set buffer to register: ")))
-    (set-register register `(buffer . ,(buffer-name))))
+  (defun file-to-register (register)
+    (interactive (list (register-read-with-preview "Set buffer file to register: ")))
+    (set-register register `(file . ,(buffer-file-name))))
   
-  (cl-defmethod register-commands-data ((_command (eql set-current-buffer-to-register)))
+  (cl-defmethod register-commands-data ((_command (eql file-to-register)))
     (make-register-preview-commands
                    :types '(all)
-                   :msg "Set buffer to register `%s'"
+                   :msg "Set buffer file to register `%s'"
                    :act 'set))
 
   (define-key global-map (kbd "C-x r C-d") #'register-delete)
-  (define-key global-map (kbd "C-x r z")   #'set-current-buffer-to-register))
+  (define-key global-map (kbd "C-x r z")   #'file-to-register))
 
 ;;; Load time
 ;;
