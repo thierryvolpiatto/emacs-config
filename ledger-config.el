@@ -1,4 +1,4 @@
-;;; ledger-config.el - extend ledger.el
+;;; ledger-config.el --- extend ledger-mode -*- lexical-binding: t -*-
 
 ;; Code:
 
