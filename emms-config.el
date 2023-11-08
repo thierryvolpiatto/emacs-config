@@ -12,7 +12,8 @@
 (emms-all)
 
 ;; Setup `emms-player-list'.
-(emms-default-players)
+(setq emms-player-list '(emms-player-mpv emms-player-vlc emms-player-vlc-playlist))
+;; (emms-default-players)
 
 (setq emms-player-mpv-parameters
       '("--no-terminal" "--force-window=no" "--audio-display=no"))
