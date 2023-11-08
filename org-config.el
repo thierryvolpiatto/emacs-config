@@ -191,20 +191,10 @@
 (define-key org-mode-map (kbd "<M-left>")   nil)
 (define-key org-mode-map (kbd "C-c C-i") 'org-table-insert-row)
 
-;; Hide leading stars
-;;
-;; (setq org-hide-leading-stars t)
-;; (setq org-startup-indented t)
-
+;; Disable org-persist
 (when (> emacs-major-version 28)
   (with-eval-after-load 'org-persist
-    (setq org-persist-disable-when-emacs-Q t)
-    (defun tv/advice--org-persist (old-fn &rest args)
-      (let (user-init-file)
-        (apply old-fn args)))
-    (advice-add 'org-persist-write :around #'tv/advice--org-persist)
-    (advice-add 'org-persist-read :around #'tv/advice--org-persist)
-    (advice-add 'org-persist-gc :around #'tv/advice--org-persist)))
+    (advice-add 'org-persist-register :override #'ignore)))
 
 ;; Toc-org
 (when (fboundp 'toc-org-mode)
