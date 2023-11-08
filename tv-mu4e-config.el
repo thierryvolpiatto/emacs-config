@@ -487,6 +487,17 @@ if one may help."
 (define-key mu4e-headers-mode-map (kbd "<down>") 'mu4e-headers-next)
 (define-key mu4e-headers-mode-map (kbd "<up>") 'mu4e-headers-prev)
 
+(defun tv/mu4e-remove-buttons-in-reply (original-fn &rest args)
+  (if current-prefix-arg
+      (delete-region (point) (point-max))
+    (save-excursion
+      (message-goto-body)
+      (while (re-search-forward "^[[]\\{2\\}.*[]]\\{2\\}" nil t)
+        (replace-match "")))
+    (apply original-fn args)))
+(add-function :around mu4e-compose-cite-function #'tv/mu4e-remove-buttons-in-reply)
+
+
 (when (boundp 'mu4e-search-minor-mode-map)
   (define-key mu4e-search-minor-mode-map (kbd "S") nil))
 
