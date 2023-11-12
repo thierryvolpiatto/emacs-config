@@ -540,7 +540,8 @@ First call indent, second complete symbol, third complete fname."
 ;;
 (with-eval-after-load 'helm-emms
   (setq helm-emms-use-track-description-function nil)
-  (helm-set-attr 'candidate-number-limit 500 helm-source-emms-dired))
+  (helm-set-attr 'candidate-number-limit 500 helm-source-emms-dired)
+  (add-to-list 'helm-emms-music-extensions "mp4"))
 
 ;;; Helm-find
 ;;

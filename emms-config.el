@@ -16,7 +16,8 @@
 ;; (emms-default-players)
 
 (setq emms-player-mpv-parameters
-      '("--no-terminal" "--force-window=no" "--audio-display=no"))
+      ;; "--no-video" for mp4's.
+      '("--no-video" "--no-terminal" "--force-window=no" "--audio-display=no"))
 
 ;; «enable-emms-scoring» (to ".enable-emms-scoring")
 (setq emms-score-enabled-p t)

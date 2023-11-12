@@ -1899,7 +1899,8 @@ mode temporarily."
     (make-register-preview-commands
      :types '(all)
      :msg "Delete register `%s'"
-     :act 'delete))
+     :act 'delete
+     :smatch t))
 
   (defun file-to-register (register)
     (interactive (list (register-read-with-preview "Set buffer file to register: ")))
