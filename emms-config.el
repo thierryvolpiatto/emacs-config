@@ -35,7 +35,7 @@
 (setq emms-mode-line-icon-color "Gold1")
 (setq emms-mode-line-icon-before-format "[")
 (setq emms-mode-line-format " `%s'")
-(setq emms-playing-time-display-format " %s]")
+(setq emms-playing-time-display-format " %s] ")
 (defun emms-mode-line-playlist-current ()
   "Format the currently playing song."
   (let* ((track (emms-playlist-current-selected-track))

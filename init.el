@@ -1234,11 +1234,16 @@ With a prefix arg ask with completion which buffer to kill."
 
   (define-key calendar-mode-map (kbd "C-<right>") 'calendar-forward-month)
   (define-key calendar-mode-map (kbd "C-<left>")  'calendar-backward-month)
-  (define-key calendar-mode-map (kbd "RET")       'tv/calendar-diary-or-holiday)
-  (require 'appt)
-  (setq appt-display-format 'echo ; Values: 'echo, 'window or nil.
-        appt-warning-time-regexp "warn ?\\([0-9]+\\)") 
-  (add-hook 'emacs-startup-hook 'appt-activate))
+  (define-key calendar-mode-map (kbd "RET")       'tv/calendar-diary-or-holiday))
+
+;;; Appointements (appt)
+;;
+(with-eval-after-load 'appt
+  (setq appt-display-format 'echo     ; Values: 'echo, 'window or nil.
+        ;; Allow inserting at end of diary entry e.g. "##warntime 30".
+        appt-warning-time-regexp "warntime \\([0-9]+\\)"
+        appt-display-mode-line t))
+(add-hook 'emacs-startup-hook 'appt-activate)
 
 ;;; Bookmarks
 ;;
