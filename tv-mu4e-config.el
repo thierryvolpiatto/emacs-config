@@ -16,9 +16,10 @@
 
 
 ;;; Message and smtp settings
-
-;; Don't send to these address in wide reply.
-(setq mu4e-compose-reply-ignore-address
+;;
+;; Don't send to these addresses in wide reply.
+;; See (info "(message) Wide Reply")
+(setq message-dont-reply-to-names
       '("notifications@github\\.com"
         ".*@noreply\\.github\\.com"
         "thievol@posteo\\.net"))
