@@ -409,7 +409,7 @@ See https://en.wikipedia.org/wiki/Null_character."
 (defun tv/remove-cr ()
   (when (save-excursion
           (message-goto-body)
-          (re-search-forward "$" nil t))
+          (re-search-forward "\C-m$" nil t))
     (article-remove-cr)))
 (add-hook 'gnus-part-display-hook 'tv/remove-cr)
 
