@@ -1874,7 +1874,8 @@ mode temporarily."
 ;;; registers
 ;;
 (with-eval-after-load 'register
-  (require 'register-preview)
+  (autoload 'register-preview-mode "register-preview" nil t)
+  (register-preview-mode 1)
   (defun register-delete (register)
     (interactive (list (register-read-with-preview "Delete register: ")))
     (setq register-alist (delete (assoc register register-alist)
