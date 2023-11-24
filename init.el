@@ -1881,8 +1881,8 @@ mode temporarily."
     (setq register-alist (delete (assoc register register-alist)
                                  register-alist)))
   
-  (cl-defmethod register-commands-data ((_command (eql register-delete)))
-    (make-register-preview-commands
+  (cl-defmethod register-preview-command-info ((_command (eql register-delete)))
+    (make-register-preview-info
      :types '(all)
      :msg "Delete register `%s'"
      :act 'delete
@@ -1892,11 +1892,11 @@ mode temporarily."
     (interactive (list (register-read-with-preview "Set buffer file to register: ")))
     (set-register register `(file . ,(buffer-file-name))))
   
-  (cl-defmethod register-commands-data ((_command (eql file-to-register)))
-    (make-register-preview-commands
-                   :types '(all)
-                   :msg "Set buffer file to register `%s'"
-                   :act 'set))
+  (cl-defmethod register-preview-command-info ((_command (eql file-to-register)))
+    (make-register-preview-info
+     :types '(all)
+     :msg "Set buffer file to register `%s'"
+     :act 'set))
 
   (define-key global-map (kbd "C-x r C-d") #'register-delete)
   (define-key global-map (kbd "C-x r z")   #'file-to-register))
