@@ -75,7 +75,7 @@
                    (smtpmail-default-smtp-server . "posteo.de")
                    (smtpmail-smtp-server         . "posteo.de")
                    (smtpmail-smtp-service        . 587)
-                   (mail-reply-to                . "thievol@posteo.net")
+                   ;; (mail-reply-to                . "thievol@posteo.net")
                    (user-mail-address            . "thievol@posteo.net")
                    (user-full-name               . "Thierry Volpiatto")
                    (mu4e-compose-signature       . t)
