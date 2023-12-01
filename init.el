@@ -1649,24 +1649,10 @@ With a prefix arg ask with completion which buffer to kill."
              (get (cdr el) 'common-lisp-indent-function)
            (car (cdr el))))))
 
-(defvar tv--toggle-scratch-last-buffer nil)
-(defun tv/toggle-scratch ()
+(defun tv/goto-scratch ()
   (interactive)
-  (let ((win (get-buffer-window "*scratch*" 'visible)))
-    (cond ((and win (not (one-window-p)))
-           (delete-window win))
-          ((and win (one-window-p))
-           (switch-to-buffer
-            (or tv--toggle-scratch-last-buffer (last-buffer))))
-          (t
-           (setq tv--toggle-scratch-last-buffer (current-buffer))
-           (setq win (display-buffer
-                      (get-buffer "*scratch*")
-                      `((display-buffer-in-direction)
-                        (direction . left)
-                        (window-width . ,(/ (frame-width) 2)))))
-           (select-window win)))))
-
+  (switch-to-buffer "*scratch*"))
+  
 ;; Affect `switch-to-prev/next-buffer' ane `next/previous-buffer'.
 (setq switch-to-prev-buffer-skip (lambda (_window buffer _bury-or-kill)
                                    "Prevent switching to unwanted buffers."
@@ -1722,10 +1708,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
   (if arg
       (pp-macroexpand-last-sexp nil)
     (pp-eval-last-sexp nil)))
-(helm-define-key-with-subkeys
-    global-map (kbd "<f11> s c")
-    nil 'tv/toggle-scratch
-    '((?c . delete-other-windows)) nil nil 5)
+(global-set-key (kbd "<f11> s c")                     'tv/goto-scratch)
 (global-set-key (kbd "<S-f12>")                       'cancel-debug-on-entry)
 (global-set-key (kbd "M-:")                           'pp-eval-expression)
 (define-key emacs-lisp-mode-map (kbd "RET")           'newline-and-indent)
@@ -1874,8 +1857,9 @@ mode temporarily."
 ;;; registers
 ;;
 (with-eval-after-load 'register
-  (autoload 'register-preview-mode "register-preview" nil t)
-  (register-preview-mode 1)
+  (when (< emacs-major-version 30)
+    (autoload 'register-preview-mode "register-preview" nil t)
+    (register-preview-mode 1))
   (defun register-delete (register)
     (interactive (list (register-read-with-preview "Delete register: ")))
     (setq register-alist (delete (assoc register register-alist)
@@ -1888,18 +1872,7 @@ mode temporarily."
      :act 'delete
      :smatch t))
 
-  (defun file-to-register (register)
-    (interactive (list (register-read-with-preview "Set buffer file to register: ")))
-    (set-register register `(file . ,(buffer-file-name))))
-  
-  (cl-defmethod register-preview-command-info ((_command (eql file-to-register)))
-    (make-register-preview-info
-     :types '(all)
-     :msg "Set buffer file to register `%s'"
-     :act 'set))
-
-  (define-key global-map (kbd "C-x r C-d") #'register-delete)
-  (define-key global-map (kbd "C-x r z")   #'file-to-register))
+  (define-key global-map (kbd "C-x r C-d") #'register-delete))
 
 ;;; Load time
 ;;
