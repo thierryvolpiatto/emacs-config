@@ -1653,7 +1653,7 @@ With a prefix arg ask with completion which buffer to kill."
   (interactive)
   (switch-to-buffer "*scratch*"))
   
-;; Affect `switch-to-prev/next-buffer' ane `next/previous-buffer'.
+;; Affect `switch-to-prev/next-buffer' and `next/previous-buffer'.
 (setq switch-to-prev-buffer-skip (lambda (_window buffer _bury-or-kill)
                                    "Prevent switching to unwanted buffers."
                                    ;; If that function returns
