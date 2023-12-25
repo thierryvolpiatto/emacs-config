@@ -1859,18 +1859,27 @@ mode temporarily."
 (with-eval-after-load 'register
   (when (< emacs-major-version 30)
     (autoload 'register-preview-mode "register-preview" nil t)
-    (register-preview-mode 1))
+    (register-preview-mode 1)
+    (setq register-preview-use-preview 'insist))
   (defun register-delete (register)
     (interactive (list (register-read-with-preview "Delete register: ")))
     (setq register-alist (delete (assoc register register-alist)
                                  register-alist)))
   
-  (cl-defmethod register-preview-command-info ((_command (eql register-delete)))
-    (make-register-preview-info
-     :types '(all)
-     :msg "Delete register `%s'"
-     :act 'delete
-     :smatch t))
+  (if (< emacs-major-version 30)
+      (cl-defmethod register-preview-command-info ((_command (eql register-delete)))
+        (make-register-preview-info
+         :types '(all)
+         :msg "Delete register `%s'"
+         :act 'modify
+         :smatch t))
+    (customize-set-variable 'register-use-preview t)
+    (cl-defmethod register-command-info ((_command (eql register-delete)))
+        (make-register-preview-info
+         :types '(all)
+         :msg "Delete register `%s'"
+         :act 'modify
+         :smatch t)))
 
   (define-key global-map (kbd "C-x r C-d") #'register-delete))
 
