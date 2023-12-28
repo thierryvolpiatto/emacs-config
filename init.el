@@ -963,6 +963,23 @@ With a prefix arg ask with completion which buffer to kill."
           (ignore-errors (delete-window win)))))))
 (helm-define-key-with-subkeys global-map (kbd "C-x k") ?k 'tv/kill-buffer-and-windows)
 
+;; A simple zoom window that DTRT.
+;; Always overwrite the previous winconf when modifying it and zooming
+;; again from the same buffer.  Each buffer keeps its own winconf.
+(defvar zoom-window-config nil)
+(defun zoom-window ()
+  (interactive)
+  (let ((winconf (buffer-local-value 'zoom-window-config (current-buffer))))
+    (cond ((and (one-window-p) (null winconf))
+           (message "Window is already full screen"))
+          ((one-window-p)
+           (set-window-configuration winconf))
+          (t
+           (set (make-local-variable 'zoom-window-config)
+                (current-window-configuration))
+           (delete-other-windows)))))
+(global-set-key (kbd "C-z") #'zoom-window)
+
 ;;; Org
 ;;
 (with-eval-after-load 'org
@@ -1760,26 +1777,6 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
    '("Helm make command"
      "^\\s-*(\\(?:helm-make-\\)?\\(?:persistent-\\)?command-from-action\\s-+'?\\(\\(?:\\sw\\|\\s_\\|\\\\.\\)+\\)[[:space:]\n]*[^)]*" 1)))
 (add-hook 'emacs-lisp-mode-hook #'tv/imenu-add-extras-generic-expr)
-
-;;; Undo-tree
-;;
-;; Use version 0.8.2 from gitlab which needs queue package as
-;; dependencie as the ELPA version is deprecated (0.7.5).
-;; Version 0.8.2 has persistent history by default.
-;; Undo-tree.el and queue.el are now in ~/elisp.
-(require 'undo-tree)
-(global-undo-tree-mode 1)
-(setq undo-tree-auto-save-history nil)
-(setq undo-tree-mode-lighter nil)
-(add-to-list 'undo-tree-incompatible-major-modes 'helm-major-mode)
-;; undo-tree history files have their own directory otherwise they
-;; are added in current directory for each file.
-;; (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo-tree-history")))
-(defun git-gutter:undo-tree-undo (&rest _args)
-  (when git-gutter-mode
-    (run-with-idle-timer 0.1 nil 'git-gutter)))
-(advice-add 'undo-tree-undo :after 'git-gutter:undo-tree-undo)
-(advice-add 'undo-tree-redo :after 'git-gutter:undo-tree-undo)
 
 ;;; Yaml-mode
 ;;
