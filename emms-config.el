@@ -8,7 +8,9 @@
 (setq emms-cache-file "~/.emacs.d/emms/emms-cache")
 (setq emms-source-file-default-directory "/home/thierry/Musique")
 
-;; (require 'emms-auto nil t)
+;; Needed when installing from source.
+(require 'emms-auto nil t)
+
 (emms-all)
 
 ;; Setup `emms-player-list'.
