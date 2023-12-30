@@ -1061,16 +1061,6 @@ With a prefix arg ask with completion which buffer to kill."
 (add-hook 'eshell-mode-hook 'turn-on-eldoc-mode)
 (setq eldoc-minor-mode-string nil)
 
-(when (fboundp 'elisp--highlight-function-argument)
-  (defun tv/before-elisp--highlight-function-argument (old--fn &rest args)
-    (let ((sym    (nth 0 args))
-          (argstr (substitute-command-keys (nth 1 args)))
-          (index  (nth 2 args))
-          (prefix (nth 3 args)))
-      (apply old--fn args)))
-  (advice-add 'elisp--highlight-function-argument
-              :around #'tv/before-elisp--highlight-function-argument))
-
 ;;; Python config
 ;;
 (when (boundp 'gud-pdb-command-name)
