@@ -1774,10 +1774,17 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 
 ;;; Edebug
 ;;
+;; Use this to edebug Helm (avoid having to type edebug commands which
+;; are intercepted by Helm).
+;;
 ;; (with-eval-after-load 'edebug
 ;;   (setq edebug-trace t
 ;;         edebug-initial-mode 'trace
 ;;         edebug-sit-for-seconds 2))
+;;
+;; Prevent the backtrace buffer popping up while debugging.
+;; See (info "(elisp) Debugging Redisplay")
+;; (setq backtrace-on-redisplay-error t)
 
 ;;; Wfnames
 ;;
