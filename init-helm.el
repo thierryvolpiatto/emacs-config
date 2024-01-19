@@ -31,6 +31,8 @@
 (set-face-foreground 'helm-mark-prefix "Gold1")
 (add-to-list 'helm-sources-using-default-as-input 'helm-source-info-bash)
 (helm-define-key-with-subkeys global-map (kbd "C-c n") ?n 'helm-cycle-resume)
+(define-key helm-map (kbd "C-%") #'helm-exchange-minibuffer-and-header-line)
+(define-key helm-map (kbd "C--") #'helm-swap-windows)
 
 ;;; Load all autoloads for helm extensions
 ;;
