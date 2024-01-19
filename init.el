@@ -293,7 +293,7 @@ Restart works only on graphic display."
      nil `(("[^][\\s`]\\([^[](`'+\\)`']?[^][\\s']?" 1 font-lock-type-face)
            (,info-unicode-quoted-regexp 1 font-lock-type-face)
            ("^ --.*$" . tv/info-title-face)
-           ("[_]\\([^_]+\\)[_]" 1 tv/info-underline)
+           (" [_]\\([^_]+\\)[_] " 1 tv/info-underline)
            ("[\"]\\([^\"]*\\)[\"]" . font-lock-string-face)
            ("\\*Warning:\\*" . font-lock-warning-face)
            ("^ *\\([*•]\\) " 1 font-lock-variable-name-face)
@@ -978,7 +978,7 @@ With a prefix arg ask with completion which buffer to kill."
            (set (make-local-variable 'zoom-window-config)
                 (current-window-configuration))
            (delete-other-windows)))))
-(global-set-key (kbd "C-z") #'zoom-window)
+(global-set-key (kbd "C-&") #'zoom-window)
 
 ;;; Org
 ;;
@@ -1867,7 +1867,7 @@ mode temporarily."
          :msg "Delete register `%s'"
          :act 'modify
          :smatch t))
-    (customize-set-variable 'register-use-preview t)
+    (customize-set-variable 'register-use-preview 'insist)
     (cl-defmethod register-command-info ((_command (eql register-delete)))
         (make-register-preview-info
          :types '(all)
@@ -1876,6 +1876,10 @@ mode temporarily."
          :smatch t)))
 
   (define-key global-map (kbd "C-x r C-d") #'register-delete))
+
+;;; Irregular verbs (english)
+;;
+(autoload 'irregular-verbs-in-english "irregular-verbs-in-English" nil t)
 
 ;;; Load time
 ;;
