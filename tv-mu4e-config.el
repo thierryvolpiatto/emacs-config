@@ -498,22 +498,6 @@ if one may help."
     (apply original-fn args)))
 (add-function :around mu4e-compose-cite-function #'tv/mu4e-remove-buttons-in-reply)
 
-(defun mu4e--reorder-windows-after-send ()
-  (run-at-time
-   0.1 nil
-   (lambda ()
-     (walk-windows
-      (lambda (w)
-        (with-selected-window w
-          (unless (memq major-mode '(mu4e-headers-mode mu4e-compose-mode))
-            (delete-window w))))))))
-;; Will be bound locally to `message-send-actions'.
-;; NOTE: `mu4e--maybe-delete-frame' is a function that does nothing
-;; for now, replace it with my own to fix issue with restoration of
-;; *-headers-mode + *-view-mode after sending mail (endup with 3 windows).   
-(fset 'mu4e--maybe-delete-frame 'mu4e--reorder-windows-after-send)
-
-
 (when (boundp 'mu4e-search-minor-mode-map)
   (define-key mu4e-search-minor-mode-map (kbd "S") nil))
 
