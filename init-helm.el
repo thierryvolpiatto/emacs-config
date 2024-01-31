@@ -298,6 +298,40 @@ new directory."
           (loaddefs-generate default-directory file)
         (let ((generated-autoload-file file))
           (update-directory-autoloads default-directory)))))
+
+  (defun helm-restore-backups (_candidate)
+  (let ((mkd (helm-marked-candidates))
+        (copied 0)
+        ovw)
+    (cl-dolist (file mkd)
+      (let (dest)
+        (when (string-match "\\(?:\\`\\([!]\\)[^!]*\\1.*\\)\\|\\(?:~\\'\\)"
+                            (helm-basename file))
+          (setq dest (helm-aand (replace-regexp-in-string
+                                 "\\.~[[:digit:]]*~?"
+                                 "" (helm-basename file))
+                                ;; FIXME: What happen with filenames
+                                ;; containing one or more "!"?
+                                (replace-regexp-in-string "!" "/" it)
+                                (if (string-match "\\`/" it)
+                                    it
+                                  ;; If basename doesn't contain now
+                                  ;; "/", that's mean it was backup file
+                                  ;; stored in current directory, just
+                                  ;; expand it to this directory.
+                                  (expand-file-name it helm-ff-default-directory))))
+          (if (and (file-exists-p dest) (null ovw))
+              (helm-acase (helm-read-answer
+                           (format "Overwrite `%s' (answer [y,n,!,q])? " file)
+                           '("y" "n" "!" "q"))
+                ("y" (cl-incf copied) (copy-file file dest t t t t))
+                ("n" (ignore))
+                ("!" (setq ovw t) (cl-incf copied) (copy-file file dest t t t t))
+                ("q" (setq copied nil) (cl-return (message "Abort restoring files"))))
+            (cl-incf copied)
+            (copy-file file dest t t t t)))))
+    (when (numberp copied)
+      (message "(%s/%s) files copied" copied (length mkd)))))
   
   ;; Add actions to `helm-source-find-files' IF:
   (cl-defmethod helm-setup-user-source ((source helm-source-ffiles))
@@ -338,6 +372,15 @@ new directory."
        (file-exists-p (expand-file-name
                        (format "#%s#" (helm-basename candidate))
                        (helm-basedir candidate)))))
+    ;; Restore backup files
+    (helm-source-add-action-to-source-if
+     "Restore backup file(s)"
+     #'helm-restore-backups
+     source
+     (lambda (_candidate)
+       (cl-loop for file in (helm-marked-candidates)
+                always (string-match "\\(?:\\`\\([!]\\)[^!]*\\1.*\\)\\|\\(?:~\\'\\)"
+                                     (helm-basename file)))))
     ;; Byte recompile dir async
     (helm-source-add-action-to-source-if
      "Byte recompile directory (async)"
