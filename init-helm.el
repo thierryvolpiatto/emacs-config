@@ -300,38 +300,56 @@ new directory."
           (update-directory-autoloads default-directory)))))
 
   (defun helm-restore-backups (_candidate)
-  (let ((mkd (helm-marked-candidates))
-        (copied 0)
-        ovw)
-    (cl-dolist (file mkd)
-      (let (dest)
-        (when (string-match "\\(?:\\`\\([!]\\)[^!]*\\1.*\\)\\|\\(?:~\\'\\)"
-                            (helm-basename file))
-          (setq dest (helm-aand (replace-regexp-in-string
-                                 "\\.~[[:digit:]]*~?"
-                                 "" (helm-basename file))
-                                ;; FIXME: What happen with filenames
-                                ;; containing one or more "!"?
-                                (replace-regexp-in-string "!" "/" it)
-                                (if (string-match "\\`/" it)
-                                    it
-                                  ;; If basename doesn't contain now
-                                  ;; "/", that's mean it was backup file
-                                  ;; stored in current directory, just
-                                  ;; expand it to this directory.
-                                  (expand-file-name it helm-ff-default-directory))))
-          (if (and (file-exists-p dest) (null ovw))
-              (helm-acase (helm-read-answer
-                           (format "Overwrite `%s' (answer [y,n,!,q])? " file)
-                           '("y" "n" "!" "q"))
-                ("y" (cl-incf copied) (copy-file file dest t t t t))
-                ("n" (ignore))
-                ("!" (setq ovw t) (cl-incf copied) (copy-file file dest t t t t))
-                ("q" (setq copied nil) (cl-return (message "Abort restoring files"))))
-            (cl-incf copied)
-            (copy-file file dest t t t t)))))
-    (when (numberp copied)
-      (message "(%s/%s) files copied" copied (length mkd)))))
+    (let ((mkd (helm-marked-candidates))
+          (copied 0)
+          ovw)
+      (cl-dolist (file mkd)
+        (let (dest)
+          (when (string-match "\\(?:\\`\\([!]\\)[^!]*\\1.*\\)\\|\\(?:~\\'\\)"
+                              (helm-basename file))
+            (setq dest (helm-aand (replace-regexp-in-string
+                                   "\\.~[[:digit:]]*~?"
+                                   "" (helm-basename file))
+                                  (helm--normalize-backup-name it)
+                                  (if (string-match "\\`/" it)
+                                      it
+                                    ;; If basename doesn't contain now
+                                    ;; "/", that's mean it was a backup file
+                                    ;; stored in current directory, just
+                                    ;; expand it to this directory.
+                                    (expand-file-name it helm-ff-default-directory))))
+            (if (and (file-exists-p dest) (null ovw))
+                (helm-acase (helm-read-answer
+                             (format "Overwrite `%s' (answer [y,n,!,q])? " dest)
+                             '("y" "n" "!" "q"))
+                  ("y" (cl-incf copied) (copy-file file dest t t t t))
+                  ("n" (ignore))
+                  ("!" (setq ovw t) (cl-incf copied) (copy-file file dest t t t t))
+                  ("q" (setq copied nil) (cl-return (message "Abort restoring files"))))
+              (cl-incf copied)
+              (copy-file file dest t t t t)))))
+      (when (numberp copied)
+        (message "(%s/%s) files copied" copied (length mkd)))))
+
+  (defun helm--normalize-backup-name (fname)
+    "Normalize backup FNAME to its original name."
+    ;; When Emacs build a backup filename for the backup directory it
+    ;; replace "/" by "!" in the basedir of file and double the "!" in
+    ;; the basename, this is done by `make-backup-file-name-1'.  We want
+    ;; to replace only the "!" in the basedir part of FNAME.
+    (with-temp-buffer
+      (insert fname)
+      (goto-char (point-min))
+      (save-excursion
+        (when (looking-at "!") (replace-match "/"))
+        (while (re-search-forward "[^!]\\([!]\\)[^!]" nil t)
+          (replace-match "/" nil nil nil 1)))
+      (let ((count 0) rep)
+        (while (re-search-forward "!" nil t)
+          (cl-incf count))
+        (setq rep (make-string (/ count 2) ?!))
+        (replace-regexp-in-string "[!]+" rep (buffer-string)))))
+
   
   ;; Add actions to `helm-source-find-files' IF:
   (cl-defmethod helm-setup-user-source ((source helm-source-ffiles))
@@ -345,7 +363,8 @@ new directory."
     - Recoll directory creation
     - Epa encrypt file
     - Change background
-    - Csv2ledger"
+    - Csv2ledger
+    - Restore backup files"
     (helm-aif (slot-value source 'match)
         (setf (slot-value source 'match)
               (append it
