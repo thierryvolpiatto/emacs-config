@@ -167,6 +167,16 @@ Restart works only on graphic display."
       select-enable-clipboard t
       select-enable-primary t)
 
+(defun tv/mark-symbol-at-point ()
+  (interactive)
+  (let ((bounds (bounds-of-thing-at-point 'symbol)))
+    (cl-assert bounds nil "No symbol at point")
+    (goto-char (car bounds))
+    (push-mark (point))
+    (push-mark (cdr bounds) nil t)))
+;; I don't use cycle-spacing (M-SPC)
+(global-set-key (kbd "M-SPC") #'tv/mark-symbol-at-point)
+
 ;; Enable some commands disabled by default
 (put 'narrow-to-region 'disabled nil)          ; C-x n n
 (put 'narrow-to-page 'disabled nil)            ; C-x n p
