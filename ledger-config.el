@@ -260,6 +260,7 @@ If entries are already pointed, skip."
                               ("WELDOM EMBRUN" . ":brico:mont-dauphin")
                               ("GEMAP" . ":brico:mont-dauphin")
                               ("LOGITEL POUR: Rachel Bourdin" . ":rachel:virement")
+                              ("VIR PERM POUR: Rachel Bourdin" . ":rachel:virement:mensuel")
                               ("Solimut" . ":assurance:maladie:mutuelle")
                               ("CARTE X3077" . ":rachel:carte3077")))
 
