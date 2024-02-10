@@ -1902,6 +1902,24 @@ mode temporarily."
   (setq sly-completing-read-function 'completing-read)
   (setq inferior-lisp-program "/usr/bin/sbcl"))
 
+;;; Find Emacs bug at point
+;;
+(with-eval-after-load 'thingatpt
+  (define-thing-chars bug "#[:alnum:]"))
+
+;; Test bug#1234, Issue#2345.
+(defun tv/browse-bug-at-point (bug-number)
+  (interactive
+   (list (let* ((bug (thing-at-point 'bug 'noprops))
+                (reg "\\(?:[Bb]ug\\|[Ii]ssue\\)#\\([[:alnum:]]+\\)")
+                (num (and bug (string-match reg bug) (match-string 1 bug))))
+           (read-string "Bug number: " num))))
+  (let ((url (buffer-local-value 'bug-reference-url-format (current-buffer))))
+    (when (or current-prefix-arg (null url))
+      (setq url (read-string (format-prompt "Url" "debbugs.gnu.org")
+                             nil nil "https://debbugs.gnu.org/%s")))
+    (w3m-browse-url (format url bug-number) t t)))
+
 ;;; Load time
 ;;
 (tv/emacs-load-time)
