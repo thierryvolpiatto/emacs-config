@@ -1719,27 +1719,25 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;; eldoc-eval will not work.
 (add-hook 'post-command-hook #'tv/turn-on-auto-fill-mode-maybe t)
 
-(defun tv/pp-eval-or-expand-last-sexp (&optional arg)
-  "Eval sexp at point, with ARG macroexpand it."
-  (interactive "P")
-  (if arg
-      (pp-macroexpand-last-sexp nil)
-    (pp-eval-last-sexp nil)))
 (global-set-key (kbd "<f11> s c")                     'tv/goto-scratch)
 (global-set-key (kbd "<S-f12>")                       'cancel-debug-on-entry)
 (global-set-key (kbd "M-:")                           'pp-eval-expression)
 (define-key emacs-lisp-mode-map (kbd "RET")           'newline-and-indent)
-(define-key emacs-lisp-mode-map (kbd "C-c C-c b")     'byte-compile-file)
 (define-key emacs-lisp-mode-map (kbd "<next>")        'forward-page)
 (define-key emacs-lisp-mode-map (kbd "<prior>")       'backward-page)
 (define-key emacs-lisp-mode-map (kbd "C-M-j")         'backward-kill-sexp)
-(define-key emacs-lisp-mode-map (kbd "M-e")           'tv/pp-eval-or-expand-last-sexp)
 (define-key emacs-lisp-mode-map (kbd "C-c C-a")       'tv/align-let)
 (define-key lisp-interaction-mode-map (kbd "RET")     'newline-and-indent)
 (define-key lisp-interaction-mode-map (kbd "C-M-j")   'backward-kill-sexp)
-(define-key lisp-interaction-mode-map (kbd "M-e")     'tv/pp-eval-or-expand-last-sexp)
 (define-key lisp-interaction-mode-map (kbd "C-c C-a") 'tv/align-let)
 (define-key lisp-mode-map (kbd "RET")                 'newline-and-indent)
+
+;;; Macro expand
+;;
+(autoload 'macrostep-expand "macrostep.el" nil t) ; Installed in ~/elisp.
+(define-key lisp-interaction-mode-map (kbd "M-e") 'macrostep-expand)
+(with-eval-after-load 'macrostep
+  (define-key macrostep-mode-map (kbd "M-e") 'macrostep-collapse-all))
 
 ;;; Bash completion
 ;;
