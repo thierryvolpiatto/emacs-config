@@ -269,7 +269,9 @@ Restart works only on graphic display."
 (global-set-key (kbd "C-s") 'isl-search)
 (global-set-key (kbd "C-z") 'isl-narrow-to-defun)
 (global-set-key (kbd "C-M-s") 'isl-resume)
-
+(with-eval-after-load 'isl
+  (setq isl-before-position-string "≤"
+        isl-after-position-string "≥"))
 ;;; Info
 ;;
 ;; Cleanup `Info-directory-list'.
