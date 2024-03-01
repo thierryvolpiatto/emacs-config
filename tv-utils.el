@@ -533,21 +533,6 @@ Use a prefix arg to specify ARG."
 (global-set-key (kbd "C-c -") 'tv/rotate-windows)
 
 ;;;###autoload
-(defun tv/pp-sexp (&optional arg)
-  (interactive "p")
-  (when (and (looking-at "(")
-             (> (point-at-eol) (+ (point) 50)))
-    (save-excursion
-      (forward-char 1)
-      (while (and (ignore-errors (forward-sexp) t)
-                  (not (looking-at ")")))
-        (when (> (current-column) (or goal-column fill-column))
-          (if arg ; interactive
-              (newline-and-indent)
-            (newline)))))))
-
-;; Stollen somewhere.
-;;;###autoload
 (defun tv/kill-kbd (key)
   (interactive "kKill `kbd' form: ")
   (kill-new (message "(kbd \"%s\")" (help-key-description key nil)))
