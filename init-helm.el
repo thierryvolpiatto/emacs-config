@@ -104,7 +104,7 @@
 (add-to-list 'helm-completion-styles-alist '(python-mode . (emacs helm flex)))
 
 ;; Custom completion matching
-(add-to-list 'helm-completion-styles-alist '(wfnames-mode . (emacs helm flex)))
+;; (add-to-list 'helm-completion-styles-alist '(wfnames-mode . (emacs helm flex)))
 (add-to-list 'helm-completion-styles-alist '(switch-to-buffer . helm-fuzzy))
 
 ;; `completions-detailed' works now with both
