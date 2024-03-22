@@ -436,13 +436,16 @@ Restart works only on graphic display."
   (defun comment--advice-dwim (old--fn &rest args)
     (if (region-active-p)
         (apply old--fn args)
-      (save-excursion
-        (goto-char (point-at-bol))
-        (push-mark (point-at-eol) t t)
-        (apply old--fn args))
-      (indent-region (point-at-bol) (point-at-eol))
-      (forward-line 1)
-      (back-to-indentation)))
+      (let ((bol (point-at-bol))
+            (eol (point-at-eol)))
+        (save-excursion
+          (goto-char bol)
+          (push-mark  eol t t)
+          (unless (eql bol eol)
+            (apply old--fn args)))
+        (indent-region bol eol)
+        (forward-line 1)
+        (back-to-indentation))))
   (advice-add 'comment-dwim :around 'comment--advice-dwim))
 
 ;;; Woman/man
@@ -1901,6 +1904,10 @@ mode temporarily."
   (add-hook 'sly-mode-hook (lambda () (sly-symbol-completion-mode -1)))
   (setq sly-completing-read-function 'completing-read)
   (setq inferior-lisp-program "/usr/bin/sbcl"))
+
+;;; Boxquote
+;;
+(autoload 'boxquote-region "boxquote.el" nil t)
 
 ;;; Find Emacs bug at point
 ;;
