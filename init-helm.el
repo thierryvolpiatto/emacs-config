@@ -504,7 +504,8 @@ new directory."
     ;; Background
     (helm-source-add-action-to-source-if
      "Change background"
-     'tv/change-xfce-background
+     (if (fboundp 'image-dired-wallpaper-set)
+         #'image-dired-wallpaper-set #'tv/change-xfce-background)
      source
      (lambda (candidate)
        (member (file-name-extension candidate) '("jpg" "jpeg" "png")))
