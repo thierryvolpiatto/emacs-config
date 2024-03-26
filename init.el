@@ -1398,6 +1398,14 @@ With a prefix arg ask with completion which buffer to kill."
   (require 'tv-mu4e-config)
   (addressbook-turn-on-mail-completion))
 (global-set-key (kbd "<f8>") 'mu4e)
+;; Enable Mu4e when using C-x m before Mu4e has been started.
+(defun tv/advice--compose-mail (old--fn &rest args)
+  (unless (and (fboundp 'mu4e-running-p)
+               (mu4e-running-p))
+    (mu4e t)
+    (sit-for 1)) ; Let the time to the server to start.
+  (apply old--fn args))
+(advice-add 'compose-mail :around #'tv/advice--compose-mail)
 
 ;;; Auth-source
 ;;
@@ -1674,7 +1682,9 @@ With a prefix arg ask with completion which buffer to kill."
 (defun tv/goto-scratch ()
   (interactive)
   (switch-to-buffer "*scratch*"))
-  
+
+;;; Next/previous buffer
+;;
 ;; Affect `switch-to-prev/next-buffer' and `next/previous-buffer'.
 (setq switch-to-prev-buffer-skip (lambda (_window buffer _bury-or-kill)
                                    "Prevent switching to unwanted buffers."
@@ -1683,13 +1693,16 @@ With a prefix arg ask with completion which buffer to kill."
                                    ;; will not switch to that buffer. 
                                    (not (buffer-file-name buffer))))
 
-;; Switch to prev/next buffers by scrolling horizontally, this modify
-;; the behavior of `mwheel-scroll'.
-(setq mwheel-scroll-left-function (lambda (&optional _arg _set-minimum)
-                                    (switch-to-prev-buffer)))
-(setq mwheel-scroll-right-function (lambda (&optional _arg _set-minimum)
-                                     (switch-to-next-buffer)))
-(setq mouse-wheel-tilt-scroll t)
+(helm-define-key-with-subkeys
+    global-map (kbd "C-x <right>")
+    'right #'next-buffer
+    '((right . next-buffer) (left . previous-buffer))
+    nil nil 2)
+(helm-define-key-with-subkeys
+    global-map (kbd "C-x <left>")
+    'left #'previous-buffer
+    '((right . next-buffer) (left . previous-buffer))
+    nil nil 2)
 
 ;; Add fontification to some functions
 (cl-dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
@@ -1741,6 +1754,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;
 (autoload 'macrostep-expand "macrostep.el" nil t) ; Installed in ~/elisp.
 (define-key lisp-interaction-mode-map (kbd "M-e") 'macrostep-expand)
+(define-key emacs-lisp-mode-map (kbd "M-e") 'macrostep-expand)
 (with-eval-after-load 'macrostep
   (define-key macrostep-mode-map (kbd "M-e") 'macrostep-collapse-all))
 
