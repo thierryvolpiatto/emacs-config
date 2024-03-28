@@ -2,16 +2,16 @@
 
 ;;; Code:
 
-(defvar tv/startup-time (current-time))
-(defun tv/emacs-load-time ()
-  (let ((time (float-time (time-subtract (current-time) tv/startup-time))))
+(defvar tv:startup-time (current-time))
+(defun tv:emacs-load-time ()
+  (let ((time (float-time (time-subtract (current-time) tv:startup-time))))
     (message "Emacs config loaded in %s seconds"
              (format "%.2f" time))))
 
 
 ;;; Packages.el config.
 ;;
-(defun tv/fix-selected-packages ()
+(defun tv:fix-selected-packages ()
   (interactive)
   (package-initialize)
   (package--save-selected-packages (package--find-non-dependencies)))
@@ -62,24 +62,24 @@
 (global-set-key (kbd "<f11>") nil) ; Disable `toggle-frame-fullscreen'
 
 ;; Revert-buffer
-(defun tv/revert-buffer-no-query ()
+(defun tv:revert-buffer-no-query ()
   (interactive)
   ;; Try to save excursion as Emacs-29 moves point nowhere after
   ;; reverting.
   (save-excursion
     (revert-buffer t t)))
-(global-set-key (kbd "C-c R") #'tv/revert-buffer-no-query)
+(global-set-key (kbd "C-c R") #'tv:revert-buffer-no-query)
 
 ;; y-or-n-p everywhere
 (fset 'yes-or-no-p 'y-or-n-p)
 
 ;; Stop/restart emacs
-(defun tv/stop-emacs-1 ()
+(defun tv:stop-emacs-1 ()
   (if (daemonp)
       (save-buffers-kill-emacs)
     (save-buffers-kill-terminal)))
 
-(defun tv/stop-emacs (arg)
+(defun tv:stop-emacs (arg)
   "Close emacs, with a prefix arg restart it.
 Restart works only on graphic display."
   (interactive "P")
@@ -104,8 +104,8 @@ Restart works only on graphic display."
                                     t))))
                      kill-emacs-query-functions)
            kill-emacs-query-functions)))
-    (tv/stop-emacs-1)))
-(global-set-key [remap save-buffers-kill-terminal] 'tv/stop-emacs) ; C-x C-c
+    (tv:stop-emacs-1)))
+(global-set-key [remap save-buffers-kill-terminal] 'tv:stop-emacs) ; C-x C-c
 
 ;; Add newline at end of files
 (setq require-final-newline t)
@@ -138,12 +138,12 @@ Restart works only on graphic display."
 
 ;;; emacs-backup-config
 ;;
-(defun tv/backup-file-p (file)
+(defun tv:backup-file-p (file)
   (and (normal-backup-enable-predicate file)
        (null (locate-dominating-file file ".git"))))
 
 (setq backup-directory-alist '(("" . "~/.emacs.d/emacs_backup"))
-      backup-enable-predicate #'tv/backup-file-p
+      backup-enable-predicate #'tv:backup-file-p
       backup-by-copying t
       version-control t
       vc-make-backup-files nil
@@ -167,7 +167,7 @@ Restart works only on graphic display."
       select-enable-clipboard t
       select-enable-primary t)
 
-(defun tv/mark-symbol-at-point ()
+(defun tv:mark-symbol-at-point ()
   (interactive)
   (let ((bounds (bounds-of-thing-at-point 'symbol)))
     (cl-assert bounds nil "No symbol at point")
@@ -175,7 +175,7 @@ Restart works only on graphic display."
     (push-mark (point))
     (push-mark (cdr bounds) nil t)))
 ;; I don't use cycle-spacing (M-SPC)
-(global-set-key (kbd "M-SPC") #'tv/mark-symbol-at-point)
+(global-set-key (kbd "M-SPC") #'tv:mark-symbol-at-point)
 
 ;; Enable some commands disabled by default
 (put 'narrow-to-region 'disabled nil)          ; C-x n n
@@ -285,13 +285,13 @@ Restart works only on graphic display."
   (add-to-list 'Info-directory-list "/usr/share/info")
   (add-to-list 'Info-directory-list "~/elisp/info")
   ;; Fancy faces in info.
-  (defface tv/info-ref-item
+  (defface tv:info-ref-item
     '((((background dark)) :background "DimGray" :foreground "Gold")
       (((background light)) :background "firebrick" :foreground "LightGray"))
     "Face for item stating with -- in info." :group 'Info :group 'faces)
 
-  (defvar tv/info-title-face 'tv/info-ref-item)
-  (defvar tv/info-underline 'underline)
+  (defvar tv:info-title-face 'tv:info-ref-item)
+  (defvar tv:info-underline 'underline)
   (defvar info-unicode-quote-start (string 8216))
   (defvar info-unicode-quote-end (string 8217))
   (defvar info-unicode-quoted-regexp (format "[%s]\\([^%s%s]+\\)[%s]"
@@ -300,12 +300,12 @@ Restart works only on graphic display."
                                              info-unicode-quote-end
                                              info-unicode-quote-end
                                              ))
-  (defun tv/font-lock-doc-rules ()
+  (defun tv:font-lock-doc-rules ()
     (font-lock-add-keywords
      nil `(("[^][\\s`]\\([^[](`'+\\)`']?[^][\\s']?" 1 font-lock-type-face)
            (,info-unicode-quoted-regexp 1 font-lock-type-face)
-           ("^ --.*$" . tv/info-title-face)
-           (" [_]\\([^_]+\\)[_] " 1 tv/info-underline)
+           ("^ --.*$" . tv:info-title-face)
+           (" [_]\\([^_]+\\)[_] " 1 tv:info-underline)
            ("[\"]\\([^\"]*\\)[\"]" . font-lock-string-face)
            ("\\*Warning:\\*" . font-lock-warning-face)
            ("^ *\\([*•]\\) " 1 font-lock-variable-name-face)
@@ -313,7 +313,7 @@ Restart works only on graphic display."
            ("^[[:upper]][a-z- ]*:" . font-lock-variable-name-face)
            )))
 
-  (add-hook 'Info-mode-hook 'tv/font-lock-doc-rules)
+  (add-hook 'Info-mode-hook 'tv:font-lock-doc-rules)
   (define-key Info-mode-map [remap Info-index] 'helm-info-at-point))
 
 ;;; Async
@@ -337,13 +337,13 @@ Restart works only on graphic display."
 ;; Kill buffer after C-d in ansi-term.
 (defadvice term-sentinel (after kill-buffer activate)
   (kill-buffer))
-(defun tv/term ()
+(defun tv:term ()
   (interactive)
   (ansi-term "/bin/bash"))
 (defadvice term-command-hook (before decode-string)
   (setq string (decode-coding-string string locale-coding-system)))
 (when (version< emacs-version "24.3.50.1") (ad-activate 'term-command-hook))
-(global-set-key (kbd "<f11> t") 'tv/term)
+(global-set-key (kbd "<f11> t") 'tv:term)
 
 ;; Browse url
 ;;
@@ -392,32 +392,32 @@ Restart works only on graphic display."
 ;;
 (require 'tv-utils)
 
-(define-key lisp-interaction-mode-map (kbd "C-M-!") 'tv/eval-region) 
-(define-key emacs-lisp-mode-map (kbd "C-M-!") 'tv/eval-region)
-(advice-add 'view-echo-area-messages :around 'tv/view-echo-area-messages)
+(define-key lisp-interaction-mode-map (kbd "C-M-!") 'tv:eval-region) 
+(define-key emacs-lisp-mode-map (kbd "C-M-!") 'tv:eval-region)
+(advice-add 'view-echo-area-messages :around 'tv:view-echo-area-messages)
 (helm-define-key-with-subkeys global-map (kbd "C-h e")
                               ?e #'view-echo-area-messages
-                              '((?q . tv/quit-echo-area-messages)))
+                              '((?q . tv:quit-echo-area-messages)))
 
-(global-set-key (kbd "M-\"") 'tv/insert-double-quote)
-(global-set-key (kbd "C-M-`") 'tv/insert-double-backquote)
-(global-set-key (kbd "C-M-(") 'tv/move-pair-forward)
-(global-set-key (kbd "C-M-\"") 'tv/insert-double-quote-and-close-forward)
-(global-set-key (kbd "C-M-)") 'tv/insert-pair-and-close-forward)
-(global-set-key (kbd "<f5> c") 'tv/toggle-calendar)
-(global-set-key [remap kill-whole-line] 'tv/kill-whole-line)
-(global-set-key [remap kill-line] 'tv/kill-line)
-(global-set-key [remap delete-char] 'tv/delete-char)
-(global-set-key [remap c-electric-delete-forward] 'tv/delete-char)
+(global-set-key (kbd "M-\"") 'tv:insert-double-quote)
+(global-set-key (kbd "C-M-`") 'tv:insert-double-backquote)
+(global-set-key (kbd "C-M-(") 'tv:move-pair-forward)
+(global-set-key (kbd "C-M-\"") 'tv:insert-double-quote-and-close-forward)
+(global-set-key (kbd "C-M-)") 'tv:insert-pair-and-close-forward)
+(global-set-key (kbd "<f5> c") 'tv:toggle-calendar)
+(global-set-key [remap kill-whole-line] 'tv:kill-whole-line)
+(global-set-key [remap kill-line] 'tv:kill-line)
+(global-set-key [remap delete-char] 'tv:delete-char)
+(global-set-key [remap c-electric-delete-forward] 'tv:delete-char)
 (global-set-key (kbd "C-<") 'other-window-backward)
 (global-set-key (kbd "C->") 'other-window-forward)
 (global-set-key [C-left] 'screen-top)
 (global-set-key [C-right] 'screen-bottom)
-(global-set-key (kbd "<M-down>") 'tv/scroll-down)
-(global-set-key (kbd "<M-up>") 'tv/scroll-up)
-(global-set-key (kbd "<C-M-down>") 'tv/scroll-other-down)
-(global-set-key (kbd "<C-M-up>") 'tv/scroll-other-up)
-(global-set-key (kbd "C-c k") 'tv/insert-kbd-at-point)
+(global-set-key (kbd "<M-down>") 'tv:scroll-down)
+(global-set-key (kbd "<M-up>") 'tv:scroll-up)
+(global-set-key (kbd "<C-M-down>") 'tv:scroll-other-down)
+(global-set-key (kbd "<C-M-up>") 'tv:scroll-other-up)
+(global-set-key (kbd "C-c k") 'tv:insert-kbd-at-point)
 
 ;;; Help
 ;;
@@ -426,10 +426,11 @@ Restart works only on graphic display."
   (setq text-quoting-style 'grave))
 ;; Advice describe-variable.
 (require 'describe-variable)
-(define-key help-mode-map (kbd "C-c e") 'tv/pp-value-in-help)
+(define-key help-mode-map (kbd "C-c e") 'tv:pp-value-in-help)
 
 ;;; comment
 ;;
+(define-key global-map (kbd "C-M-;") 'next-line)
 (with-eval-after-load 'newcomment
   ;; Change the behavior of `M-;' by commenting line.
   ;; Much simpler than emacs-25 `comment-line'.
@@ -505,14 +506,14 @@ Restart works only on graphic display."
 ;;; Shell script
 ;;
 (with-eval-after-load 'sh-script
-  (defun tv/set-sh-script-mode-name ()
+  (defun tv:set-sh-script-mode-name ()
     (setq-local mode-name (if (fboundp 'all-the-icons-alltheicon)
                               (all-the-icons-alltheicon "script" :height 1.0 :v-adjust 0.0)
                             "Sh "))
     (setq mode-line-process nil))
   (add-to-list 'auto-mode-alist '("\\.bashrc\\'" . sh-mode))
   (add-hook 'sh-mode-hook 'flymake-mode)
-  (add-hook 'sh-mode-hook #'tv/set-sh-script-mode-name)
+  (add-hook 'sh-mode-hook #'tv:set-sh-script-mode-name)
   ;; Use shellcheck as backend for flymake.
   (autoload 'flymake-shellcheck-load "flymake-shellcheck")
   (add-hook 'sh-mode-hook 'flymake-shellcheck-load)
@@ -548,7 +549,7 @@ Restart works only on graphic display."
 ;; Don't forget to install necessary fonts with M-x
 ;; all-the-icons-install-fonts.
 
-(defun tv/git-branch-in-mode-line ()
+(defun tv:git-branch-in-mode-line ()
   (require 'helm-ls-git)
   (when (and (buffer-file-name (current-buffer))
              (fboundp 'helm-ls-git--branch)
@@ -557,7 +558,7 @@ Restart works only on graphic display."
             (char-to-string #x29a9) ; (⦩) Needs a one line height char.
             (propertize (helm-ls-git--branch) 'face '(:foreground "yellow")))))
 
-(defun tv/select-git-branches-menu ()
+(defun tv:select-git-branches-menu ()
   (let ((branchs (split-string (shell-command-to-string "git branch") "\n" t)))
     (cl-loop with current
              for b in branchs
@@ -577,7 +578,7 @@ Restart works only on graphic display."
                      lst
                      '("--" ["Git status" helm-browse-project])))))
 
-(defun tv/custom-modeline-github-vc ()
+(defun tv:custom-modeline-github-vc ()
   (require 'helm-ls-git)
   (let* ((fname (buffer-file-name (current-buffer)))
          (branch
@@ -605,7 +606,7 @@ Restart works only on graphic display."
                    'local-map (make-mode-line-mouse-map
                                'mouse-1 (lambda ()
                                           (interactive)
-                                          (popup-menu (tv/select-git-branches-menu)))))))))
+                                          (popup-menu (tv:select-git-branches-menu)))))))))
 
 (with-eval-after-load 'all-the-icons
   (setq-default mode-line-format '("%e"
@@ -621,7 +622,7 @@ Restart works only on graphic display."
                                    " "
                                    "%p %l/%c"
                                    " "
-                                   (:eval (tv/custom-modeline-github-vc))
+                                   (:eval (tv:custom-modeline-github-vc))
                                    " "
                                    mode-line-misc-info
                                    mode-line-end-spaces))
@@ -690,7 +691,7 @@ Restart works only on graphic display."
 ;;; Time
 ;;
 (with-eval-after-load 'time
-  (defun tv/round-time-to-nearest-hour ()
+  (defun tv:round-time-to-nearest-hour ()
     (let* ((time-string (format-time-string " %I:%M "))
            (split (split-string time-string ":"))
            (hour (string-to-number (car split)))
@@ -702,7 +703,7 @@ Restart works only on graphic display."
             ((and (> min 15) (<= min 45))
              (format " %02d:%s" hour 30)))))
   
-  (defvar tv/time-icons
+  (defvar tv:time-icons
     '((" 00:00" . "🕛")
       (" 01:00" . "🕐")
       (" 02:00" . "🕑")
@@ -730,16 +731,16 @@ Restart works only on graphic display."
       (" 11:30" . "🕦")
       (" 12:30" . "🕧")))
 
-  (defun tv/custom-modeline-time ()
-    (let* ((hour (tv/round-time-to-nearest-hour))
-           (icon (assoc-default (tv/round-time-to-nearest-hour) tv/time-icons)))
+  (defun tv:custom-modeline-time ()
+    (let* ((hour (tv:round-time-to-nearest-hour))
+           (icon (assoc-default (tv:round-time-to-nearest-hour) tv:time-icons)))
       (concat
        (propertize (format-time-string " %H:%M ")
                    'face `(:height 0.9 :foreground "green")
                    'help-echo (format "%s\n Mouse-1: display calendar"
                                       (format-time-string " %A %e %b, %Y" now))
                    'mouse-face 'highlight
-                   'local-map (make-mode-line-mouse-map 'mouse-1 'tv/toggle-calendar))
+                   'local-map (make-mode-line-mouse-map 'mouse-1 'tv:toggle-calendar))
        icon)))
 
   ;; World-time
@@ -781,7 +782,7 @@ Restart works only on graphic display."
             "")
           ;; time
           (concat
-           (tv/custom-modeline-time)
+           (tv:custom-modeline-time)
            ;; `time-zone' is a let-bounded var in `display-time-update'.
            (and time-zone (format "(%s)" time-zone))))))
 (display-time)
@@ -814,7 +815,7 @@ Restart works only on graphic display."
 (when (boundp 'other-window-scroll-default)
   (setq other-window-scroll-default (lambda () (get-mru-window 'visible nil t))))
 
-(defun tv/transparency-modify-1 (arg)
+(defun tv:transparency-modify-1 (arg)
   "Increase Emacs frame transparency.
 If ARG is non nil decrease transparency."
   (when (window-system)
@@ -828,18 +829,18 @@ If ARG is non nil decrease transparency."
       (modify-frame-parameters nil (list (cons 'alpha mod-alpha)))
       (message "Alpha[%s]" mod-alpha))))
 
-(defun tv/transparency-modify-increase ()
+(defun tv:transparency-modify-increase ()
   (interactive)
-  (tv/transparency-modify-1 nil))
+  (tv:transparency-modify-1 nil))
 
-(defun tv/transparency-modify-decrease ()
+(defun tv:transparency-modify-decrease ()
   (interactive)
-  (tv/transparency-modify-1 'decrease))
+  (tv:transparency-modify-1 'decrease))
 
 (helm-define-key-with-subkeys
     global-map (kbd "C-8")
-    nil 'ignore '((?+ . tv/transparency-modify-increase)
-                  (?- . tv/transparency-modify-decrease))
+    nil 'ignore '((?+ . tv:transparency-modify-increase)
+                  (?- . tv:transparency-modify-decrease))
     (propertize "Increase/Decrease transparency (+/-)"
                 'face 'minibuffer-prompt)
     nil 10)
@@ -962,7 +963,7 @@ If ARG is non nil decrease transparency."
 (global-set-key (kbd "C-x C-é") 'split-window-vertically)
 (global-set-key (kbd "C-x C-\"") 'split-window-horizontally)
 
-(defun tv/kill-buffer-and-windows (arg)
+(defun tv:kill-buffer-and-windows (arg)
   "Kill current-buffer and delete its window.
 With a prefix arg ask with completion which buffer to kill."
   (interactive "P")
@@ -976,7 +977,7 @@ With a prefix arg ask with completion which buffer to kill."
       (dolist (win windows)
         (when (window-live-p win)
           (ignore-errors (delete-window win)))))))
-(helm-define-key-with-subkeys global-map (kbd "C-x k") ?k 'tv/kill-buffer-and-windows)
+(helm-define-key-with-subkeys global-map (kbd "C-x k") ?k 'tv:kill-buffer-and-windows)
 
 ;; A simple zoom window that DTRT.
 ;; Always overwrite the previous winconf when modifying it and zooming
@@ -1092,7 +1093,7 @@ With a prefix arg ask with completion which buffer to kill."
             (define-key python-mode-map (kbd "C-c C-i") 'helm-semantic-or-imenu)
             (define-key python-mode-map (kbd "C-m") 'newline-and-indent)
             (define-key python-mode-map (kbd "C-c '") 'flymake-goto-next-error)))
-(defun tv/run-or-switch-to-python-shell ()
+(defun tv:run-or-switch-to-python-shell ()
   (interactive)
   (let* ((buf      (ignore-errors (python-shell-get-process-or-error t)))
          (proc-buf (and buf (process-buffer buf)))
@@ -1101,7 +1102,7 @@ With a prefix arg ask with completion which buffer to kill."
            (quit-window nil win))
           (proc-buf (pop-to-buffer proc-buf nil t))
           (t (call-interactively #'run-python)))))
-(global-set-key (kbd "<f11> p") 'tv/run-or-switch-to-python-shell)
+(global-set-key (kbd "<f11> p") 'tv:run-or-switch-to-python-shell)
 
 ;;; Tramp-config
 ;;
@@ -1155,13 +1156,13 @@ With a prefix arg ask with completion which buffer to kill."
   (setq diary-file "~/.emacs.d/diary")
   (unless (fboundp 'fancy-diary-display) ; Fix emacs-25.
     (defalias 'fancy-diary-display 'diary-fancy-display))
-  (defface tv/calendar-blocks
+  (defface tv:calendar-blocks
       '((t (:background "ForestGreen")))
     "Face used to highlight diary blocks in calendar."
     :group 'calendar)
   ;; Add a different face in diary entry like this:
-  ;; %%(diary-block 8 2 2021 13 2 2021 'tv/calendar-blocks-1)
-  (defface tv/calendar-blocks-1
+  ;; %%(diary-block 8 2 2021 13 2 2021 'tv:calendar-blocks-1)
+  (defface tv:calendar-blocks-1
       '((t (:background "DarkOliveGreen")))
     "Face used to highlight diary blocks in calendar."
     :group 'calendar)
@@ -1226,7 +1227,7 @@ With a prefix arg ask with completion which buffer to kill."
   (setq calendar-holidays `(,@holiday-solar-holidays
                             ,@holiday-french-holidays))
 
-  (defun tv/calendar-diary-or-holiday (arg)
+  (defun tv:calendar-diary-or-holiday (arg)
     "A single command for diary and holiday entries."
     ;; Assume diary and holidays are shown in calendar.
     (interactive "p")
@@ -1234,19 +1235,19 @@ With a prefix arg ask with completion which buffer to kill."
            (props (cl-loop for ov in ovs
                            for prop = (cadr (overlay-properties ov))
                            when (memq prop '(diary holiday diary-anniversary
-                                             tv/calendar-blocks tv/calendar-blocks-1))
+                                             tv:calendar-blocks tv:calendar-blocks-1))
                            collect prop)))
       (cond ((and (or (memq 'diary props)
-                      (memq 'tv/calendar-blocks props)
-                      (memq 'tv/calendar-blocks-1 props)
+                      (memq 'tv:calendar-blocks props)
+                      (memq 'tv:calendar-blocks-1 props)
                       (memq 'diary-anniversary props))
                   (memq 'holiday props))
              (cl-letf (((symbol-function 'message) #'ignore))
                (diary-view-entries arg))
              (calendar-cursor-holidays))
             ((or (memq 'diary props)
-                 (memq 'tv/calendar-blocks props)
-                 (memq 'tv/calendar-blocks-1 props)
+                 (memq 'tv:calendar-blocks props)
+                 (memq 'tv:calendar-blocks-1 props)
                  (memq 'diary-anniversary props))
              (cl-letf (((symbol-function 'message) #'ignore))
                (diary-view-entries arg)))
@@ -1256,7 +1257,7 @@ With a prefix arg ask with completion which buffer to kill."
 
   (define-key calendar-mode-map (kbd "C-<right>") 'calendar-forward-month)
   (define-key calendar-mode-map (kbd "C-<left>")  'calendar-backward-month)
-  (define-key calendar-mode-map (kbd "RET")       'tv/calendar-diary-or-holiday))
+  (define-key calendar-mode-map (kbd "RET")       'tv:calendar-diary-or-holiday))
 
 ;;; Appointements (appt)
 ;;
@@ -1283,7 +1284,7 @@ With a prefix arg ask with completion which buffer to kill."
        (setq bookmark-set-fringe-mark nil))
   ;; Write directly to bmk file instead of writing to a "
   ;; *bookmarks*" buffer and then writing to bmk file.
-  (defun tv/advice--bookmark-write-file (file)
+  (defun tv:advice--bookmark-write-file (file)
     "Write `bookmark-alist' to FILE."
     (let ((reporter (make-progress-reporter
                      (format "Saving bookmarks to file %s..." file))))
@@ -1329,7 +1330,7 @@ With a prefix arg ask with completion which buffer to kill."
           (file-error (message "Can't write %s" file)))
         (kill-buffer (current-buffer)))
       (progress-reporter-done reporter)))
-  (advice-add 'bookmark-write-file :override #'tv/advice--bookmark-write-file))
+  (advice-add 'bookmark-write-file :override #'tv:advice--bookmark-write-file))
 
 ;;; git-gutter-mode
 ;;
@@ -1351,7 +1352,7 @@ With a prefix arg ask with completion which buffer to kill."
 ;; Toggle whitespace changes view
 (global-set-key (kbd "C-c _") 'git-gutter:toggle-space-view)
 
-(defun tv/git-gutter:popup-diff-quit ()
+(defun tv:git-gutter:popup-diff-quit ()
   (interactive)
   (with-selected-window (get-buffer-window git-gutter:popup-buffer)
     (View-quit)))
@@ -1365,7 +1366,7 @@ With a prefix arg ask with completion which buffer to kill."
     global-map (kbd "C-x v d") nil 'git-gutter:popup-hunk '((?n . git-gutter:next-hunk)
                                                             (?d . git-gutter:next-hunk)
                                                             (?p . git-gutter:previous-hunk)
-                                                            (?q . tv/git-gutter:popup-diff-quit)))
+                                                            (?q . tv:git-gutter:popup-diff-quit)))
 
 ;;; Addressbook
 ;;
@@ -1383,11 +1384,11 @@ With a prefix arg ask with completion which buffer to kill."
   (define-key w3m-mode-map (kbd "M-<left>")       'w3m-previous-buffer)
   (define-key w3m-mode-map (kbd "V")              'helm-w3m-bookmarks)
   (define-key w3m-mode-map (kbd "M")              'w3m-view-url-with-browse-url)
-  (define-key w3m-mode-map (kbd "M-q")            'tv/w3m-fill-region-or-paragraph)
+  (define-key w3m-mode-map (kbd "M-q")            'tv:w3m-fill-region-or-paragraph)
   (define-key w3m-mode-map (kbd "<down>")         'next-line)
   (define-key w3m-mode-map (kbd "<up>")           'previous-line)
-  (define-key w3m-mode-map (kbd "RET")            'tv/w3m-RET)
-  (define-key w3m-mode-map (kbd "<backspace>")    'tv/scroll-up)
+  (define-key w3m-mode-map (kbd "RET")            'tv:w3m-RET)
+  (define-key w3m-mode-map (kbd "<backspace>")    'tv:scroll-up)
   (define-key w3m-lynx-like-map (kbd "S-<right>") 'w3m-view-this-url-new-session))
 (global-set-key (kbd "<f7> h") 'w3m)
 
@@ -1399,13 +1400,13 @@ With a prefix arg ask with completion which buffer to kill."
   (addressbook-turn-on-mail-completion))
 (global-set-key (kbd "<f8>") 'mu4e)
 ;; Enable Mu4e when using C-x m before Mu4e has been started.
-(defun tv/advice--compose-mail (old--fn &rest args)
+(defun tv:advice--compose-mail (old--fn &rest args)
   (unless (and (fboundp 'mu4e-running-p)
                (mu4e-running-p))
     (mu4e t)
     (sit-for 1)) ; Let the time to the server to start.
   (apply old--fn args))
-(advice-add 'compose-mail :around #'tv/advice--compose-mail)
+(advice-add 'compose-mail :around #'tv:advice--compose-mail)
 
 ;;; Auth-source
 ;;
@@ -1536,7 +1537,7 @@ With a prefix arg ask with completion which buffer to kill."
               (define-key eshell-hist-mode-map (kbd "M-p") 'helm-eshell-history))
             ;; Eshell prompt
             (set-face-attribute 'eshell-prompt nil :foreground "Gold1")
-            (advice-add 'eshell-send-invisible :override #'tv/advice--eshell-send-invisible)))
+            (advice-add 'eshell-send-invisible :override #'tv:advice--eshell-send-invisible)))
 
 ;; Eshell history size
 (setq eshell-history-size 1000)       ; Same as env var HISTSIZE.
@@ -1567,7 +1568,7 @@ With a prefix arg ask with completion which buffer to kill."
 
 ;; Eshell modifiers
 (with-eval-after-load "em-pred"
-  (defun tv/advice--eshell-pred-substitute (&optional repeat)
+  (defun tv:advice--eshell-pred-substitute (&optional repeat)
     "Return a modifier function that will substitute matches."
     (let ((delim (char-after))
           match replace end)
@@ -1595,7 +1596,7 @@ With a prefix arg ask with completion which buffer to kill."
              str)
            lst)))))
   ;; Allow empty string in substitution e.g. echo foo.el(:gs/.el//)
-  (advice-add 'eshell-pred-substitute :override #'tv/advice--eshell-pred-substitute)
+  (advice-add 'eshell-pred-substitute :override #'tv:advice--eshell-pred-substitute)
   ;; Fix echo, perhaps using as alias *echo is even better.
   (setq eshell-plain-echo-behavior t))
 
@@ -1628,7 +1629,7 @@ With a prefix arg ask with completion which buffer to kill."
   (setq-default ispell-program-name "aspell")
   (setq ispell-local-dictionary "francais"))
 
-(defun tv/toggle-flyspell (arg)
+(defun tv:toggle-flyspell (arg)
   "Toggle `flyspell-mode'." 
   (interactive "P")
   (require 'flyspell)
@@ -1647,22 +1648,22 @@ With a prefix arg ask with completion which buffer to kill."
              (message "Starting new Ispell process aspell with %s dictionary..." dic)))
       (when (fboundp 'helm-autoresize-mode)
         (helm-autoresize-mode -1)))))
-(global-set-key (kbd "C-c @") 'tv/toggle-flyspell)
+(global-set-key (kbd "C-c @") 'tv:toggle-flyspell)
 
 ;;; Elisp/lisp
 ;;
-(defun tv/set-mode-name (name)
+(defun tv:set-mode-name (name)
   (setq-local mode-name name))
-(defun tv/set-lisp-interaction-name ()
+(defun tv:set-lisp-interaction-name ()
   (if (fboundp 'all-the-icons-fileicon)
-      (tv/set-mode-name (all-the-icons-fileicon "lisp"))
+      (tv:set-mode-name (all-the-icons-fileicon "lisp"))
     "Lisp"))
-(defun tv/set-emacs-lisp-name ()
+(defun tv:set-emacs-lisp-name ()
   (if (fboundp 'all-the-icons-fileicon)
-      (tv/set-mode-name (all-the-icons-fileicon "elisp"))
+      (tv:set-mode-name (all-the-icons-fileicon "elisp"))
     "Elisp"))
-(add-hook 'lisp-interaction-mode-hook #'tv/set-lisp-interaction-name)
-(add-hook 'emacs-lisp-mode-hook #'tv/set-emacs-lisp-name)
+(add-hook 'lisp-interaction-mode-hook #'tv:set-lisp-interaction-name)
+(add-hook 'emacs-lisp-mode-hook #'tv:set-emacs-lisp-name)
 
 ;; Fix indentation in CL functions (cl-flet/loop etc...).
 (setq lisp-indent-function #'common-lisp-indent-function
@@ -1679,7 +1680,7 @@ With a prefix arg ask with completion which buffer to kill."
              (get (cdr el) 'common-lisp-indent-function)
            (car (cdr el))))))
 
-(defun tv/goto-scratch ()
+(defun tv:goto-scratch ()
   (interactive)
   (switch-to-buffer "*scratch*"))
 
@@ -1710,44 +1711,44 @@ With a prefix arg ask with completion which buffer to kill."
    mode
    '(("(\\<\\(cl-dolist\\)\\>" 1 font-lock-keyword-face))))
 
-(defvar tv/autofill-modes '(emacs-lisp-mode
+(defvar tv:autofill-modes '(emacs-lisp-mode
                             lisp-interaction-mode
                             sh-mode))
-(defun tv/point-in-comment-p (pos)
+(defun tv:point-in-comment-p (pos)
   "Returns non-nil if POS is in a comment."
   (eq 'comment (syntax-ppss-context (syntax-ppss pos))))
 
-(defun tv/point-in-docstring-p (pos)
+(defun tv:point-in-docstring-p (pos)
   "Returns non-nil if POS is in a docstring."
   (and (eq 'string (syntax-ppss-context (syntax-ppss pos)))
        (eq (get-text-property (point) 'face) 'font-lock-doc-face)))
 
-(defun tv/turn-on-auto-fill-mode-maybe ()
+(defun tv:turn-on-auto-fill-mode-maybe ()
   "Enable auto-fill-mode only in comments or docstrings.
 Variable adaptive-fill-mode is disabled when a docstring field is detected."
-  (when (memq major-mode tv/autofill-modes)
-    (let ((in-docstring (tv/point-in-docstring-p (point))))
+  (when (memq major-mode tv:autofill-modes)
+    (let ((in-docstring (tv:point-in-docstring-p (point))))
       (setq adaptive-fill-mode (not in-docstring))
       (auto-fill-mode
-       (if (or (tv/point-in-comment-p (point))
+       (if (or (tv:point-in-comment-p (point))
                in-docstring)
            1 -1)))))
 ;; Maybe turn on auto-fill-mode when a comment or docstring field
 ;; is detected. Ensure the hook is appended otherwise things like
 ;; eldoc-eval will not work.
-(add-hook 'post-command-hook #'tv/turn-on-auto-fill-mode-maybe t)
+(add-hook 'post-command-hook #'tv:turn-on-auto-fill-mode-maybe t)
 
-(global-set-key (kbd "<f11> s c")                     'tv/goto-scratch)
+(global-set-key (kbd "<f11> s c")                     'tv:goto-scratch)
 (global-set-key (kbd "<S-f12>")                       'cancel-debug-on-entry)
 (global-set-key (kbd "M-:")                           'pp-eval-expression)
 (define-key emacs-lisp-mode-map (kbd "RET")           'newline-and-indent)
 (define-key emacs-lisp-mode-map (kbd "<next>")        'forward-page)
 (define-key emacs-lisp-mode-map (kbd "<prior>")       'backward-page)
 (define-key emacs-lisp-mode-map (kbd "C-M-j")         'backward-kill-sexp)
-(define-key emacs-lisp-mode-map (kbd "C-c C-a")       'tv/align-let)
+(define-key emacs-lisp-mode-map (kbd "C-c C-a")       'tv:align-let)
 (define-key lisp-interaction-mode-map (kbd "RET")     'newline-and-indent)
 (define-key lisp-interaction-mode-map (kbd "C-M-j")   'backward-kill-sexp)
-(define-key lisp-interaction-mode-map (kbd "C-c C-a") 'tv/align-let)
+(define-key lisp-interaction-mode-map (kbd "C-c C-a") 'tv:align-let)
 (define-key lisp-mode-map (kbd "RET")                 'newline-and-indent)
 
 ;;; Macro expand
@@ -1769,10 +1770,10 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 
 ;;; Log-view (only used with RCS)
 ;;
-(defun tv/log-view-fontify ()
+(defun tv:log-view-fontify ()
   (font-lock-add-keywords nil '(("^revision [0-9.]*" . font-lock-comment-face)
                                 ("[a-zA-Z ]*:" . font-lock-type-face))))
-(add-hook 'log-view-mode-hook 'tv/log-view-fontify)
+(add-hook 'log-view-mode-hook 'tv:log-view-fontify)
 
 ;;; Wgrep
 ;;
@@ -1784,7 +1785,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 ;;; Imenu
 ;;
 ;; Allow browsing use-package definitions in init files.
-(defun tv/imenu-add-extras-generic-expr ()
+(defun tv:imenu-add-extras-generic-expr ()
   (require 'imenu)
   (add-to-list
    'imenu-generic-expression
@@ -1793,7 +1794,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
    'imenu-generic-expression
    '("Helm make command"
      "^\\s-*(\\(?:helm-make-\\)?\\(?:persistent-\\)?command-from-action\\s-+'?\\(\\(?:\\sw\\|\\s_\\|\\\\.\\)+\\)[[:space:]\n]*[^)]*" 1)))
-(add-hook 'emacs-lisp-mode-hook #'tv/imenu-add-extras-generic-expr)
+(add-hook 'emacs-lisp-mode-hook #'tv:imenu-add-extras-generic-expr)
 
 ;;; Yaml-mode
 ;;
@@ -1849,7 +1850,7 @@ Variable adaptive-fill-mode is disabled when a docstring field is detected."
 
 ;;; modify `exchange-point-and-mark' so that it doesn't activate mark
 ;;  when it is not already active.
-(defun tv/exchange-point-and-mark (&optional arg)
+(defun tv:exchange-point-and-mark (&optional arg)
   "Put the mark where point is now, and point where the mark is now.
 
 If Transient Mark mode is on, a prefix ARG deactivates the mark
@@ -1873,7 +1874,7 @@ mode temporarily."
 	      (t (activate-mark))))
     nil))
 (global-unset-key (kbd "C-x C-x"))
-(global-set-key (kbd "C-x C-x") 'tv/exchange-point-and-mark)
+(global-set-key (kbd "C-x C-x") 'tv:exchange-point-and-mark)
 
 ;;; registers
 ;;
@@ -1929,7 +1930,7 @@ mode temporarily."
   (define-thing-chars bug "#[:alnum:]"))
 
 ;; Test bug#1234, Issue#2345.
-(defun tv/browse-bug-at-point (bug-number)
+(defun tv:browse-bug-at-point (bug-number)
   (interactive
    (list (let* ((bug (thing-at-point 'bug 'noprops))
                 (reg "\\(?:[Bb]ug\\|[Ii]ssue\\)#\\([[:alnum:]]+\\)")
@@ -1943,7 +1944,7 @@ mode temporarily."
 
 ;;; Load time
 ;;
-(tv/emacs-load-time)
+(tv:emacs-load-time)
 
 ;;; psession
 ;;
@@ -1955,7 +1956,7 @@ mode temporarily."
       "\\(\\.org\\|diary\\|\\.jpg\\|\\.png\\|\\*image-native-display\\*\\)$")
 
 ;; Link now scratch buffer to file
-(tv/restore-scratch-buffer)
+(tv:restore-scratch-buffer)
 
 ;; Local Variables:
 ;; indent-tabs-mode: nil

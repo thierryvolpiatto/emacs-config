@@ -44,20 +44,20 @@
       smtpmail-smtp-server "posteo.de"
       smtpmail-smtp-service 587)
 
-(defvar tv/message-pre-winconf nil)
-(defun tv/message-mode-setup ()
-  (setq tv/message-pre-winconf (current-window-configuration))
+(defvar tv:message-pre-winconf nil)
+(defun tv:message-mode-setup ()
+  (setq tv:message-pre-winconf (current-window-configuration))
   (setq fill-column 72)
   (turn-on-auto-fill)
   (epa-mail-mode 1)
   (define-key epa-mail-mode-map (kbd "C-c C-e l") 'helm-list-epg-keys))
-(add-hook 'message-mode-hook 'tv/message-mode-setup)
+(add-hook 'message-mode-hook 'tv:message-mode-setup)
 
-(defun tv/after-send-hook ()
-  (when tv/message-pre-winconf
-    (set-window-configuration tv/message-pre-winconf))
-  (setq tv/message-pre-winconf nil))
-(add-hook 'message-sent-hook 'tv/after-send-hook)
+(defun tv:after-send-hook ()
+  (when tv:message-pre-winconf
+    (set-window-configuration tv:message-pre-winconf))
+  (setq tv:message-pre-winconf nil))
+(add-hook 'message-sent-hook 'tv:after-send-hook)
 
 ;; Contexts (setup smtp servers)
 ;;
@@ -105,19 +105,19 @@
       mu4e-headers-include-related nil) ; Can be toggled with "W".
 
 ;; See (info "(mu4e) Refiling messages")
-(defvar tv/mu4e-subject-alist '(("\\[djcb/mu\\]" . "/Posteo/github-mu"))
+(defvar tv:mu4e-subject-alist '(("\\[djcb/mu\\]" . "/Posteo/github-mu"))
   "List of subjects and their respective refile folders.")
 
-(defun tv/mu4e-refile-folder-function (msg)
+(defun tv:mu4e-refile-folder-function (msg)
   "Set the refile folder for MSG."
   (let ((subject (mu4e-message-field msg :subject))
         (maildir (mu4e-message-field msg :maildir)))
-    (cl-loop for (reg . dir) in tv/mu4e-subject-alist
+    (cl-loop for (reg . dir) in tv:mu4e-subject-alist
              when (string-match reg subject)
              return dir
              finally return "/archive")))
 
-(setq mu4e-refile-folder 'tv/mu4e-refile-folder-function)
+(setq mu4e-refile-folder 'tv:mu4e-refile-folder-function)
 
 ;; Avoid default 'shr which is slow, ugly and even worse open
 ;; unexpectedly links (particularly image links).
@@ -138,16 +138,16 @@
       gnus-dired-mail-mode 'mu4e-user-agent)
 
 ;; Disable mu4e-modeline-mode when quitting.
-(defun tv/mu4e-quit-window ()
+(defun tv:mu4e-quit-window ()
   (interactive)
   (quit-window)
   (when (fboundp 'mu4e-modeline-mode)
     (mu4e-modeline-mode -1)))
 
-(define-key mu4e-main-mode-map "q"   'tv/mu4e-quit-window)
+(define-key mu4e-main-mode-map "q"   'tv:mu4e-quit-window)
 (define-key mu4e-main-mode-map "Q"   'mu4e-quit)
 (define-key mu4e-main-mode-map "\C-s" 'helm-mu)
-(define-key mu4e-main-mode-map [remap mu4e-headers-search] 'tv/mu4e-headers-search)
+(define-key mu4e-main-mode-map [remap mu4e-headers-search] 'tv:mu4e-headers-search)
 (define-key mu4e-main-mode-map "u" 'mu4e-update-index)
 
 (setq mu4e-headers-skip-duplicates t)
@@ -204,7 +204,7 @@
          :key ?m)
         ))
 
-(defun tv/mu4e-headers-search ()
+(defun tv:mu4e-headers-search ()
   "Add a query reminder in `mu4e-headers-search' prompt."
   (interactive)
   (mu4e-headers-search
@@ -214,7 +214,7 @@
             " " 'display (propertize "(from:date:flag:prio:mime:maildir:and/not)"
                                      'face '(:foreground "DimGray"))))))
 
-(add-hook 'mu4e-compose-mode-hook 'tv/message-mode-setup)
+(add-hook 'mu4e-compose-mode-hook 'tv:message-mode-setup)
 
 ;;; Use 'fancy' non-ascii characters in various places in mu4e
 (setq mu4e-use-fancy-chars t)
@@ -232,20 +232,20 @@
 (setq mu4e-get-mail-command "offlineimap -q -u Basic")
 
 ;;; Make a full update all the
-;; `tv/mu4e-max-number-update-before-toggling' mail retrievals.
-(defvar tv/mu4e-counter 10) ; Ensure a full update on startup.
-(defvar tv/mu4e-max-number-update-before-toggling 10)
-(defvar tv/mu4e-get-mail-command-full "offlineimap -u Basic")
-(defvar tv/mu4e-get-mail-command-quick "offlineimap -q -u Basic")
-(defun tv/mu4e-update-mail-quick-or-full ()
-  (if (>= tv/mu4e-counter
-          tv/mu4e-max-number-update-before-toggling)
+;; `tv:mu4e-max-number-update-before-toggling' mail retrievals.
+(defvar tv:mu4e-counter 10) ; Ensure a full update on startup.
+(defvar tv:mu4e-max-number-update-before-toggling 10)
+(defvar tv:mu4e-get-mail-command-full "offlineimap -u Basic")
+(defvar tv:mu4e-get-mail-command-quick "offlineimap -q -u Basic")
+(defun tv:mu4e-update-mail-quick-or-full ()
+  (if (>= tv:mu4e-counter
+          tv:mu4e-max-number-update-before-toggling)
       (progn
-        (setq mu4e-get-mail-command tv/mu4e-get-mail-command-full)
-        (setq tv/mu4e-counter 0))
-    (setq mu4e-get-mail-command tv/mu4e-get-mail-command-quick)
-    (cl-incf tv/mu4e-counter)))
-(add-hook 'mu4e-update-pre-hook #'tv/mu4e-update-mail-quick-or-full)
+        (setq mu4e-get-mail-command tv:mu4e-get-mail-command-full)
+        (setq tv:mu4e-counter 0))
+    (setq mu4e-get-mail-command tv:mu4e-get-mail-command-quick)
+    (cl-incf tv:mu4e-counter)))
+(add-hook 'mu4e-update-pre-hook #'tv:mu4e-update-mail-quick-or-full)
 
 ;;; Automatic updates.
 ;(setq mu4e-update-interval 600)
@@ -269,34 +269,34 @@
   ;; Show Smileys
   (add-hook 'mu4e-view-mode-hook 'smiley-buffer))
 
-(defun tv/curl-url-retrieve (url)
+(defun tv:curl-url-retrieve (url)
   (with-temp-buffer
     (call-process "curl" nil t nil "-s" "-L" url)
     (buffer-string)))
 
-(defun tv/mu4e-show-patch-other-frame (url)
+(defun tv:mu4e-show-patch-other-frame (url)
   (let ((contents "")
         (bufname (file-name-nondirectory url)))
     (if (buffer-live-p (get-buffer bufname))
         (progn (switch-to-buffer-other-frame bufname)
                (view-mode))
-      (setq contents (tv/curl-url-retrieve url))
+      (setq contents (tv:curl-url-retrieve url))
       (switch-to-buffer-other-frame (get-buffer-create bufname))
       (erase-buffer)
       (save-excursion (insert contents))
       (diff-mode)
       (view-mode))))
 
-(defun tv/mu4e-browse-url-or-show-patch (arg)
+(defun tv:mu4e-browse-url-or-show-patch (arg)
   (interactive "P")
   (require 'helm-net)
   (require 'w3m)
   (let ((url (w3m-active-region-or-url-at-point)))
     (when url
       (if (string-match "\\.\\(patch\\|diff\\)\\'" url)
-          (tv/mu4e-show-patch-other-frame (if arg (concat url "?w=1") url))
+          (tv:mu4e-show-patch-other-frame (if arg (concat url "?w=1") url))
         (browse-url url)))))
-(define-key mu4e-view-mode-map (kbd "C-c C-c") 'tv/mu4e-browse-url-or-show-patch)
+(define-key mu4e-view-mode-map (kbd "C-c C-c") 'tv:mu4e-browse-url-or-show-patch)
 
 (defadvice w3m-goto-next-anchor (before go-to-end-of-anchor activate)
   (when (w3m-anchor-sequence)
@@ -313,7 +313,7 @@
 ;; Ignore these pesty gnus buttons.
 (setq w3m-handle-non-anchor-buttons nil)
 
-(defun tv/mu4e-next-anchor ()
+(defun tv:mu4e-next-anchor ()
   (interactive)
   (require 'w3m)
   (or (w3m-next-anchor)
@@ -330,7 +330,7 @@
                                   'face 'mu4e-link-face)))))
           (and next-url (goto-char next-url))))))
 
-(defun tv/mu4e-previous-anchor ()
+(defun tv:mu4e-previous-anchor ()
   (interactive)
   (require 'helm-lib)
   (require 'w3m)
@@ -346,8 +346,8 @@
                           (goto-char it)))))
         (and prev-url (goto-char prev-url)))))
 
-(define-key mu4e-view-mode-map (kbd "<C-tab>")   'tv/mu4e-next-anchor)
-(define-key mu4e-view-mode-map (kbd "<backtab>") 'tv/mu4e-previous-anchor)
+(define-key mu4e-view-mode-map (kbd "<C-tab>")   'tv:mu4e-next-anchor)
+(define-key mu4e-view-mode-map (kbd "<backtab>") 'tv:mu4e-previous-anchor)
 (define-key mu4e-view-mode-map (kbd "C-c v") 'mu4e-view-open-attachment)
 
 ()
@@ -389,7 +389,7 @@ try this wash."
 
 ;; For some reasons some mails have many null characters at the end,
 ;; most of the time these emails come from emacs developers.
-(defun tv/delete-null-chars-from-gnus ()
+(defun tv:delete-null-chars-from-gnus ()
   "Delete null characters in gnus article buffer.
 Such characters are represented by \"^@\" chars.
 They are most of the time at the end of mails sent with Gnus or Rmail.
@@ -404,14 +404,14 @@ See https://en.wikipedia.org/wiki/Null_character."
       ;; buffers i.e. scratch.
       (while (re-search-forward "\0" nil t)
         (replace-match "")))))
-(add-hook 'gnus-part-display-hook 'tv/delete-null-chars-from-gnus)
+(add-hook 'gnus-part-display-hook 'tv:delete-null-chars-from-gnus)
 
-(defun tv/remove-cr ()
+(defun tv:remove-cr ()
   (when (save-excursion
           (message-goto-body)
           (re-search-forward "\C-m$" nil t))
     (article-remove-cr)))
-(add-hook 'gnus-part-display-hook 'tv/remove-cr)
+(add-hook 'gnus-part-display-hook 'tv:remove-cr)
 
 ;; Crypto
 ;; Autocrypt will decide if encrypting or not.
@@ -433,7 +433,7 @@ See https://en.wikipedia.org/wiki/Null_character."
 (setq mm-verify-option 'known
       mm-decrypt-option 'known)
 
-(defun tv/epg-import-keys-region (start end)
+(defun tv:epg-import-keys-region (start end)
   "Same as `epa-import-keys-region' but less verbose and BTW faster."
   (let ((context (epg-make-context epa-protocol)))
     (message "Autocrypt importing gpg key...")
@@ -443,7 +443,7 @@ See https://en.wikipedia.org/wiki/Null_character."
           (message "Autocrypt importing gpg key done"))
       (error "Importing from autocrypt failed: %s" (cadr err)))))
 
-(defun tv/autocrypt-import-key ()
+(defun tv:autocrypt-import-key ()
   "Import key from autocrypt header to gpg keyring.
 Try to import the key only if an autocrypt header is found and if
 sender is not one of `autocrypt-peers'.  Called interactively with a
@@ -467,16 +467,16 @@ if one may help."
         (insert "-----BEGIN PGP PUBLIC KEY BLOCK-----\n")
         (goto-char (point-max))
         (insert "\n-----END PGP PUBLIC KEY BLOCK-----")
-        (tv/epg-import-keys-region (point-min) (point-max))))))
-;; (add-hook 'gnus-article-decode-hook 'tv/autocrypt-import-key)
+        (tv:epg-import-keys-region (point-min) (point-max))))))
+;; (add-hook 'gnus-article-decode-hook 'tv:autocrypt-import-key)
 
 ;; Refresh main buffer when sending queued mails
-(defun tv/advice-smtpmail-send-queued-mail ()
+(defun tv:advice-smtpmail-send-queued-mail ()
   (when (and mu4e~main-buffer-name
              (eq major-mode 'mu4e-main-mode))
     (with-current-buffer mu4e~main-buffer-name
       (revert-buffer))))
-(advice-add 'smtpmail-send-queued-mail :after #'tv/advice-smtpmail-send-queued-mail)
+(advice-add 'smtpmail-send-queued-mail :after #'tv:advice-smtpmail-send-queued-mail)
 
 ;; Org links
 (define-key mu4e-view-mode-map (kbd "C-c C-l") 'org-store-link)
@@ -488,7 +488,7 @@ if one may help."
 (define-key mu4e-headers-mode-map (kbd "<down>") 'mu4e-headers-next)
 (define-key mu4e-headers-mode-map (kbd "<up>") 'mu4e-headers-prev)
 
-(defun tv/mu4e-remove-buttons-in-reply (original-fn &rest args)
+(defun tv:mu4e-remove-buttons-in-reply (original-fn &rest args)
   (if current-prefix-arg
       (delete-region (point) (point-max))
     (save-excursion
@@ -496,7 +496,7 @@ if one may help."
       (while (re-search-forward "^[[]\\{2\\}.*[]]\\{2\\}" nil t)
         (replace-match "")))
     (apply original-fn args)))
-(add-function :around mu4e-compose-cite-function #'tv/mu4e-remove-buttons-in-reply)
+(add-function :around mu4e-compose-cite-function #'tv:mu4e-remove-buttons-in-reply)
 
 (when (boundp 'mu4e-search-minor-mode-map)
   (define-key mu4e-search-minor-mode-map (kbd "S") nil))

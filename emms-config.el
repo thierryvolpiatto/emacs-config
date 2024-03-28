@@ -48,22 +48,22 @@
                         'face 'font-lock-type-face
                         'help-echo all))))
 
-(defun tv/emms-mode-line-icon-function ()
+(defun tv:emms-mode-line-icon-function ()
   (let* ((pls  (emms-mode-line-playlist-current))
          (icon (if (string-match "\\` *[`]http://" pls) "📻" "🎵")))
     (concat " " emms-mode-line-icon-before-format icon pls)))
 
-(setq emms-mode-line-mode-line-function 'tv/emms-mode-line-icon-function)
+(setq emms-mode-line-mode-line-function 'tv:emms-mode-line-icon-function)
 
 (emms-mode-line 1)
 
-(defun tv/emms-volume--pulse-get-volume ()
+(defun tv:emms-volume--pulse-get-volume ()
   (with-temp-buffer
     (call-process "pactl" nil t nil "list" "sinks")
     (goto-char (point-min))
     (when (re-search-forward "^[\t ]*Volume.?:.*/ *\\([0-9]*\\)% */" nil t)
       (string-to-number (match-string 1)))))
-(advice-add 'emms-volume--pulse-get-volume :override #'tv/emms-volume--pulse-get-volume)
+(advice-add 'emms-volume--pulse-get-volume :override #'tv:emms-volume--pulse-get-volume)
 (setq emms-volume-change-function #'emms-volume-pulse-change)
 
 ;; «Bindings» (to ".Bindings")
@@ -86,7 +86,7 @@
 
 ;; «Update-mpd-directory» (to ".Update-mpd-directory")
 
-(defun tv/emms-update-and-clean-cache ()
+(defun tv:emms-update-and-clean-cache ()
   (interactive)
   (when emms-cache-db
     (clrhash emms-cache-db)
@@ -99,7 +99,7 @@
     (emms-add-directory-tree "~/Musique/")))
 
 
-(defun tv/emms-track-simple-description (track)
+(defun tv:emms-track-simple-description (track)
   "Simple function to give a user-readable description of a track.
 If it's a file track, just return the file name.  Otherwise,
 return the type and the name with a colon in between.
@@ -113,24 +113,24 @@ character."
            (emms-format-url-track-name (emms-track-name track)))
           (t (concat (symbol-name type)
                      ": " (emms-track-name track))))))
-(setq emms-track-description-function 'tv/emms-track-simple-description)
+(setq emms-track-description-function 'tv:emms-track-simple-description)
 
 ;; Switch to xfce presentation mode
-(defun tv/emms-xfce-presentation-mode-1 (val)
+(defun tv:emms-xfce-presentation-mode-1 (val)
   (call-process "xfconf-query" nil nil nil
                 "xfconf-query" "-c" "xfce4-power-manager"
                 "-p" "/xfce4-power-manager/presentation-mode"
                 "-s" val))
 
-(defun tv/emms-player-start-hook ()
-  (tv/emms-xfce-presentation-mode-1 "true"))
+(defun tv:emms-player-start-hook ()
+  (tv:emms-xfce-presentation-mode-1 "true"))
 
-(defun tv/emms-player-stop-hook ()
-  (tv/emms-xfce-presentation-mode-1 "false"))
+(defun tv:emms-player-stop-hook ()
+  (tv:emms-xfce-presentation-mode-1 "false"))
 
-(add-hook 'emms-player-started-hook 'tv/emms-player-start-hook)
-(add-hook 'emms-player-stopped-hook 'tv/emms-player-stop-hook)
-(add-hook 'emms-player-finished-hook 'tv/emms-player-stop-hook)
+(add-hook 'emms-player-started-hook 'tv:emms-player-start-hook)
+(add-hook 'emms-player-stopped-hook 'tv:emms-player-stop-hook)
+(add-hook 'emms-player-finished-hook 'tv:emms-player-stop-hook)
 
 (provide 'emms-config)
 

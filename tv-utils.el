@@ -12,7 +12,7 @@
 (declare-function helm-basename                 "ext:helm-lib.el")
 (declare-function helm-read-file-name           "ext:helm-mode.el")
 (declare-function common-lisp-indent-function-1 "cl-indent.el")
-(declare-function tv/get-disk-info              "ext:dired-extension.el")
+(declare-function tv:get-disk-info              "ext:dired-extension.el")
 (declare-function iterator:circular             "ext:iterator.el")
 (declare-function iterator:next                 "ext:iterator.el")
 (declare-function helm-fast-remove-dups         "ext:helm-lib.el")
@@ -36,7 +36,7 @@
 ;;
 ;;
 ;;;###autoload
-(defun tv/mount-sshfs (&optional arg)
+(defun tv:mount-sshfs (&optional arg)
   (interactive "P")
   (require 'tramp)
   (let* ((user (if arg
@@ -69,7 +69,7 @@
         (message "Failed to mount remote filesystem %s on %s" fs mp)))))
 
 ;;;###autoload
-(defun tv/umount-sshfs ()
+(defun tv:umount-sshfs ()
   (interactive)
   (let ((mp (read-directory-name "Mount point: " "~/sshfs")))
     (if (file-equal-p default-directory mp)
@@ -118,7 +118,7 @@ depending the value of N is positive or negative."
 ;;
 ;;
 ;;;###autoload
-(defun tv/eval-region (beg end)
+(defun tv:eval-region (beg end)
   (interactive "r")
   (let ((str (buffer-substring beg end))
         expr
@@ -138,47 +138,47 @@ depending the value of N is positive or negative."
                         "\n- "))))
 
 ;; key-for-calendar 
-(defvar tv/calendar-alive nil)
+(defvar tv:calendar-alive nil)
 ;;;###autoload
-(defun tv/toggle-calendar ()
+(defun tv:toggle-calendar ()
   (interactive)
-  (if tv/calendar-alive
+  (if tv:calendar-alive
       (when (get-buffer "*Calendar*")
         (with-current-buffer "diary" (save-buffer)) 
         (calendar-exit)) ; advice reset win conf
       ;; In case calendar were called without toggle command
       (unless (get-buffer-window "*Calendar*")
-        (setq tv/calendar-alive (current-window-configuration))
+        (setq tv:calendar-alive (current-window-configuration))
         (calendar))))
 
 (defadvice calendar-exit (after reset-win-conf activate)
-  (when tv/calendar-alive
-    (set-window-configuration tv/calendar-alive)
-    (setq tv/calendar-alive nil)))
+  (when tv:calendar-alive
+    (set-window-configuration tv:calendar-alive)
+    (setq tv:calendar-alive nil)))
 
 ;;; Insert-pairs 
 ;;
 (setq parens-require-spaces t)
 
 ;;;###autoload
-(defun tv/insert-double-quote (&optional arg)
+(defun tv:insert-double-quote (&optional arg)
   (interactive "P")
   (insert-pair arg ?\" ?\"))
 
 ;;;###autoload
-(defun tv/insert-double-backquote (&optional arg)
+(defun tv:insert-double-backquote (&optional arg)
   (interactive "P")
   (insert-pair arg ?\` (if (or (eq major-mode 'emacs-lisp-mode)
                                (eq major-mode 'lisp-interaction-mode))
                            ?\' ?\`)))
 
 ;;;###autoload
-(defun tv/insert-vector (&optional arg)
+(defun tv:insert-vector (&optional arg)
   (interactive "P")
   (insert-pair arg ?\[ ?\]))
 
 ;;;###autoload
-(defun tv/move-pair-forward (beg end)
+(defun tv:move-pair-forward (beg end)
   (interactive "r")
   (if (region-active-p)
       (progn (goto-char beg) (insert "(")
@@ -211,7 +211,7 @@ depending the value of N is positive or negative."
         (cancel-timer timer)))))
 
 ;;;###autoload
-(defun tv/insert-pair-and-close-forward (beg end)
+(defun tv:insert-pair-and-close-forward (beg end)
   (interactive "r")
   (if (region-active-p)
       (progn (goto-char beg) (insert "(")
@@ -249,7 +249,7 @@ depending the value of N is positive or negative."
         (cancel-timer timer)))))
 
 ;;;###autoload
-(defun tv/insert-double-quote-and-close-forward (beg end)
+(defun tv:insert-double-quote-and-close-forward (beg end)
   (interactive "r")
   (if (region-active-p)
       (progn (goto-char beg) (insert "\"")
@@ -277,7 +277,7 @@ depending the value of N is positive or negative."
                                   unread-command-events)))
                  (throw 'break nil))))))))
 
-(defun tv/view-echo-area-messages (old--fn &rest args)
+(defun tv:view-echo-area-messages (old--fn &rest args)
   (let ((win (get-buffer-window (messages-buffer) 'visible)))
     (cond ((and win (one-window-p))
            (quit-window nil win))
@@ -285,14 +285,14 @@ depending the value of N is positive or negative."
            (delete-other-windows win))
           (t (apply old--fn args)))))
 
-(defun tv/quit-echo-area-messages ()
+(defun tv:quit-echo-area-messages ()
   (interactive)
   (with-selected-window (get-buffer-window (messages-buffer))
     (quit-window)))
 
 ;; Kill-backward
 ;;;###autoload
-(defun tv/kill-whole-line (&optional arg)
+(defun tv:kill-whole-line (&optional arg)
   "Similar to `kill-whole-line' but don't kill new line.
 Also alow killing whole line in a shell prompt without trying
 to kill prompt.
@@ -310,17 +310,17 @@ Can be used from any place in the line."
 
 ;; Kill-line
 ;;;###autoload
-(defun tv/kill-line ()
+(defun tv:kill-line ()
   "Like kill-line but when at eol delete whole line.
 Ignore text read-only at bol i.e. prompts."
   (interactive)
   (if (eolp)
-      (tv/kill-whole-line)
+      (tv:kill-whole-line)
     (kill-line)))
 
 ;; Delete-char-or-region
 ;;;###autoload
-(defun tv/delete-char (arg)
+(defun tv:delete-char (arg)
   (interactive "p")
   (if (helm-region-active-p)
       (delete-region (region-beginning) (region-end))
@@ -349,9 +349,9 @@ Ignore text read-only at bol i.e. prompts."
   (epa-sign-file file nil 'detached))
 
 ;;;###autoload
-(defun tv/gpg-verify-file (gpg-file)
+(defun tv:gpg-verify-file (gpg-file)
   "Meant to be used from eshell alias.
-    alias gpg-verify tv/gpg-verify-file $1"
+    alias gpg-verify tv:gpg-verify-file $1"
   (let ((data-file (directory-files
                     (file-name-directory (expand-file-name gpg-file)) t
                     (concat (regexp-quote (helm-basename gpg-file t)) "$"))))
@@ -405,7 +405,7 @@ Ignore text read-only at bol i.e. prompts."
 
 ;; Check paren errors
 ;;;###autoload
-(defun tv/check-paren-error ()
+(defun tv:check-paren-error ()
   (interactive)
   (let (pos-err)
     (save-excursion
@@ -422,7 +422,7 @@ Ignore text read-only at bol i.e. prompts."
 
 ;;; Generate strong passwords.
 ;;
-(defun tv/shuffle-vector (vector)
+(defun tv:shuffle-vector (vector)
   "Shuffle VECTOR."
   (cl-loop with len = (1- (length vector))
            while (>= len 0)
@@ -434,7 +434,7 @@ Ignore text read-only at bol i.e. prompts."
                 (setq len (1- len)))
            finally return vector))
 
-(defun tv/shuffle-sequence (seq)
+(defun tv:shuffle-sequence (seq)
   (cl-loop for i from (1- (length seq)) downto 1
            do (cl-rotatef (elt seq i) (elt seq (random i)))
            finally return seq))
@@ -454,7 +454,7 @@ the password will be of length (floor LIMIT)."
            for i from 1 to (floor (/ limit 2))
            for rand1 = (int-to-string (random 9))
            for alphaindex = (random (length alph))
-           for rand2 = (aref (tv/shuffle-sequence alph) alphaindex)
+           for rand2 = (aref (tv:shuffle-sequence alph) alphaindex)
            ;; Collect a random number between O-9
            concat rand1 into ls
            ;; collect a random alpha between a-zA-Z.
@@ -462,7 +462,7 @@ the password will be of length (floor LIMIT)."
            finally return ls))
 
 ;;;###autoload
-(defun tv/generate-passwd (arg)
+(defun tv:generate-passwd (arg)
   "Generate a random password of (max 8 ARG) chars.
 Use a prefix arg to specify ARG."
   (interactive "p")
@@ -471,7 +471,7 @@ Use a prefix arg to specify ARG."
     (message "New pwd `%s' saved to kill ring" newpwd)))
 
 ;;;###autoload
-(defun tv/gen-socgen-passwd ()
+(defun tv:gen-socgen-passwd ()
   (interactive)
   (let ((code (mapconcat (lambda (x) (number-to-string x))
                          (cl-loop with randoms = nil
@@ -488,7 +488,7 @@ Use a prefix arg to specify ARG."
 ;;
 (defvar helm-alive-p)
 ;;;###autoload
-(defun tv/toggle-window-split ()
+(defun tv:toggle-window-split ()
   (interactive)
   (unless helm-alive-p
     (if (= (length (window-list)) 2)
@@ -503,13 +503,13 @@ Use a prefix arg to specify ARG."
                               (split-window-horizontally)))
              buf)))
       (user-error "Can toggle split only with two windows"))))
-(global-set-key (kbd "C-x C-'") 'tv/toggle-window-split)
+(global-set-key (kbd "C-x C-'") 'tv:toggle-window-split)
 
 ;;; Rotate windows
 ;;
 ;;
 ;;;###autoload
-(defun tv/rotate-windows ()
+(defun tv:rotate-windows ()
   (interactive)
   (require 'iterator)
   (cl-assert (> (length (window-list)) 1)
@@ -530,21 +530,21 @@ Use a prefix arg to specify ARG."
                        (set-window-start w1 s2)
                        (set-window-buffer w2 b1)
                        (set-window-start w2 s1)))))
-(global-set-key (kbd "C-c -") 'tv/rotate-windows)
+(global-set-key (kbd "C-c -") 'tv:rotate-windows)
 
 ;;;###autoload
-(defun tv/kill-kbd (key)
+(defun tv:kill-kbd (key)
   (interactive "kKill `kbd' form: ")
   (kill-new (message "(kbd \"%s\")" (help-key-description key nil)))
   (message nil))
 
 ;;;###autoload
-(defun tv/insert-kbd-at-point (key)
+(defun tv:insert-kbd-at-point (key)
   (interactive "kInsert `kbd' form: ")
   (insert (format "(kbd \"%s\")" (help-key-description key nil)))
   (message nil))
 
-(cl-defun tv/get-passwd-from-auth-sources (host &key user port)
+(cl-defun tv:get-passwd-from-auth-sources (host &key user port)
   "Retrieve a password for auth-info file.
 Arg `host' is machine in auth-info file."
   (let* ((token (auth-source-search :host host :port port :user user))
@@ -552,12 +552,12 @@ Arg `host' is machine in auth-info file."
     (if (functionp secret) (funcall secret) secret)))
 
 ;; Avoid typing password for sudo in eshell
-(defun tv/advice--eshell-send-invisible ()
+(defun tv:advice--eshell-send-invisible ()
   (interactive) ; Don't pass str as argument, to avoid snooping via C-x ESC ESC
   (let ((str (read-passwd
 	      (format "%s Password: "
 		      (process-name (eshell-interactive-process)))
-              nil (tv/get-passwd-from-auth-sources
+              nil (tv:get-passwd-from-auth-sources
                    "default" :user "root" :port "sudo"))))
     (if (stringp str)
 	(process-send-string (eshell-interactive-process)
@@ -566,24 +566,24 @@ Arg `host' is machine in auth-info file."
 
 ;;; Scroll functions
 ;;;###autoload
-(defun tv/scroll-down ()
+(defun tv:scroll-down ()
   (interactive)
   (scroll-down -1))
 ;;;###autoload
-(defun tv/scroll-up ()
+(defun tv:scroll-up ()
   (interactive)
   (scroll-down 1))
 ;;;###autoload
-(defun tv/scroll-other-down ()
+(defun tv:scroll-other-down ()
   (interactive)
   (scroll-other-window 1))
 ;;;###autoload
-(defun tv/scroll-other-up ()
+(defun tv:scroll-other-up ()
   (interactive)
   (scroll-other-window -1))
 
 ;;;###autoload
-(defun tv/restore-scratch-buffer ()
+(defun tv:restore-scratch-buffer ()
   (unless (buffer-file-name (get-buffer "*scratch*"))
     (and (get-buffer "*scratch*") (kill-buffer "*scratch*")))
   (with-current-buffer (find-file-noselect "~/.emacs.d/save-scratch.el")
@@ -597,7 +597,7 @@ Arg `host' is machine in auth-info file."
     (insert ";;; -*- coding: utf-8; mode: lisp-interaction; lexical-binding: t -*-\n;;\n;; SCRATCH BUFFER\n;; ==============\n\n")))
 
 ;;;###autoload
-(defun tv/insert-info-command-from-current-node-at-point ()
+(defun tv:insert-info-command-from-current-node-at-point ()
   (interactive)
   (require 'info)
   (let ((buf (get-buffer "*info*")))
@@ -608,7 +608,7 @@ Arg `host' is machine in auth-info file."
                  (file-name-nondirectory Info-current-file)
                  Info-current-node))))))
 
-(defun tv/get-headers-from-string (str)
+(defun tv:get-headers-from-string (str)
   "Return a list of headers from a mailto link."
   (with-temp-buffer
     (let (result
@@ -625,11 +625,11 @@ Arg `host' is machine in auth-info file."
               result))
       (nreverse result))))
 
-(defun tv/insert-headers-from-string (str)
+(defun tv:insert-headers-from-string (str)
   "Add headers from STR in message buffer.
 Used by the Mailto script used from firefox."
   (require 'message)
-  (cl-loop for header in (tv/get-headers-from-string str)
+  (cl-loop for header in (tv:get-headers-from-string str)
            for h = (split-string header "=")
            if (cdr h)
            do (let ((fn (intern (format "message-goto-%s" (car h)))))
@@ -643,7 +643,7 @@ Used by the Mailto script used from firefox."
                      (insert (format "%s" (car h)))))
   (message-goto-subject))
 
-(defun tv/diametre-plateau (holes dist)
+(defun tv:diametre-plateau (holes dist)
   "Return the diameter of crankset with HOLES number separated by DIST mm.
   E.g. TROUS=5 and DIST=64.7 => 110"
   (let ((L2 (/ dist 2)))
@@ -653,7 +653,7 @@ Used by the Mailto script used from firefox."
               (expt (/ L2 (tan (degrees-to-radians (/ 180 holes)))) 2)))))))
 
 ;;;###autoload
-(defun tv/align-let ()
+(defun tv:align-let ()
   "Align let forms."
   (interactive)
   (let ((sexp       (thing-at-point 'sexp t))
@@ -684,7 +684,7 @@ Used by the Mailto script used from firefox."
 
 ;;; Set extend attr on faces if needed
 ;;
-(defun tv/extend-faces-matching (regexp)
+(defun tv:extend-faces-matching (regexp)
   "Allow setting `extend' attribute on faces matching REGEXP."
   (cl-loop for f in (face-list)
            for face = (symbol-name f)
@@ -695,7 +695,7 @@ Used by the Mailto script used from firefox."
 
 ;;; Replace dots in filenames
 ;;
-(defun tv/collect-file-exts-in-buffer ()
+(defun tv:collect-file-exts-in-buffer ()
   (let ((exts '()))
     (save-excursion
       (goto-char (point-min))
@@ -708,14 +708,14 @@ Used by the Mailto script used from firefox."
         (forward-line 1)))
     exts))
 
-(defun tv/normalize-fnames-1 (strings)
+(defun tv:normalize-fnames-1 (strings)
   (let ((regexp (regexp-opt strings)))
     (save-excursion
       (goto-char (point-min))
       (while (re-search-forward "[. ]" nil t)
         (unless (looking-at-p regexp) (replace-match "_"))))))
 
-(defun tv/normalize-fnames (&optional edit-exts)
+(defun tv:normalize-fnames (&optional edit-exts)
   "Replace dots and spaces in filenames by \"_\".
 Ignore dots preceding file extension.
 
@@ -724,14 +724,14 @@ With a prefix arg prompt to edit file extensions."
   (interactive "P")
   (cl-assert (memq major-mode '(wfnames-mode wdired-mode)) nil
              "No filenames to modify in this buffer")
-  (let* ((defs    (tv/collect-file-exts-in-buffer))
+  (let* ((defs    (tv:collect-file-exts-in-buffer))
          (strings (and edit-exts
                        (read-from-minibuffer
                         "Strings: "
                         nil nil nil nil
                         (mapconcat #'identity defs " ")))))
     (when (or defs (and strings (not (string= strings ""))))
-      (tv/normalize-fnames-1 (if strings
+      (tv:normalize-fnames-1 (if strings
                                  (split-string strings)
                                defs)))))
 

@@ -228,11 +228,11 @@ This will run in `message-send-hook'."
 
 ;; Passage à la ligne automatique
 ;;
-(defun tv/message-mode-setup ()
+(defun tv:message-mode-setup ()
   (setq fill-column 72)
   (turn-on-auto-fill)
   (epa-mail-mode 1))
-(add-hook 'message-mode-hook 'tv/message-mode-setup)
+(add-hook 'message-mode-hook 'tv:message-mode-setup)
 
 ;; Ne pas demander si on splitte les pa 
 (setq message-send-mail-partially-limit nil)
@@ -302,35 +302,35 @@ This will run in `message-send-hook'."
 (setq mm-default-directory "~/download/")
 
 ;; Show github patchs in other frame
-(defun tv/curl-url-retrieve (url)
+(defun tv:curl-url-retrieve (url)
   (with-temp-buffer
     (call-process "curl" nil t nil "-s" "-L" url)
     (buffer-string)))
 
-(defun tv/gnus-show-patch-other-frame (url)
+(defun tv:gnus-show-patch-other-frame (url)
   (let ((contents "")
         (bufname (file-name-nondirectory url)))
     (if (buffer-live-p (get-buffer bufname))
         (progn (switch-to-buffer-other-frame bufname)
                (view-mode))
-      (setq contents (tv/curl-url-retrieve url))
+      (setq contents (tv:curl-url-retrieve url))
       (switch-to-buffer-other-frame (get-buffer-create bufname))
       (erase-buffer)
       (save-excursion (insert contents))
       (diff-mode)
       (view-mode))))
 
-(defun tv/gnus-browse-url-or-show-patch (arg)
+(defun tv:gnus-browse-url-or-show-patch (arg)
   (interactive "P")
   (require 'helm-net)
   (let ((url (w3m-active-region-or-url-at-point)))
     (when url
       (if (string-match "\\.\\(patch\\|diff\\)\\'" url)
-          (tv/gnus-show-patch-other-frame (if arg (concat url "?w=1") url))
+          (tv:gnus-show-patch-other-frame (if arg (concat url "?w=1") url))
         (browse-url url)))))
-(define-key gnus-article-mode-map (kbd "C-c C-c") 'tv/gnus-browse-url-or-show-patch)
+(define-key gnus-article-mode-map (kbd "C-c C-c") 'tv:gnus-browse-url-or-show-patch)
 
-(defun tv/delete-null-chars-from-gnus ()
+(defun tv:delete-null-chars-from-gnus ()
   "Delete null characters in gnus article buffer.
 Such characters are represented by \"^@\" chars.
 They are most of the time at the end of mails sent with Gnus or Rmail.
@@ -345,7 +345,7 @@ See https://en.wikipedia.org/wiki/Null_character."
       ;; buffers i.e. scratch.
       (while (re-search-forward "\0" nil t)
         (replace-match "")))))
-(add-hook 'gnus-part-display-hook 'tv/delete-null-chars-from-gnus)
+(add-hook 'gnus-part-display-hook 'tv:delete-null-chars-from-gnus)
 
 ;;; gnus-config.el ends here
 

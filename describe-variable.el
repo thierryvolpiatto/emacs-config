@@ -8,7 +8,7 @@
 
 (defvar describe-variable--offset-value 800)
 
-(defun tv/pp (object &optional stream)
+(defun tv:pp (object &optional stream)
   (let ((fn (lambda (ob &optional stream)
               (princ (pp-to-string ob)
                      (or stream standard-output))
@@ -49,7 +49,7 @@
             (insert suffix)))
       (funcall fn object stream))))
 
-(defun tv/pp-region (beg end &optional sym)
+(defun tv:pp-region (beg end &optional sym)
   (let ((inhibit-read-only t)
         (buf (current-buffer))
         val pp-buf)
@@ -64,7 +64,7 @@
       (delete-region beg end)
       (with-temp-buffer
         (lisp-data-mode)
-        (tv/pp val (current-buffer))
+        (tv:pp val (current-buffer))
         (with-syntax-table emacs-lisp-mode-syntax-table
           (font-lock-ensure (point-min) (point-max)))
         (setq pp-buf (current-buffer))
@@ -73,7 +73,7 @@
             (insert-buffer-substring pp-buf))))
       (message "Prettifying region done"))))
 
-(defun tv/pp-value-in-help ()
+(defun tv:pp-value-in-help ()
   (interactive)
   (let ((inhibit-read-only t)
         (sym (save-excursion
@@ -86,9 +86,9 @@
         (forward-line 1)
         (setq beg (point))
         (setq end (point-max))))
-    (tv/pp-region beg end sym)))
+    (tv:pp-region beg end sym)))
 
-(defun tv/describe-variable (variable &optional buffer frame)
+(defun tv:describe-variable (variable &optional buffer frame)
   "Optimized `describe-variable' version.
 It is based on emacs-28.2 version of `describe-variable'.
 Large values are not pretty printed."
@@ -296,7 +296,7 @@ Large values are not pretty printed."
               (buffer-string))))))))
 
 
-(advice-add 'describe-variable :override #'tv/describe-variable)
+(advice-add 'describe-variable :override #'tv:describe-variable)
 
 (provide 'describe-variable)
 

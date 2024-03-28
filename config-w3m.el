@@ -25,7 +25,7 @@
 ;; `w3m-bookmark-save-buffer' is backing up bookmark file by renaming,
 ;; so that when `w3m-bookmark-file' is a symlink the symlink is
 ;; replaced by the file, fix this. 
-(defun tv/advice--w3m-bookmark-save-buffer ()
+(defun tv:advice--w3m-bookmark-save-buffer ()
   (cond
    ((buffer-file-name)
     (basic-save-buffer))
@@ -38,7 +38,7 @@
         (kill-buffer)))
     (write-region (point-min) (point-max) w3m-bookmark-file nil t)
     (kill-buffer))))
-(advice-add 'w3m-bookmark-save-buffer :override #'tv/advice--w3m-bookmark-save-buffer)
+(advice-add 'w3m-bookmark-save-buffer :override #'tv:advice--w3m-bookmark-save-buffer)
 
 (with-eval-after-load 'w3m-search
   (add-to-list 'w3m-search-engine-alist '("DuckDuckGo" "https://duckduckgo.com/lite/?q=%s&kp=1"))
@@ -59,7 +59,7 @@
               (let ((buffer-read-only nil))
                 (delete-trailing-whitespace))))
 
-(defun tv/w3m-fill-region-or-paragraph ()
+(defun tv:w3m-fill-region-or-paragraph ()
   (interactive)
   (let ((inhibit-read-only t))
     (fill-region (point-at-bol)
@@ -67,7 +67,7 @@
                    (forward-paragraph) (point))
                  nil t)))
 
-(defun tv/advice--w3m-view-this-url (&optional arg new-session)
+(defun tv:advice--w3m-view-this-url (&optional arg new-session)
   "Display the page pointed to by the link under point.
 If ARG is the number 2 or the list of the number 16 (you may produce
 this by typing `C-u' twice) or NEW-SESSION is non-nil and the link is
@@ -106,19 +106,19 @@ Otherwise, if ARG is non-nil, it forces to reload the url at point."
 	  (w3m-goto-url url arg))))
      (t (or (w3m-next-anchor)
             (w3m-message "No URL at point"))))))
-(advice-add 'w3m-view-this-url :override #'tv/advice--w3m-view-this-url)
+(advice-add 'w3m-view-this-url :override #'tv:advice--w3m-view-this-url)
 
-(defun tv/w3m-form-p (obj)
+(defun tv:w3m-form-p (obj)
   "Return t if OBJ is a form object."
   (and (vectorp obj)
        (symbolp (aref obj 0))
        (eq (aref obj 0) 'w3m-form-object)))
 
-(defun tv/w3m-RET ()
+(defun tv:w3m-RET ()
   (interactive)
-  (if (tv/w3m-form-p (cadr (w3m-action)))
+  (if (tv:w3m-form-p (cadr (w3m-action)))
       (w3m-view-this-url)
-    (tv/scroll-down)))
+    (tv:scroll-down)))
 
 (provide 'config-w3m)
 

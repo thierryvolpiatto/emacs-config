@@ -88,7 +88,7 @@
 (setq org-blank-before-new-entry '((heading . t)
                                    (plain-list-item . nil)))
 
-(defun tv/insert-org-src-keyword ()
+(defun tv:insert-org-src-keyword ()
   (interactive)
   (if (region-active-p)
       (let ((beg (region-beginning))
@@ -104,7 +104,7 @@
     (insert "#+begin_src ")
     (save-excursion (insert "\n#+end_src"))))
 
-(defun tv/org-headings (arg)
+(defun tv:org-headings (arg)
   (interactive "P")
   (if arg
       (helm-org-agenda-files-headings)
@@ -112,42 +112,42 @@
 
 (add-hook 'org-mode-hook 
 	  (lambda ()
-	    (define-key org-mode-map (kbd "<f11> o") 'tv/org-headings)
-	    (define-key org-mode-map (kbd "<f11> k") 'tv/insert-org-src-keyword)))
+	    (define-key org-mode-map (kbd "<f11> o") 'tv:org-headings)
+	    (define-key org-mode-map (kbd "<f11> k") 'tv:insert-org-src-keyword)))
                                              
 ;; Colorize-Diary's-entries-in-agenda 
-(defvar tv/diary-regexp "^ *[Dd]iary")
-(defvar tv/diary-done-regexp "^ *[Dd]iary.* *==> *done$") 
-(defun tv/org-propertize-diary-entries ()
+(defvar tv:diary-regexp "^ *[Dd]iary")
+(defvar tv:diary-done-regexp "^ *[Dd]iary.* *==> *done$") 
+(defun tv:org-propertize-diary-entries ()
   (save-excursion
     (let ((inhibit-read-only t))
       (goto-char (point-min))
       (while (not (eobp))
-        (cond ((re-search-forward tv/diary-done-regexp (point-at-eol) t)
+        (cond ((re-search-forward tv:diary-done-regexp (point-at-eol) t)
                (add-text-properties
-                (point-at-bol) (point-at-eol) '(face 'tv/org-diary-done)))
-              ((re-search-forward tv/diary-regexp (point-at-eol) t)
+                (point-at-bol) (point-at-eol) '(face 'tv:org-diary-done)))
+              ((re-search-forward tv:diary-regexp (point-at-eol) t)
                (add-text-properties
-                (point-at-bol) (point-at-eol) '(face tv/org-diary))))
+                (point-at-bol) (point-at-eol) '(face tv:org-diary))))
         (forward-line 1)))))
-(add-hook 'org-finalize-agenda-hook 'tv/org-propertize-diary-entries)
+(add-hook 'org-finalize-agenda-hook 'tv:org-propertize-diary-entries)
 
-(defface tv/org-diary '((t (:foreground "Yellow3" :underline t)))
+(defface tv:org-diary '((t (:foreground "Yellow3" :underline t)))
   "*Face for diary entry in org agenda."
   :group 'org)
 
-(defface tv/org-diary-done '((t (:foreground "darkgrey")))
+(defface tv:org-diary-done '((t (:foreground "darkgrey")))
   "*Face for finished diary entry in org agenda."
   :group 'org)
 
-(defun tv/org-propertize-note-entry ()
+(defun tv:org-propertize-note-entry ()
   (save-excursion
     (let ((inhibit-read-only t))
       (goto-char (point-min))
       (while (re-search-forward "^ +note" nil t)
         (add-text-properties (match-beginning 0) (point-at-eol)
                              '(face '((:foreground "magenta"))))))))
-(add-hook 'org-finalize-agenda-hook 'tv/org-propertize-note-entry)
+(add-hook 'org-finalize-agenda-hook 'tv:org-propertize-note-entry)
 
 
 (add-hook 'org-agenda-mode-hook
@@ -179,11 +179,11 @@
    '((gnuplot . t)
      (emacs-lisp . t))))
 
-(define-key org-mode-map (kbd "<M-up>")     'tv/scroll-up)
-(define-key org-mode-map (kbd "<M-down>")   'tv/scroll-down)
-(define-key org-mode-map (kbd "<C-M-up>")   'tv/scroll-other-up)
-(define-key org-mode-map (kbd "<C-M-down>") 'tv/scroll-other-down)
-(define-key org-mode-map (kbd "C-d")        'tv/delete-char)
+(define-key org-mode-map (kbd "<M-up>")     'tv:scroll-up)
+(define-key org-mode-map (kbd "<M-down>")   'tv:scroll-down)
+(define-key org-mode-map (kbd "<C-M-up>")   'tv:scroll-other-up)
+(define-key org-mode-map (kbd "<C-M-down>") 'tv:scroll-other-down)
+(define-key org-mode-map (kbd "C-d")        'tv:delete-char)
 (define-key org-mode-map (kbd "<C-return>") nil)
 (define-key org-mode-map (kbd "C-,")        nil)
 (define-key org-mode-map (kbd "<C-return>") nil)

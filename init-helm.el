@@ -292,7 +292,7 @@ new directory."
                when (file-directory-p dir)
                do (helm-ff-recoll-index-directory dir))))
   
-  (defun tv/change-xfce-background (file)
+  (defun tv:change-xfce-background (file)
     (let* ((screen  (getenv "DISPLAY"))
            (monitor (shell-command-to-string
                      "echo -n $(xrandr | awk '/\\w* connected/ {print $1}')"))
@@ -505,7 +505,7 @@ new directory."
     (helm-source-add-action-to-source-if
      "Change background"
      (if (fboundp 'image-dired-wallpaper-set)
-         #'image-dired-wallpaper-set #'tv/change-xfce-background)
+         #'image-dired-wallpaper-set #'tv:change-xfce-background)
      source
      (lambda (candidate)
        (member (file-name-extension candidate) '("jpg" "jpeg" "png")))
@@ -574,8 +574,8 @@ new directory."
   (setq helm-raise-command                 "wmctrl -xa %s"
         helm-default-external-file-browser "thunar")
   (require 'emms-config)
-  (add-hook 'helm-open-file-externally-after-hook #'tv/emms-player-start-hook)
-  (add-hook 'helm-open-file-externally-after-finish-hook #'tv/emms-player-stop-hook))
+  (add-hook 'helm-open-file-externally-after-hook #'tv:emms-player-start-hook)
+  (add-hook 'helm-open-file-externally-after-finish-hook #'tv:emms-player-stop-hook))
 
 ;;; Helm-grep
 ;;

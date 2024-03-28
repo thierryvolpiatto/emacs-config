@@ -111,7 +111,7 @@
 
 ;;; showup size available when -h arg of ls used.
 
-(defun tv/-advice-get-free-disk-space (dir)
+(defun tv:-advice-get-free-disk-space (dir)
   (unless (file-remote-p (expand-file-name dir))
     (save-match-data
       ;; That is for windows.
@@ -121,9 +121,9 @@
 	        (format "%.0f" (/ (nth 2 fsinfo) 1024))))
         ;; And this is for Linux.
         (when (executable-find directory-free-space-program)
-          (cl-getf (tv/get-disk-info dir 'human) :available))))))
+          (cl-getf (tv:get-disk-info dir 'human) :available))))))
 
-(defun tv/get-disk-info (directory &optional human)
+(defun tv:get-disk-info (directory &optional human)
   (let* ((directory-free-space-args
           (if (and dired-actual-switches
                    (string-match "h" dired-actual-switches))
@@ -145,7 +145,7 @@
              append (list i j))))
 
 (when (< emacs-major-version 27)
-  (advice-add 'get-free-disk-space :override 'tv/-advice-get-free-disk-space))
+  (advice-add 'get-free-disk-space :override 'tv:-advice-get-free-disk-space))
 
 
 (provide 'dired-extension)
