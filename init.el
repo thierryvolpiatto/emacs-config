@@ -241,6 +241,9 @@ Restart works only on graphic display."
 ;; moves point by logical lines.
 (setq line-move-visual nil)
 
+;; Align-regexp
+(global-set-key (kbd "C-}") #'align-regexp)
+
 
 ;;; Compatibility
 ;;
@@ -1725,7 +1728,8 @@ With a prefix arg ask with completion which buffer to kill."
 
 (defun tv:turn-on-auto-fill-mode-maybe ()
   "Enable auto-fill-mode only in comments or docstrings.
-Variable adaptive-fill-mode is disabled when a docstring field is detected."
+Variable adaptive-fill-mode is disabled when a docstring field is
+detected."
   (when (memq major-mode tv:autofill-modes)
     (let ((in-docstring (tv:point-in-docstring-p (point))))
       (setq adaptive-fill-mode (not in-docstring))
