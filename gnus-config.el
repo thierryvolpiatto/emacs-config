@@ -270,7 +270,7 @@ This will run in `message-send-hook'."
        (setq mm-text-html-renderer 'w3m-standalone))
       (t ; Fall back to shr.
        (setq shr-color-visible-luminance-min 75)
-       (setq shr-width nil) ; Use all window width.
+       (setq shr-use-colors nil)
        (setq mm-text-html-renderer 'shr)))
 
 ;; Try to inline images
@@ -323,7 +323,7 @@ This will run in `message-send-hook'."
 (defun tv:gnus-browse-url-or-show-patch (arg)
   (interactive "P")
   (require 'helm-net)
-  (let ((url (w3m-active-region-or-url-at-point)))
+  (let ((url (shr-url-at-point nil)))
     (when url
       (if (string-match "\\.\\(patch\\|diff\\)\\'" url)
           (tv:gnus-show-patch-other-frame (if arg (concat url "?w=1") url))

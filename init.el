@@ -1379,22 +1379,6 @@ With a prefix arg ask with completion which buffer to kill."
 (autoload 'addressbook-bmenu-edit              "addressbook-bookmark" nil t)
 (autoload 'addressbook-bookmark-jump           "addressbook-bookmark" nil t)
 
-;;; W3m
-;;
-(with-eval-after-load 'w3m
-  (require 'config-w3m)
-  (define-key w3m-mode-map (kbd "M-<right>")      'w3m-next-buffer)
-  (define-key w3m-mode-map (kbd "M-<left>")       'w3m-previous-buffer)
-  (define-key w3m-mode-map (kbd "V")              'helm-w3m-bookmarks)
-  (define-key w3m-mode-map (kbd "M")              'w3m-view-url-with-browse-url)
-  (define-key w3m-mode-map (kbd "M-q")            'tv:w3m-fill-region-or-paragraph)
-  (define-key w3m-mode-map (kbd "<down>")         'next-line)
-  (define-key w3m-mode-map (kbd "<up>")           'previous-line)
-  (define-key w3m-mode-map (kbd "RET")            'tv:w3m-RET)
-  (define-key w3m-mode-map (kbd "<backspace>")    'tv:scroll-up)
-  (define-key w3m-lynx-like-map (kbd "S-<right>") 'w3m-view-this-url-new-session))
-(global-set-key (kbd "<f7> h") 'w3m)
-
 ;;; Mu4e
 ;;
 (autoload 'mu4e "mu4e" nil t)
@@ -1565,8 +1549,8 @@ With a prefix arg ask with completion which buffer to kill."
 ;; Eshell-visual
 (setq eshell-term-name "eterm-color")
 
-(with-eval-after-load "em-term"
-  (dolist (i '("tmux" "htop" "ipython" "alsamixer" "git-log" "tig" "w3mman" "mutt"))
+(with-eval-after-load 'em-term
+  (dolist (i '("tmux" "htop" "ipython" "alsamixer" "git-log" "tig" "mutt"))
     (add-to-list 'eshell-visual-commands i)))
 
 ;; Eshell modifiers
@@ -1944,7 +1928,7 @@ mode temporarily."
     (when (or current-prefix-arg (null url))
       (setq url (read-string (format-prompt "Url" "debbugs.gnu.org")
                              nil nil "https://debbugs.gnu.org/%s")))
-    (w3m-browse-url (format url bug-number) t t)))
+    (eww-browse-url (format url bug-number) t t)))
 
 ;;; Load time
 ;;

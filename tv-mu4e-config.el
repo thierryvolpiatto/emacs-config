@@ -11,7 +11,6 @@
 (require 'mu4e-patch)
 (advice-add 'gnus-article-prepare-display :after #'mu4e-patch:article-treat-patch)
 (require 'mu4e-contrib)
-(require 'config-w3m)
 (require 'mu4e-view-gnus nil t)
 
 
@@ -119,12 +118,9 @@
 
 (setq mu4e-refile-folder 'tv:mu4e-refile-folder-function)
 
-;; Avoid default 'shr which is slow, ugly and even worse open
-;; unexpectedly links (particularly image links).
-(setq mm-text-html-renderer
-      (cond ((fboundp 'w3m) 'w3m)
-            ((executable-find "w3m") 'w3m-standalone)
-            (t 'shr)))
+(setq mm-text-html-renderer 'shr)
+(setq shr-color-visible-luminance-min 80)
+(setq shr-use-colors nil)
 
 (setq mm-inline-text-html-with-w3m-keymap nil
       mm-html-inhibit-images t
@@ -290,67 +286,13 @@
 (defun tv:mu4e-browse-url-or-show-patch (arg)
   (interactive "P")
   (require 'helm-net)
-  (require 'w3m)
-  (let ((url (w3m-active-region-or-url-at-point)))
+  (let ((url (shr-url-at-point nil)))
     (when url
       (if (string-match "\\.\\(patch\\|diff\\)\\'" url)
           (tv:mu4e-show-patch-other-frame (if arg (concat url "?w=1") url))
         (browse-url url)))))
 (define-key mu4e-view-mode-map (kbd "C-c C-c") 'tv:mu4e-browse-url-or-show-patch)
 
-(defadvice w3m-goto-next-anchor (before go-to-end-of-anchor activate)
-  (when (w3m-anchor-sequence)
-    (let ((pos (next-single-property-change
-                (point) 'w3m-anchor-sequence)))
-      (and pos (goto-char pos)))))
-
-(defadvice w3m-goto-previous-anchor (before go-to-end-of-anchor activate)
-  (when (w3m-anchor-sequence)
-    (let ((pos (previous-single-property-change
-                (point) 'w3m-anchor-sequence)))
-      (and pos (goto-char pos)))))
-
-;; Ignore these pesty gnus buttons.
-(setq w3m-handle-non-anchor-buttons nil)
-
-(defun tv:mu4e-next-anchor ()
-  (interactive)
-  (require 'w3m)
-  (or (w3m-next-anchor)
-      (let ((pos (point)))
-        (when (eq (get-text-property (point) 'face)
-                  'mu4e-link-face)
-          (setq pos (next-single-property-change (point) 'face)))
-        (let ((next-url (and pos
-                             (or (text-property-any
-                                  pos (point-max)
-                                  'face 'mu4e-link-face)
-                                 (text-property-any
-                                  (point-min) (point-max)
-                                  'face 'mu4e-link-face)))))
-          (and next-url (goto-char next-url))))))
-
-(defun tv:mu4e-previous-anchor ()
-  (interactive)
-  (require 'helm-lib)
-  (require 'w3m)
-  (or (w3m-previous-anchor)
-      (let ((prev-url (save-excursion
-                        (helm-awhile (re-search-backward
-                                      ffap-url-regexp nil t)
-                          (goto-char (match-beginning 0))
-                          (when (eq (get-text-property
-                                     (point) 'face)
-                                    'mu4e-link-face)
-                            (cl-return (point)))
-                          (goto-char it)))))
-        (and prev-url (goto-char prev-url)))))
-
-(define-key mu4e-view-mode-map (kbd "<C-tab>")   'tv:mu4e-next-anchor)
-(define-key mu4e-view-mode-map (kbd "<backtab>") 'tv:mu4e-previous-anchor)
-(define-key mu4e-view-mode-map (kbd "C-c v") 'mu4e-view-open-attachment)
-
-()
 ;;; A simplified and more efficient version of `article-translate-strings'.
 ;;
 ;; Transform also in headers.
