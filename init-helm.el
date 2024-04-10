@@ -67,7 +67,10 @@
 ;;
 
 ;;; Helm-mode (it is loading nearly everything)
-;; 
+;;
+(with-eval-after-load 'help-fns
+  (setq help-enable-completion-autoload nil))
+
 (add-hook 'helm-mode-hook
           (lambda ()
             (setq completion-styles
@@ -152,7 +155,8 @@
 ;;; Helm-bookmark
 ;;
 (with-eval-after-load 'helm-bookmark
-  (customize-set-variable 'helm-bookmark-use-icon t))
+  (customize-set-variable 'helm-bookmark-use-icon t)
+  (customize-set-variable 'helm-bookmark-annotation-sign "✫"))
 
 ;;; Helm-utils
 ;;
