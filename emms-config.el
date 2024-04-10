@@ -132,6 +132,21 @@ character."
 (add-hook 'emms-player-stopped-hook 'tv:emms-player-stop-hook)
 (add-hook 'emms-player-finished-hook 'tv:emms-player-stop-hook)
 
+;; Fix error:
+;; emms-info-native error processing
+;; http://europe1.lmn.fm/europe1.mp3:
+;; (file-missing Opening input file Aucun fichier ou dossier de ce nom /home/thierry/.emacs.d/emacs-config/http:/europe1.lmn.fm/europe1.mp3)
+(defun tv:advice-emms-info-native--find-stream-type (filename)
+  (unless (string-match-p "\\`http" filename)
+    (pcase (file-name-extension filename)
+      ("ogg" 'vorbis)
+      ("opus" 'opus)
+      ("flac" 'flac)
+      ("mp3" 'mp3)
+      ("spc" 'spc)
+      (_ nil))))
+(advice-add 'emms-info-native--find-stream-type :override #'tv:advice-emms-info-native--find-stream-type)
+
 (provide 'emms-config)
 
 ;;; emms-config.el ends here
