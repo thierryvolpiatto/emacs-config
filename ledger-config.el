@@ -262,7 +262,10 @@ If entries are already pointed, skip."
                               ("LOGITEL POUR: Rachel Bourdin" . ":rachel:virement")
                               ("VIR PERM POUR: Rachel Bourdin" . ":rachel:virement:mensuel")
                               ("Solimut" . ":assurance:maladie:mutuelle")
-                              ("CARTE X3077" . ":rachel:carte3077")))
+                              ("CARTE X3077" . ":rachel:carte3077")
+                              ("CARTE X8911" . ":thierry:carte8911")
+                              ("J LOUIS DAVID" . ":rachel:carte3077:coiffeur_rachel")
+                              ("DELOMPRE CURBILL" . ":rachel:carte3077:estheticienne")))
 
 ;;;###autoload
 (defun ledger/update-associations ()
