@@ -5,6 +5,8 @@
 
 ;;; Code:
 
+(require 'gnus-and-mu4e)
+
 ;; Don't read/write to the .newrc file, go straight to the *.eld.
 (setq gnus-save-newsrc-file nil
       gnus-read-newsrc-file nil)
@@ -202,41 +204,6 @@ This will run in `message-send-hook'."
 ;;; Message and smtp settings
 ;;
 ;;
-;; Don't send to these address in wide reply.
-(setq message-dont-reply-to-names '("notifications@github\\.com"
-                                    ".*@noreply\\.github\\.com"
-                                    "thievol@posteo\\.net"))
-
-(setq user-mail-address "thievol@posteo.net")
-(setq user-full-name "Thierry Volpiatto")
-
-;; [smtpmail-async] Experimental, use `smtpmail-send-it' otherwise. 
-(setq message-send-mail-function 'smtpmail-send-it
-      ;smtpmail-debug-info t        ; Uncomment to debug
-      ;smtpmail-debug-verb t        ; Uncomment to debug on server
-      mail-specify-envelope-from t ; Use from field to specify sender name.
-      mail-envelope-from 'header)  ; otherwise `user-mail-address' is used. 
-
-;; Default settings.
-;; This are default setting, they could be modified
-;; by `tv-change-smtp-server' according to `tv-smtp-accounts'
-;; and `gnus-posting-styles'.
-(setq smtpmail-default-smtp-server "posteo.de"
-      smtpmail-smtp-user user-mail-address
-      smtpmail-smtp-server "posteo.de"
-      smtpmail-smtp-service 587)
-
-;; Passage à la ligne automatique
-;;
-(defun tv:message-mode-setup ()
-  (setq fill-column 72)
-  (turn-on-auto-fill)
-  (epa-mail-mode 1))
-(add-hook 'message-mode-hook 'tv:message-mode-setup)
-
-;; Ne pas demander si on splitte les pa 
-(setq message-send-mail-partially-limit nil)
-
 ;;; mm-* settings
 ;;
 ;; Junk mail
@@ -254,38 +221,10 @@ This will run in `message-send-hook'."
 ;;; Remove white space in filenames
 ;;
 ;;
-(setq mm-file-name-rewrite-functions
-      '(mm-file-name-delete-control
-        mm-file-name-delete-gotchas
-        mm-file-name-trim-whitespace
-        mm-file-name-collapse-whitespace
-        mm-file-name-replace-whitespace))
-
-;; Html renderer
-(cond ((fboundp 'w3m)
-       ;; Emacs-w3m
-       (setq mm-text-html-renderer 'w3m))
-      ((executable-find "w3m")
-       ;; W3m (Don't need emacs-w3m)
-       (setq mm-text-html-renderer 'w3m-standalone))
-      (t ; Fall back to shr.
-       (setq shr-color-visible-luminance-min 75)
-       (setq shr-use-colors nil)
-       (setq mm-text-html-renderer 'shr)))
 
 ;; Try to inline images
 ;; (setq mm-inline-text-html-with-images t)
 
-;;; Mail encryption.
-;;
-;;
-(setq mml2015-use 'epg)
-(setq mml2015-encrypt-to-self t)
-
-;; Verify/Decrypt automatically
-;; only if mml knows about the protocol used.
-(setq mm-verify-option 'never)
-(setq mm-decrypt-option 'known)
 
 (setq gnus-inhibit-mime-unbuttonizing nil)
 (setq gnus-buttonized-mime-types '("multipart/signed"
@@ -298,54 +237,7 @@ This will run in `message-send-hook'."
 ;; Suppression de la signature quand on quote. 
 (setq message-cite-function 'message-cite-original-without-signature)
 
-;; Default directory to save attached files 
-(setq mm-default-directory "~/download/")
-
-;; Show github patchs in other frame
-(defun tv:curl-url-retrieve (url)
-  (with-temp-buffer
-    (call-process "curl" nil t nil "-s" "-L" url)
-    (buffer-string)))
-
-(defun tv:gnus-show-patch-other-frame (url)
-  (let ((contents "")
-        (bufname (file-name-nondirectory url)))
-    (if (buffer-live-p (get-buffer bufname))
-        (progn (switch-to-buffer-other-frame bufname)
-               (view-mode))
-      (setq contents (tv:curl-url-retrieve url))
-      (switch-to-buffer-other-frame (get-buffer-create bufname))
-      (erase-buffer)
-      (save-excursion (insert contents))
-      (diff-mode)
-      (view-mode))))
-
-(defun tv:gnus-browse-url-or-show-patch (arg)
-  (interactive "P")
-  (require 'helm-net)
-  (let ((url (shr-url-at-point nil)))
-    (when url
-      (if (string-match "\\.\\(patch\\|diff\\)\\'" url)
-          (tv:gnus-show-patch-other-frame (if arg (concat url "?w=1") url))
-        (browse-url url)))))
-(define-key gnus-article-mode-map (kbd "C-c C-c") 'tv:gnus-browse-url-or-show-patch)
-
-(defun tv:delete-null-chars-from-gnus ()
-  "Delete null characters in gnus article buffer.
-Such characters are represented by \"^@\" chars.
-They are most of the time at the end of mails sent with Gnus or Rmail.
-See https://en.wikipedia.org/wiki/Null_character."
-  (save-excursion
-    (let ((inhibit-read-only t))
-      (message-goto-body)
-      ;; WARNING: (emacs bug#44486)
-      ;; Using ^@ instead of \0 corrupt emacs-lisp buffers
-      ;; containing special characters such as "à" and may be
-      ;; others (unicode), this doesn't happen in lisp-interaction
-      ;; buffers i.e. scratch.
-      (while (re-search-forward "\0" nil t)
-        (replace-match "")))))
-(add-hook 'gnus-part-display-hook 'tv:delete-null-chars-from-gnus)
+(define-key gnus-article-mode-map (kbd "C-c C-c") 'tv:browse-url-or-show-patch)
 
 ;;; gnus-config.el ends here
 
