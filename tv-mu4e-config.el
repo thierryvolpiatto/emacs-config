@@ -8,8 +8,6 @@
 
 ;;; Code:
 
-(require 'mu4e-patch)
-(advice-add 'gnus-article-prepare-display :after #'mu4e-patch:article-treat-patch)
 (require 'mu4e-contrib)
 (require 'mu4e-view-gnus nil t)
 (require 'gnus-and-mu4e)
@@ -19,14 +17,6 @@
 ;;
 ;; Use Mu4e to compose new mail.
 (define-key global-map [remap compose-mail] 'mu4e-compose-new)
-
-;; (defvar tv:message-pre-winconf nil)
-
-;; (defun tv:after-send-hook ()
-;; (when tv:message-pre-winconf
-;; (set-window-configuration tv:message-pre-winconf))
-;; (setq tv:message-pre-winconf nil))
-;; (add-hook 'message-sent-hook 'tv:after-send-hook)
 
 ;; Contexts (setup smtp servers)
 ;;
