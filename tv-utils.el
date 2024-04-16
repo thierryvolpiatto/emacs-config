@@ -376,33 +376,6 @@ Ignore text read-only at bol i.e. prompts."
     (setq lisp-indent-function #'common-lisp-indent-function-1)
     (message "Switching to Common lisp indenting style.")))
 
-;; Permutations (Too slow)
-
-(cl-defun permutations (bag &key result-as-string print)
-  "Return a list of all the permutations of the input."
-  ;; If the input is nil, there is only one permutation:
-  ;; nil itself
-  (when (stringp bag) (setq bag (split-string bag "" t)))
-  (let ((result
-         (if (null bag)
-             '(())
-             ;; Otherwise, take an element, e, out of the bag.
-             ;; Generate all permutations of the remaining elements,
-             ;; And add e to the front of each of these.
-             ;; Do this for all possible e to generate all permutations.
-             (cl-loop for e in bag append
-                      (cl-loop for p in (permutations (remove e bag))
-                               collect (cons e p))))))
-    (when (or result-as-string print)
-      (setq result (cl-loop for i in result collect (mapconcat 'identity i ""))))
-    (if print
-        (with-current-buffer (get-buffer-create "*permutations*")
-          (erase-buffer)
-          (cl-loop for i in result
-                   do (insert (concat i "\n")))
-          (pop-to-buffer (current-buffer)))
-        result)))
-
 ;; Check paren errors
 ;;;###autoload
 (defun tv:check-paren-error ()
@@ -422,18 +395,6 @@ Ignore text read-only at bol i.e. prompts."
 
 ;;; Generate strong passwords.
 ;;
-(defun tv:shuffle-vector (vector)
-  "Shuffle VECTOR."
-  (cl-loop with len = (1- (length vector))
-           while (>= len 0)
-           for rand = (random (1+ len))
-           for old = (aref vector rand)
-           do (progn
-                (aset vector rand (aref vector len))
-                (aset vector len old)
-                (setq len (1- len)))
-           finally return vector))
-
 (defun tv:shuffle-sequence (seq)
   (cl-loop for i from (1- (length seq)) downto 1
            do (cl-rotatef (elt seq i) (elt seq (random i)))
@@ -472,6 +433,7 @@ Use a prefix arg to specify ARG."
 
 ;;;###autoload
 (defun tv:gen-socgen-passwd ()
+  "Generate a random password of 6 numbers."
   (interactive)
   (let ((code (mapconcat (lambda (x) (number-to-string x))
                          (cl-loop with randoms = nil

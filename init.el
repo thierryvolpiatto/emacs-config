@@ -414,8 +414,6 @@ Restart works only on graphic display."
 (global-set-key [remap c-electric-delete-forward] 'tv:delete-char)
 (global-set-key (kbd "C-<") 'other-window-backward)
 (global-set-key (kbd "C->") 'other-window-forward)
-(global-set-key [C-left] 'screen-top)
-(global-set-key [C-right] 'screen-bottom)
 (global-set-key (kbd "<M-down>") 'tv:scroll-down)
 (global-set-key (kbd "<M-up>") 'tv:scroll-up)
 (global-set-key (kbd "<C-M-down>") 'tv:scroll-other-down)
