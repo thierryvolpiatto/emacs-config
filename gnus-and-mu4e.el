@@ -2,18 +2,11 @@
 
 ;;; code:
 
-(require 'mu4e-patch)
-(advice-add 'gnus-article-prepare-display :after #'mu4e-patch:article-treat-patch)
-
 ;;; Message and smtp settings
 ;;
 ;;
 (setq user-mail-address "thievol@posteo.net")
 (setq user-full-name "Thierry Volpiatto")
-
-(setq mail-user-agent      'mu4e-user-agent
-      read-mail-command    'mu4e
-      gnus-dired-mail-mode 'mu4e-user-agent)
 
 ;; Don't send to these addresses in wide reply.
 ;; See (info "(message) Wide Reply")
@@ -111,7 +104,7 @@
   (let ((url (shr-url-at-point nil)))
     (when url
       (if (string-match "\\.\\(patch\\|diff\\)\\'" url)
-          (tv:mu4e-show-patch-other-frame (if arg (concat url "?w=1") url))
+          (tv:show-patch-other-frame (if arg (concat url "?w=1") url))
         (browse-url url)))))
 
 ;; For some reasons some mails have many null characters at the end,
