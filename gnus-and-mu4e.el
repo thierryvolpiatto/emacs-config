@@ -69,7 +69,8 @@
 ;; `mml-secure-openpgp-encrypt-to-self' will encrypt to self only when
 ;; using mml* functions but not if for some reasons I use epa*, using
 ;; encrypt-to in gpg.conf ensure epa and mml encrypt to self.
-(setq mml-secure-openpgp-sign-with-sender t
+(setq mml-secure-openpgp-encrypt-to-self nil ; I use encrypt-to in gpg.conf.
+      mml-secure-openpgp-sign-with-sender t
       mml-secure-openpgp-signers '("0EC56D141D16EF93") ; priv
       )
 
