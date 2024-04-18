@@ -30,17 +30,16 @@
 ;;  4) Add an entries in authinfo for imap and smtp refering to labels. (See below)
 
 ;; Secondary methods are mails and possibly other nntp servers.
-(setq gnus-secondary-select-methods '((nnml "")
-                                      ;; Add as many gmail account as needed with a label.
+(setq gnus-secondary-select-methods '(;; Add as many mail account as needed with a label.
                                       ;; Add then an entry in .authinfo:
                                       ;; machine label port xxx login xxx password xxx
                                       (nnimap "posteo" ; Label for reference in .authinfo for machine name.
                                        (nnimap-address "posteo.de")
                                        ;; Don't load mime parts when receiving mail, only text part, use
                                        ;; instead `A-C' to see entire mail.
-                                       (nnimap-fetch-partial-articles "text/"))
-                                      ;; (nntp "news.gwene.org")
-                                      ))
+                                       (nnimap-fetch-partial-articles "text/"))))
+
+;; (nnmaildir "Posteo" (directory "~/mail"))
 
 ;; Change "From" field according to "To" field on reply.
 (setq gnus-posting-styles

@@ -12,6 +12,13 @@
 (require 'mu4e-view-gnus nil t)
 (require 'gnus-and-mu4e)
 
+(setq mail-user-agent      'mu4e-user-agent
+      read-mail-command    'mu4e
+      gnus-dired-mail-mode 'mu4e-user-agent)
+
+(require 'mu4e-patch)
+(advice-add 'gnus-article-prepare-display :after #'mu4e-patch:article-treat-patch)
+
 
 ;;; Message and smtp settings
 ;;
@@ -249,7 +256,6 @@ try this wash."
        (155 . ">") (156 . "oe") (180 . "'")))))
 
 ;; Crypto
-;; Autocrypt will decide if encrypting or not.
 (setq mu4e-compose-crypto-policy '(sign-all-messages))
 
 (define-key mu4e-compose-mode-map (kbd "C-c e") 'mml-secure-encrypt)
