@@ -291,6 +291,39 @@ try this wash."
 (when (boundp 'mu4e-search-minor-mode-map)
   (define-key mu4e-search-minor-mode-map (kbd "S") nil))
 
+;; Fix window configuration/restoration when sending or deletiong drafts.
+(defun tv:advice-mu4e--compose-setup (compose-type compose-func &optional switch)
+  (cl-assert (member compose-type '(reply forward edit new)))
+  (unless (mu4e-running-p) (mu4e 'background)) ;; start if needed
+  (let* ((parent
+          (when (member compose-type '(reply forward edit))
+            (mu4e-message-at-point)))
+         (mu4e-compose-parent-message parent)
+         (mu4e-compose-type compose-type)
+         (frameconf (current-frame-configuration)))
+    (advice-add 'message-is-yours-p :around #'mu4e--message-is-yours-p)
+    (run-hooks 'mu4e-compose-pre-hook) ;; run the pre-hook. Still useful?
+    (mu4e--context-autoswitch parent mu4e-compose-context-policy)
+    (with-current-buffer
+        (mu4e--compose-setup-buffer compose-type compose-func parent)
+      (unless (eq compose-type 'edit)
+        (set-visited-file-name ;; make it a draft file
+         (mu4e--draft-message-path (mu4e--message-basename) parent)))
+      (mu4e--compose-setup-post compose-type parent)
+      (funcall (or switch (mu4e--compose-switch-function)) (current-buffer))
+      (let ((actions (list
+                      (lambda ()
+                        (set-frame-configuration frameconf)))))
+        ;; handle closing of frames.
+        (setq-local ;;message-kill-actions actions
+         message-return-actions actions
+         message-send-actions actions
+         message-kill-actions actions))
+      (current-buffer))))
+
+(with-eval-after-load 'mu4e-compose
+  (advice-add 'mu4e--compose-setup :override #'tv:advice-mu4e--compose-setup))
+
 (provide 'tv-mu4e-config)
 
 ;;; tv-mu4e-config.el ends here
