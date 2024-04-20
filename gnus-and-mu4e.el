@@ -49,10 +49,14 @@
         mm-file-name-collapse-whitespace
         mm-file-name-replace-whitespace))
 
-;; Html renderer
+;; Html renderer (shr)
 (setq mm-text-html-renderer 'shr)
 (setq shr-color-visible-luminance-min 75)
 (setq shr-use-colors nil)
+
+;; I use C-c C-c to browse url and RET for scrolling.
+(with-eval-after-load 'shr
+  (define-key shr-map (kbd "RET") nil))
 
 (setq mm-inline-text-html-with-w3m-keymap nil
       mm-html-inhibit-images t

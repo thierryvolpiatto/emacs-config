@@ -202,7 +202,7 @@
 
 ;; View html message in firefox (type aV)
 (add-to-list 'mu4e-view-actions
-            '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+             '("ViewInBrowser" . mu4e-action-view-in-browser) t)
 
 ;;; Setup queue mail dir
 ;;
@@ -247,7 +247,7 @@ characters.  If you see something like \\222 or \\264 where
 you're expecting some kind of apostrophe or quotation mark, then
 try this wash."
   (interactive)
-  (with-current-buffer mu4e~view-buffer
+  (with-current-buffer mu4e-view-buffer-name
     (tv:mu4e-view-translate-strings
      '((128 . "EUR") (130 . ",") (131 . "f") (132 . ",,")
        (133 . "...") (139 . "<") (140 . "OE") (145 . "`")
@@ -262,9 +262,9 @@ try this wash."
 
 ;; Refresh main buffer when sending queued mails
 (defun tv:advice-smtpmail-send-queued-mail ()
-  (when (and mu4e~main-buffer-name
+  (when (and mu4e-main-buffer-name
              (eq major-mode 'mu4e-main-mode))
-    (with-current-buffer mu4e~main-buffer-name
+    (with-current-buffer mu4e-main-buffer-name
       (revert-buffer))))
 (advice-add 'smtpmail-send-queued-mail :after #'tv:advice-smtpmail-send-queued-mail)
 
