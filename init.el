@@ -1382,7 +1382,13 @@ With a prefix arg ask with completion which buffer to kill."
 (autoload 'mu4e "mu4e" nil t)
 (with-eval-after-load 'mu4e
   (require 'tv-mu4e-config)
-  (addressbook-turn-on-mail-completion))
+  (addressbook-turn-on-mail-completion)
+  ;; mu4e--compose-setup-completion is called in mu4e-compose-mode and
+  ;; remove unconditionaly message-completion-function from CAPF!!!
+  (add-hook 'mu4e-compose-mode-hook
+            (lambda ()
+              (add-hook 'completion-at-point-functions
+                        #'message-completion-function nil t))))
 (global-set-key (kbd "<f8>") 'mu4e)
 ;; Enable Mu4e when using C-x m before Mu4e has been started.
 (defun tv:advice--compose-mail (old--fn &rest args)
