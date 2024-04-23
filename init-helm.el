@@ -688,6 +688,12 @@ First call indent, second complete symbol, third complete fname."
   (setq helm-ls-git-delete-branch-on-remote t
         helm-ls-git-auto-refresh-at-eob t))
 
+(with-eval-after-load 'helm-mu
+  (setq helm-mu-contacts-after "01-Jan-2020 00:00:01"
+        helm-mu-contacts-personal t
+        helm-mu-contacts-ignore-candidates-regexp
+        "\\`\\(reply.*reply\\.github\\.com\\)\\|\\(no[.-]?reply\\|ne-pas-repondre\\)"))
+
 
 ;;; Helm-command-map
 ;;

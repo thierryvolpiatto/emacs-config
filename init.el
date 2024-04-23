@@ -1901,17 +1901,6 @@ mode temporarily."
 ;;
 (autoload 'irregular-verbs-in-english "irregular-verbs-in-English" nil t)
 
-;;; Sly
-;;
-(autoload 'sly "sly.el" nil t)
-(autoload 'sly-scratch "sly.el" nil t)
-(global-set-key (kbd "<f11> l r") 'sly)
-(global-set-key (kbd "<f11> l s") 'sly-scratch)
-(with-eval-after-load 'sly
-  (add-hook 'sly-mode-hook (lambda () (sly-symbol-completion-mode -1)))
-  (setq sly-completing-read-function 'completing-read)
-  (setq inferior-lisp-program "/usr/bin/sbcl"))
-
 ;;; Boxquote
 ;;
 (autoload 'boxquote-region "boxquote.el" nil t)
