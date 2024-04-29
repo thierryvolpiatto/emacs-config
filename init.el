@@ -1792,20 +1792,6 @@ detected."
 ;;
 (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
 
-;;; Edebug
-;;
-;; Use this to edebug Helm (avoid having to type edebug commands which
-;; are intercepted by Helm).
-;;
-;; (with-eval-after-load 'edebug
-;;   (setq edebug-trace t
-;;         edebug-initial-mode 'trace
-;;         edebug-sit-for-seconds 2))
-;;
-;; Prevent the backtrace buffer popping up while debugging.
-;; See (info "(elisp) Debugging Redisplay")
-;; (setq backtrace-on-redisplay-error t)
-
 ;;; Wfnames
 ;;
 (autoload 'wfnames-setup-buffer "wfnames" nil t)
