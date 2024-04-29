@@ -245,15 +245,15 @@
   (defun helm-rsync-svg-progress-bar (proc percent info)
     (require 'svg-lib)
     (format "%s%s%s"
-            (propertize (capitalize (replace-regexp-in-string
-                                     "<\\([0-9]+\\)>" "(\\1)"
-                                     (process-name proc)))
-                        'display '(height 0.9))
+            (propertize " " 'display (svg-lib-tag
+                                      (process-name proc)
+                                      'helm-ff-rsync-progress-svg))
             (propertize " " 'display (svg-lib-progress-bar
-                                      (/ percent 100.0)
+                                      (/ (1+ percent) 100.0)
                                       'helm-ff-rsync-progress-svg
-                                      :width 10 :margin 1 :stroke 1 :padding 2))
-            (propertize info 'display '(height 0.9))))
+                                      :width 10 :margin 1 :stroke 2 :padding 2))
+            (propertize " " 'display (svg-lib-tag
+                                      info 'helm-ff-rsync-progress-svg))))
   
   (customize-set-variable 'helm-ff-nohighlight-matches nil)
   
