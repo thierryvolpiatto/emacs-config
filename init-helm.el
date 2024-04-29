@@ -233,7 +233,27 @@
                                           "gpg-pubkey-export-armor" "gpg-secretkey-export-armor")
         helm-ff-drag-and-drop-default-directory "/home/thierry/Bureau/"
         helm-file-name-history-hide-deleted t
-        helm-ff-ignore-following-on-directory t)
+        helm-ff-ignore-following-on-directory t
+        helm-rsync-progress-bar-function #'helm-rsync-svg-progress-bar)
+
+  (defface helm-ff-rsync-progress-svg
+      `((t ,@(and (>= emacs-major-version 27) '(:extend t))
+           :background "black"))
+    "Face used for rsync svg progress bar background."
+    :group 'helm-files-faces)
+  
+  (defun helm-rsync-svg-progress-bar (proc percent info)
+    (require 'svg-lib)
+    (format "%s%s%s"
+            (propertize (capitalize (replace-regexp-in-string
+                                     "<\\([0-9]+\\)>" "(\\1)"
+                                     (process-name proc)))
+                        'display '(height 0.9))
+            (propertize " " 'display (svg-lib-progress-bar
+                                      (/ percent 100.0)
+                                      'helm-ff-rsync-progress-svg
+                                      :width 10 :margin 1 :stroke 1 :padding 2))
+            (propertize info 'display '(height 0.9))))
   
   (customize-set-variable 'helm-ff-nohighlight-matches nil)
   
