@@ -2,6 +2,9 @@
 
 ;;; code:
 
+(require 'mu4e-patch)
+(advice-add 'gnus-article-prepare-display :after #'mu4e-patch:article-treat-patch)
+
 ;;; Message and smtp settings
 ;;
 ;;

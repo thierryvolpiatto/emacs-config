@@ -16,9 +16,6 @@
       read-mail-command    'mu4e
       gnus-dired-mail-mode 'mu4e-user-agent)
 
-(require 'mu4e-patch)
-(advice-add 'gnus-article-prepare-display :after #'mu4e-patch:article-treat-patch)
-
 
 ;;; Message and smtp settings
 ;;
@@ -123,10 +120,6 @@
          :query "flag:unread AND NOT flag:trashed"
          :key ?u)
         (:name
-         "Unread messages but EmacsDev"
-         :query "flag:unread AND NOT flag:trashed AND NOT maildir:/Posteo/Emacs-devel"
-         :key ?U)
-        (:name
          "Unread messages from Helm"
          :query "flag:unread AND NOT flag:trashed AND maildir:/Posteo/github-helm"
          :key ?h)
@@ -139,16 +132,12 @@
          :query "date:1d..now AND NOT flag:trashed"
          :key ?y)
         (:name
-         "Yesterday and today messages but EmacsDev"
-         :query "date:1d..now AND NOT flag:trashed AND NOT maildir:/Posteo/Emacs-devel"
-         :key ?Y)
-        (:name
-         "Last week messages but EmacsDev"
-         :query "date:7d..now AND NOT flag:trashed AND NOT maildir:/Posteo/Emacs-devel"
+         "Last week messages"
+         :query "date:7d..now AND NOT flag:trashed"
          :key ?w)
         (:name
-         "Last month messages but EmacsDev"
-         :query "date:1m..now AND NOT flag:trashed AND NOT maildir:/Posteo/Emacs-devel"
+         "Last month messages"
+         :query "date:1m..now AND NOT flag:trashed"
          :key ?m)
         ))
 
