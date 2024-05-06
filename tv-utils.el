@@ -697,6 +697,51 @@ With a prefix arg prompt to edit file extensions."
                                  (split-string strings)
                                defs)))))
 
+;; This template needs the lettre package
+;; included in texlive-latex-extra package.
+(defun tv:insert-skel-latex-letter ()
+  "Insert a latex skeleton letter in an empty file"
+  (interactive)
+  (insert
+   "\\documentclass[12pt]{lettre}\n"
+   "\n"
+   "\n"
+   "\\usepackage[T1]{fontenc}\n"
+   "\\usepackage{lmodern}\n"
+   "\\usepackage{eurosym} % Use \euro for €\n"
+   "\\usepackage[francais]{babel}\n"
+   "\\usepackage[utf8]{inputenc}\n"
+   "\\begin{document}\n"
+   "\n"
+   "\\begin{letter}{destinataire\\\\adresse1\\\\adresse2} % nom et addresse destinataire\n"
+   "\\name{expéditeur}\n"
+   "\\signature{Thierry Volpiatto}\n"
+   "\\address{expéditeur\\\\adresse1\\\\adresse2} % nom expéditeur\n"
+   "\\lieu{ville}\n"
+   "\\telephone{01~02~03~04~05}\n"
+   "\\email{thierry@fai.fr}\n"
+   "\\nofax\n"
+   "\n"
+   "\\def\\concname{Objet :~} % ne rien modifier ici\n"
+   "\\conc{objet de la lettre} % objet modifier ici\n"
+   "\\opening{Madame, Monsieur,}\n"
+   "\n"
+   "% Contenu de la lettre\n"
+   "\n"
+   "\\closing{Je vous prie d'agréer, Madame, Monsieur, mes salutations distinguées.}\n"
+   "\n"
+   "\\encl{Pièces jointes}\n"
+   "\n"
+   "\\ps{PS :~}{Post scritum ici}\n"
+   "\\end{letter}\n"
+   "\n"
+   "\\end{document}\n")
+  (goto-char (point-min))
+  (when (re-search-forward "[\\]begin[{]letter[}]")
+    (beginning-of-line)
+    (forward-char 15)))
+
+
 (provide 'tv-utils)
 
 ;; Local Variables:
