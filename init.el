@@ -1816,24 +1816,6 @@ detected."
   (setq wfnames-create-parent-directories t
         wfnames-interactive-rename nil))
 
-;;; Offlineimap
-;;
-(autoload 'offlineimap "offlineimap" nil t)
-(add-hook 'offlineimap-event-hooks 'gnus-group-get-new-news)
-(with-eval-after-load 'gnus-group
-  (define-key gnus-group-mode-map (kbd "U") 'offlineimap))
-
-;;; Gnus
-;;
-(global-set-key (kbd "<f9>") 'gnus)
-(setq gnus-init-file "~/.emacs.d/.gnus.el")
-(with-eval-after-load 'gnus-sum
-  (define-key gnus-summary-mode-map (kbd "M-q") 'gnus-article-fill-long-lines)
-  (define-key gnus-summary-mode-map (kbd "N")   'gnus-summary-next-unread-article)
-  (define-key gnus-summary-mode-map (kbd "n")   'gnus-summary-next-article)
-  (define-key gnus-summary-mode-map (kbd "P")   'gnus-summary-prev-unread-article)
-  (define-key gnus-summary-mode-map (kbd "p")   'gnus-summary-prev-article))
-
 ;;; Emms (install it from source for Emacs < 28 to avoid seq dependency)
 ;;
 (with-eval-after-load 'emms
