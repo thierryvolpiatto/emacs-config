@@ -18,7 +18,19 @@
 ;;
 ;;
 ;; Default method
-(setq gnus-select-method '(nntp "news.gmane.io"))
+;; (setq gnus-select-method '(nntp "news.gmane.io"))
+
+;; This is the configuration using dovecot server. Need dovecot imap
+;; package installed, add this line to
+;; /etc/dovecot/conf.d/10-mail.conf:
+;; mail_location = maildir:~/Maildir:LAYOUT=fs
+(setq gnus-select-method
+      '(nnimap "Posteo"
+	(nnimap-address "localhost")
+	(nnimap-stream network)
+	(nnimap-authenticator login)))
+
+(setq gnus-ignored-from-addresses "thievol@posteo\\.net")
 
 (setq gnus-thread-sort-functions '((not gnus-thread-sort-by-number)))
 
@@ -42,6 +54,8 @@
 ;; To have mails offline, use offlineimap to feed ~/.nnmaildir and use
 ;; Gnus nnmaildir method:
 ;; (setq gnus-secondary-select-methods '((nnmaildir "Posteo" (directory "~/.nnmaildir"))))
+
+(setq gnus-secondary-select-methods '((nntp "news.gmane.io")))
 
 ;; Change "From" field according to "To" field on reply.
 (setq gnus-posting-styles
