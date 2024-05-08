@@ -1898,6 +1898,11 @@ mode temporarily."
                              nil nil "https://debbugs.gnu.org/%s")))
     (eww-browse-url (format url bug-number) t t)))
 
+;;; EWW
+;;
+(with-eval-after-load 'eww
+  (define-key eww-mode-map (kbd "B") 'helm-eww-bookmarks))
+
 ;;; Load time
 ;;
 (tv:emacs-load-time)

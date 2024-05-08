@@ -753,12 +753,11 @@ First call indent, second complete symbol, third complete fname."
                                  helm-current-prefix-arg))))
           :buffer "*helm eww bookmarks*")))
 
-(defun helm-eww-delete-bookmark (bmk)
+(defun helm-eww-delete-bookmark (_bookmark)
   (let ((mkds (helm-marked-candidates)))
-    (cl-loop for url in mkds
-             do (cl-loop for bmk in eww-bookmarks
-                         when (string= (plist-get bmk :url) url)
-                         do (setq eww-bookmarks (delete bmk eww-bookmarks))))
+    (dolist (bmk eww-bookmarks)
+      (when (member (plist-get bmk :url) mkds)
+        (setq eww-bookmarks (delete bmk eww-bookmarks))))
     (eww-write-bookmarks)))
 
 
