@@ -700,6 +700,19 @@ First call indent, second complete symbol, third complete fname."
 
 ;;; Helm-eww
 ;;
+(defvar helm-eww-show-url nil)
+(defvar helm-eww-map
+  (let ((map (make-sparse-keymap)))
+    (set-keymap-parent map helm-map)
+    (define-key map (kbd "C-]") 'helm-eww-toggle-urls)
+    map))
+
+(defun helm-eww-toggle-urls ()
+  (interactive)
+  (let ((sel (helm-get-selection nil 'withprop)))
+    (setq helm-eww-show-url (not helm-eww-show-url))
+    (helm-force-update (get-text-property 1 'preselect sel))))
+
 (defun helm-eww-bookmarks ()
   (interactive)
   (require 'eww)
@@ -714,17 +727,23 @@ First call indent, second complete symbol, third complete fname."
                       (lambda (candidates _source)
                         (cl-loop for (title . url) in candidates
                                  for sep = (helm-make-separator title 42)
-                                 collect (cons (concat (propertize
-                                                        (truncate-string-to-width title 42)
-                                                        'face 'font-lock-keyword-face)
-                                                       sep
-                                                       (truncate-string-to-width url 72))
+                                 collect (cons (if helm-eww-show-url
+                                                   (concat (propertize
+                                                            (truncate-string-to-width title 42)
+                                                            'face 'font-lock-keyword-face
+                                                            'preselect title)
+                                                           sep
+                                                           (truncate-string-to-width url 72))
+                                                 (propertize
+                                                  title 'face 'font-lock-keyword-face
+                                                  'preselect (truncate-string-to-width title 42)))
                                                url)))
                       #'helm-adaptive-sort)
                      :action (helm-make-actions
                               "Browse url" #'eww-browse-url
                               "Browse url externally" #'browse-url
-                              "Delete bookmark" #'helm-eww-delete-bookmark))
+                              "Delete bookmark" #'helm-eww-delete-bookmark)
+                     :keymap 'helm-eww-map)
           :buffer "*helm eww bookmarks*")))
 
 (defun helm-eww-delete-bookmark (bmk)
