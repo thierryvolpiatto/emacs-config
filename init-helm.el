@@ -690,11 +690,50 @@ First call indent, second complete symbol, third complete fname."
   (setq helm-ls-git-delete-branch-on-remote t
         helm-ls-git-auto-refresh-at-eob t))
 
+;;; Helm-mu
+;;
 (with-eval-after-load 'helm-mu
   (setq helm-mu-contacts-after "01-Jan-2020 00:00:01"
         helm-mu-contacts-personal t
         helm-mu-contacts-ignore-candidates-regexp
         "\\`\\(reply.*reply\\.github\\.com\\)\\|\\(no[.-]?reply\\|ne-pas-repondre\\)"))
+
+;;; Helm-eww
+;;
+(defun helm-eww-bookmarks ()
+  (interactive)
+  (require 'eww)
+  (eww-read-bookmarks)
+  (let ((bmks-alist (cl-loop for bmk in eww-bookmarks
+                             collect (cons (plist-get bmk :title)
+                                           (plist-get bmk :url)))))
+    (helm :sources (helm-build-sync-source "helm eww bookmarks"
+                     :candidates bmks-alist
+                     :filtered-candidate-transformer
+                     (list
+                      (lambda (candidates _source)
+                        (cl-loop for (title . url) in candidates
+                                 for sep = (helm-make-separator title 42)
+                                 collect (cons (concat (propertize
+                                                        (truncate-string-to-width title 42)
+                                                        'face 'font-lock-keyword-face)
+                                                       sep
+                                                       (truncate-string-to-width url 72))
+                                               url)))
+                      #'helm-adaptive-sort)
+                     :action (helm-make-actions
+                              "Browse url" #'eww-browse-url
+                              "Browse url externally" #'browse-url
+                              "Delete bookmark" #'helm-eww-delete-bookmark))
+          :buffer "*helm eww bookmarks*")))
+
+(defun helm-eww-delete-bookmark (bmk)
+  (let ((mkds (helm-marked-candidates)))
+    (cl-loop for url in mkds
+             do (cl-loop for bmk in eww-bookmarks
+                         when (string= (plist-get bmk :url) url)
+                         do (setq eww-bookmarks (delete bmk eww-bookmarks))))
+    (eww-write-bookmarks)))
 
 
 ;;; Helm-command-map
@@ -703,7 +742,7 @@ First call indent, second complete symbol, third complete fname."
 (define-key helm-command-map (kbd "g") 'helm-apt-search)
 (define-key helm-command-map (kbd "z") 'helm-complex-command-history)
 (define-key helm-command-map (kbd "x") 'helm-firefox-bookmarks)
-(define-key helm-command-map (kbd "w") 'helm-w3m-bookmarks)
+(define-key helm-command-map (kbd "w") 'helm-eww-bookmarks)
 (define-key helm-command-map (kbd "#") 'helm-emms)
 (define-key helm-command-map (kbd "I") 'helm-imenu-in-all-buffers)
 
