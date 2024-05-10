@@ -1900,6 +1900,7 @@ mode temporarily."
 
 ;;; EWW
 ;;
+(global-set-key (kbd "<f7> h") 'eww)
 (with-eval-after-load 'eww
   (define-key eww-mode-map (kbd "B") 'helm-eww-bookmarks))
 
