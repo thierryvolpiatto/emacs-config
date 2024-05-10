@@ -15,8 +15,14 @@
 ;; See (info "(message) Wide Reply")
 (setq message-dont-reply-to-names
       '("notifications@github\\.com"
-        ".*@noreply\\.github\\.com"
-        "thievol@posteo\\.net"))
+        ".*@noreply\\.github\\.com"))
+
+;; Forward sent messages to myself. Posteo/Sent is therefore no more
+;; synchronised, sent messages are copied to /sent locally. This have
+;; the benefit of having all sent mails saved and encrypted on posteo
+;; server. And if I really want to have my sent mails in /Posteo/Sent
+;; I can create a filter on Posteo server to move my own emails to /Sent.
+(setq message-default-mail-headers (format "Bcc: %s\n" user-mail-address))
 
 ;; [smtpmail-async] Experimental, use `smtpmail-send-it' otherwise.
 ;; To debug use `smtpmail-send-it'

@@ -698,68 +698,6 @@ First call indent, second complete symbol, third complete fname."
         helm-mu-contacts-ignore-candidates-regexp
         "\\`\\(reply.*reply\\.github\\.com\\)\\|\\(no[.-]?reply\\|ne-pas-repondre\\)"))
 
-;;; Helm-eww
-;;
-(defvar helm-eww-show-url nil)
-(defvar helm-eww-map
-  (let ((map (make-sparse-keymap)))
-    (set-keymap-parent map helm-map)
-    (define-key map (kbd "C-]") 'helm-eww-toggle-urls)
-    map))
-
-(defun helm-eww-toggle-urls ()
-  (interactive)
-  (let ((sel (helm-get-selection nil 'withprop)))
-    (setq helm-eww-show-url (not helm-eww-show-url))
-    (helm-force-update (get-text-property 1 'preselect sel))))
-
-(defun helm-eww-bookmarks ()
-  (interactive)
-  (require 'eww)
-  (eww-read-bookmarks)
-  (let ((bmks-alist (cl-loop for bmk in eww-bookmarks
-                             collect (cons (plist-get bmk :title)
-                                           (plist-get bmk :url)))))
-    (helm :sources (list
-                    (helm-build-sync-source "helm eww bookmarks"
-                      :candidates bmks-alist
-                      :filtered-candidate-transformer
-                      (list
-                       (lambda (candidates _source)
-                         (cl-loop for (title . url) in candidates
-                                  for sep = (helm-make-separator title 42)
-                                  collect (cons (if helm-eww-show-url
-                                                    (concat (propertize
-                                                             (truncate-string-to-width title 42)
-                                                             'face 'font-lock-keyword-face
-                                                             'preselect title)
-                                                            sep
-                                                            (truncate-string-to-width url 72))
-                                                  (propertize
-                                                   title 'face 'font-lock-keyword-face
-                                                   'preselect (truncate-string-to-width title 42)))
-                                                url)))
-                       #'helm-adaptive-sort)
-                      :action (helm-make-actions
-                               "Browse url" #'eww-browse-url
-                               "Browse url externally" #'browse-url
-                               "Delete bookmark" #'helm-eww-delete-bookmark)
-                      :keymap 'helm-eww-map)
-                    (helm-build-dummy-source "DuckDuckgo"
-                      :action (lambda (candidate)
-                                (eww
-                                 (format helm-surfraw-duckduckgo-url
-                                         (url-hexify-string candidate))
-                                 helm-current-prefix-arg))))
-          :buffer "*helm eww bookmarks*")))
-
-(defun helm-eww-delete-bookmark (_bookmark)
-  (let ((mkds (helm-marked-candidates)))
-    (dolist (bmk eww-bookmarks)
-      (when (member (plist-get bmk :url) mkds)
-        (setq eww-bookmarks (delete bmk eww-bookmarks))))
-    (eww-write-bookmarks)))
-
 
 ;;; Helm-command-map
 ;;

@@ -38,13 +38,12 @@
                    (smtpmail-default-smtp-server . "posteo.de")
                    (smtpmail-smtp-server         . "posteo.de")
                    (smtpmail-smtp-service        . 587)
-                   ;; (mail-reply-to                . "thievol@posteo.net")
                    (user-mail-address            . "thievol@posteo.net")
                    (user-full-name               . "Thierry Volpiatto")
                    (mu4e-compose-signature       . t)
-                   (mu4e-sent-folder             . "/Posteo/Sent")
-                   (mu4e-trash-folder            . "/Posteo/Trash")
-                   (mu4e-drafts-folder           . "/Posteo/Drafts")))))
+                   (mu4e-sent-folder             . "/sent")
+                   (mu4e-trash-folder            . "/trash")
+                   (mu4e-drafts-folder           . "/drafts")))))
 
 (setq mu4e-user-mail-address-list
       (delq nil

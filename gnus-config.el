@@ -61,6 +61,7 @@
 (setq gnus-posting-styles
       '(("thievol@posteo\\.net"
          (name "Thierry Volpiatto")
+         (gcc "thievol@posteo.net")
          (address "thievol@posteo.net")
          (signature-file "~/.signature"))))
 
@@ -116,7 +117,7 @@ This will run in `message-send-hook'."
 
 ;;; Archivage des mails envoyés
 ;;
-(setq gnus-message-archive-group '((when (message-news-p) "sent-news")))
+(setq gnus-message-archive-group "sent")
 
 ;;; Show all these headers
 ;;
