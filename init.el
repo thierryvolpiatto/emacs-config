@@ -1903,6 +1903,14 @@ mode temporarily."
 (with-eval-after-load 'eww
   (define-key eww-mode-map (kbd "B") 'helm-eww-bookmarks))
 
+;;; Gnus
+;;
+(global-set-key (kbd "<f9>") #'gnus)
+(setq gnus-init-file "~/.emacs.d/.gnus.el")
+(with-eval-after-load 'gnus-sum
+  (define-key gnus-summary-mode-map (kbd "M-q") 'gnus-article-fill-long-lines)
+  (define-key gnus-summary-mode-map (kbd "N")   'gnus-summary-next-unread-article))
+
 ;;; Load time
 ;;
 (tv:emacs-load-time)
