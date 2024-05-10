@@ -17,29 +17,29 @@
 ;;; Gnus methods
 ;;
 ;;
-;; Default method
-;; (setq gnus-select-method '(nntp "news.gmane.io"))
+;; Three methods described here to use Emails with Gnus:
 
-;; This is the configuration using dovecot server. Need dovecot imap
-;; package installed, add this line to
+;; 1) This is the configuration using dovecot server.
+;; Need dovecot imap package installed, add this line to
 ;; /etc/dovecot/conf.d/10-mail.conf:
 ;; mail_location = maildir:~/Maildir:LAYOUT=fs
+
 (setq gnus-select-method
       '(nnimap "Posteo"
-	(nnimap-address "localhost")
-	(nnimap-stream network)
-	(nnimap-authenticator login)))
+        (nnimap-address "localhost")
+        (nnimap-stream network)
+        (nnimap-authenticator login)))
+
+;; 2) The nnmaildir config: Use offlineimap to feed ~/.nnmaildir
+;; The ~/.offlineimaprc used by offlineimap command should point to
+;; ~/.nnmaildir. Looks nice but too slow to be used.
+;; (setq gnus-select-method '(nnmaildir "Posteo" (directory "~/.nnmaildir")))
 
 (setq gnus-ignored-from-addresses "thievol@posteo\\.net")
 
 (setq gnus-thread-sort-functions '((not gnus-thread-sort-by-number)))
 
-;;; To add a mail account:
-;;
-;;  1) Add an nnimap entry in `gnus-secondary-select-methods'.
-;;  2) Add an entry in `gnus-posting-styles'
-;;  3) Add an entry in `tv-smtp-accounts'
-;;  4) Add an entries in authinfo for imap and smtp refering to labels. (See below)
+;; 3) the online method with nnimap (no mails offline):
 
 ;; Secondary methods are mails and possibly other nntp servers.
 ;; (setq gnus-secondary-select-methods '(;; Add as many mail account as needed with a label.
@@ -51,10 +51,6 @@
 ;;                                        ;; instead `A-C' to see entire mail.
 ;;                                        (nnimap-fetch-partial-articles "text/"))))
 
-;; To have mails offline, use offlineimap to feed ~/.nnmaildir and use
-;; Gnus nnmaildir method:
-;; (setq gnus-secondary-select-methods '((nnmaildir "Posteo" (directory "~/.nnmaildir"))))
-
 (setq gnus-secondary-select-methods '((nntp "news.gmane.io")))
 
 ;; Change "From" field according to "To" field on reply.
@@ -64,6 +60,13 @@
          (gcc "thievol@posteo.net")
          (address "thievol@posteo.net")
          (signature-file "~/.signature"))))
+
+;; To add a mail account:
+;;
+;;  1) Add an nnimap entry in `gnus-secondary-select-methods'.
+;;  2) Add an entry in `gnus-posting-styles'
+;;  3) Add an entry in `tv-smtp-accounts'
+;;  4) Add an entries in authinfo for imap and smtp refering to labels. (See below)
 
 (defvar tv-smtp-accounts
   '(("thievol@posteo.net"
