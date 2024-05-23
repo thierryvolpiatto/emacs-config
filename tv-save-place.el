@@ -23,6 +23,15 @@
       (unless (<= pos 1)
         (puthash file pos tv-save-place-cache)))))
 
+(defun tv-save-place-refresh-cache ()
+  (cl-loop for k being the hash-keys of tv-save-place-cache
+           using (hash-values v)
+           for buf = (get-buffer (file-name-nondirectory k))
+           when (buffer-live-p buf)
+           do (with-current-buffer buf
+                (unless (eq (point) v)
+                  (tv-save-place)))))
+
 (defun tv-save-place-restore-pos ()
   (let* ((file (buffer-file-name))
          (pos (gethash file tv-save-place-cache)))
@@ -36,9 +45,11 @@
   (if tv-save-place-mode
       (progn
         (add-hook 'kill-buffer-hook 'tv-save-place)
-        (add-hook 'find-file-hook 'tv-save-place-restore-pos 100))
+        (add-hook 'find-file-hook 'tv-save-place-restore-pos 100)
+        (add-hook 'kill-emacs-hook 'tv-save-place-refresh-cache))
     (remove-hook 'kill-buffer-hook 'tv-save-place)
-    (remove-hook 'find-file-hook 'tv-save-place-restore-pos)))
+    (remove-hook 'find-file-hook 'tv-save-place-restore-pos)
+    (remove-hook 'kill-emacs-hook 'tv-save-place-refresh-cache)))
 
 (provide 'tv-save-place.el)
 
