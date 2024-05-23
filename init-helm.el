@@ -127,31 +127,6 @@
   ;; Emacs-27<
   (setq helm-completions-detailed t))
 
-;; [EXPERIMENTAL] Man affixation
-;; `helm--completion-man-affixation-cache' is saved by psession.
-;; Use M-x psession-make-persistent-variable to save it.
-(defvar helm--completion-man-affixation-cache (make-hash-table :test 'equal))
-(defun helm-completion-man-affixation (_comps)
-  (lambda (comp)
-    (let* ((entry (replace-regexp-in-string "([[:alnum:]]+)\\'" "" comp))
-           (doc (or (gethash entry helm--completion-man-affixation-cache)
-                    (puthash
-                     entry
-                     (helm-aand (shell-command-to-string
-                                 (format "man -k ^%s$" entry))
-                                (replace-regexp-in-string "[\n]" "" it)
-                                (cadr (split-string it "- " t)))
-                     helm--completion-man-affixation-cache)))
-           (sep (helm-make-separator comp)))
-      (list comp "" (helm-aand doc
-                               (propertize it 'face 'helm-completions-detailed)
-                               (propertize " " 'display (concat sep it)))))))
-
-(add-to-list 'helm-completing-read-extra-metadata '(man . (metadata
-                                                           (affixation-function . helm-completion-man-affixation)
-                                                           (category . man))))
-(add-to-list 'helm-completing-read-command-categories '("man" . man))
-
 ;;; Helm-adaptive
 ;;
 (require 'helm-adaptive)
@@ -210,7 +185,6 @@
         (append helm-buffers-favorite-modes '(picture-mode artist-mode))
         helm-buffer-skip-remote-checking  t
         helm-buffer-max-length            22
-        helm-buffers-end-truncated-string "…"
         helm-buffers-fuzzy-matching t
         helm-buffers-maybe-switch-to-tab  t
         helm-mini-default-sources '(helm-source-buffers-list
