@@ -3,9 +3,12 @@
 
 ;;; Code:
 
+(require 'ansi-color)
+
 (defvar wttr-weather-history nil)
 (defvar wttr-weather-default-location "Guillestre")
 (defvar wttr-weather-last-location nil)
+
 ;;;###autoload
 (defun wttr-weather (place)
   "Weather forecast with wttr.in.
@@ -70,14 +73,16 @@ See <https://github.com/chubin/wttr.in>."
       (when (and ansi ; Keep notification when no weather report.
                  (re-search-backward "^$" nil t))
         (delete-region (point) (point-max))))
-    (while (re-search-forward "\\s\\" (point-at-eol) t) (replace-match ""))
-    (goto-char (point-at-eol))
+    (while (re-search-forward "\\s\\" (pos-eol) t) (replace-match ""))
+    (goto-char (pos-eol))
     (insert (format-time-string " le %d/%m/%Y à %H:%M:%S"))))
 
 (defun wttr-weather-revert-fn (_ignore-auto _no_confirm)
   (wttr-weather-update wttr-weather-last-location))
 
-(define-derived-mode wttr-weather-mode special-mode "wttr"
+(define-derived-mode wttr-weather-mode
+    special-mode "wttr"
+    "Mode used to display wttr-weather buffer."
   (make-local-variable 'wttr-weather-last-location)
   (set (make-local-variable 'revert-buffer-function) 'wttr-weather-revert-fn))
 (put 'wttr-weather-mode 'no-helm-mx t)
