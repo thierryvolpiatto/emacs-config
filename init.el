@@ -8,6 +8,16 @@
     (message "Emacs config loaded in %s seconds"
              (format "%.2f" time))))
 
+;; gcmh-mode disable GC and increase gc-cons-threshold while not idle,
+;; when idle, restore gc-cons-threshold and run GC after
+;; gcmh-idle-delay seconds or (* gcmh-auto-idle-delay-factor
+;; gcmh-last-gc-time) if set to auto.
+(with-eval-after-load 'gcmh
+  (setq gcmh-idle-delay 'auto
+        ; gcmh-verbose t
+        ))
+(gcmh-mode 1)
+
 
 ;;; Packages.el config.
 ;;
