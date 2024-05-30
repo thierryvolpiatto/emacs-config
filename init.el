@@ -1874,11 +1874,36 @@ mode temporarily."
          :smatch t))
     (customize-set-variable 'register-use-preview 'insist)
     (cl-defmethod register-command-info ((_command (eql register-delete)))
-        (make-register-preview-info
-         :types '(all)
-         :msg "Delete register `%s'"
-         :act 'modify
-         :smatch t)))
+      (make-register-preview-info
+       :types '(all)
+       :msg "Delete register `%s'"
+       :act 'modify
+       :smatch t)))
+
+  ;; Override original `register-val-describe' string method. Replace
+  ;; unuseful text at beginning of string by a shorter one.
+  (cl-defmethod register-val-describe
+      :around ((val string) verbose)
+      (setq val (copy-sequence val))
+      (if (eq yank-excluded-properties t)
+          (set-text-properties 0 (length val) nil val)
+        (remove-list-of-text-properties 0 (length val)
+				        yank-excluded-properties val))
+      (if verbose
+          (progn
+	    (princ "the text:\n")
+	    (princ val))
+        (cond
+          ;; Extract first N characters starting with first non-whitespace.
+          ((string-match (format "[^ \t\n].\\{,%d\\}"
+			         (min 72 (max 0 (window-width))))
+		         val)
+           (princ "text:\n")
+           (princ (match-string 0 val)))
+          ((string-match "^[ \t\n]+$" val)
+           (princ "whitespace"))
+          (t
+           (princ "the empty string")))))
 
   (define-key global-map (kbd "C-x r C-d") #'register-delete))
 
