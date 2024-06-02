@@ -8,16 +8,6 @@
     (message "Emacs config loaded in %s seconds"
              (format "%.2f" time))))
 
-;; gcmh-mode disable GC and increase gc-cons-threshold while not idle,
-;; when idle, restore gc-cons-threshold and run GC after
-;; gcmh-idle-delay seconds or (* gcmh-auto-idle-delay-factor
-;; gcmh-last-gc-time) if set to auto.
-(with-eval-after-load 'gcmh
-  (setq gcmh-idle-delay 'auto
-        ; gcmh-verbose t
-        ))
-(gcmh-mode 1)
-
 
 ;;; Packages.el config.
 ;;
@@ -31,8 +21,6 @@
 ;;
 (dolist (i `("~/elisp/"
              "~/elisp/autoconf-mode"
-             "~/elisp/desktop-file-utils"
-             "~/elisp/tex-utils"
              "~/elisp/helm-extensions"
              "~/.emacs.d/themes/"
              "~/.emacs.d/emacs-config/"
@@ -40,6 +28,15 @@
   ;; Add all at end of `load-path' to avoid conflicts.
   (when (stringp i)
     (add-to-list 'load-path (file-name-as-directory i) t)))
+
+;; gcmh-mode disable GC and increase gc-cons-threshold while not idle,
+;; when idle, restore gc-cons-threshold and run GC after
+;; gcmh-idle-delay seconds or (* gcmh-auto-idle-delay-factor
+;; gcmh-last-gc-time) if set to auto.
+(autoload 'gcmh-mode "gcmh.el") ; Installed in ~/elisp.
+(with-eval-after-load 'gcmh
+  (setq gcmh-idle-delay 'auto))
+(gcmh-mode 1)
 
 (with-eval-after-load 'find-func
   (setq find-library-include-other-files nil))
