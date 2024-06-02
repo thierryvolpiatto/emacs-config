@@ -172,7 +172,7 @@ Restart works only on graphic display."
 
 ;; Copy/paste
 (setq select-active-regions 'only)
-(setq x-select-enable-clipboard-manager t
+(setq x-select-enable-clipboard-manager nil
       ;; save-interprogram-paste-before-kill 72
       select-enable-clipboard t
       select-enable-primary t)
