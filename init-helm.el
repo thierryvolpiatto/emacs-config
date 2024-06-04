@@ -104,6 +104,7 @@
         (dired-do-relsymlink . helm-read-file-name-handler-1)
         (dired-do-hardlink . helm-read-file-name-handler-1)
         (dired-do-touch . nil)
+        (read-multiple-choice--long-answers . nil)
         (basic-save-buffer . helm-read-file-name-handler-1)
         (write-file . (default helm-read-file-name-handler-1))
         (write-region . (default helm-read-file-name-handler-1))
