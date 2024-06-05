@@ -264,6 +264,7 @@ If entries are already pointed, skip."
                               ("Solimut" . ":assurance:maladie:mutuelle")
                               ("CARTE X3077" . ":rachel:carte3077")
                               ("CARTE X8911" . ":thierry:carte8911")
+                              ("CARTE X1965" . ":thierry:carte1965")
                               ("J LOUIS DAVID" . ":rachel:carte3077:coiffeur_rachel")
                               ("DELOMPRE CURBILL" . ":rachel:carte3077:estheticienne")))
 
