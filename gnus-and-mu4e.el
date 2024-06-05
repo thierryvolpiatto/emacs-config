@@ -115,7 +115,7 @@
 (defun tv:browse-url-or-show-patch (arg)
   (interactive "P")
   (require 'helm-net)
-  (let ((url (shr-url-at-point nil)))
+  (let ((url (thing-at-point 'url)))
     (when url
       (if (string-match "\\.\\(patch\\|diff\\)\\'" url)
           (tv:show-patch-other-frame (if arg (concat url "?w=1") url))
