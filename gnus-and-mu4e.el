@@ -59,7 +59,7 @@
         mm-file-name-replace-whitespace))
 
 ;; Html renderer (shr)
-(setq mm-text-html-renderer 'shr)
+(setq mm-text-html-renderer (if (fboundp 'w3m) 'w3m 'shr))
 (setq shr-color-visible-luminance-min 75)
 (setq shr-use-colors nil)
 
@@ -115,7 +115,7 @@
 (defun tv:browse-url-or-show-patch (arg)
   (interactive "P")
   (require 'helm-net)
-  (let ((url (thing-at-point 'url)))
+  (let ((url (w3m-active-region-or-url-at-point)))
     (when url
       (if (string-match "\\.\\(patch\\|diff\\)\\'" url)
           (tv:show-patch-other-frame (if arg (concat url "?w=1") url))

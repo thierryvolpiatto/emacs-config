@@ -279,6 +279,58 @@ try this wash."
 (when (boundp 'mu4e-search-minor-mode-map)
   (define-key mu4e-search-minor-mode-map (kbd "S") nil))
 
+(defadvice w3m-goto-next-anchor (before go-to-end-of-anchor activate)
+  (when (w3m-anchor-sequence)
+    (let ((pos (next-single-property-change
+                (point) 'w3m-anchor-sequence)))
+      (and pos (goto-char pos)))))
+
+(defadvice w3m-goto-previous-anchor (before go-to-end-of-anchor activate)
+  (when (w3m-anchor-sequence)
+    (let ((pos (previous-single-property-change
+                (point) 'w3m-anchor-sequence)))
+      (and pos (goto-char pos)))))
+
+;; Ignore these pesty gnus buttons.
+(setq w3m-handle-non-anchor-buttons nil)
+
+(defun tv:mu4e-next-anchor ()
+  (interactive)
+  (require 'w3m)
+  (or (w3m-next-anchor)
+      (let ((pos (point)))
+        (when (eq (get-text-property (point) 'face)
+                  'mu4e-link-face)
+          (setq pos (next-single-property-change (point) 'face)))
+        (let ((next-url (and pos
+                             (or (text-property-any
+                                  pos (point-max)
+                                  'face 'mu4e-link-face)
+                                 (text-property-any
+                                  (point-min) (point-max)
+                                  'face 'mu4e-link-face)))))
+          (and next-url (goto-char next-url))))))
+
+(defun tv:mu4e-previous-anchor ()
+  (interactive)
+  (require 'helm-lib)
+  (require 'w3m)
+  (or (w3m-previous-anchor)
+      (let ((prev-url (save-excursion
+                        (helm-awhile (re-search-backward
+                                      ffap-url-regexp nil t)
+                          (goto-char (match-beginning 0))
+                          (when (eq (get-text-property
+                                     (point) 'face)
+                                    'mu4e-link-face)
+                            (cl-return (point)))
+                          (goto-char it)))))
+        (and prev-url (goto-char prev-url)))))
+
+(define-key mu4e-view-mode-map (kbd "<C-tab>")   'tv:mu4e-next-anchor)
+(define-key mu4e-view-mode-map (kbd "<backtab>") 'tv:mu4e-previous-anchor)
+(define-key mu4e-view-mode-map (kbd "C-c v") 'mu4e-view-open-attachment)
+
 
 (provide 'tv-mu4e-config)
 

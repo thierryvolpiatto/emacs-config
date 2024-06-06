@@ -1928,13 +1928,23 @@ mode temporarily."
     (when (or current-prefix-arg (null url))
       (setq url (read-string (format-prompt "Url" "debbugs.gnu.org")
                              nil nil "https://debbugs.gnu.org/%s")))
-    (eww-browse-url (format url bug-number) t t)))
+    (w3m-browse-url (format url bug-number) t t)))
 
-;;; EWW
+;;; W3m
 ;;
-(global-set-key (kbd "<f7> h") 'helm-eww-bookmarks)
-(with-eval-after-load 'eww
-  (define-key eww-mode-map (kbd "B") 'helm-eww-bookmarks))
+(with-eval-after-load 'w3m
+  (require 'config-w3m)
+  (define-key w3m-mode-map (kbd "M-<right>")      'w3m-next-buffer)
+  (define-key w3m-mode-map (kbd "M-<left>")       'w3m-previous-buffer)
+  (define-key w3m-mode-map (kbd "V")              'helm-w3m-bookmarks)
+  (define-key w3m-mode-map (kbd "M")              'w3m-view-url-with-browse-url)
+  (define-key w3m-mode-map (kbd "M-q")            'tv:w3m-fill-region-or-paragraph)
+  (define-key w3m-mode-map (kbd "<down>")         'next-line)
+  (define-key w3m-mode-map (kbd "<up>")           'previous-line)
+  (define-key w3m-mode-map (kbd "RET")            'tv:w3m-RET)
+  (define-key w3m-mode-map (kbd "<backspace>")    'tv:scroll-up)
+  (define-key w3m-lynx-like-map (kbd "S-<right>") 'w3m-view-this-url-new-session))
+(global-set-key (kbd "<f7> h") 'w3m)
 
 ;;; Gnus
 ;;
