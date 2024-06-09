@@ -331,6 +331,8 @@ try this wash."
 (define-key mu4e-view-mode-map (kbd "<backtab>") 'tv:mu4e-previous-anchor)
 (define-key mu4e-view-mode-map (kbd "C-c v") 'mu4e-view-open-attachment)
 
+(with-eval-after-load 'mu4e-vars
+  (set-face-attribute 'mu4e-region-code nil :extend t))
 
 (provide 'tv-mu4e-config)
 
