@@ -1608,16 +1608,16 @@ With a prefix arg ask with completion which buffer to kill."
 ;;; Outline-mode
 ;;
 (with-eval-after-load 'outline
-  (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-p")
+  (helm-define-key-with-subkeys outline-minor-mode-map (kbd "C-c C-p")
                                 ?p 'outline-previous-visible-heading
                                 '((?n . outline-next-visible-heading)))
-  (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-n")
+  (helm-define-key-with-subkeys outline-minor-mode-map (kbd "C-c C-n")
                                 ?n 'outline-next-visible-heading
                                 '((?p . outline-previous-visible-heading)))
-  (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-f")
+  (helm-define-key-with-subkeys outline-minor-mode-map (kbd "C-c C-f")
                                 ?f 'outline-forward-same-level
                                 '((?b . outline-backward-same-level)))
-  (helm-define-key-with-subkeys outline-mode-map (kbd "C-c C-b")
+  (helm-define-key-with-subkeys outline-minor-mode-map (kbd "C-c C-b")
                                 ?b 'outline-backward-same-level
                                 '((?f . outline-forward-same-level))))
 
@@ -1918,7 +1918,7 @@ mode temporarily."
   (define-thing-chars bug "#[:alnum:]"))
 
 ;; Test bug#1234, Issue#2345.
-(defun tv:browse-bug-at-point (bug-number)
+(defun tv:find-bug-at-point (bug-number)
   (interactive
    (list (let* ((bug (thing-at-point 'bug 'noprops))
                 (reg "\\(?:[Bb]ug\\|[Ii]ssue\\)#\\([[:alnum:]]+\\)")
