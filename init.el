@@ -556,6 +556,10 @@ Restart works only on graphic display."
 ;;
 ;; Don't forget to install necessary fonts with M-x
 ;; all-the-icons-install-fonts.
+;; Align at right (only emacs-30).
+(unless (boundp 'mode-line-format-right-align)
+  (defvar mode-line-format-right-align "")
+  (defvar mode-line-right-align-edge nil))
 
 (defun tv:git-branch-in-mode-line ()
   (require 'helm-ls-git)
@@ -617,7 +621,9 @@ Restart works only on graphic display."
                                           (popup-menu (tv:select-git-branches-menu)))))))))
 
 (with-eval-after-load 'all-the-icons
-  (setq-default mode-line-format '("%e"
+  ;; Will have no effect in emacs-30<.
+  (setq mode-line-right-align-edge 'right-fringe)
+  (setq-default mode-line-format `("%e"
                                    mode-line-front-space
                                    mode-line-mule-info
                                    mode-line-client
@@ -632,6 +638,8 @@ Restart works only on graphic display."
                                    " "
                                    (:eval (tv:custom-modeline-github-vc))
                                    " "
+                                   ;; Align at right (emacs-30 only).
+                                   mode-line-format-right-align
                                    mode-line-misc-info
                                    mode-line-end-spaces))
 
@@ -1206,6 +1214,11 @@ With a prefix arg ask with completion which buffer to kill."
         ["Janvier" "Février" "Mars" "Avril"
                    "Mai" "Juin" "Juillet" "Août" "Septembre"
                    "Octobre" "Novembre" "Décembre"])
+
+  ;; Sunrise/sunset (S)
+  ;; (info "(emacs) Sunrise/Sunset")
+  (setq calendar-latitude 44.6
+        calendar-longitude -6.6)
 
   (defvar holiday-french-holidays nil
     "French holidays")
