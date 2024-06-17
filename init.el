@@ -22,6 +22,7 @@
 (dolist (i `("~/elisp/"
              "~/elisp/autoconf-mode"
              "~/elisp/helm-extensions"
+             "~/elisp/emacs-w3m"
              "~/.emacs.d/themes/"
              "~/.emacs.d/emacs-config/"
              ))
@@ -1029,6 +1030,8 @@ With a prefix arg ask with completion which buffer to kill."
         dired-listing-switches (purecopy "-alh")
         dired-create-destination-dirs 'ask
         wdired-use-dired-vertical-movement 'sometimes)
+  (when (boundp 'dired-vc-rename-file)
+    (setq dired-vc-rename-file t))
   (require 'dired-extension))
 
 ;;; Ledger
@@ -1612,6 +1615,7 @@ With a prefix arg ask with completion which buffer to kill."
   (setq eshell-plain-echo-behavior t))
 
 (global-set-key (kbd "C-!") 'eshell-command)
+(setq async-shell-command-buffer 'new-buffer)
 
 ;;; display-line-numbers
 ;;
@@ -1945,6 +1949,8 @@ mode temporarily."
 
 ;;; W3m
 ;;
+;; Installed in ~/elisp.
+(require 'w3m-load)
 (with-eval-after-load 'w3m
   (require 'config-w3m)
   (define-key w3m-mode-map (kbd "M-<right>")      'w3m-next-buffer)
