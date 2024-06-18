@@ -1581,36 +1581,7 @@ With a prefix arg ask with completion which buffer to kill."
     (add-to-list 'eshell-visual-commands i)))
 
 ;; Eshell modifiers
-(with-eval-after-load "em-pred"
-  (defun tv:advice--eshell-pred-substitute (&optional repeat)
-    "Return a modifier function that will substitute matches."
-    (let ((delim (char-after))
-          match replace end)
-      (forward-char)
-      (setq end (eshell-find-delimiter delim delim nil nil t)
-            match (buffer-substring-no-properties (point) end))
-      (goto-char (1+ end))
-      (setq end (or (eshell-find-delimiter delim delim nil nil t) (point))
-            replace (buffer-substring-no-properties (point) end))
-      (goto-char (1+ end))
-      (if repeat
-          (lambda (lst)
-            (mapcar
-             (lambda (str)
-               (let ((i 0))
-                 (while (setq i (string-match match str i))
-                   (setq str (replace-match replace t nil str))))
-               str)
-             lst))
-        (lambda (lst)
-          (mapcar
-           (lambda (str)
-             (if (string-match match str)
-                 (setq str (replace-match replace t nil str)))
-             str)
-           lst)))))
-  ;; Allow empty string in substitution e.g. echo foo.el(:gs/.el//)
-  (advice-add 'eshell-pred-substitute :override #'tv:advice--eshell-pred-substitute)
+(with-eval-after-load 'em-basic
   ;; Fix echo, perhaps using as alias *echo is even better.
   (setq eshell-plain-echo-behavior t))
 
