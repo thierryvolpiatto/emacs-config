@@ -1943,7 +1943,8 @@ mode temporarily."
 (with-eval-after-load 'gnus-sum
   (define-key gnus-summary-mode-map (kbd "M-q") 'gnus-article-fill-long-lines)
   (define-key gnus-summary-mode-map (kbd "N")   'gnus-summary-next-unread-article)
-  (define-key gnus-summary-mode-map (kbd "n")   'gnus-summary-next-article))
+  (define-key gnus-summary-mode-map (kbd "n")   'gnus-summary-next-article)
+  (define-key gnus-summary-mode-map (kbd "p")   'gnus-summary-prev-article))
 
 ;;; Load time
 ;;
