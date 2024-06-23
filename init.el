@@ -1785,6 +1785,8 @@ detected."
 
 ;;; Yaml-mode
 ;;
+;; Installed in ~/elisp
+(autoload 'yaml-mode "yaml-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
 
 ;;; Wfnames
