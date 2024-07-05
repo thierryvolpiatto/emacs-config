@@ -1166,12 +1166,7 @@ With a prefix arg ask with completion which buffer to kill."
   ;; Connect to my freebox as 'freebox' user.
   (add-to-list 'tramp-default-user-alist
                '("ftp" "\\`mafreebox\\.freebox\\.fr\\'" "freebox"))
-  (setq ange-ftp-ftp-program-name "pftp")
-
-  ;; See (info "(tramp) Remote processes")
-  (add-to-list 'tramp-connection-properties
-               (list (regexp-quote "/ssh:")
-                     "direct-async-process" t)))
+  (setq ange-ftp-ftp-program-name "pftp"))
 
 ;;; Calendar and diary
 ;;
