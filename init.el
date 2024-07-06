@@ -1590,6 +1590,63 @@ With a prefix arg ask with completion which buffer to kill."
 (global-set-key (kbd "C-!") 'eshell-command)
 (setq async-shell-command-buffer 'new-buffer)
 
+(if (>= emacs-major-version 31)
+    (setq eshell-command-async-buffer 'new-buffer)
+  (defun tv:advice--eshell-command (command &optional to-current-buffer)
+    "Execute the Eshell command string COMMAND.
+If TO-CURRENT-BUFFER is non-nil (interactively, with the prefix
+argument), then insert output into the current buffer at point."
+    (interactive (list (eshell-read-command)
+                       current-prefix-arg))
+    (save-excursion
+      (let ((stdout (if to-current-buffer (current-buffer) t))
+            (buf (set-buffer (generate-new-buffer " *eshell cmd*")))
+	    (eshell-non-interactive-p t))
+        (eshell-mode)
+        (let* ((proc (eshell-eval-command
+                      `(let ((eshell-current-handles
+                              (eshell-create-handles ,stdout 'insert))
+                             (eshell-current-subjob-p))
+		         ,(eshell-parse-command command))
+                      command))
+	       intr
+	       (bufname (generate-new-buffer-name
+                         (if (eq (car-safe proc) :eshell-background)
+			     "*Eshell Async Command Output*"
+			   (setq intr t)
+			   "*Eshell Command Output*"))))
+          (rename-buffer bufname)
+	  ;; things get a little coarse here, since the desire is to
+	  ;; make the output as attractive as possible, with no
+	  ;; extraneous newlines
+	  (when intr
+	    (apply #'eshell-wait-for-process (cadr eshell-foreground-command))
+	    (cl-assert (not eshell-foreground-command))
+	    (goto-char (point-max))
+	    (while (and (bolp) (not (bobp)))
+	      (delete-char -1)))
+	  (cl-assert (and buf (buffer-live-p buf)))
+	  (unless to-current-buffer
+	    (let ((len (if (not intr) 2
+		         (count-lines (point-min) (point-max)))))
+	      (cond
+	        ((= len 0)
+	         (message "(There was no command output)")
+	         (kill-buffer buf))
+	        ((= len 1)
+	         (message "%s" (buffer-string))
+	         (kill-buffer buf))
+	        (t
+	         (save-selected-window
+		   (select-window (display-buffer buf))
+		   (goto-char (point-min))
+		   ;; cause the output buffer to take up as little screen
+		   ;; real-estate as possible, if temp buffer resizing is
+		   ;; enabled
+		   (and intr temp-buffer-resize-mode
+		        (resize-temp-buffer-window)))))))))))
+  (advice-add 'eshell-command :override #'tv:advice--eshell-command))
+
 ;;; display-line-numbers
 ;;
 (with-eval-after-load 'display-line-numbers
