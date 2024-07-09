@@ -185,7 +185,7 @@
   (setq helm-buffers-favorite-modes
         (append helm-buffers-favorite-modes '(picture-mode artist-mode))
         helm-buffer-skip-remote-checking  t
-        helm-buffer-max-length            22
+        helm-buffer-max-length            36
         helm-buffers-fuzzy-matching t
         helm-buffers-maybe-switch-to-tab  t
         helm-mini-default-sources '(helm-source-buffers-list

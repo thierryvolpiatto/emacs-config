@@ -1593,9 +1593,6 @@ With a prefix arg ask with completion which buffer to kill."
 (if (>= emacs-major-version 31)
     (setq eshell-command-async-buffer 'new-buffer)
   (defun tv:advice--eshell-command (command &optional to-current-buffer)
-    "Execute the Eshell command string COMMAND.
-If TO-CURRENT-BUFFER is non-nil (interactively, with the prefix
-argument), then insert output into the current buffer at point."
     (interactive (list (eshell-read-command)
                        current-prefix-arg))
     (save-excursion
