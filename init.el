@@ -24,18 +24,8 @@
                             (expand-file-name dir))))
     (normal-top-level-add-subdirs-to-load-path)))
 
+(add-to-list 'load-path "~/elisp")
 (tv:add-subdirs-to-load-path "~/elisp")
-
-;; (dolist (i `("~/elisp/"
-;;              "~/elisp/autoconf-mode"
-;;              "~/elisp/helm-extensions"
-;;              "~/elisp/emacs-w3m"
-;;              "~/.emacs.d/themes/"
-;;              "~/.emacs.d/emacs-config/"
-;;              ))
-;;   ;; Add all at end of `load-path' to avoid conflicts.
-;;   (when (stringp i)
-;;     (add-to-list 'load-path (file-name-as-directory i) t)))
 
 ;; gcmh-mode disable GC and increase gc-cons-threshold while not idle,
 ;; when idle, restore gc-cons-threshold and run GC after
