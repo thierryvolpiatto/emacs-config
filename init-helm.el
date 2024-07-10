@@ -83,11 +83,6 @@
 
 (helm-mode 1)
 
-;; Use 'emacs in Emacs-30 for testing purposes.
-;; (setq helm-completion-style
-;;       (if (> emacs-major-version 29)
-;;           'emacs 'helm))
-
 (setq helm-completing-read-handlers-alist
       '((find-tag . helm-completing-read-default-find-tag)
         (ggtags-find-tag-dwim . helm-completing-read-default-find-tag)
