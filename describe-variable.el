@@ -300,4 +300,9 @@ Large values are not pretty printed."
 
 (provide 'describe-variable)
 
+;; Local Variables:
+;; byte-compile-warnings: (not obsolete)
+;; indent-tabs-mode: nil
+;; End:
+
 ;;; describe-variable.el ends here
