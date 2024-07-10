@@ -19,16 +19,23 @@
 
 ;;; load-path
 ;;
-(dolist (i `("~/elisp/"
-             "~/elisp/autoconf-mode"
-             "~/elisp/helm-extensions"
-             "~/elisp/emacs-w3m"
-             "~/.emacs.d/themes/"
-             "~/.emacs.d/emacs-config/"
-             ))
-  ;; Add all at end of `load-path' to avoid conflicts.
-  (when (stringp i)
-    (add-to-list 'load-path (file-name-as-directory i) t)))
+(defun tv:add-subdirs-to-load-path (dir)
+  (let ((default-directory (file-name-as-directory
+                            (expand-file-name dir))))
+    (normal-top-level-add-subdirs-to-load-path)))
+
+(tv:add-subdirs-to-load-path "~/elisp")
+
+;; (dolist (i `("~/elisp/"
+;;              "~/elisp/autoconf-mode"
+;;              "~/elisp/helm-extensions"
+;;              "~/elisp/emacs-w3m"
+;;              "~/.emacs.d/themes/"
+;;              "~/.emacs.d/emacs-config/"
+;;              ))
+;;   ;; Add all at end of `load-path' to avoid conflicts.
+;;   (when (stringp i)
+;;     (add-to-list 'load-path (file-name-as-directory i) t)))
 
 ;; gcmh-mode disable GC and increase gc-cons-threshold while not idle,
 ;; when idle, restore gc-cons-threshold and run GC after
@@ -1590,59 +1597,8 @@ With a prefix arg ask with completion which buffer to kill."
 (global-set-key (kbd "C-!") 'eshell-command)
 (setq async-shell-command-buffer 'new-buffer)
 
-(if (>= emacs-major-version 31)
-    (setq eshell-command-async-buffer 'new-buffer)
-  (defun tv:advice--eshell-command (command &optional to-current-buffer)
-    (interactive (list (eshell-read-command)
-                       current-prefix-arg))
-    (save-excursion
-      (let ((stdout (if to-current-buffer (current-buffer) t))
-            (buf (set-buffer (generate-new-buffer " *eshell cmd*")))
-	    (eshell-non-interactive-p t))
-        (eshell-mode)
-        (let* ((proc (eshell-eval-command
-                      `(let ((eshell-current-handles
-                              (eshell-create-handles ,stdout 'insert))
-                             (eshell-current-subjob-p))
-		         ,(eshell-parse-command command))
-                      command))
-	       intr
-	       (bufname (generate-new-buffer-name
-                         (if (eq (car-safe proc) :eshell-background)
-			     "*Eshell Async Command Output*"
-			   (setq intr t)
-			   "*Eshell Command Output*"))))
-          (rename-buffer bufname)
-	  ;; things get a little coarse here, since the desire is to
-	  ;; make the output as attractive as possible, with no
-	  ;; extraneous newlines
-	  (when intr
-	    (apply #'eshell-wait-for-process (cadr eshell-foreground-command))
-	    (cl-assert (not eshell-foreground-command))
-	    (goto-char (point-max))
-	    (while (and (bolp) (not (bobp)))
-	      (delete-char -1)))
-	  (cl-assert (and buf (buffer-live-p buf)))
-	  (unless to-current-buffer
-	    (let ((len (if (not intr) 2
-		         (count-lines (point-min) (point-max)))))
-	      (cond
-	        ((= len 0)
-	         (message "(There was no command output)")
-	         (kill-buffer buf))
-	        ((= len 1)
-	         (message "%s" (buffer-string))
-	         (kill-buffer buf))
-	        (t
-	         (save-selected-window
-		   (select-window (display-buffer buf))
-		   (goto-char (point-min))
-		   ;; cause the output buffer to take up as little screen
-		   ;; real-estate as possible, if temp buffer resizing is
-		   ;; enabled
-		   (and intr temp-buffer-resize-mode
-		        (resize-temp-buffer-window)))))))))))
-  (advice-add 'eshell-command :override #'tv:advice--eshell-command))
+(when (>= emacs-major-version 31)
+  (setq eshell-command-async-buffer 'new-buffer))
 
 ;;; display-line-numbers
 ;;
