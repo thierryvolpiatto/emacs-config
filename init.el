@@ -24,7 +24,7 @@
                             (expand-file-name dir))))
     (normal-top-level-add-subdirs-to-load-path)))
 
-(add-to-list 'load-path "~/elisp")
+(add-to-list 'load-path (expand-file-name "~/elisp"))
 (tv:add-subdirs-to-load-path "~/elisp")
 
 ;; gcmh-mode disable GC and increase gc-cons-threshold while not idle,
@@ -166,7 +166,7 @@ Restart works only on graphic display."
                                (setq server-raise-frame t))))
 
 ;; Copy/paste
-(setq select-active-regions 'only)
+(setq select-active-regions t)
 (setq x-select-enable-clipboard-manager nil
       ;; save-interprogram-paste-before-kill 72
       select-enable-clipboard t
