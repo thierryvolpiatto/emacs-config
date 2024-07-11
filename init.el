@@ -27,7 +27,7 @@
 (add-to-list 'load-path (expand-file-name "~/elisp"))
 (tv:add-subdirs-to-load-path "~/elisp")
 
-;; gcmh-mode disable GC and increase gc-cons-threshold while not idle,
+;;; gcmh-mode disable GC and increase gc-cons-threshold while not idle,
 ;; when idle, restore gc-cons-threshold and run GC after
 ;; gcmh-idle-delay seconds or (* gcmh-auto-idle-delay-factor
 ;; gcmh-last-gc-time) if set to auto.
