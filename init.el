@@ -271,9 +271,7 @@ Restart works only on graphic display."
 
 ;;; Isearch-light (Installed in site-lisp with make)
 ;;
-(autoload 'isl-search "isl" nil t)
-(autoload 'isl-narrow-to-defun "isl" nil t)
-(autoload 'isl-resume "isl" nil t)
+(load "isl-autoloads")
 (global-set-key (kbd "C-s") 'isl-search)
 (global-set-key (kbd "C-z") 'isl-narrow-to-defun)
 (global-set-key (kbd "C-M-s") 'isl-resume)
