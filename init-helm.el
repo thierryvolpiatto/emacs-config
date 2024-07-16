@@ -668,11 +668,6 @@ First call indent, second complete symbol, third complete fname."
         helm-mu-contacts-ignore-candidates-regexp
         "\\`\\(reply.*reply\\.github\\.com\\)\\|\\(no[.-]?reply\\|ne-pas-repondre\\)"))
 
-;;; Helm-packages
-;;
-(with-eval-after-load 'helm-packages
-  (setq helm-packages-async t))
-
 
 ;;; Helm-command-map
 ;;
