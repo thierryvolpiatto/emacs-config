@@ -436,6 +436,7 @@ Restart works only on graphic display."
 ;;
 (define-key global-map (kbd "C-M-;") 'next-line)
 (with-eval-after-load 'newcomment
+  (setq comment-style 'plain)
   ;; Change the behavior of `M-;' by commenting line.
   ;; Much simpler than emacs-25 `comment-line'.
   (defun comment--advice-dwim (old--fn &rest args)

@@ -741,6 +741,29 @@ With a prefix arg prompt to edit file extensions."
     (beginning-of-line)
     (forward-char 15)))
 
+(defun tv:speed (hours minutes seconds km)
+  "Calculate speed in km/h.
+The speed is calculated for a distance KM given in kilometers travelled in HOURS
+MINUTES SECONDS."
+  (let* ((s   (+ (float seconds)
+                 (* 60 (float minutes))
+                 (* (* (float hours) 60) 60)))
+         (m   (* 1000 (float km)))
+         (mps (/ m s)))
+    ;; Same as (/ (* ms 60 60) 1000).
+    (* mps 3.6)))
+
+(defun tv:metre-heure (hours minutes seconds deniv)
+  "Calculate speed in m/h.
+The speed is calculated for a distance DENIV given in meters travelled in HOURS
+MINUTES SECONDS."
+  (let* ((s   (+ (float seconds)
+                 (* 60 (float minutes))
+                 (* (* (float hours) 60) 60)))
+         (m   (float deniv))
+         (mps (/ m s)))
+    (* mps 3600)))
+
 
 (provide 'tv-utils)
 
