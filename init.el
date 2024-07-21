@@ -1710,24 +1710,15 @@ With a prefix arg ask with completion which buffer to kill."
   (and (eq 'string (syntax-ppss-context (syntax-ppss pos)))
        (eq (get-text-property (point) 'face) 'font-lock-doc-face)))
 
-(defun tv:point-in-string-p (pos)
-  "Returns non-nil if POS is in a docstring."
-  (and (eq 'string (syntax-ppss-context (syntax-ppss pos)))
-       (eq (get-text-property (point) 'face) 'font-lock-string-face)))
-
 (defun tv:turn-on-auto-fill-mode-maybe ()
   "Enable auto-fill-mode only in comments or docstrings.
 Variable adaptive-fill-mode is disabled when a docstring field is
 detected."
   (when (memq major-mode tv:autofill-modes)
-    (let ((in-docstring (tv:point-in-docstring-p (point)))
-          (in-string (tv:point-in-string-p (point))))
+    (let ((in-docstring (tv:point-in-docstring-p (point))))
       (setq adaptive-fill-mode (not in-docstring))
       (auto-fill-mode
-       (if (or (tv:point-in-comment-p (point))
-               ;; FIXME: Perhaps in-string fit for both docstring and
-               ;; string, is there particular cases?
-               in-string in-docstring)
+       (if (or (tv:point-in-comment-p (point)) in-docstring)
            1 -1)))))
 ;; Maybe turn on auto-fill-mode when a comment or docstring field
 ;; is detected. Ensure the hook is appended otherwise things like
