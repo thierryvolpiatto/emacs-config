@@ -1948,6 +1948,17 @@ mode temporarily."
   (define-key gnus-summary-mode-map (kbd "n")   'gnus-summary-next-article)
   (define-key gnus-summary-mode-map (kbd "p")   'gnus-summary-prev-article))
 
+;;; BM bookmarks (in buffer bmks)
+;;
+(autoload 'bm-toggle "bm" nil t) ; Installed in ~/elisp.
+(with-eval-after-load 'bm
+  (setq bm-highlight-style 'bm-highlight-only-fringe))
+
+(global-set-key (kbd "C-<f12>")     'bm-toggle)
+(global-set-key (kbd "<f12>")       'bm-next)
+(global-set-key (kbd "<S-f12>")     'bm-previous)
+(global-set-key (kbd "<C-S-f12>")   'helm-bm) ; autoloaded in init-helm.
+
 ;;; Load time
 ;;
 (tv:emacs-load-time)
