@@ -235,11 +235,6 @@ Restart works only on graphic display."
           make-frame-visible
           selection-request)))
 
-;; New events are available in emacs-28
-(when (>= emacs-major-version 28)
-  (setq while-no-input-ignore-events
-        (append '(file-notify dbus-event) while-no-input-ignore-events)))
-
 ;; Don't beep even with visible-bell (debian)
 (setq ring-bell-function 'ignore)
 
@@ -248,6 +243,10 @@ Restart works only on graphic display."
 
 ;; Align-regexp
 (global-set-key (kbd "C-}") #'align-regexp)
+
+;; Emacs news (C-h n)
+(with-eval-after-load 'emacs-news-mode
+  (define-key emacs-news-view-mode-map (kbd "s") 'helm-outline))
 
 
 ;;; Compatibility
@@ -1583,7 +1582,6 @@ With a prefix arg ask with completion which buffer to kill."
   ;; Fix echo, perhaps using as alias *echo is even better.
   (setq eshell-plain-echo-behavior t))
 
-(global-set-key (kbd "C-!") 'eshell-command)
 (setq async-shell-command-buffer 'new-buffer)
 
 (when (>= emacs-major-version 31)
@@ -1952,12 +1950,11 @@ mode temporarily."
 ;;
 (autoload 'bm-toggle "bm" nil t) ; Installed in ~/elisp.
 (with-eval-after-load 'bm
-  (setq bm-highlight-style 'bm-highlight-only-fringe))
+  (setq bm-highlight-style 'bm-highlight-only-fringe
+        bm-cycle-all-buffers t))
 
-(global-set-key (kbd "C-<f12>")     'bm-toggle)
-(global-set-key (kbd "<f12>")       'bm-next)
-(global-set-key (kbd "<S-f12>")     'bm-previous)
-(global-set-key (kbd "<C-S-f12>")   'helm-bm) ; autoloaded in init-helm.
+(global-set-key (kbd "C-!") 'bm-toggle)
+(global-set-key (kbd "<f12>") 'helm-bm) ; autoloaded in init-helm.
 
 ;;; Load time
 ;;
