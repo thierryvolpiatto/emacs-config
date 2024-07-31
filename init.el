@@ -1974,6 +1974,7 @@ mode temporarily."
 
 ;; Local Variables:
 ;; indent-tabs-mode: nil
+;; outline-regexp: ";;[;*]+[\s\t]+"
 ;; End:
 
 ;;; init.el ends here
