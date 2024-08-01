@@ -22,9 +22,9 @@
 (defun tv:add-subdirs-to-load-path (dir)
   (let ((default-directory (file-name-as-directory
                             (expand-file-name dir))))
-    (normal-top-level-add-subdirs-to-load-path)))
+    (normal-top-level-add-subdirs-to-load-path)
+    (add-to-list 'load-path (expand-file-name dir))))
 
-(add-to-list 'load-path (expand-file-name "~/elisp"))
 (tv:add-subdirs-to-load-path "~/elisp")
 
 ;;; gcmh-mode disable GC and increase gc-cons-threshold while not idle,
