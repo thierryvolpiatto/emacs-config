@@ -702,11 +702,6 @@ Restart works only on graphic display."
                   (delete (assoc "bookmark" all-the-icons-regexp-icon-alist)
                           all-the-icons-regexp-icon-alist))))
 
-(when (>= emacs-major-version 29)
-  ;; A new annoyance for each major version.
-  (set-face-attribute 'mode-line-active nil :inherit 'mode-line)
-  (set-face-attribute 'mode-line-inactive nil :inherit 'mode-line))
-
 ;;; Time
 ;;
 (with-eval-after-load 'time
@@ -1920,8 +1915,7 @@ mode temporarily."
 
 ;;; W3m
 ;;
-;; Installed in ~/elisp.
-(require 'w3m-load)
+;;
 (with-eval-after-load 'w3m
   (require 'config-w3m)
   (define-key w3m-mode-map (kbd "M-<right>")      'w3m-next-buffer)
