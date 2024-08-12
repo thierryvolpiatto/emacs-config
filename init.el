@@ -244,10 +244,6 @@ Restart works only on graphic display."
 ;; Align-regexp
 (global-set-key (kbd "C-}") #'align-regexp)
 
-;; Emacs news (C-h n)
-(with-eval-after-load 'emacs-news-mode
-  (define-key emacs-news-view-mode-map (kbd "s") 'helm-outline))
-
 
 ;;; Compatibility
 ;;
@@ -1928,7 +1924,7 @@ mode temporarily."
   (define-key w3m-mode-map (kbd "RET")            'tv:w3m-RET)
   (define-key w3m-mode-map (kbd "<backspace>")    'tv:scroll-up)
   (define-key w3m-lynx-like-map (kbd "S-<right>") 'w3m-view-this-url-new-session))
-(global-set-key (kbd "<f7> h") 'helm-w3m-bookmarks)
+(global-set-key (kbd "<f7> h") 'w3m)
 
 ;;; Gnus
 ;;

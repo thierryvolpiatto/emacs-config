@@ -44,7 +44,7 @@
   (add-to-list 'w3m-search-engine-alist '("DuckDuckGo" "https://duckduckgo.com/lite/?q=%s&kp=1"))
   (setq w3m-search-default-engine "DuckDuckGo"))
 
-(setq w3m-home-page "https://www.duckduckgo.com")
+(setq w3m-home-page "about:blank") ; "https://www.duckduckgo.com")
 
 ;; enable-cookies-in-w3m 
 (setq w3m-use-cookies t)
