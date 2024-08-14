@@ -13,3 +13,4 @@
                          ("gnu"   . "https://elpa.gnu.org/packages/")
                          ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 (setq package-load-list '(all))
+;; (setq package-load-list '((helm nil) (helm-core nil) (async nil) (wfnames nil) all))

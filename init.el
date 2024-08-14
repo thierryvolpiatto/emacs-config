@@ -273,6 +273,7 @@ Restart works only on graphic display."
 (with-eval-after-load 'isl
   (setq isl-before-position-string "≤"
         isl-after-position-string "≥"))
+
 ;;; Info
 ;;
 ;; Cleanup `Info-directory-list'.
