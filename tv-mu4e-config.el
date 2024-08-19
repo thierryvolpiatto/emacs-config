@@ -143,12 +143,32 @@
 (defun tv:mu4e-headers-search ()
   "Add a query reminder in `mu4e-headers-search' prompt."
   (interactive)
-  (mu4e-headers-search
+  (mu4e-search
    nil
    (format "Search for%s: "
            (propertize
             " " 'display (propertize "(from:date:flag:prio:mime:maildir:and/not)"
                                      'face '(:foreground "DimGray"))))))
+
+(defun tv:mu4e-mark-all-for-something ()
+  (interactive)
+  (save-excursion
+    (while (not (eobp)) (mu4e-headers-mark-for-something))))
+
+(defun tv:mu4e-mark-similar-message-for-something ()
+  (interactive)
+  (let ((regexp (mu4e~headers-from-or-to (mu4e-message-at-point)))
+        (count 0))
+    (when regexp
+      (save-excursion
+        (while (re-search-forward (regexp-quote regexp) nil t)
+          (mu4e-headers-mark-for-something)
+          (cl-incf count)))
+      (message "%s messages marked for something" count))))
+
+(define-key mu4e-search-minor-mode-map (kbd "s") 'tv:mu4e-headers-search)
+(define-key mu4e-headers-mode-map (kbd "C-c A") 'tv:mu4e-mark-all-for-something)
+(define-key mu4e-headers-mode-map (kbd "C-c S") 'tv:mu4e-mark-similar-message-for-something)
 
 (add-hook 'mu4e-compose-mode-hook 'tv:message-mode-setup)
 
