@@ -155,7 +155,7 @@
   (save-excursion
     (while (not (eobp)) (mu4e-headers-mark-for-something))))
 
-(defun tv:mu4e-mark-similar-message-for-something ()
+(defun tv:mu4e-mark-similar-messages-for-something ()
   (interactive)
   (let ((regexp (mu4e~headers-from-or-to (mu4e-message-at-point)))
         (count 0))
@@ -168,7 +168,7 @@
 
 (define-key mu4e-search-minor-mode-map (kbd "s") 'tv:mu4e-headers-search)
 (define-key mu4e-headers-mode-map (kbd "C-c A") 'tv:mu4e-mark-all-for-something)
-(define-key mu4e-headers-mode-map (kbd "C-c S") 'tv:mu4e-mark-similar-message-for-something)
+(define-key mu4e-headers-mode-map (kbd "C-c S") 'tv:mu4e-mark-similar-messages-for-something)
 
 (add-hook 'mu4e-compose-mode-hook 'tv:message-mode-setup)
 

@@ -45,9 +45,11 @@
   (if tv-save-place-mode
       (progn
         (add-hook 'kill-buffer-hook 'tv-save-place)
+        (add-hook 'before-revert-hook 'tv-save-place)
         (add-hook 'find-file-hook 'tv-save-place-restore-pos 100)
         (add-hook 'kill-emacs-hook 'tv-save-place-refresh-cache))
     (remove-hook 'kill-buffer-hook 'tv-save-place)
+    (remove-hook 'before-revert-hook 'tv-save-place)
     (remove-hook 'find-file-hook 'tv-save-place-restore-pos)
     (remove-hook 'kill-emacs-hook 'tv-save-place-refresh-cache)))
 
