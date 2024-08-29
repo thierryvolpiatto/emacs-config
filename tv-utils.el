@@ -765,7 +765,8 @@ MINUTES SECONDS."
            for spcs =  (make-string spaces ? )
            for mkd = (mapconcat
                       (lambda (x)
-                        (downcase (replace-regexp-in-string "&" "" x)))
+                        (downcase (replace-regexp-in-string
+                                   "[[:punct:]]" "" x)))
                       (split-string key) "-") 
            if (and (numberp pos) (not (string= key ".")))
            do (insert (format "%s- [%s](#%s)\n"
