@@ -390,34 +390,49 @@ Restart works only on graphic display."
 ;;
 (autoload 'wttr-weather "wttr-weather" nil t)
 
-;;; tv-utils fns
+;;; tv-utils functions.
 ;;
-(require 'tv-utils)
+;; TODO: Make an autoload file for emacs-config dir.
+(autoload 'tv:restore-scratch-buffer "tv-utils" nil t)
+(autoload 'tv:insert-double-quote "tv-utils" nil t)
+(autoload 'tv:insert-double-backquote "tv-utils" nil t)
+(autoload 'tv:move-pair-forward "tv-utils" nil t)
+(autoload 'tv:insert-double-quote-and-close-forward "tv-utils" nil t)
+(autoload 'tv:insert-pair-and-close-forward "tv-utils" nil t)
+(autoload 'tv:toggle-calendar "tv-utils" nil t)
+(autoload 'tv:kill-whole-line "tv-utils" nil t)
+(autoload 'tv:kill-line "tv-utils" nil t)
+(autoload 'tv:delete-char "tv-utils" nil t)
+(autoload 'tv:delete-char "tv-utils" nil t)
+(autoload 'other-window-backward "tv-utils" nil t)
+(autoload 'other-window-forward "tv-utils" nil t)
+(autoload 'tv:scroll-down "tv-utils" nil t)
+(autoload 'tv:scroll-up "tv-utils" nil t)
+(autoload 'tv:scroll-other-down "tv-utils" nil t)
+(autoload 'tv:scroll-other-up "tv-utils" nil t)
+(autoload 'tv:insert-kbd-at-point "tv-utils" nil t)
+(autoload 'tv:eval-region "tv-utils" nil t)
 
 (define-key lisp-interaction-mode-map (kbd "C-M-!") 'tv:eval-region) 
-(define-key emacs-lisp-mode-map (kbd "C-M-!") 'tv:eval-region)
-(advice-add 'view-echo-area-messages :around 'tv:view-echo-area-messages)
-(helm-define-key-with-subkeys global-map (kbd "C-h e")
-                              ?e #'view-echo-area-messages
-                              '((?q . tv:quit-echo-area-messages)))
+(define-key emacs-lisp-mode-map (kbd "C-M-!")       'tv:eval-region)
 
-(global-set-key (kbd "M-\"") 'tv:insert-double-quote)
-(global-set-key (kbd "C-M-`") 'tv:insert-double-backquote)
-(global-set-key (kbd "C-M-(") 'tv:move-pair-forward)
-(global-set-key (kbd "C-M-\"") 'tv:insert-double-quote-and-close-forward)
-(global-set-key (kbd "C-M-)") 'tv:insert-pair-and-close-forward)
-(global-set-key (kbd "<f5> c") 'tv:toggle-calendar)
-(global-set-key [remap kill-whole-line] 'tv:kill-whole-line)
-(global-set-key [remap kill-line] 'tv:kill-line)
-(global-set-key [remap delete-char] 'tv:delete-char)
+(global-set-key (kbd "M-\"")                      'tv:insert-double-quote)
+(global-set-key (kbd "C-M-`")                     'tv:insert-double-backquote)
+(global-set-key (kbd "C-M-(")                     'tv:move-pair-forward)
+(global-set-key (kbd "C-M-\"")                    'tv:insert-double-quote-and-close-forward)
+(global-set-key (kbd "C-M-)")                     'tv:insert-pair-and-close-forward)
+(global-set-key (kbd "<f5> c")                    'tv:toggle-calendar)
+(global-set-key [remap kill-whole-line]           'tv:kill-whole-line)
+(global-set-key [remap kill-line]                 'tv:kill-line)
+(global-set-key [remap delete-char]               'tv:delete-char)
 (global-set-key [remap c-electric-delete-forward] 'tv:delete-char)
-(global-set-key (kbd "C-<") 'other-window-backward)
-(global-set-key (kbd "C->") 'other-window-forward)
-(global-set-key (kbd "<M-down>") 'tv:scroll-down)
-(global-set-key (kbd "<M-up>") 'tv:scroll-up)
-(global-set-key (kbd "<C-M-down>") 'tv:scroll-other-down)
-(global-set-key (kbd "<C-M-up>") 'tv:scroll-other-up)
-(global-set-key (kbd "C-c k") 'tv:insert-kbd-at-point)
+(global-set-key (kbd "C-<")                       'other-window-backward)
+(global-set-key (kbd "C->")                       'other-window-forward)
+(global-set-key (kbd "<M-down>")                  'tv:scroll-down)
+(global-set-key (kbd "<M-up>")                    'tv:scroll-up)
+(global-set-key (kbd "<C-M-down>")                'tv:scroll-other-down)
+(global-set-key (kbd "<C-M-up>")                  'tv:scroll-other-up)
+(global-set-key (kbd "C-c k")                     'tv:insert-kbd-at-point)
 
 ;;; Help
 ;;
@@ -1946,6 +1961,11 @@ mode temporarily."
 
 (global-set-key (kbd "C-!") 'bm-toggle)
 (global-set-key (kbd "<f12>") 'helm-bm) ; autoloaded in init-helm.
+
+;;; Markdown-toc
+;;
+(autoload 'tv:markdown-toc "tv-utils" nil t)
+(autoload 'tv:markdown-toc-insert-headers-at-point "tv-utils" nil t)
 
 ;;; Load time
 ;;
