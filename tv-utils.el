@@ -277,19 +277,6 @@ depending the value of N is positive or negative."
                                   unread-command-events)))
                  (throw 'break nil))))))))
 
-(defun tv:view-echo-area-messages (old--fn &rest args)
-  (let ((win (get-buffer-window (messages-buffer) 'visible)))
-    (cond ((and win (one-window-p))
-           (quit-window nil win))
-          (win
-           (delete-other-windows win))
-          (t (apply old--fn args)))))
-
-(defun tv:quit-echo-area-messages ()
-  (interactive)
-  (with-selected-window (get-buffer-window (messages-buffer))
-    (quit-window)))
-
 ;; Kill-backward
 ;;;###autoload
 (defun tv:kill-whole-line (&optional arg)
