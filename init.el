@@ -1066,6 +1066,12 @@ With a prefix arg ask with completion which buffer to kill."
 ;;; Rectangle edit
 ;;
 (autoload 'rectangle-edit "rectangle-edit" nil t)
+(defun tv:rectangle-edit-mode-hook-fn ()
+  (when (boundp 'tv:autofill-modes)
+    (set (make-local-variable 'tv:autofill-modes) nil)))
+
+(with-eval-after-load 'rectangle-edit
+  (add-hook 'rectangle-edit-mode-hook 'tv:rectangle-edit-mode-hook-fn))
 
 ;;; Zop-to-char
 ;;
