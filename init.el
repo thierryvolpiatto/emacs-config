@@ -1114,6 +1114,7 @@ With a prefix arg ask with completion which buffer to kill."
       python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
       python-flymake-command "pyflakes3")
 (add-hook 'python-mode-hook 'flymake-mode) ;; Needs pyflakes
+(add-hook 'python-mode-hook 'semantic-mode)
 (add-hook 'python-mode-hook
           (lambda ()
             (setq-local mode-name "py")
