@@ -783,10 +783,10 @@ MINUTES SECONDS."
         beg end)
     (save-excursion
       (goto-char (point-min))
-      (when (re-search-forward "^<!-- markdown-toc start -" nil t)
+      (when (re-search-forward "^<!-- markdown-toc start -")
         (forward-line 1)
         (setq beg (pos-bol)))
-      (when (re-search-forward "^<!-- markdown-toc end -->" nil t)
+      (when (re-search-forward "^<!-- markdown-toc end -->")
         (setq end (1- (pos-bol))))
       (delete-region beg end)
       (goto-char beg)
