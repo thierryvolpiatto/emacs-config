@@ -395,6 +395,7 @@ Restart works only on graphic display."
 ;; TODO: Make an autoload file for emacs-config dir.
 (autoload 'tv:restore-scratch-buffer "tv-utils" nil t)
 (autoload 'tv:insert-double-quote "tv-utils" nil t)
+(autoload 'tv:insert-vector "tv-utils" nil t)
 (autoload 'tv:insert-double-backquote "tv-utils" nil t)
 (autoload 'tv:move-pair-forward "tv-utils" nil t)
 (autoload 'tv:insert-double-quote-and-close-forward "tv-utils" nil t)
@@ -412,11 +413,13 @@ Restart works only on graphic display."
 (autoload 'tv:scroll-other-up "tv-utils" nil t)
 (autoload 'tv:insert-kbd-at-point "tv-utils" nil t)
 (autoload 'tv:eval-region "tv-utils" nil t)
+(autoload 'tv:mount-sshfs "tv-utils" nil t)
 
 (define-key lisp-interaction-mode-map (kbd "C-M-!") 'tv:eval-region) 
 (define-key emacs-lisp-mode-map (kbd "C-M-!")       'tv:eval-region)
 
 (global-set-key (kbd "M-\"")                      'tv:insert-double-quote)
+(global-set-key (kbd "M-[")                       'tv:insert-vector)
 (global-set-key (kbd "C-M-`")                     'tv:insert-double-backquote)
 (global-set-key (kbd "C-M-(")                     'tv:move-pair-forward)
 (global-set-key (kbd "C-M-\"")                    'tv:insert-double-quote-and-close-forward)

@@ -388,7 +388,7 @@ Ignore text read-only at bol i.e. prompts."
            finally return seq))
 
 ;;;###autoload
-(cl-defun genpasswd (&optional (limit 12))
+(cl-defun tv:genpasswd (&optional (limit 12))
   "Generate strong password of length LIMIT.
 LIMIT should be a number divisible by 2, otherwise
 the password will be of length (floor LIMIT)."
@@ -414,7 +414,7 @@ the password will be of length (floor LIMIT)."
   "Generate a random password of (max 8 ARG) chars.
 Use a prefix arg to specify ARG."
   (interactive "p")
-  (let ((newpwd (genpasswd (max 8 arg))))
+  (let ((newpwd (tv:genpasswd (max 8 arg))))
     (kill-new newpwd)
     (message "New pwd `%s' saved to kill ring" newpwd)))
 
@@ -664,6 +664,7 @@ Used by the Mailto script used from firefox."
       (while (re-search-forward "[. ]" nil t)
         (unless (looking-at-p regexp) (replace-match "_"))))))
 
+;;;###autoload
 (defun tv:normalize-fnames (&optional edit-exts)
   "Replace dots and spaces in filenames by \"_\".
 Ignore dots preceding file extension.
