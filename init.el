@@ -1449,6 +1449,12 @@ With a prefix arg ask with completion which buffer to kill."
                   ("\\.md$" . markdown-mode)
                   ("\\.mdpp$" . markdown-mode))
                 auto-mode-alist)))
+
+;;; Markdown-toc
+;;
+(autoload 'tv:markdown-toc "tv-utils" nil t)
+(autoload 'tv:markdown-toc-insert-headers-at-point "tv-utils" nil t)
+
 ;;; ffap
 ;;
 (with-eval-after-load 'ffap
@@ -1961,11 +1967,6 @@ mode temporarily."
 
 (global-set-key (kbd "C-!") 'bm-toggle)
 (global-set-key (kbd "<f12>") 'helm-bm) ; autoloaded in init-helm.
-
-;;; Markdown-toc
-;;
-(autoload 'tv:markdown-toc "tv-utils" nil t)
-(autoload 'tv:markdown-toc-insert-headers-at-point "tv-utils" nil t)
 
 ;;; Load time
 ;;
