@@ -753,45 +753,6 @@ MINUTES SECONDS."
          (mps (/ m s)))
     (* mps 3600)))
 
-;;; Markdown-toc
-;;
-;;;###autoload
-(defun tv:markdown-toc-insert-headers-at-point ()
-  (interactive)
-  (insert "<!-- markdown-toc start -->\n\n")
-  (insert "<!-- markdown-toc end -->\n"))
-
-(cl-defun tv:markdown-insert-toc (alist &optional (spaces 0))
-  (cl-loop for (key . pos) in alist
-           for spcs =  (make-string spaces ? )
-           for mkd = (mapconcat
-                      (lambda (x)
-                        (downcase (replace-regexp-in-string
-                                   "[[:punct:]]" "" x)))
-                      (split-string key) "-") 
-           if (and (numberp pos) (not (string= key ".")))
-           do (insert (format "%s- [%s](#%s)\n"
-                              spcs key mkd))
-           else do
-           (insert (format "%s- [%s](#%s)\n" spcs key mkd))
-           (tv:markdown-insert-toc (cdr pos) (+ spaces 4))))
-
-;;;###autoload
-(defun tv:markdown-toc ()
-  (interactive)
-  (let ((alist (funcall imenu-create-index-function))
-        beg end)
-    (save-excursion
-      (goto-char (point-min))
-      (when (re-search-forward "^<!-- markdown-toc start -")
-        (forward-line 1)
-        (setq beg (pos-bol)))
-      (when (re-search-forward "^<!-- markdown-toc end -->")
-        (setq end (1- (pos-bol))))
-      (delete-region beg end)
-      (goto-char beg)
-      (insert "**Table of Contents**\n\n")
-      (tv:markdown-insert-toc alist))))
 
 (provide 'tv-utils)
 

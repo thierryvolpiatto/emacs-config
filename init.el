@@ -1450,10 +1450,10 @@ With a prefix arg ask with completion which buffer to kill."
                   ("\\.mdpp$" . markdown-mode))
                 auto-mode-alist)))
 
-;;; Markdown-toc
+;;; Markdown/Org-toc
 ;;
-(autoload 'tv:markdown-toc "tv-utils" nil t)
-(autoload 'tv:markdown-toc-insert-headers-at-point "tv-utils" nil t)
+(autoload 'toc-toc-insert-headers-at-point "toc" nil t)
+(autoload 'toc-toc "toc" nil t)
 
 ;;; ffap
 ;;
