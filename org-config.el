@@ -196,9 +196,9 @@
   (with-eval-after-load 'org-persist
     (advice-add 'org-persist-register :override #'ignore)))
 
-;; Toc-org
-(when (fboundp 'toc-org-mode)
-  (add-hook 'org-mode-hook 'toc-org-mode))
+
+;; Imenu
+(setq org-imenu-depth 4)
 
 (provide 'org-config)
 

@@ -1452,7 +1452,7 @@ With a prefix arg ask with completion which buffer to kill."
 
 ;;; Markdown/Org-toc
 ;;
-(autoload 'toc-toc-insert-headers-at-point "toc" nil t)
+(autoload 'toc-insert-headers-at-point "toc" nil t)
 (autoload 'toc-toc "toc" nil t)
 
 ;;; ffap

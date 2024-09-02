@@ -629,6 +629,7 @@ First call indent, second complete symbol, third complete fname."
   (add-to-list 'helm-imenu-icon-type-alist
                '("Use package" . (all-the-icons-octicon
                                   "package" :face font-lock-keyword-face)))
+  (setq helm-imenu-extra-modes '(org-mode markdown-mode))
   (customize-set-variable 'helm-imenu-lynx-style-map t)
   (customize-set-variable 'helm-imenu-use-icon t)
   (customize-set-variable 'helm-imenu-hide-item-type-name t))
@@ -707,8 +708,6 @@ First call indent, second complete symbol, third complete fname."
 (global-set-key (kbd "C-h C-d")                      'helm-debug-open-last-log)
 (global-set-key (kbd "<f5> s")                       'helm-find)
 (global-set-key (kbd "S-<f4>")                       'helm-execute-kmacro)
-(global-set-key (kbd "C-c i")                        'helm-imenu-in-all-buffers)
-(global-set-key (kbd "C-c C-i")                      'helm-imenu)
 (global-set-key (kbd "<f11>")                        nil)
 (global-set-key (kbd "<f11> o")                      'helm-org-agenda-files-headings)
 (global-set-key (kbd "M-s")                          nil)
