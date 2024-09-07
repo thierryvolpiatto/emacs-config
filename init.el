@@ -1968,6 +1968,10 @@ mode temporarily."
 (global-set-key (kbd "C-!") 'bm-toggle)
 (global-set-key (kbd "<f12>") 'helm-bm) ; autoloaded in init-helm.
 
+;;; Sensors
+;;
+(autoload 'sensors "sensors" nil t)
+
 ;;; Load time
 ;;
 (tv:emacs-load-time)

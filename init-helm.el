@@ -182,12 +182,12 @@
         helm-buffer-skip-remote-checking  t
         helm-buffer-max-length            36
         helm-buffers-fuzzy-matching t
-        helm-buffers-maybe-switch-to-tab  t
         helm-mini-default-sources '(helm-source-buffers-list
                                     helm-source-buffer-not-found)
         helm-boring-buffer-regexp-list
         '("\\` " "\\`\\*helm" "\\`\\*Echo Area" "\\`\\*Minibuf"
           "\\`\\*Messages" "\\`\\*Magit" "\\`\\*git-gutter" "\\`\\*Help" "\\`\\*skitour"))
+  (customize-set-variable 'helm-buffers-maybe-switch-to-tab  t)
   (customize-set-variable 'helm-buffers-show-icons t)
 
   (define-key helm-buffer-map (kbd "C-d") 'helm-buffer-run-kill-persistent))
