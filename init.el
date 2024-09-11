@@ -1549,8 +1549,9 @@ With a prefix arg ask with completion which buffer to kill."
             (eshell-cmpl-initialize)
             ;; Make `completion-at-point' use
             ;; bash-completion which works
-            ;; mostly all (no eshell aliases).
-            (setq-local completion-at-point-functions '(bash-completion-eshell-capf))
+            ;; with mostly all (no eshell aliases).
+            (setq-local completion-at-point-functions (cons 'bash-completion-eshell-capf
+                                                            completion-at-point-functions))
             ;; Completion on eshell aliases among other things. It's
             ;; pretty unclear which map to use, at least it
             ;; changes nearly at each emacs version :-(.
@@ -1762,9 +1763,11 @@ detected."
 ;; Used as CAPF in eshell.
 (defun bash-completion-eshell-capf ()
   (require 'bash-completion)
-  (bash-completion-dynamic-complete-nocomint
-   (save-excursion (eshell-bol) (point))
-   (point) t))
+  (append
+   (bash-completion-dynamic-complete-nocomint
+    (save-excursion (eshell-bol) (point))
+    (point) t)
+   '(:exclusive no)))
 
 ;;; Log-view (only used with RCS)
 ;;
