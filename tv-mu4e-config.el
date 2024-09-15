@@ -110,7 +110,8 @@
         ("/Posteo/github-helm"    . ?h)
         ("/Posteo/github-mu"      . ?m)
         ("/Posteo/github-async"   . ?a)
-        ("/Posteo/Spam-Log"       . ?l)))
+        ("/Posteo/Spam-Log"       . ?l)
+        ("/Posteo/Pub"            . ?p)))
 
 ;;; Bookmarks
 (setq mu4e-bookmarks
