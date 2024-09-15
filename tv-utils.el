@@ -388,7 +388,7 @@ Ignore text read-only at bol i.e. prompts."
            finally return seq))
 
 ;;;###autoload
-(cl-defun tv:genpasswd (&optional (limit 12))
+(cl-defun tv:genpasswd-1 (&optional (limit 12))
   "Generate strong password of length LIMIT.
 LIMIT should be a number divisible by 2, otherwise
 the password will be of length (floor LIMIT)."
@@ -396,25 +396,28 @@ the password will be of length (floor LIMIT)."
                         "l" "m" "n" "o" "p" "q" "r" "s" "t" "u" "v"
                         "w" "x" "y" "z" "A" "B" "C" "D" "E" "F" "G"
                         "H" "I" "J" "K" "L" "M" "N" "O" "P" "Q" "R"
-                        "S" "T" "U" "V" "W" "X" "Y" "Z" "#" "!" "$"
-                        "&" "~" "-" "_" "@" "%" "*"]
+                        "S" "T" "U" "V" "W" "X" "Y" "Z"]
+           with signs = ["#" "!" "$" "&" "~" "-" "_" "@" "%" "*"] 
            ;; Divide by 2 because collecting 2 list.
            for i from 1 to (floor (/ limit 2))
            for rand1 = (int-to-string (random 9))
+           for signsindex = (random (length signs))
            for alphaindex = (random (length alph))
            for rand2 = (aref (tv:shuffle-sequence alph) alphaindex)
+           for rand3 = (aref (tv:shuffle-sequence signs) signsindex)
            ;; Collect a random number between O-9
            concat rand1 into ls
            ;; collect a random alpha between a-zA-Z.
            concat rand2 into ls
+           concat rand3 into ls
            finally return ls))
 
 ;;;###autoload
-(defun tv:generate-passwd (arg)
+(defun tv:genpasswd (arg)
   "Generate a random password of (max 8 ARG) chars.
 Use a prefix arg to specify ARG."
   (interactive "p")
-  (let ((newpwd (tv:genpasswd (max 8 arg))))
+  (let ((newpwd (tv:genpasswd-1 (max 8 arg))))
     (kill-new newpwd)
     (message "New pwd `%s' saved to kill ring" newpwd)))
 
