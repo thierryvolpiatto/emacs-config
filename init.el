@@ -563,6 +563,11 @@ Restart works only on graphic display."
     'left 'winner-undo '((right . winner-redo))
     nil nil 3)
 
+;;; Undo
+;;
+(define-key global-map [remap undo] 'undo-only)
+(define-key global-map (kbd "M-_")  'undo-redo)
+
 ;;; All-the-icons and mode-line
 ;;
 ;; Don't forget to install necessary fonts with M-x
@@ -1550,8 +1555,7 @@ With a prefix arg ask with completion which buffer to kill."
             ;; Make `completion-at-point' use
             ;; bash-completion which works
             ;; with mostly all (no eshell aliases).
-            (setq-local completion-at-point-functions (cons 'bash-completion-eshell-capf
-                                                            completion-at-point-functions))
+            (add-hook 'completion-at-point-functions 'bash-completion-eshell-capf -99 t)
             ;; Completion on eshell aliases among other things. It's
             ;; pretty unclear which map to use, at least it
             ;; changes nearly at each emacs version :-(.
