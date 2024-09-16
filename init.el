@@ -1749,9 +1749,11 @@ detected."
 (define-key emacs-lisp-mode-map (kbd "<prior>")       'backward-page)
 (define-key emacs-lisp-mode-map (kbd "C-M-j")         'backward-kill-sexp)
 (define-key emacs-lisp-mode-map (kbd "C-c C-a")       'tv:align-let)
+(define-key emacs-lisp-mode-map (kbd "C-M-r")         'raise-sexp)
 (define-key lisp-interaction-mode-map (kbd "RET")     'newline-and-indent)
 (define-key lisp-interaction-mode-map (kbd "C-M-j")   'backward-kill-sexp)
 (define-key lisp-interaction-mode-map (kbd "C-c C-a") 'tv:align-let)
+(define-key lisp-interaction-mode-map (kbd "C-M-r")   'raise-sexp)
 (define-key lisp-mode-map (kbd "RET")                 'newline-and-indent)
 
 ;;; Macro expand
