@@ -363,23 +363,6 @@ Ignore text read-only at bol i.e. prompts."
     (setq lisp-indent-function #'common-lisp-indent-function-1)
     (message "Switching to Common lisp indenting style.")))
 
-;; Check paren errors
-;;;###autoload
-(defun tv:check-paren-error ()
-  (interactive)
-  (let (pos-err)
-    (save-excursion
-      (goto-char (point-min))
-      (condition-case err
-          (forward-list 9999)
-        (error
-         (setq pos-err (cl-caddr err))
-         nil)))
-    (if pos-err
-        (message "Paren error found in sexp starting at %s"
-                 (goto-char pos-err))
-      (message "No paren error found"))))
-
 ;;; Generate strong passwords.
 ;;
 (defun tv:shuffle-sequence (seq)
