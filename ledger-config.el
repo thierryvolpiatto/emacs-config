@@ -60,11 +60,12 @@
           (insert (format "[%s]" result))
           (message "ledger balance: %s" result)))))
 
-(defadvice ledger-reconcile-refresh (after align-euros () activate)
-  "Align euros in reconcile buffer when refreshing with `C-l'."
+(defun tv:advice-ledger-reconcile-refresh (&rest _args)
+  "Align euros in reconcile buffer after refreshing with `C-l'."
   (save-excursion
     (let ((inhibit-read-only t))
       (align-regexp (point-min) (point-max) "\\(\\s-*\\)€" 1 1 nil))))
+(advice-add 'ledger-reconcile-refresh :after #'tv:advice-ledger-reconcile-refresh)
 
 (defun ledger-reverse-date-from-regexp (regexp)
   (let ((ledger-file (getenv "LEDGER_FILE")))
@@ -237,12 +238,6 @@ If entries are already pointed, skip."
              (goto-char (next-overlay-change (point)))))))
 (define-key ledger-mode-map (kbd "C-x C-x") 'ledger-exchange-point-an-mark-or-overlay)
 
-(defvar ledger-previous-window-configuration nil)
-(defadvice ledger-reconcile (before save-winconf activate)
-  (setq ledger-previous-window-configuration (current-window-configuration)))
-
-(defadvice ledger-reconcile-quit (after restore-winconf activate)
-  (set-window-configuration ledger-previous-window-configuration))
 
 (defvar ledger/associations '(("PRELEVEMENT A LA SOURCE REVENUS" . ":impot:prelevement_source")
                               ("SOLDE IMPOT REVENUS" . ":impot:impot_revenu")

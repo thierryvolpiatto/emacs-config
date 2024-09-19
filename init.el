@@ -342,14 +342,13 @@ Restart works only on graphic display."
 ;;; Term - ansi-term
 ;;
 ;; Kill buffer after C-d in ansi-term.
-(defadvice term-sentinel (after kill-buffer activate)
-  (kill-buffer))
+(defun tv:advice-term-sentinel (&rest _args) (kill-buffer))
+(advice-add 'term-sentinel :after #'tv:advice-term-sentinel)
+
 (defun tv:term ()
   (interactive)
   (ansi-term "/bin/bash"))
-(defadvice term-command-hook (before decode-string)
-  (setq string (decode-coding-string string locale-coding-system)))
-(when (version< emacs-version "24.3.50.1") (ad-activate 'term-command-hook))
+
 (global-set-key (kbd "<f11> t") 'tv:term)
 
 ;; Browse url

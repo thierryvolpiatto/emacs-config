@@ -151,10 +151,12 @@ depending the value of N is positive or negative."
         (setq tv:calendar-alive (current-window-configuration))
         (calendar))))
 
-(defadvice calendar-exit (after reset-win-conf activate)
+(defun tv:advice-calendar-exit (&rest _args)
   (when tv:calendar-alive
     (set-window-configuration tv:calendar-alive)
     (setq tv:calendar-alive nil)))
+
+(advice-add 'calendar-exit :after #'tv:advice-calendar-exit)
 
 ;;; Insert-pairs 
 ;;
