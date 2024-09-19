@@ -66,6 +66,11 @@
 (global-set-key (kbd "C-z")   nil) ; Disable `suspend-frame'.
 (global-set-key (kbd "<f11>") nil) ; Disable `toggle-frame-fullscreen'
 
+;; Prevent emacs warning when hitting <XF86TouchpadOff> and
+;; <XF86TouchpadOn> to disable/enabling TouchPad.
+(define-key global-map (kbd "<XF86TouchpadOff>") (lambda () (interactive) (message "TouchPad disabled")))
+(define-key global-map (kbd "<XF86TouchpadOn>")  (lambda () (interactive) (message "TouchPad reenabled")))
+
 ;; Revert-buffer
 (defun tv:revert-buffer-no-query ()
   (interactive)
@@ -474,7 +479,9 @@ Restart works only on graphic display."
   (setq woman-use-own-frame nil))
 
 (with-eval-after-load 'man
-  (setq Man-notify-method 'pushy))
+  (setq Man-notify-method 'pushy)
+  ;; Get rid of the most of the time unuseful default.
+  (advice-add 'Man-default-man-entry :override #'ignore))
 
 ;;; show-paren-mode
 ;;
@@ -870,14 +877,6 @@ If ARG is non nil decrease transparency."
 (defun tv:transparency-modify-decrease ()
   (interactive)
   (tv:transparency-modify-1 'decrease))
-
-(helm-define-key-with-subkeys
-    global-map (kbd "C-8")
-    nil 'ignore '((?+ . tv:transparency-modify-increase)
-                  (?- . tv:transparency-modify-decrease))
-    (propertize "Increase/Decrease transparency (+/-)"
-                'face 'minibuffer-prompt)
-    nil 10)
 
 (if (or (daemonp)
         (not (window-system))
@@ -1981,6 +1980,10 @@ mode temporarily."
 ;;; Sensors
 ;;
 (autoload 'sensors "sensors" nil t)
+
+;;; Colorcomp (Mix blue, red and green)
+;;
+(autoload 'colorcomp "colorcomp" nil t)
 
 ;;; Load time
 ;;
