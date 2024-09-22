@@ -106,9 +106,9 @@
 
 (defun tv:org-headings (arg)
   (interactive "P")
-  (if arg
-      (helm-org-agenda-files-headings)
-    (helm-org-in-buffer-headings)))
+  (if (eq major-mode 'org-mode)
+      (helm-org-in-buffer-headings arg)
+    (helm-org-agenda-files-headings arg)))
 
 (add-hook 'org-mode-hook 
 	  (lambda ()
@@ -199,6 +199,9 @@
 
 ;; Imenu
 (setq org-imenu-depth 4)
+
+;; Org-indent
+(setq org-startup-indented t)
 
 (provide 'org-config)
 
