@@ -3,6 +3,15 @@
 
 ;;; Set up helm first (will load helm-autoloads.el)
 
+;; Force usage of helm-flex style.
+;; This prevent the usage of flex style, replacing it by helm-flex
+;; style. The flex style adjust metadata fn is creating a huge circular
+;; metadata object that may crash emacs, using helm-flex style is
+;; safer. Once this evaled you have to set completion-styles to
+;; '(helm-flex), see below.
+
+(setq completion-styles-alist (delete (assq 'flex completion-styles-alist) completion-styles-alist))
+
 (require 'helm)
 ;; Only needed when installed from source.
 ;; NOTE: package.el creates an autoload file without a provide whereas
@@ -106,7 +115,7 @@
         (all-the-icons-insert . helm-mode-all-the-icons-handler)))
 
 ;; Fix CAP with LSP in python.
-(add-to-list 'helm-completion-styles-alist '(python-mode . (emacs helm flex)))
+(add-to-list 'helm-completion-styles-alist '(python-mode . (emacs helm helm-flex)))
 
 ;; Custom completion matching
 ;; (add-to-list 'helm-completion-styles-alist '(wfnames-mode . (emacs helm flex)))
