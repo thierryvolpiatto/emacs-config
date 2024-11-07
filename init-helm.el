@@ -8,7 +8,7 @@
 ;; style. The flex style adjust metadata fn is creating a huge circular
 ;; metadata object that may crash emacs, using helm-flex style is
 ;; safer. Once this evaled you have to set completion-styles to
-;; '(helm-flex), see below.
+;; '(helm-flex), see below >>>>1.
 
 (setq completion-styles-alist (delete (assq 'flex completion-styles-alist) completion-styles-alist))
 
@@ -80,6 +80,7 @@
 (with-eval-after-load 'help-fns
   (setq help-enable-completion-autoload nil))
 
+;; Prefer helm-flex see >>>>1.
 (add-hook 'helm-mode-hook
           (lambda ()
             (setq completion-styles
