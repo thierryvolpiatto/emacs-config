@@ -111,7 +111,8 @@
         ("/Posteo/github-mu"      . ?m)
         ("/Posteo/github-async"   . ?a)
         ("/Posteo/Spam-Log"       . ?l)
-        ("/Posteo/Pub"            . ?p)))
+        ("/Posteo/Pub"            . ?p)
+        ("/Posteo/Fortuneo"       . ?f)))
 
 ;;; Bookmarks
 (setq mu4e-bookmarks
