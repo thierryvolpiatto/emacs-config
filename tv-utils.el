@@ -605,7 +605,7 @@ Used by the Mailto script used from firefox."
               (setq max-len (max (length (match-string 1)) max-len))
               (goto-char (match-end 1))
               (skip-chars-forward " ")
-              (when (looking-at "(") (forward-sexp 1))))
+              (when (looking-at "'?(") (forward-sexp 1))))
           (while (re-search-forward let-regexp nil t)
             (let (bol)
               (goto-char (match-end 1))
@@ -615,7 +615,7 @@ Used by the Mailto script used from firefox."
                 (replace-match
                  (make-string (1+ (- max-len (length (match-string 1)))) ? )
                  t t nil 2)))
-            (when (looking-at "(") (forward-sexp 1))))
+            (when (looking-at "'?(") (forward-sexp 1))))
         (goto-char (point-min))
         (indent-region (point-min) (point-max))))))
 
