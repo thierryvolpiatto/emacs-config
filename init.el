@@ -344,6 +344,9 @@ Restart works only on graphic display."
     (setq async-child-init "~/.emacs.d/fix-copy-directory.el")))
 ;; Dired async.
 (dired-async-mode 1)
+;; async-bytecomp
+(autoload 'async-byte-recompile-directory "async-bytecomp")
+(autoload 'async-byte-compile-file "async-bytecomp")
 
 ;;; Helm
 ;;
