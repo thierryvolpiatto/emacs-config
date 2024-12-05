@@ -250,7 +250,7 @@ Restart works only on graphic display."
 (global-set-key (kbd "C-}") #'align-regexp)
 
 ;; Move to bol or back-to-indentation depending of context.
-(defun tv/bol-or-back-to-indentation ()
+(defun tv:bol-or-back-to-indentation ()
   "Move to bol or indentation depending of context."
   (interactive)
   (if (and (derived-mode-p 'prog-mode)
@@ -258,7 +258,7 @@ Restart works only on graphic display."
                (save-excursion (re-search-backward "[^[:blank:]]" (pos-bol) t))))
       (back-to-indentation)
     (move-beginning-of-line 1)))
-(global-set-key (kbd "C-a") #'tv/bol-or-back-to-indentation)
+(global-set-key (kbd "C-a") #'tv:bol-or-back-to-indentation)
 
 
 ;;; Compatibility
