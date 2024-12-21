@@ -182,7 +182,6 @@ Restart works only on graphic display."
   (let ((bounds (bounds-of-thing-at-point 'symbol)))
     (cl-assert bounds nil "No symbol at point")
     (goto-char (car bounds))
-    (push-mark (point))
     (push-mark (cdr bounds) nil t)))
 ;; I don't use cycle-spacing (M-SPC)
 (global-set-key (kbd "M-SPC") #'tv:mark-symbol-at-point)

@@ -1,16 +1,29 @@
 ;;; init-helm.el --- My startup file for helm. -*- lexical-binding: t -*-
 ;;; Code:
 
+(defun helm-add-to-list (sym elm index)
+  "Modify variable SYM destructively by adding or moving ELM at INDEX.
+
+If ELM is member of SYM var value and at index INDEX, return SYM value
+unchanged, if INDEX value is different move ELM at this `nth' INDEX value.
+If ELM is not present in list add it at `nth' INDEX.
+
+For specification of ELM see `helm-append-at-nth' which is used
+internally by this function."
+  (cl-assert (boundp sym)
+             nil "`%s' should be a global variable")
+  (let ((val (symbol-value sym))
+        flag)
+    (cond ((and (member elm val) (equal elm (nth index val)))
+           val)
+          ((member elm val)
+           (setq val (delete elm val) flag t))
+          (t (setq flag t)))
+    (if flag
+        (set sym (helm-append-at-nth val elm index))
+      val)))
+
 ;;; Set up helm first (will load helm-autoloads.el)
-
-;; Force usage of helm-flex style.
-;; This prevent the usage of flex style, replacing it by helm-flex
-;; style. The flex style adjust metadata fn is creating a huge circular
-;; metadata object that may crash emacs, using helm-flex style is
-;; safer. Once this evaled you have to set completion-styles to
-;; '(helm-flex), see below >>>>1.
-
-(setq completion-styles-alist (delete (assq 'flex completion-styles-alist) completion-styles-alist))
 
 (require 'helm)
 ;; Only needed when installed from source.
@@ -80,7 +93,6 @@
 (with-eval-after-load 'help-fns
   (setq help-enable-completion-autoload nil))
 
-;; Prefer helm-flex see >>>>1.
 (add-hook 'helm-mode-hook
           (lambda ()
             (setq completion-styles
@@ -524,7 +536,24 @@ new directory."
            "http://translate.reference.com/translate?query=%s&src=fr&dst=en")
           ("en.wiktionary.org" . "http://en.wiktionary.org/wiki/%s")
           ("fr.wiktionary.org" . "http://fr.wiktionary.org/wiki/%s"))
-        helm-dictionary-ignore-diacritics t))
+        helm-dictionary-ignore-diacritics t)
+  (helm-add-to-list 'helm-dictionary-actions '(("sdcv" . helm-dictionary-sdcv)) 2))
+
+(defun helm-dictionary-sdcv (entry)
+  "Search ENTRY in french dictionary.
+Need sdcv and stardict-xmlittre packages as dependencies."
+  (let* ((src (helm-get-current-source))
+         (name (if (string= (helm-get-attr 'name src) "en-fr")
+                   (helm-dictionary-get-candidate entry 2)
+                 (helm-dictionary-get-candidate entry 1))))
+    (with-current-buffer (get-buffer-create "*sdcv*")
+      (let ((inhibit-read-only t))
+        (erase-buffer)
+        (save-excursion
+          (call-process-shell-command
+           (format "sdcv --data-dir /usr/share/stardict/dic '%s'" name) nil t nil)))
+      (special-mode))
+    (pop-to-buffer "*sdcv*")))
 
 ;;; Helm-wikipedia
 ;;
