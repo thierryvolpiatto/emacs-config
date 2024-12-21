@@ -551,7 +551,7 @@ Need sdcv and stardict-xmlittre packages as dependencies."
         (erase-buffer)
         (save-excursion
           (call-process-shell-command
-           (format "sdcv --data-dir /usr/share/stardict/dic '%s'" name) nil t nil)))
+           (format "sdcv --non-interactive --data-dir /usr/share/stardict/dic '%s'" name) nil t nil)))
       (special-mode))
     (pop-to-buffer "*sdcv*")))
 
