@@ -1,28 +1,6 @@
 ;;; init-helm.el --- My startup file for helm. -*- lexical-binding: t -*-
 ;;; Code:
 
-(defun helm-add-to-list (sym elm index)
-  "Modify variable SYM destructively by adding or moving ELM at INDEX.
-
-If ELM is member of SYM var value and at index INDEX, return SYM value
-unchanged, if INDEX value is different move ELM at this `nth' INDEX value.
-If ELM is not present in list add it at `nth' INDEX.
-
-For specification of ELM see `helm-append-at-nth' which is used
-internally by this function."
-  (cl-assert (boundp sym)
-             nil "`%s' should be a global variable")
-  (let ((val (symbol-value sym))
-        flag)
-    (cond ((and (member elm val) (equal elm (nth index val)))
-           val)
-          ((member elm val)
-           (setq val (delete elm val) flag t))
-          (t (setq flag t)))
-    (if flag
-        (set sym (helm-append-at-nth val elm index))
-      val)))
-
 ;;; Set up helm first (will load helm-autoloads.el)
 
 (require 'helm)
@@ -55,6 +33,28 @@ internally by this function."
 (helm-define-key-with-subkeys global-map (kbd "C-c n") ?n 'helm-cycle-resume)
 (define-key helm-map (kbd "C-%") #'helm-exchange-minibuffer-and-header-line)
 (define-key helm-map (kbd "C--") #'helm-swap-windows)
+
+(defun helm-add-to-list (sym elm index)
+  "Modify variable SYM destructively by adding or moving ELM at INDEX.
+
+If ELM is member of SYM var value and at index INDEX, return SYM value
+unchanged, if INDEX value is different move ELM at this `nth' INDEX value.
+If ELM is not present in list add it at `nth' INDEX.
+
+For specification of ELM see `helm-append-at-nth' which is used
+internally by this function."
+  (cl-assert (boundp sym)
+             nil "`%s' should be a global variable")
+  (let ((val (symbol-value sym))
+        flag)
+    (cond ((and (member elm val) (equal elm (nth index val)))
+           val)
+          ((member elm val)
+           (setq val (delete elm val) flag t))
+          (t (setq flag t)))
+    (if flag
+        (set sym (helm-append-at-nth val elm index))
+      val)))
 
 ;;; Load all autoloads for helm extensions
 ;;
