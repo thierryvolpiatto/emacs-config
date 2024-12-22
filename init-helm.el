@@ -545,7 +545,9 @@ Need sdcv and stardict-xmlittre packages as dependencies."
   (let* ((src (helm-get-current-source))
          (name (if (string= (helm-get-attr 'name src) "en-fr")
                    (helm-dictionary-get-candidate entry 2)
-                 (helm-dictionary-get-candidate entry 1))))
+                 (helm-dictionary-get-candidate entry 1)))
+         (dir "/usr/share/stardict/dic")
+         (args '("--non-interactive" "--color" "--data-dir")))
     (when (string-match ", " name)
       (setq name (completing-read "Name: " (split-string name ", " t)))
       (when (string-match "\\(.*\\) +[[({]" name)
@@ -554,11 +556,11 @@ Need sdcv and stardict-xmlittre packages as dependencies."
       (let ((inhibit-read-only t))
         (erase-buffer)
         (save-excursion
-          (call-process-shell-command
-           (format "sdcv --non-interactive --color --data-dir /usr/share/stardict/dic '%s'" name) nil t nil)
+          (apply #'call-process "sdcv" nil t nil (append args (list dir name)))
           (ansi-color-apply-on-region (point-min) (point-max)))
         (while (re-search-forward (regexp-quote name) nil t)
-          (add-face-text-property (match-beginning 0) (match-end 0) 'font-lock-constant-face))
+          (add-face-text-property
+           (match-beginning 0) (match-end 0) 'font-lock-constant-face))
         (goto-char (point-min))
         (fill-region (point-min) (point-max)))
       (special-mode))
