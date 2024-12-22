@@ -551,7 +551,12 @@ Need sdcv and stardict-xmlittre packages as dependencies."
         (erase-buffer)
         (save-excursion
           (call-process-shell-command
-           (format "sdcv --non-interactive --data-dir /usr/share/stardict/dic '%s'" name) nil t nil)))
+           (format "sdcv --non-interactive --color --data-dir /usr/share/stardict/dic '%s'" name) nil t nil)
+          (ansi-color-apply-on-region (point-min) (point-max)))
+        (while (re-search-forward (regexp-quote name) nil t)
+          (add-face-text-property (match-beginning 0) (match-end 0) 'font-lock-constant-face))
+        (goto-char (point-min))
+        (fill-region (point-min) (point-max)))
       (special-mode))
     (pop-to-buffer "*sdcv*")))
 
