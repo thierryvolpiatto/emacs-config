@@ -545,7 +545,9 @@ Need sdcv and stardict-xmlittre packages as dependencies."
          (name (if (string= (helm-get-attr 'name src) "en-fr")
                    (helm-dictionary-get-candidate entry 2)
                  (helm-dictionary-get-candidate entry 1)))
-         (dir "/usr/share/stardict/dic")
+         ;; All dictionaries are copied in separate directories dir1,
+         ;; dir2 etc... to avoid duplicates in sdcv output.
+         (dir "/home/thierry/.stardict/")
          (args '("--non-interactive" "--color" "--data-dir")))
     (when (string-match ", " name)
       (setq name (completing-read "Name: " (split-string name ", " t)))
