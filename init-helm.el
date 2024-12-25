@@ -538,6 +538,7 @@ new directory."
         helm-dictionary-ignore-diacritics t)
   (helm-add-to-list 'helm-dictionary-actions '("sdcv" . helm-dictionary-sdcv) 2))
 
+(defvar helm-dictionary-sdcv-directory "/home/thierry/.stardict/")
 (defun helm-dictionary-sdcv (entry)
   "Search ENTRY in french dictionary.
 Need sdcv and stardict-xmlittre packages as dependencies."
@@ -547,7 +548,7 @@ Need sdcv and stardict-xmlittre packages as dependencies."
                  (helm-dictionary-get-candidate entry 1)))
          ;; All dictionaries are copied in separate directories dir1,
          ;; dir2 etc... to avoid duplicates in sdcv output.
-         (dir "/home/thierry/.stardict/")
+         (dir helm-dictionary-sdcv-directory)
          (args '("--non-interactive" "--color" "--data-dir")))
     (when (string-match ", " name)
       (setq name (completing-read "Name: " (split-string name ", " t)))
