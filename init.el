@@ -890,15 +890,23 @@ If ARG is non nil decrease transparency."
   (interactive)
   (tv:transparency-modify-1 'decrease))
 
+(defun tv:emacs-x-toolkit ()
+  (if (string-match
+       "--with-x-toolkit=\\([^ ]*?\\) "
+       system-configuration-options)
+      (match-string 1 system-configuration-options)
+    "gtk"))
+
 (if (or (daemonp)
         (not (window-system))
         (< emacs-major-version 24))
     (setq default-frame-alist `((vertical-scroll-bars . nil)
                                 (tool-bar-lines . 0)
                                 (menu-bar-lines . 0)
-                                (title . ,(format "%s-%s"
+                                (title . ,(format "%s-%s-%s"
                                                   (capitalize (invocation-name))
-                                                  emacs-version))
+                                                  emacs-version
+                                                  (tv:emacs-x-toolkit)))
                                 (cursor-color . "red")))
 
   (setq default-frame-alist `((foreground-color . "Wheat")
@@ -907,9 +915,10 @@ If ARG is non nil decrease transparency."
                               ;; New frames go in right corner.
                               (left . ,(- (* (window-width) 8) 160)) ; Chars are 8 bits long.
                               (vertical-scroll-bars . nil)
-                              (title . ,(format "%s-%s"
+                              (title . ,(format "%s-%s-%s"
                                                 (capitalize (invocation-name))
-                                                emacs-version))
+                                                emacs-version
+                                                (tv:emacs-x-toolkit)))
                               (tool-bar-lines . 0)
                               (menu-bar-lines . 0)
                               (cursor-color . "red")
