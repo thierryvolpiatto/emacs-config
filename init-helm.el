@@ -536,7 +536,16 @@ new directory."
           ("en.wiktionary.org" . "http://en.wiktionary.org/wiki/%s")
           ("fr.wiktionary.org" . "http://fr.wiktionary.org/wiki/%s"))
         helm-dictionary-ignore-diacritics t)
-  (helm-add-to-list 'helm-dictionary-actions '("sdcv" . helm-dictionary-sdcv) 2))
+  (helm-add-to-list 'helm-dictionary-actions '("Sdcv French dictionaries" . helm-dictionary-sdcv) 2)
+  (helm-add-to-list 'helm-dictionary-actions '("English dictionary" . helm-dictionary-search) 3))
+
+(defun helm-dictionary-search (entry)
+  (let* ((src (helm-get-current-source))
+         (name (if (string= (helm-get-attr 'name src) "en-fr")
+                   (helm-dictionary-get-candidate entry 1)
+                 (helm-dictionary-get-candidate entry 2))))
+    (setq name (car (split-string name)))
+    (dictionary-search name)))
 
 (defvar helm-dictionary-sdcv-directory "/home/thierry/.stardict/")
 (defun helm-dictionary-sdcv (entry)
