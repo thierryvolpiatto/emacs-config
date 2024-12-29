@@ -372,11 +372,12 @@ Restart works only on graphic display."
   (setq browse-url-firefox-program "firefox"
         browse-url-browser-function 'helm-browse-url-firefox))
 
-;;; Dif/Ediff
+;;; Diff/Ediff
 ;;
-(setq ediff-window-setup-function 'ediff-setup-windows-plain
-      ediff-split-window-function 'split-window-horizontally
-      ediff-show-ancestor         nil)
+(with-eval-after-load 'ediff
+  (setq ediff-window-setup-function #'ediff-setup-windows-plain
+        ediff-split-window-function #'split-window-horizontally
+        ediff-show-ancestor         nil))
 
 ;; Fix unreadable diff/ediff in emacs-27+
 (when (>= emacs-major-version 27)
@@ -391,8 +392,9 @@ Restart works only on graphic display."
     (set-face-attribute 'hl-line nil :extend t))
   (set-face-attribute 'region nil :extend t))
 
-;; diff buffers read-only
-(setq diff-default-read-only t)
+(with-eval-after-load 'diff
+  (setq diff-default-read-only t
+        diff-switches '("-u")))
 
 ;;; Save place
 ;;
