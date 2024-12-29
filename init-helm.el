@@ -34,30 +34,6 @@
 (define-key helm-map (kbd "C-%") #'helm-exchange-minibuffer-and-header-line)
 (define-key helm-map (kbd "C--") #'helm-swap-windows)
 
-(defun helm-add-to-list (var elm index &optional replace)
-  "Add or move ELM to the value of VAR at INDEX unless already here.
-
-If ELM is member of var value and at index INDEX, return var value
-unchanged, if INDEX value is different move ELM at this `nth' INDEX value.
-If ELM is not present in list add it at `nth' INDEX.
-
-If REPLACE is non nil replace element at INDEX by ELM.
-
-Do not use this function in helm code, use `helm-append-at-nth'
-instead.  It is meant to be used in config files only."
-  (cl-assert (boundp var) nil "Unbound variable `%s'" var)
-  (let ((val (symbol-value var))
-        flag)
-    (cond ((and (member elm val) (equal elm (nth index val))))
-          ((member elm val)
-           (setq val (delete elm val) flag t))
-          (replace
-           (setq val (delete (nth index val) val) flag t))
-          (t (setq flag t)))
-    (if flag
-        (set var (helm-append-at-nth val elm index))
-      val)))
-
 ;;; Load all autoloads for helm extensions
 ;;
 ;;
