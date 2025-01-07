@@ -1330,60 +1330,17 @@ With a prefix arg ask with completion which buffer to kill."
   (setq bookmark-automatically-show-annotations nil)
   (and (boundp 'bookmark-bmenu-use-header-line)
        (setq bookmark-bmenu-use-header-line nil))
+  (setq bookmark-watch-bookmark-file nil)
   ;; This for unknow reasons add a orange point in fringe when
   ;; switching to HFF from a bookmark and then quitting, not sure
   ;; what this feature is for and what the benefit is, so disable it.
   (and (boundp 'bookmark-set-fringe-mark)
        (setq bookmark-set-fringe-mark nil))
-  ;; Write directly to bmk file instead of writing to a "
-  ;; *bookmarks*" buffer and then writing to bmk file.
-  (defun tv:advice--bookmark-write-file (file)
-    "Write `bookmark-alist' to FILE."
-    (let ((reporter (make-progress-reporter
-                     (format "Saving bookmarks to file %s..." file))))
-      (with-current-buffer (find-file-noselect file)
-        (let ((vc (cond
-                    ((null bookmark-version-control) nil)
-                    ((eq 'never bookmark-version-control) 'never)
-                    ((eq 'nospecial bookmark-version-control) version-control)
-                    (t t))))
-          (when (version-control-safe-local-p vc)
-            (setq-local version-control vc)))
-        (goto-char (point-min))
-        (condition-case err
-            (progn
-              (delete-region (point-min) (point-max))
-              (let ((coding-system-for-write
-                     (or coding-system-for-write
-                         bookmark-file-coding-system
-                         'utf-8-emacs))
-                    (print-length nil)
-                    (print-level nil)
-                    ;; See bug #12503 for why we bind `print-circle'.  Users
-                    ;; can define their own bookmark types, which can result in
-                    ;; arbitrary Lisp objects being stored in bookmark records,
-                    ;; and some users create objects containing circularities.
-                    (print-circle t))
-                (insert "(")
-                ;; Rather than a single call to `pp' we make one per bookmark.
-                ;; Apparently `pp' has a poor algorithmic complexity, so this
-                ;; scales a lot better.  bug#4485.
-                (dolist (i bookmark-alist) (pp i (current-buffer)))
-                (insert ")\n")
-                ;; Make sure the specified encoding can safely encode the
-                ;; bookmarks.  If it cannot, suggest utf-8-emacs as default.
-                (with-coding-priority '(utf-8-emacs)
-                  (setq coding-system-for-write
-                        (select-safe-coding-system (point-min) (point-max)
-                                                   (list t coding-system-for-write))))
-                (goto-char (point-min))
-                (bookmark-insert-file-format-version-stamp coding-system-for-write)
-                (setq bookmark-file-coding-system coding-system-for-write)
-                (save-buffer)))
-          (file-error (message "Can't write %s" file)))
-        (kill-buffer (current-buffer)))
-      (progress-reporter-done reporter)))
-  (advice-add 'bookmark-write-file :override #'tv:advice--bookmark-write-file))
+
+  (advice-add 'bookmark-make-record :before
+              (lambda (&rest _ignore)
+                "Disable the evil `bookmark-current-bookmark' mechanism."
+                (kill-local-variable 'bookmark-current-bookmark))))
 
 ;;; git-gutter-mode
 ;;
