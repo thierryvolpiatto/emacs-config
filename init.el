@@ -1334,9 +1334,39 @@ With a prefix arg ask with completion which buffer to kill."
   ;; This for unknow reasons add a orange point in fringe when
   ;; switching to HFF from a bookmark and then quitting, not sure
   ;; what this feature is for and what the benefit is, so disable it.
-  (and (boundp 'bookmark-set-fringe-mark)
-       (setq bookmark-set-fringe-mark nil))
+  (and (boundp 'bookmark-fringe-mark)
+       (setq bookmark-fringe-mark nil))
 
+  ;; Fix switching to other window or frame actions
+  ;; (fix emacs bug #75354).
+  (defun tv:bookmark--jump-via (bookmark-name-or-record display-function)
+    (let (buf)
+      (save-window-excursion
+        (bookmark-handle-bookmark bookmark-name-or-record)
+        (setq buf (current-buffer)))
+      ;; Store `point' now, because `display-function' might change it.
+      (let ((point (with-current-buffer buf (point))))
+        (funcall display-function buf)
+        (when-let ((win (get-buffer-window buf 0)))
+          (set-window-point win point)))
+      ;; FIXME: we used to only run bookmark-after-jump-hook in
+      ;; `bookmark-jump' itself, but in none of the other commands.
+      (when bookmark-fringe-mark
+        (let ((overlays (overlays-in (pos-bol) (1+ (pos-bol))))
+              temp found)
+          (while (and (not found) (setq temp (pop overlays)))
+            (when (eq 'bookmark (overlay-get temp 'category))
+              (setq found t)))
+          (unless found
+            (bookmark--set-fringe-mark))))
+      (run-hooks 'bookmark-after-jump-hook)
+      (when bookmark-automatically-show-annotations
+        ;; if there is an annotation for this bookmark,
+        ;; show it in a buffer.
+        (bookmark-show-annotation bookmark-name-or-record))))
+  (advice-add 'bookmark--jump-via :override #'tv:bookmark--jump-via)
+
+  ;; Don't use `bookmark-current-bookmark' which is always wrong.
   (advice-add 'bookmark-make-record :before
               (lambda (&rest _ignore)
                 "Disable the evil `bookmark-current-bookmark' mechanism."
