@@ -140,7 +140,8 @@
 (with-eval-after-load 'helm-utils
   ;; Popup buffer-name or filename in grep/moccur/imenu-all etc...
   (helm-popup-tip-mode 1)
-  (setq helm-highlight-matches-around-point-max-lines   '(30 . 30))
+  (setq helm-highlight-matches-around-point-max-lines   '(30 . 30)
+        helm-window-prefer-horizontal-split             t)
   (add-hook 'find-file-hook 'helm-save-current-pos-to-mark-ring))
 
 ;;; Helm-sys
