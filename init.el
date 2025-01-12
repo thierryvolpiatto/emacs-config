@@ -1340,17 +1340,14 @@ With a prefix arg ask with completion which buffer to kill."
   ;; Fix switching to other window or frame actions
   ;; (fix emacs bug #75354).
   (defun tv:bookmark--jump-via (bookmark-name-or-record display-function)
-    (let (buf)
+    (let (buf point)
       (save-window-excursion
         (bookmark-handle-bookmark bookmark-name-or-record)
-        (setq buf (current-buffer)))
-      ;; Store `point' now, because `display-function' might change it.
-      (let ((point (with-current-buffer buf (point))))
-        (funcall display-function buf)
-        (when-let ((win (get-buffer-window buf 0)))
-          (set-window-point win point)))
-      ;; FIXME: we used to only run bookmark-after-jump-hook in
-      ;; `bookmark-jump' itself, but in none of the other commands.
+        (setq buf (current-buffer)
+              point (point)))
+      (funcall display-function buf)
+      (when-let* ((win (get-buffer-window buf 0)))
+        (set-window-point win point))
       (when bookmark-fringe-mark
         (let ((overlays (overlays-in (pos-bol) (1+ (pos-bol))))
               temp found)
@@ -1359,6 +1356,8 @@ With a prefix arg ask with completion which buffer to kill."
               (setq found t)))
           (unless found
             (bookmark--set-fringe-mark))))
+      ;; FIXME: we used to only run bookmark-after-jump-hook in
+      ;; `bookmark-jump' itself, but in none of the other commands.
       (run-hooks 'bookmark-after-jump-hook)
       (when bookmark-automatically-show-annotations
         ;; if there is an annotation for this bookmark,
