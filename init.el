@@ -1004,16 +1004,20 @@ If ARG is non nil decrease transparency."
 ;; Don't split windows horizontally.
 (setq split-width-threshold nil)
 (setq fit-window-to-buffer-horizontally 1)
-(helm-define-key-with-subkeys global-map (kbd "C-x ^") ?^ 'enlarge-window
-                              '((?ç . shrink-window)
-                                (?} . enlarge-window-horizontally)
-                                (?{ . shrink-window-horizontally))
-                              (propertize "^:Enl.ver, }:Enl.hor, ç:Shr.ver, {:Shr.hor" 'face 'minibuffer-prompt))
-(helm-define-key-with-subkeys global-map (kbd "C-x }") ?} 'enlarge-window-horizontally
-                              '((?^ . enlarge-window)
-                                (?ç . shrink-window)
-                                (?{ . shrink-window-horizontally))
-                              (propertize "^:Enl.ver, }:Enl.hor, ç:Shr.ver, {:Shr.hor" 'face 'minibuffer-prompt))
+(helm-define-key-with-subkeys
+    global-map (kbd "C-x ^") ?^ 'enlarge-window
+    '((?ç . shrink-window)
+      (?} . enlarge-window-horizontally)
+      (?{ . shrink-window-horizontally))
+    (propertize "^:Enl.ver, }:Enl.hor, ç:Shr.ver, {:Shr.hor"
+                'face 'minibuffer-prompt))
+(helm-define-key-with-subkeys
+    global-map (kbd "C-x }") ?} 'enlarge-window-horizontally
+    '((?^ . enlarge-window)
+      (?ç . shrink-window)
+      (?{ . shrink-window-horizontally))
+    (propertize "^:Enl.ver, }:Enl.hor, ç:Shr.ver, {:Shr.hor"
+                'face 'minibuffer-prompt))
 (global-set-key (kbd "C-x C-²") 'delete-window)
 (global-set-key (kbd "C-x C-&") 'delete-other-windows)
 (global-set-key (kbd "C-x C-é") 'split-window-vertically)
