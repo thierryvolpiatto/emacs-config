@@ -120,6 +120,13 @@ Otherwise, if ARG is non-nil, it forces to reload the url at point."
       (w3m-view-this-url)
     (tv:scroll-down)))
 
+;; Needs Emacs-31 or the bookmark--jump-via advice in init.el.
+(defun tv:bookmark-w3m-bookmark-jump (bookmark)
+  "Default bookmark handler for w3m buffers."
+  (let ((w3m-async-exec t))
+    (w3m-goto-url (bookmark-prop-get bookmark 'url))))
+(advice-add 'bookmark-w3m-bookmark-jump :override #'tv:bookmark-w3m-bookmark-jump)
+
 (provide 'config-w3m)
 
 ;;; .emacs-config-w3m.el ends here
