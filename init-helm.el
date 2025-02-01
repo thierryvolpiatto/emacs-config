@@ -183,8 +183,6 @@
         helm-buffer-skip-remote-checking  t
         helm-buffer-max-length            36
         helm-buffers-fuzzy-matching t
-        helm-mini-default-sources '(helm-source-buffers-list
-                                    helm-source-buffer-not-found)
         helm-boring-buffer-regexp-list
         '("\\` " "\\`\\*helm" "\\`\\*Echo Area" "\\`\\*Minibuf"
           "\\`\\*Messages" "\\`\\*Magit" "\\`\\*git-gutter" "\\`\\*Help" "\\`\\*skitour"))
@@ -659,17 +657,14 @@ First call indent, second complete symbol, third complete fname."
 
 ;;; Helm-find
 ;;
+(global-set-key (kbd "C-/") 'helm-find)
 (with-eval-after-load 'helm-find
-  (setq helm-find-noerrors t))
+  (setq helm-find-noerrors t
+        helm-find-show-full-path-fn #'file-relative-name))
 
 ;;; Helm-imenu
 ;;
 (with-eval-after-load 'helm-imenu
-  (add-to-list 'helm-imenu-type-faces
-               '("^Use package$" . font-lock-keyword-face))
-  (add-to-list 'helm-imenu-icon-type-alist
-               '("Use package" . (all-the-icons-octicon
-                                  "package" :face font-lock-keyword-face)))
   (setq helm-imenu-extra-modes '(org-mode markdown-mode))
   (customize-set-variable 'helm-imenu-lynx-style-map t)
   (customize-set-variable 'helm-imenu-use-icon t)
@@ -717,6 +712,10 @@ First call indent, second complete symbol, third complete fname."
         helm-mu-contacts-ignore-candidates-regexp
         "\\`\\(reply.*reply\\.github\\.com\\)\\|\\(no[.-]?reply\\|ne-pas-repondre\\)"))
 
+;;; Helm-x-icons
+;;
+;; (with-eval-after-load 'helm-x-icons
+;;   (customize-set-variable 'helm-x-icons-provider 'nerd-icons))
 
 ;;; Helm-command-map
 ;;
@@ -757,7 +756,7 @@ First call indent, second complete symbol, third complete fname."
 (global-set-key (kbd "M-s")                          'helm-occur-visible-buffers)
 (global-set-key (kbd "<f6> h")                       'helm-emms)
 (define-key global-map [remap bookmark-bmenu-list]   'helm-register)
-(define-key global-map [remap list-buffers]          'helm-mini)
+(define-key global-map [remap list-buffers]          'helm-buffers-list)
 (define-key global-map [remap dabbrev-expand]        'helm-dabbrev)
 (define-key global-map [remap find-tag]              'helm-etags-select)
 (define-key global-map [remap xref-find-definitions] 'helm-etags-select)

@@ -1803,12 +1803,9 @@ detected."
 
 ;;; Imenu
 ;;
-;; Allow browsing use-package definitions in init files.
 (defun tv:imenu-add-extras-generic-expr ()
+  "Make Imenu aware of helm-make-* macros."
   (require 'imenu)
-  (add-to-list
-   'imenu-generic-expression
-   '("Use package" "^\\s-*(\\(?:straight-\\)?use-package\\s-+'?\\(\\(?:\\sw\\|\\s_\\|\\\\.\\)+\\)[[:space:]\n]*[^)]*" 1))
   (add-to-list
    'imenu-generic-expression
    '("Helm make command"
