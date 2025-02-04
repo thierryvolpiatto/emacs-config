@@ -599,15 +599,6 @@ Restart works only on graphic display."
   (defvar mode-line-format-right-align "")
   (defvar mode-line-right-align-edge nil))
 
-(defun tv:git-branch-in-mode-line ()
-  (require 'helm-ls-git)
-  (when (and (buffer-file-name (current-buffer))
-             (fboundp 'helm-ls-git--branch)
-             (helm-ls-git-root-dir))
-    (format " (%s %s)"
-            (char-to-string #x29a9) ; (⦩) Needs a one line height char.
-            (propertize (helm-ls-git--branch) 'face '(:foreground "yellow")))))
-
 (defun tv:select-git-branches-menu ()
   (let ((branchs (split-string (shell-command-to-string "git branch") "\n" t)))
     (cl-loop with current
