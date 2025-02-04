@@ -584,10 +584,11 @@ Restart works only on graphic display."
     'left 'winner-undo '((right . winner-redo))
     nil nil 3)
 
-;;; Undo
+;;; Undo-tree
 ;;
-(define-key global-map [remap undo] 'undo-only)
-(define-key global-map (kbd "M-_")  'undo-redo)
+(require 'undo-tree)
+(global-undo-tree-mode 1)
+(setq undo-tree-auto-save-history nil)
 
 ;;; All-the-icons and mode-line
 ;;
