@@ -584,12 +584,6 @@ Restart works only on graphic display."
     'left 'winner-undo '((right . winner-redo))
     nil nil 3)
 
-;;; Undo-tree
-;;
-(require 'undo-tree)
-(global-undo-tree-mode 1)
-(setq undo-tree-auto-save-history nil)
-
 ;;; All-the-icons and mode-line
 ;;
 ;; Don't forget to install necessary fonts with M-x
