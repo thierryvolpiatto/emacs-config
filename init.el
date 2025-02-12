@@ -513,36 +513,6 @@ Restart works only on graphic display."
 (with-eval-after-load 'jka-cmpr-hook
   (auto-compression-mode 1))
 
-;;; Flymake
-;;
-(with-eval-after-load 'flymake
-  (if (> emacs-major-version 28)
-      (customize-set-variable 'flymake-mode-line-lighter "🪰")
-    (defvar flymake-mode-line-lighter "🪰")
-    (setq flymake-mode-line-title
-          `(:propertize
-            ,flymake-mode-line-lighter
-            mouse-face mode-line-highlight
-            help-echo
-            ,(lambda (&rest _)
-               (concat
-                (format "%s known backends\n" (hash-table-count flymake--state))
-                (format "%s running\n" (length (flymake-running-backends)))
-                (format "%s disabled\n" (length (flymake-disabled-backends)))
-                "mouse-1: Display minor mode menu\n"
-                "mouse-2: Show help for minor mode"))
-            keymap
-            ,(let ((map (make-sparse-keymap)))
-               (define-key map [mode-line down-mouse-1]
-                 flymake-menu)
-               (define-key map [mode-line down-mouse-3]
-                 flymake-menu)
-               (define-key map [mode-line mouse-2]
-                 (lambda ()
-                   (interactive)
-                   (describe-function 'flymake-mode)))
-               map)))))
-
 ;;; Shell script
 ;;
 (with-eval-after-load 'sh-script
@@ -552,11 +522,7 @@ Restart works only on graphic display."
                             "Sh "))
     (setq mode-line-process nil))
   (add-to-list 'auto-mode-alist '("\\.bashrc\\'" . sh-mode))
-  (add-hook 'sh-mode-hook 'flymake-mode)
   (add-hook 'sh-mode-hook #'tv:set-sh-script-mode-name)
-  ;; Use shellcheck as backend for flymake.
-  (autoload 'flymake-shellcheck-load "flymake-shellcheck")
-  (add-hook 'sh-mode-hook 'flymake-shellcheck-load)
   (define-key sh-mode-map (kbd "RET") 'newline-and-indent)
   (define-key sh-mode-map (kbd "C-h f") 'helm-info-bash))
 
