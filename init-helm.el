@@ -690,7 +690,8 @@ First call indent, second complete symbol, third complete fname."
 ;;; Helm-fd
 ;;
 (with-eval-after-load 'helm-fd
-  (setq helm-fd-executable "fdfind")
+  (setq helm-fd-executable "fdfind"
+        helm-fd-switches '("--hidden" "--type" "f" "--type" "d" "--color" "always"))
   (defun helm-fd-pa (candidate)
     (with-helm-buffer
       (helm-ff-kill-or-find-buffer-fname
