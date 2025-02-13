@@ -522,6 +522,7 @@ Restart works only on graphic display."
                             "Sh "))
     (setq mode-line-process nil))
   (add-to-list 'auto-mode-alist '("\\.bashrc\\'" . sh-mode))
+  (add-hook 'sh-mode-hook #'flycheck-mode)
   (add-hook 'sh-mode-hook #'tv:set-sh-script-mode-name)
   (define-key sh-mode-map (kbd "RET") 'newline-and-indent)
   (define-key sh-mode-map (kbd "C-h f") 'helm-info-bash))
@@ -1093,15 +1094,13 @@ With a prefix arg ask with completion which buffer to kill."
 (setq python-shell-interpreter "ipython3"
       python-shell-interpreter-args "-i --autoindent --simple-prompt --InteractiveShell.display_page=True"
       python-shell-prompt-regexp "In \\[[0-9]+\\]: "
-      python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
-      python-flymake-command "pyflakes3")
-(add-hook 'python-mode-hook 'flymake-mode) ;; Needs pyflakes
+      python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: ")
+(add-hook 'python-mode-hook 'flycheck-mode)
 (add-hook 'python-mode-hook
           (lambda ()
             (setq-local mode-name "py")
             (define-key python-mode-map (kbd "C-c i") 'helm-imenu)
-            (define-key python-mode-map (kbd "C-m") 'newline-and-indent)
-            (define-key python-mode-map (kbd "C-c '") 'flymake-goto-next-error)))
+            (define-key python-mode-map (kbd "C-m") 'newline-and-indent)))
 (defun tv:run-or-switch-to-python-shell ()
   (interactive)
   (let* ((buf      (ignore-errors (python-shell-get-process-or-error t)))
