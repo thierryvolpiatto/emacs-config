@@ -198,7 +198,7 @@
         helm-ff-allow-non-existing-file-at-point t
         helm-trash-remote-files                  t
         helm-dwim-target                         'next-window
-        helm-locate-recursive-dirs-command "fdfind --hidden --type d --glob '*%s*' %s"
+        helm-locate-recursive-dirs-command "locate -i -e --regex '^%s' '%s.*$'"
         helm-ff-eshell-unwanted-aliases '("sudo" "cdu" "man"
                                           "gpg-pubkey-export-armor" "gpg-secretkey-export-armor")
         helm-ff-drag-and-drop-default-directory "/home/thierry/Bureau/"
