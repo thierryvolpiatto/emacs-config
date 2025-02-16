@@ -259,6 +259,14 @@ Restart works only on graphic display."
     (move-beginning-of-line 1)))
 (global-set-key (kbd "C-a") #'tv:bol-or-back-to-indentation)
 
+(defun tv:view-echo-area-messages ()
+  (interactive)
+  (let ((win (get-buffer-window "*Messages*" 'visible)))
+    (if win (quit-window  nil win) (view-echo-area-messages))))
+
+(with-eval-after-load 'helm-core
+  (define-key global-map (kbd "C-h e") nil)
+  (helm-define-key-with-subkeys global-map (kbd "C-h e") ?e 'tv:view-echo-area-messages))
 
 ;;; Compatibility
 ;;
