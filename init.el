@@ -704,6 +704,18 @@ Restart works only on graphic display."
                   (delete (assoc "bookmark" all-the-icons-regexp-icon-alist)
                           all-the-icons-regexp-icon-alist))))
 
+;;; Nerd-icons
+;;
+(with-eval-after-load 'nerd-icons
+  (add-to-list 'nerd-icons-extension-icon-alist
+               '("avi" nerd-icons-faicon "nf-fa-film" :face nerd-icons-blue))
+  (add-to-list 'nerd-icons-extension-icon-alist
+               '("3gp" nerd-icons-faicon "nf-fa-film" :face nerd-icons-blue))
+  (add-to-list 'nerd-icons-extension-icon-alist
+               '("m4v" nerd-icons-faicon "nf-fa-film" :face nerd-icons-blue))
+  (add-to-list 'nerd-icons-extension-icon-alist
+               '("xz" nerd-icons-octicon "nf-oct-file_binary" :face nerd-icons-lmaroon)))
+
 ;;; Time
 ;;
 (with-eval-after-load 'time
