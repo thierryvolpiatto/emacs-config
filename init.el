@@ -1141,9 +1141,11 @@ With a prefix arg ask with completion which buffer to kill."
   (setq tramp-verbose 0)
   ;; (setq tramp-verbose 10 tramp-debug-to-file t helm-tramp-verbose 10)
   ;; No messages
-  (setq tramp-message-show-message nil)
+  (when (boundp 'tramp-message-show-message)
+    (setq tramp-message-show-message nil))
 
-  (setq tramp-use-ssh-controlmaster-options nil)
+  (when (< emacs-major-version 30)
+    (setq tramp-use-ssh-controlmaster-options nil))
 
   (when (boundp 'tramp-allow-unsafe-temporary-files)
     (setq tramp-allow-unsafe-temporary-files t))
@@ -1151,7 +1153,7 @@ With a prefix arg ask with completion which buffer to kill."
   (when (boundp 'tramp-use-scp-direct-remote-copying)
     (setq tramp-use-scp-direct-remote-copying t))
 
-  ;; Allow connecting as root on all remote Linux machines except this one.
+  ;;   Allow connecting as root on all remote Linux machines except this one.
   ;; Use e.g /sudo:host:/path
   (add-to-list 'tramp-default-proxies-alist
                '("\\`thievol\\'" "\\`root\\'" "/ssh:%h:"))
