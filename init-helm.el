@@ -91,8 +91,6 @@
         (execute-extended-command)
         (shell) ; Fixed by c04b867a but completion is useless here.
         (cancel-debug-on-entry)
-        (org-capture . helm-org-completing-read-tags)
-        (org-set-tags . helm-org-completing-read-tags)
         (dired-do-rename . helm-read-file-name-handler-1)
         (dired-do-copy . helm-read-file-name-handler-1)
         (dired-do-symlink . helm-read-file-name-handler-1)
@@ -205,8 +203,6 @@
         helm-file-name-history-hide-deleted t
         helm-ff-ignore-following-on-directory t
         helm-rsync-progress-bar-function #'helm-rsync-svg-progress-bar)
-  
-  (customize-set-variable 'helm-ff-nohighlight-matches nil)
   
   (require 'image-dired)
   (setq image-dired-thumbnail-storage 'standard

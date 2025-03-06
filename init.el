@@ -1981,6 +1981,12 @@ mode temporarily."
 ;;
 (autoload 'colorcomp "colorcomp" nil t)
 
+;;; OSM
+;;
+(with-eval-after-load 'osm
+  (setq osm-home '(44.66 6.62 12)) ; Mont-Dauphin
+  (setq osm-server 'opentopomap))
+
 ;;; Load time
 ;;
 (tv:emacs-load-time)
