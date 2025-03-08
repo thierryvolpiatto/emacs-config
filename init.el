@@ -1742,7 +1742,7 @@ detected."
 
 ;;; Macro expand
 ;;
-;; Installed in ~/elisp. Keep this version latest needs compat package.
+;; Installed in ~/elisp. Keep this version as latest needs compat package.
 (autoload 'macrostep-expand "macrostep.el" nil t)
 (define-key lisp-interaction-mode-map (kbd "M-e") 'macrostep-expand)
 (define-key emacs-lisp-mode-map (kbd "M-e") 'macrostep-expand)
