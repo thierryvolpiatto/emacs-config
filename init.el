@@ -1816,8 +1816,10 @@ detected."
 
 ;;; modify `exchange-point-and-mark' so that it doesn't activate mark
 ;;  when it is not already active.
-(defun tv:exchange-point-and-mark (&optional arg)
-  "Put the mark where point is now, and point where the mark is now.
+(if (boundp 'exchange-point-and-mark-highlight-region) ; Emacs-31+
+    (setq exchange-point-and-mark-highlight-region nil)
+  (defun tv:exchange-point-and-mark (&optional arg)
+    "Put the mark where point is now, and point where the mark is now.
 
 If Transient Mark mode is on, a prefix ARG deactivates the mark
 if it is active and activates it if it is inactive, without prefix ARG
@@ -1826,21 +1828,20 @@ doesn't deactivate it if it was active.
 
 If Transient Mark mode is off, a prefix ARG enables Transient Mark
 mode temporarily."
-  (interactive "P")
-  (let ((omark (mark t))
-        (region-active (region-active-p))
-	(temp-highlight (eq (car-safe transient-mark-mode) 'only)))
-    (if (null omark)
+    (interactive "P")
+    (let ((omark (mark t))
+          (region-active (region-active-p))
+	  (temp-highlight (eq (car-safe transient-mark-mode) 'only)))
+      (when (null omark)
         (user-error "No mark set in this buffer"))
-    (set-mark (point))
-    (goto-char omark)
-    (or temp-highlight
-        (cond ((xor arg (not region-active))
-	       (deactivate-mark))
-	      (t (activate-mark))))
-    nil))
-(global-unset-key (kbd "C-x C-x"))
-(global-set-key (kbd "C-x C-x") 'tv:exchange-point-and-mark)
+      (set-mark (point))
+      (goto-char omark)
+      (cond (temp-highlight)
+            ((xor arg (not region-active))
+	     (deactivate-mark))
+	    (t (activate-mark)))
+      nil))
+  (advice-add 'exchange-point-and-mark :override #'tv:exchange-point-and-mark))
 
 ;;; registers
 ;;
