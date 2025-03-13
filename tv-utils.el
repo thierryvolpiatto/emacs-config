@@ -730,16 +730,24 @@ MINUTES SECONDS."
     ;; Same as (/ (* ms 60 60) 1000).
     (* mps 3.6)))
 
-(defun tv:metre-heure (hours minutes seconds deniv)
+(defun tv:metre-heure (hours minutes seconds deniv &optional arg)
   "Calculate speed in m/h.
-The speed is calculated for a distance DENIV given in meters travelled in HOURS
-MINUTES SECONDS."
+The speed is calculated for a distance DENIV given in meters travelled
+in HOURS MINUTES SECONDS."
+  (interactive (list (read-number "Heures: " 0)
+                     (read-number "Minutes: " 0)
+                     (read-number "Secondes: " 0)
+                     (read-number "Dénivelé (en mètres): " 0)
+                     "\np"))
   (let* ((s   (+ (float seconds)
                  (* 60 (float minutes))
                  (* (* (float hours) 60) 60)))
          (m   (float deniv))
          (mps (/ m s)))
-    (* mps 3600)))
+    (if arg
+        (message "%s en %sh%sm%ss => %sm/h"
+                 deniv hours minutes seconds (floor (* mps 3600)))
+      (* mps 3600))))
 
 
 (provide 'tv-utils)
