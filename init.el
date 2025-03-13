@@ -1017,6 +1017,7 @@ With a prefix arg ask with completion which buffer to kill."
 ;; again from the same buffer.  Each buffer keeps its own winconf.
 (defvar zoom-window-config nil)
 (defun zoom-window ()
+  "Zoom window."
   (interactive)
   (let ((winconf (buffer-local-value 'zoom-window-config (current-buffer))))
     (cond ((and (one-window-p) (null winconf))
