@@ -384,7 +384,7 @@ new directory."
                 do (async-byte-compile-file file)))
      source
      'helm/ff-candidates-lisp-p)
-    ;; Recover file from its autoload file
+    ;; Recover file from its autosave file
     (helm-source-add-action-to-source-if
      "Recover file"
      (lambda (candidate)
@@ -486,6 +486,7 @@ new directory."
      (lambda (candidate)
        (member (file-name-extension candidate) '("jpg" "jpeg" "png")))
      3)
+    ;; Csv to ledger
     (helm-source-add-action-to-source-if
      "Csv2Ledger"
      'helm-ff-csv2ledger
@@ -493,7 +494,8 @@ new directory."
      (lambda (candidate)
        (member (file-name-extension candidate) '("csv")))
      3))
-  
+
+  ;; Finally enable Icons in HFF.
   (helm-ff-icon-mode 1))
 
 ;;; Helm-dictionary

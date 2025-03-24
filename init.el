@@ -535,11 +535,6 @@ Restart works only on graphic display."
   (define-key sh-mode-map (kbd "RET") 'newline-and-indent)
   (define-key sh-mode-map (kbd "C-h f") 'helm-info-bash))
 
-;;; Auto-conf
-;;
-(add-to-list 'auto-mode-alist '("\\.ac\\'\\|configure\\.in\\'" . autoconf-mode))
-(add-to-list 'auto-mode-alist '("\\.at\\'" . autotest-mode))
-
 ;;; Winner
 ;;
 (setq winner-boring-buffers '("*Completions*"
@@ -1309,7 +1304,7 @@ With a prefix arg ask with completion which buffer to kill."
   (and (boundp 'bookmark-bmenu-use-header-line)
        (setq bookmark-bmenu-use-header-line nil))
   (setq bookmark-watch-bookmark-file nil)
-  ;; This for unknow reasons add a orange point in fringe when
+  ;; This for unknown reasons adds a orange point in fringe when
   ;; switching to HFF from a bookmark and then quitting, not sure
   ;; what this feature is for and what the benefit is, so disable it.
   (and (boundp 'bookmark-fringe-mark)
