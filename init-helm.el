@@ -357,17 +357,12 @@ new directory."
   ;; Add actions to `helm-source-find-files' IF:
   (cl-defmethod helm-setup-user-source ((source helm-source-ffiles))
     "Adds additional actions and settings to `helm-find-files'.
-    - Byte compile file(s) async
-    - Byte recompile directory async
     - Open info file
     - Patch region on directory
     - Open in emms
     - Update directory autoloads
     - Recoll directory creation
-    - Epa encrypt file
-    - Change background
-    - Csv2ledger
-    - Restore backup files"
+    - Csv2ledger"
     (helm-aif (slot-value source 'match)
         (setf (slot-value source 'match)
               (append it
@@ -376,39 +371,6 @@ new directory."
                                                 (char-fold-to-regexp
                                                  (helm-basename helm-input)))
                                         candidate))))))
-    ;; Byte compile file async
-    (helm-source-add-action-to-source-if
-     "Byte compile file(s) async"
-     (lambda (_candidate)
-       (cl-loop for file in (helm-marked-candidates)
-                do (async-byte-compile-file file)))
-     source
-     'helm/ff-candidates-lisp-p)
-    ;; Recover file from its autosave file
-    (helm-source-add-action-to-source-if
-     "Recover file"
-     (lambda (candidate)
-       (recover-file candidate))
-     source
-     (lambda (candidate)
-       (file-exists-p (expand-file-name
-                       (format "#%s#" (helm-basename candidate))
-                       (helm-basedir candidate)))))
-    ;; Restore backup files
-    (helm-source-add-action-to-source-if
-     "Restore backup file(s)"
-     #'helm-restore-backups
-     source
-     (lambda (_candidate)
-       (cl-loop for file in (helm-marked-candidates)
-                always (string-match "\\(?:\\`\\([!]\\)[^!]*\\1.*\\)\\|\\(?:~\\'\\)"
-                                     (helm-basename file)))))
-    ;; Byte recompile dir async
-    (helm-source-add-action-to-source-if
-     "Byte recompile directory (async)"
-     'async-byte-recompile-directory
-     source
-     'file-directory-p)
     ;; Info on .info files
     (helm-source-add-action-to-source-if
      "Open info file"
@@ -447,15 +409,6 @@ new directory."
                  nil ".*\\.\\(mp3\\|ogg\\|flac\\)$" t))
            (string-match-p ".*\\.\\(mp3\\|ogg\\|flac\\)$" candidate)))
      1)
-    ;; update-directory-autoloads
-    (helm-source-add-action-to-source-if
-     "Update directory autoloads"
-     #'helm/update-directory-autoloads
-     source
-     (lambda (candidate)
-       (and (file-directory-p candidate)
-            (string= (helm-basename candidate) ".")))
-     1)
     ;; Setup recoll dirs
     (when (executable-find "recoll")
       (helm-source-add-action-to-source-if
@@ -464,28 +417,6 @@ new directory."
        source
        'file-directory-p
        3))
-    ;; Encrypt file
-    (helm-source-add-action-to-source-if
-     "Epa encrypt file"
-     (lambda (candidate)
-       (require 'epg) (require 'epa)
-       (epa-encrypt-file candidate
-                         (helm :sources (helm-build-sync-source
-                                            "Select recipient for encryption: "
-                                          :persistent-action 'ignore
-                                          :candidates 'helm-epa-get-key-list))))
-     source
-     'file-exists-p
-     3)
-    ;; Background
-    (helm-source-add-action-to-source-if
-     "Change background"
-     (if (fboundp 'image-dired-wallpaper-set)
-         #'image-dired-wallpaper-set #'tv:change-xfce-background)
-     source
-     (lambda (candidate)
-       (member (file-name-extension candidate) '("jpg" "jpeg" "png")))
-     3)
     ;; Csv to ledger
     (helm-source-add-action-to-source-if
      "Csv2Ledger"
