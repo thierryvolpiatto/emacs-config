@@ -709,6 +709,11 @@ First call indent, second complete symbol, third complete fname."
         helm-mu-contacts-ignore-candidates-regexp
         "\\`\\(reply.*reply\\.github\\.com\\)\\|\\(no[.-]?reply\\|ne-pas-repondre\\)"))
 
+;;; helm-packages
+;;
+(with-eval-after-load 'helm-packages
+  (setq helm-packages-isolate-fn #'helm-packages-isolate-1))
+
 ;;; Helm-x-icons
 ;;
 ;; (with-eval-after-load 'helm-x-icons
