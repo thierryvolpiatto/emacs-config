@@ -1354,9 +1354,6 @@ With a prefix arg ask with completion which buffer to kill."
 (customize-set-variable 'git-gutter:update-interval 1)
 ;; Always a 0 width margin when no changes.
 (setq git-gutter:hide-gutter t)
-;; Not sure why I would like to have git-gutter runs when listing
-;; buffers or such, did I miss something?
-(setq git-gutter:update-commands nil)
 (global-set-key [remap vc-dir] 'git-gutter:popup-hunk)
 ;; Stage current hunk
 (global-set-key [remap vc-create-tag] 'git-gutter:stage-hunk)
