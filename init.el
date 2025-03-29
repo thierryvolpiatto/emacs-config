@@ -466,6 +466,8 @@ Restart works only on graphic display."
 
 ;;; Help
 ;;
+(with-eval-after-load 'help-fns
+  (setq help-enable-completion-autoload nil))
 ;; Fix curly quotes in emacs-25
 (when (boundp 'text-quoting-style)
   (setq text-quoting-style 'grave))
@@ -1044,6 +1046,14 @@ With a prefix arg ask with completion which buffer to kill."
   (when (boundp 'dired-vc-rename-file)
     (setq dired-vc-rename-file t))
   (require 'dired-extension))
+
+;;; Image dired
+;;
+(with-eval-after-load 'image-dired
+  (setq image-dired-thumbnail-storage 'standard
+        ;; Be consistent with emacs-29.
+        image-dired-cmd-pngnq-program "pngquant"
+        image-dired-cmd-pngnq-options '("--ext" "-nq8.png" "%t")))
 
 ;;; Ledger
 ;;

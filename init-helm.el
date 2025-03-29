@@ -68,9 +68,6 @@
 
 ;;; Helm-mode (it is loading nearly everything)
 ;;
-(with-eval-after-load 'help-fns
-  (setq help-enable-completion-autoload nil))
-
 (add-hook 'helm-mode-hook
           (lambda ()
             (setq completion-styles
@@ -203,15 +200,7 @@
         helm-file-name-history-hide-deleted t
         helm-ff-ignore-following-on-directory t
         helm-rsync-progress-bar-function #'helm-rsync-svg-progress-bar)
-  
-  (require 'image-dired)
-  (setq image-dired-thumbnail-storage 'standard
-        ;; Be consistent with emacs-29.
-        image-dired-cmd-pngnq-program "pngquant"
-        image-dired-cmd-pngnq-options '("--ext" "-nq8.png" "%t"))
-  
-  (setq helm-ff-edit-marked-files-fn #'helm-ff-wfnames)
-  
+
   (defun helm-ff-dragon (files)
     "Create a small window with FILES ready to drag and drop.
 Use this to drop files on externals applications or desktop.
@@ -227,20 +216,6 @@ Needs `dragon' executable: https://github.com/mwh/dragon."
   (define-key helm-read-file-map (kbd "RET") 'helm-ff-RET)
   (define-key helm-find-files-map (kbd "C-i") nil)
   (define-key helm-find-files-map (kbd "C-d") 'helm-ff-persistent-delete)
-  
-  (defun helm/insert-date-in-minibuffer ()
-    (interactive)
-    (with-selected-window (or (active-minibuffer-window)
-                              (minibuffer-window))
-      (unless (or (helm-follow-mode-p)
-                  helm--temp-follow-flag)
-        (insert (format-time-string "%Y-%m-%d-%H:%M")))))
-  (define-key helm-find-files-map (kbd "C-c y") 'helm/insert-date-in-minibuffer)
-  (define-key helm-read-file-map (kbd "C-c y") 'helm/insert-date-in-minibuffer)
-  
-  (defun helm/ff-candidates-lisp-p (candidate)
-    (cl-loop for cand in (helm-marked-candidates)
-             always (string-match "\\.el$" cand)))
   
   (defun helm-ff-recoll-index-directory (directory)
     "Create a recoll index directory from DIRECTORY.
@@ -267,92 +242,9 @@ new directory."
       (cl-loop for dir in dirs
                when (file-directory-p dir)
                do (helm-ff-recoll-index-directory dir))))
-  
-  (defun tv:change-xfce-background (file)
-    (let* ((screen  (getenv "DISPLAY"))
-           (monitor (shell-command-to-string
-                     "echo -n $(xrandr | awk '/\\w* connected/ {print $1}')"))
-           (desktop (and (display-graphic-p)
-                         (x-window-property "_NET_CURRENT_DESKTOP" nil "CARDINAL" 0 nil t)))
-           (prop    (format "/backdrop/screen%s/monitor%s/workspace%s/last-image"
-                            (substring screen (1- (length screen)))
-                            monitor
-                            (or desktop 0)))
-           (proc    (apply #'start-process "set background" nil "xfconf-query"
-                           `("-c" "xfce4-desktop" "-p" ,prop "-s" ,file))))
-      (set-process-sentinel
-       proc (lambda (_proc event)
-              (if (string= event "finished\n")
-                  (message "Background changed successfully to %s" (helm-basename file))
-                (message "Failed to change background"))))))
 
   (defun helm-ff-csv2ledger (candidate)
     (csv2ledger "Socgen" candidate "/home/thierry/finance/ledger.dat"))
-  
-  (defun helm/update-directory-autoloads (candidate)
-    (let ((default-directory helm-ff-default-directory)
-          (file
-           (read-file-name "Write autoload definitions to file: "
-                           helm-ff-default-directory
-                           nil nil nil
-                           (lambda (f)
-                             (string-match "autoloads\\|loaddefs" f)))))
-      (if (fboundp 'loaddefs-generate)
-          (loaddefs-generate default-directory file)
-        (let ((generated-autoload-file file))
-          (update-directory-autoloads default-directory)))))
-
-  (defun helm-restore-backups (_candidate)
-    (let ((mkd (helm-marked-candidates))
-          (copied 0)
-          ovw)
-      (cl-dolist (file mkd)
-        (let (dest)
-          (when (string-match "\\(?:\\`\\([!]\\)[^!]*\\1.*\\)\\|\\(?:~\\'\\)"
-                              (helm-basename file))
-            (setq dest (helm-aand (replace-regexp-in-string
-                                   "\\.~[[:digit:]]*~?"
-                                   "" (helm-basename file))
-                                  (helm--normalize-backup-name it)
-                                  (if (string-match "\\`/" it)
-                                      it
-                                    ;; If basename doesn't contain now
-                                    ;; "/", that's mean it was a backup file
-                                    ;; stored in current directory, just
-                                    ;; expand it to this directory.
-                                    (expand-file-name it helm-ff-default-directory))))
-            (if (and (file-exists-p dest) (null ovw))
-                (helm-acase (helm-read-answer
-                             (format "Overwrite `%s' (answer [y,n,!,q])? " dest)
-                             '("y" "n" "!" "q"))
-                  ("y" (cl-incf copied) (copy-file file dest t t t t))
-                  ("n" (ignore))
-                  ("!" (setq ovw t) (cl-incf copied) (copy-file file dest t t t t))
-                  ("q" (setq copied nil) (cl-return (message "Abort restoring files"))))
-              (cl-incf copied)
-              (copy-file file dest t t t t)))))
-      (when (numberp copied)
-        (message "(%s/%s) files copied" copied (length mkd)))))
-
-  (defun helm--normalize-backup-name (fname)
-    "Normalize backup FNAME to its original name."
-    ;; When Emacs build a backup filename for the backup directory it
-    ;; replace "/" by "!" in the basedir of file and double the "!" in
-    ;; the basename, this is done by `make-backup-file-name-1'.  We want
-    ;; to replace only the "!" in the basedir part of FNAME.
-    (with-temp-buffer
-      (insert fname)
-      (goto-char (point-min))
-      (save-excursion
-        (when (looking-at "!") (replace-match "/"))
-        (while (re-search-forward "[^!]\\([!]\\)[^!]" nil t)
-          (replace-match "/" nil nil nil 1)))
-      (let ((count 0) rep)
-        (while (re-search-forward "!" nil t)
-          (cl-incf count))
-        (setq rep (make-string (/ count 2) ?!))
-        (replace-regexp-in-string "[!]+" rep (buffer-string)))))
-
   
   ;; Add actions to `helm-source-find-files' IF:
   (cl-defmethod helm-setup-user-source ((source helm-source-ffiles))
@@ -360,7 +252,6 @@ new directory."
     - Open info file
     - Patch region on directory
     - Open in emms
-    - Update directory autoloads
     - Recoll directory creation
     - Csv2ledger"
     (helm-aif (slot-value source 'match)
