@@ -1957,22 +1957,13 @@ mode temporarily."
 ;;
 (with-eval-after-load 'bm
   (setq bm-highlight-style 'bm-highlight-only-fringe
-        bm-cycle-all-buffers t)
-  (setq-default bm-buffer-persistence t))
+        bm-cycle-all-buffers t))
 
 (autoload 'bm-toggle "bm" nil t) ; Installed in ~/elisp.
 (autoload 'bm-next "bm" t)
 (autoload 'bm-previous "bm" t)
 (autoload 'bm-buffer-restore "bm" t)
 (autoload 'bm-repository-load "bm")
-
-(add-hook 'find-file-hooks   #'bm-buffer-restore)
-(add-hook 'after-revert-hook #'bm-buffer-restore)
-(add-hook 'after-init-hook #'bm-repository-load)
-(add-hook 'after-save-hook #'bm-buffer-save)
-(add-hook 'kill-emacs-hook (lambda ()
-                             (bm-buffer-save-all)
-                             (bm-repository-save)))
 
 (global-set-key (kbd "C-!")   'bm-toggle)
 (global-set-key (kbd "<f12>") 'helm-bm) ; autoloaded in init-helm.
