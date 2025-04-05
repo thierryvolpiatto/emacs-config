@@ -1816,6 +1816,8 @@ detected."
 ;;; Rainbow-mode (installed in elisp)
 ;;
 (autoload 'rainbow-mode "rainbow-mode" nil t)
+(with-eval-after-load 'rainbow-mode
+  (setq rainbow-r-colors t))
 
 ;;; modify `exchange-point-and-mark' so that it doesn't activate mark
 ;;  when it is not already active.
