@@ -9,14 +9,6 @@
 (define-key ledger-mode-map (kbd "C-c a l") 'ledger-align-device)
 (defvar ledger-default-device "€")
 
-;; «Redefine-ledger-reconcile-visit» (to ".Redefine-ledger-reconcile-visit")
-(defun ledger-reconcile-visit ()
-  (interactive)
-  (let ((where (get-text-property (point) 'where)))
-    (when (equal (car where) "/dev/stdin")
-      (switch-to-buffer-other-window ledger-buf)
-      (goto-char (cdr where)))))
-
 ;; «Align-euro-device» (to ".Align-euro-device")
 ;;;###autoload
 (defun ledger-align-device (&optional column)
@@ -76,7 +68,7 @@
         (let* ((dt     (match-string-no-properties 0))
                (split  (reverse (split-string dt "/")))
                (new-dt (mapconcat 'identity split "/")))
-          (delete-region (point-at-bol) (point))
+          (delete-region (pos-bol) (point))
           (insert new-dt))))))
 
 ;;;###autoload
@@ -189,9 +181,8 @@ If entries are already pointed, skip."
                                                        (string= (file-name-extension f) "dat"))))))
   (let ((ibuf (find-file-noselect infile))
         (obuf (find-file-noselect ofile))
-        curpos beg ov)
+        beg ov)
     (with-current-buffer obuf
-      (setq curpos (point))
       (goto-char (point-max))
       (setq beg (point))
       (text-mode))
@@ -199,13 +190,12 @@ If entries are already pointed, skip."
       (save-excursion
         (goto-char (point-min))
         (while (re-search-forward "^[0-9]+/" nil t)
-          (let* ((split (split-string (buffer-substring (point-at-bol) (point-at-eol)) ";" t))
+          (let* ((split (split-string (buffer-substring (pos-bol) (pos-eol)) ";" t))
                  (date (car split))
                  (payee (nth 2 split))
                  (amountstr (replace-regexp-in-string "," "." (nth 3 split)))
                  (amountnum (string-to-number amountstr))
-                 (deb (< amountnum 0))
-                 (cred (> amountnum 0)))
+                 (deb (< amountnum 0)))
             (setq amountstr (replace-regexp-in-string "-" "" amountstr))
             (with-current-buffer obuf
               (save-excursion 

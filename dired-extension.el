@@ -1,4 +1,4 @@
-;;; dired-extension.el -- improvements for dired
+;;; dired-extension.el -- improvements for dired -*- lexical-binding: t -*-
 
 ;	$Id: dired-extension.el,v 1.36 2010/05/30 07:03:33 thierry Exp thierry $	
 
