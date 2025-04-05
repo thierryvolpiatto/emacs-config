@@ -5,6 +5,7 @@
 (require 'help)
 (require 'help-fns)
 (require 'pp)
+(eval-when-compile (require 'cl-lib))
 
 (defvar describe-variable--offset-value 800)
 
