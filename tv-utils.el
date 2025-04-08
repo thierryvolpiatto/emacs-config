@@ -637,10 +637,10 @@ Used by the Mailto script used from firefox."
     (save-excursion
       (goto-char (point-min))
       (while (not (eobp))
-        (when-let ((ext (file-name-extension
-                         (buffer-substring-no-properties
-                          (point-at-bol) (point-at-eol)))))
-          (unless (member ext exts)
+        (let ((ext (file-name-extension
+                    (buffer-substring-no-properties
+                     (point-at-bol) (point-at-eol)))))
+          (when (and ext (not (member ext exts)))
             (push ext exts)))
         (forward-line 1)))
     exts))
@@ -662,16 +662,16 @@ With a prefix arg prompt to edit file extensions."
   (interactive "P")
   (cl-assert (memq major-mode '(wfnames-mode wdired-mode)) nil
              "No filenames to modify in this buffer")
-  (let* ((defs    (tv:collect-file-exts-in-buffer))
+  (let* ((exts    (tv:collect-file-exts-in-buffer))
          (strings (and edit-exts
                        (read-from-minibuffer
                         "Strings: "
                         nil nil nil nil
-                        (mapconcat #'identity defs " ")))))
-    (when (or defs (and strings (not (string= strings ""))))
+                        (mapconcat #'identity exts " ")))))
+    (when (or exts (and strings (not (string= strings ""))))
       (tv:normalize-fnames-1 (if strings
                                  (split-string strings)
-                               defs)))))
+                               exts)))))
 
 ;; This template needs the lettre package
 ;; included in texlive-latex-extra package.
