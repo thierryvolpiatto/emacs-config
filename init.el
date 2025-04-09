@@ -41,7 +41,9 @@
 
 ;;; Emacs customize own file
 ;;
-(setq custom-file "~/.emacs.d/.emacs-custom.el")
+(setq custom-file (if (<= emacs-major-version 30)
+                      "~/.emacs.d/.emacs-custom.el"
+                    "~/.emacs.d/.emacs-custom-31.el"))
 (load custom-file)
 
 ;;; VC
