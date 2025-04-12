@@ -5,8 +5,6 @@
 
 ;;; Code:
 
-(require 'gnus-and-mu4e)
-
 ;; Don't read/write to the .newrc file, go straight to the *.eld.
 (setq gnus-save-newsrc-file nil
       gnus-read-newsrc-file nil)

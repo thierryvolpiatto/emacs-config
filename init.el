@@ -1952,6 +1952,7 @@ mode temporarily."
 ;;
 (global-set-key (kbd "<f9>") #'gnus)
 (setq gnus-init-file "~/.emacs.d/.gnus.el")
+(require 'gnus-and-mu4e)
 (addressbook-turn-on-mail-completion)
 (with-eval-after-load 'gnus-sum
   (define-key gnus-summary-mode-map (kbd "M-q") 'gnus-article-fill-long-lines)
