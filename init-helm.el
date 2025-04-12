@@ -281,8 +281,9 @@ new directory."
      source
      (lambda (_candidate)
        (with-helm-current-buffer
-         (and (or (eq major-mode 'mu4e-view-mode)
-                  (eq major-mode 'diff-mode))
+         (and (or (eq major-mode 'gnus-article-mode)
+                  (eq major-mode 'diff-mode)
+                  (eq major-mode 'mu4e-view-mode))
               (region-active-p))))
      1)
     ;; Emms
@@ -527,11 +528,11 @@ First call indent, second complete symbol, third complete fname."
 
 ;;; Helm-mu
 ;;
-(with-eval-after-load 'helm-mu
-  (setq helm-mu-contacts-after "01-Jan-2020 00:00:01"
-        helm-mu-contacts-personal t
-        helm-mu-contacts-ignore-candidates-regexp
-        "\\`\\(reply.*reply\\.github\\.com\\)\\|\\(no[.-]?reply\\|ne-pas-repondre\\)"))
+;; (with-eval-after-load 'helm-mu
+;;   (setq helm-mu-contacts-after "01-Jan-2020 00:00:01"
+;;         helm-mu-contacts-personal t
+;;         helm-mu-contacts-ignore-candidates-regexp
+;;         "\\`\\(reply.*reply\\.github\\.com\\)\\|\\(no[.-]?reply\\|ne-pas-repondre\\)"))
 
 ;;; helm-packages
 ;;
@@ -599,12 +600,6 @@ First call indent, second complete symbol, third complete fname."
 ;; (setq tab-always-indent 'complete)
 
 ;; (define-key global-map (kbd "<backtab>") 'completion-at-point)
-
-;; Avoid hitting forbidden directories when using find.
-(add-to-list 'completion-ignored-extensions ".gvfs/")
-(add-to-list 'completion-ignored-extensions ".dbus/")
-(add-to-list 'completion-ignored-extensions "dconf/")
-
 
 (provide 'init-helm)
 

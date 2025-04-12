@@ -356,6 +356,18 @@ try this wash."
 (with-eval-after-load 'mu4e-vars
   (set-face-attribute 'mu4e-region-code nil :extend t))
 
+(defun tv:advice--mu4e--draft-set-friendly-buffer-name ()
+  "Use some friendly name for this draft buffer."
+  (let* ((subj (message-field-value "subject"))
+         (subj (if (or (not subj) (string-match "^[:blank:]*$" subj))
+                   "No subject"  subj)))
+    (rename-buffer (generate-new-buffer-name
+                    (truncate-string-to-width
+                     subj mu4e--draft-buffer-max-name-length 0 nil t))
+                   (buffer-name))))
+(advice-add 'mu4e--draft-set-friendly-buffer-name
+            :override #'tv:advice--mu4e--draft-set-friendly-buffer-name)
+
 (provide 'tv-mu4e-config)
 
 ;;; tv-mu4e-config.el ends here

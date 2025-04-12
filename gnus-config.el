@@ -24,34 +24,34 @@
 ;; /etc/dovecot/conf.d/10-mail.conf:
 ;; mail_location = maildir:~/Maildir:LAYOUT=fs
 
-(setq gnus-select-method
-      '(nnimap "Posteo"
-        (nnimap-address "localhost")
-        (nnimap-stream network)
-        (nnimap-authenticator login)))
+;; (setq gnus-select-method
+;;       '(nnimap "Posteo"
+;;         (nnimap-address "localhost")
+;;         (nnimap-stream network)
+;;         (nnimap-authenticator login)))
+
+(setq gnus-select-method '(nntp "news.gmane.io"))
 
 ;; 2) The nnmaildir config: Use offlineimap to feed ~/.nnmaildir
 ;; The ~/.offlineimaprc used by offlineimap command should point to
 ;; ~/.nnmaildir. Looks nice but too slow to be used.
 ;; (setq gnus-select-method '(nnmaildir "Posteo" (directory "~/.nnmaildir")))
 
-(setq gnus-ignored-from-addresses "thievol@posteo\\.net")
-
-(setq gnus-thread-sort-functions '((not gnus-thread-sort-by-number)))
-
 ;; 3) the online method with nnimap (no mails offline):
 
 ;; Secondary methods are mails and possibly other nntp servers.
-;; (setq gnus-secondary-select-methods '(;; Add as many mail account as needed with a label.
-;;                                       ;; Add then an entry in .authinfo:
-;;                                       ;; machine label port xxx login xxx password xxx
-;;                                       (nnimap "posteo" ; Label for reference in .authinfo for machine name.
-;;                                        (nnimap-address "posteo.de")
-;;                                        ;; Don't load mime parts when receiving mail, only text part, use
-;;                                        ;; instead `A-C' to see entire mail.
-;;                                        (nnimap-fetch-partial-articles "text/"))))
+(setq gnus-secondary-select-methods '(;; Add as many mail account as needed with a label.
+                                      ;; Add then an entry in .authinfo:
+                                      ;; machine label port xxx login xxx password xxx
+                                      (nnimap "posteo" ; Label for reference in .authinfo for machine name.
+                                       (nnimap-address "posteo.de")
+                                       ;; Don't load mime parts when receiving mail, only text part, use
+                                       ;; instead `A-C' to see entire mail.
+                                       (nnimap-fetch-partial-articles "text/"))))
 
-(setq gnus-secondary-select-methods '((nntp "news.gmane.io")))
+
+(setq gnus-ignored-from-addresses "thievol@posteo\\.net")
+(setq gnus-thread-sort-functions '((not gnus-thread-sort-by-number)))
 
 ;; Change "From" field according to "To" field on reply.
 (setq gnus-posting-styles

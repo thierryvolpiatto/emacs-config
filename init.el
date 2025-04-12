@@ -1394,31 +1394,32 @@ With a prefix arg ask with completion which buffer to kill."
 ;;
 (autoload 'addressbook-turn-on-mail-completion "addressbook-bookmark" nil t)
 (autoload 'addressbook-bookmark-set            "addressbook-bookmark" nil t)
-(autoload 'addressbook-mu4e-bookmark           "addressbook-bookmark" nil t)
+;; (autoload 'addressbook-mu4e-bookmark           "addressbook-bookmark" nil t)
+(autoload 'addressbook-gnus-sum-bookmark       "addressbook-bookmark" nil t)
 (autoload 'addressbook-bmenu-edit              "addressbook-bookmark" nil t)
 (autoload 'addressbook-bookmark-jump           "addressbook-bookmark" nil t)
 
 ;;; Mu4e
 ;;
-(autoload 'mu4e "mu4e" nil t)
-(with-eval-after-load 'mu4e
-  (require 'tv-mu4e-config)
-  (addressbook-turn-on-mail-completion)
-  ;; mu4e--compose-setup-completion is called in mu4e-compose-mode and
-  ;; remove unconditionaly message-completion-function from CAPF!!!
-  (add-hook 'mu4e-compose-mode-hook
-            (lambda ()
-              (add-hook 'completion-at-point-functions
-                        #'message-completion-function nil t))))
-(global-set-key (kbd "<f8>") 'mu4e)
-;; Enable Mu4e when using C-x m before Mu4e has been started.
-(defun tv:advice--compose-mail (old--fn &rest args)
-  (unless (and (fboundp 'mu4e-running-p)
-               (mu4e-running-p))
-    (mu4e t)
-    (sit-for 1)) ; Let the time to the server to start.
-  (apply old--fn args))
-(advice-add 'compose-mail :around #'tv:advice--compose-mail)
+;; (autoload 'mu4e "mu4e" nil t)
+;; (with-eval-after-load 'mu4e
+;;   (require 'tv-mu4e-config)
+;;   (addressbook-turn-on-mail-completion)
+;;   ;; mu4e--compose-setup-completion is called in mu4e-compose-mode and
+;;   ;; remove unconditionaly message-completion-function from CAPF!!!
+;;   (add-hook 'mu4e-compose-mode-hook
+;;             (lambda ()
+;;               (add-hook 'completion-at-point-functions
+;;                         #'message-completion-function nil t))))
+;; (global-set-key (kbd "<f8>") 'mu4e)
+;; ;; Enable Mu4e when using C-x m before Mu4e has been started.
+;; (defun tv:advice--compose-mail (old--fn &rest args)
+;;   (unless (and (fboundp 'mu4e-running-p)
+;;                (mu4e-running-p))
+;;     (mu4e t)
+;;     (sit-for 1)) ; Let the time to the server to start.
+;;   (apply old--fn args))
+;; (advice-add 'compose-mail :around #'tv:advice--compose-mail)
 
 ;;; Auth-source
 ;;
@@ -1951,6 +1952,7 @@ mode temporarily."
 ;;
 (global-set-key (kbd "<f9>") #'gnus)
 (setq gnus-init-file "~/.emacs.d/.gnus.el")
+(addressbook-turn-on-mail-completion)
 (with-eval-after-load 'gnus-sum
   (define-key gnus-summary-mode-map (kbd "M-q") 'gnus-article-fill-long-lines)
   (define-key gnus-summary-mode-map (kbd "N")   'gnus-summary-next-unread-article)
