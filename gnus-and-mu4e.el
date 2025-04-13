@@ -2,8 +2,9 @@
 
 ;;; code:
 
-(require 'mu4e-patch)
-(advice-add 'gnus-article-prepare-display :after #'mu4e-patch:article-treat-patch)
+;; Fontify patches in gnus
+(require 'gnus-patch)
+(advice-add 'gnus-article-prepare-display :after #'gnus-patch:article-treat-patch)
 
 ;;; Message and smtp settings
 ;;
