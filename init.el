@@ -1926,9 +1926,17 @@ mode temporarily."
 
 ;;; Gnus
 ;;
-(global-set-key (kbd "<f9>") #'gnus)
-;; See (info "(gnus) Gnus Unplugged")
-(global-set-key (kbd "<f8>") #'gnus-unplugged)
+(defun tv:quickping (host)
+  (= 0 (call-process "ping" nil nil nil "-c1" "-W50" "-q" host)))
+
+(defun tv:gnus (&optional arg)
+  (interactive "P")
+  (if (or arg (not (tv:quickping "8.8.8.8")))
+      ;; See (info "(gnus) Gnus Unplugged")
+      (gnus-unplugged)
+    (gnus)))
+
+(global-set-key (kbd "<f9>") #'tv:gnus)
 
 (setq gnus-init-file "~/.emacs.d/.gnus.el")
 (require 'gnus-and-mu4e)
