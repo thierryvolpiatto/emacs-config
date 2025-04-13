@@ -59,6 +59,31 @@
         mm-file-name-collapse-whitespace
         mm-file-name-replace-whitespace))
 
+;; Save mime parts
+(defun tv:gnus-mime-parts ()
+  (with-current-buffer gnus-article-buffer
+    (save-excursion
+      (goto-char (point-min))
+      (cl-loop while (not (eobp))
+               for part = (get-text-property (point) 'gnus-data)
+               for index = (get-text-property (point) 'gnus-part) 
+               when (and part (numberp index))
+               collect (cons (or (mm-handle-filename part)
+                                 (format "mime-part-%02d" index))
+                             part)
+               do (forward-line 1)))))
+
+(defun tv:gnus-save-mime-parts ()
+  (interactive)
+  (let* ((helm-comp-read-use-marked t)
+         (parts (tv:gnus-mime-parts))
+         (files (completing-read "Save mime part(s): " (mapcar 'car parts) nil t)))
+    (when files
+      (dolist (f files)
+        (mm-save-part-to-file
+         (assoc-default f parts) (expand-file-name f mm-default-directory))))))
+(define-key gnus-summary-mode-map (kbd "C-c s") 'tv:gnus-save-mime-parts)
+
 ;; Html renderer (shr)
 (setq mm-text-html-renderer (if (fboundp 'w3m) 'w3m 'shr))
 (setq shr-color-visible-luminance-min 75)
