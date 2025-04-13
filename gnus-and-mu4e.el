@@ -82,7 +82,9 @@
       (dolist (f files)
         (mm-save-part-to-file
          (assoc-default f parts) (expand-file-name f mm-default-directory))))))
-(define-key gnus-summary-mode-map (kbd "C-c s") 'tv:gnus-save-mime-parts)
+
+(with-eval-after-load 'gnus-sum
+  (define-key gnus-summary-mode-map (kbd "C-c s") 'tv:gnus-save-mime-parts))
 
 ;; Html renderer (shr)
 (setq mm-text-html-renderer (if (fboundp 'w3m) 'w3m 'shr))
