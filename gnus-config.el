@@ -21,6 +21,7 @@
 ;; Need dovecot imap package installed, add this line to
 ;; /etc/dovecot/conf.d/10-mail.conf:
 ;; mail_location = maildir:~/Maildir:LAYOUT=fs
+;; Need also offlineimap to feed ~/Maildir.
 
 ;; (setq gnus-select-method
 ;;       '(nnimap "Posteo"

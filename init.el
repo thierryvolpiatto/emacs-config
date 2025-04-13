@@ -1931,7 +1931,7 @@ mode temporarily."
 
 (defun tv:gnus (&optional arg)
   (interactive "P")
-  (if (or arg (not (tv:quickping "8.8.8.8")))
+  (if (or arg (not (tv:quickping "8.8.8.8"))) ; google dns.
       ;; See (info "(gnus) Gnus Unplugged")
       (gnus-unplugged)
     (gnus)))
