@@ -43,7 +43,7 @@
                                       ;; machine label port xxx login xxx password xxx
                                       (nnimap "posteo" ; Label for reference in .authinfo for machine name.
                                        (nnimap-address "posteo.de")
-                                       ;; Don't load mime parts when receiving mail, only text part, use
+                                       ;; Don't download mime parts when receiving mail, only text part, use
                                        ;; instead `A-C' to see entire mail.
                                        (nnimap-fetch-partial-articles "text/"))))
 
@@ -64,7 +64,7 @@
 ;;  1) Add an nnimap entry in `gnus-secondary-select-methods'.
 ;;  2) Add an entry in `gnus-posting-styles'
 ;;  3) Add an entry in `tv-smtp-accounts'
-;;  4) Add an entries in authinfo for imap and smtp refering to labels. (See below)
+;;  4) Add entries in authinfo for imap and smtp refering to labels. (See below)
 
 (defvar tv-smtp-accounts
   '(("thievol@posteo.net"
