@@ -1926,9 +1926,12 @@ mode temporarily."
 
 ;;; Gnus
 ;;
-(global-set-key (kbd "<f9>") #'gnus)
 ;; See (info "(gnus) Gnus Unplugged")
-(global-set-key (kbd "<f8>") #'gnus-unplugged)
+(defun tv:start-gnus (&optional arg)
+  (interactive "P")
+  (if arg (gnus-unplugged) (gnus)))
+
+(global-set-key (kbd "<f9>") #'tv:start-gnus)
 
 (setq gnus-init-file "~/.emacs.d/.gnus.el")
 (require 'gnus-and-mu4e)
