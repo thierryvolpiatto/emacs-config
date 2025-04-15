@@ -83,8 +83,16 @@
         (mm-save-part-to-file
          (assoc-default f parts) (expand-file-name f mm-default-directory))))))
 
+;; We can't use directly `completing-read' because the signature of
+;; `gnus-completing-read' which funcall this is not the same (missing predicate). 
+(defun tv:gnus-emacs-completing-read (prompt collection &optional require-match
+                                                          _initial-input history def)
+  "Call standard `completing-read-function'."
+  (completing-read prompt collection nil require-match nil history def))
+
 (with-eval-after-load 'gnus-sum
-  (define-key gnus-summary-mode-map (kbd "C-c s") 'tv:gnus-save-mime-parts))
+  (define-key gnus-summary-mode-map (kbd "C-c s") 'tv:gnus-save-mime-parts)
+  (setq gnus-completing-read-function #'tv:gnus-emacs-completing-read))
 
 ;; Html renderer (shr)
 (setq mm-text-html-renderer (if (fboundp 'w3m) 'w3m 'shr))
