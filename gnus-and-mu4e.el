@@ -91,7 +91,6 @@
   (completing-read prompt collection nil require-match nil history def))
 
 (with-eval-after-load 'gnus-sum
-  (define-key gnus-summary-mode-map (kbd "C-c s") 'tv:gnus-save-mime-parts)
   (setq gnus-completing-read-function #'tv:gnus-emacs-completing-read))
 
 ;; Html renderer (shr)

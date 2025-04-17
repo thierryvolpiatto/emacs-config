@@ -1937,10 +1937,11 @@ mode temporarily."
 (require 'gnus-and-mu4e)
 (addressbook-turn-on-mail-completion)
 (with-eval-after-load 'gnus-sum
-  (define-key gnus-summary-mode-map (kbd "M-q") 'gnus-article-fill-long-lines)
-  (define-key gnus-summary-mode-map (kbd "N")   'gnus-summary-next-unread-article)
-  (define-key gnus-summary-mode-map (kbd "n")   'gnus-summary-next-article)
-  (define-key gnus-summary-mode-map (kbd "p")   'gnus-summary-prev-article))
+  (define-key gnus-summary-mode-map (kbd "C-c s") 'tv:gnus-save-mime-parts)
+  (define-key gnus-summary-mode-map (kbd "M-q")   'gnus-article-fill-long-lines)
+  (define-key gnus-summary-mode-map (kbd "N")     'gnus-summary-next-unread-article)
+  (define-key gnus-summary-mode-map (kbd "n")     'gnus-summary-next-article)
+  (define-key gnus-summary-mode-map (kbd "p")     'gnus-summary-prev-article))
 
 ;;; BM bookmarks (in buffer bmks)
 ;;
