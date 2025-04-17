@@ -1965,10 +1965,6 @@ mode temporarily."
 ;;
 (autoload 'colorcomp "colorcomp" nil t)
 
-;;; Newsticker
-;;
-(global-set-key (kbd "<f8>") 'newsticker-treeview)
-
 
 ;;; Load time
 ;;
