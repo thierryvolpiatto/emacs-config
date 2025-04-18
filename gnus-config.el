@@ -176,7 +176,7 @@ This will run in `message-send-hook'."
   (let ((time (gnus-group-timestamp gnus-tmp-group)))
     (if time (format-time-string "%b %d  %H:%M" time) "")))
 
-(setq gnus-summary-line-format "%O%U%R%z %(%&user-date;  %-15,15f %* %B%s%)\n"
+(setq gnus-summary-line-format "%U%R%z %(%&user-date;  %-15,15f %* %B%s%)\n"
       gnus-user-date-format-alist '((t . "%d.%m.%Y %H:%M"))
       gnus-sum-thread-tree-false-root ""
       gnus-sum-thread-tree-indent " "
