@@ -255,8 +255,10 @@ This will run in `message-send-hook'."
                                    "multipart/alternative"))
 
 ;; Automatically sign/encrypt replies to signed/encrypted mails. 
-(setq gnus-message-replysign nil)
-(setq gnus-message-replyencrypt nil)
+
+(setq gnus-message-replysign t
+      gnus-message-replyencrypt t
+      gnus-message-replysignencrypted t)
 
 ;; Suppression de la signature quand on quote. 
 (setq message-cite-function 'message-cite-original-without-signature)

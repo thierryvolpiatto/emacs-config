@@ -111,6 +111,9 @@
 
 ;;; Encryption
 ;;
+;; Keybinding for signing/encrypting:
+;; `C-c C-m s o' and `C-c C-m c o'.
+
 ;; force choosing key (completion).
 ;; (setq mm-encrypt-option 'guided)
 
