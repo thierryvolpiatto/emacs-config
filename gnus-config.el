@@ -192,6 +192,9 @@ This will run in `message-send-hook'."
 (require 'gnus-dired)
 (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
 
+;; Agent
+(setq gnus-agent-expire-days 30)
+
 ;; Scoring 
 ;; The scoring system sorts articles and authors you read often to the
 ;; beginning of the available mails.
