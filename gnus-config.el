@@ -172,9 +172,10 @@ This will run in `message-send-hook'."
 (add-hook 'gnus-select-group-hook 'gnus-group-set-timestamp)
 (setq gnus-group-line-format "%M%S%p%P%5y: %(%-40,40g%) %ud\n")
 
-(defun gnus-user-format-function-d (headers)
+(defun tv:gnus-user-format-function-d (headers)
   (let ((time (gnus-group-timestamp gnus-tmp-group)))
     (if time (format-time-string "%b %d  %H:%M" time) "")))
+(advice-add 'gnus-user-format-function-d :override #'tv:gnus-user-format-function-d)
 
 (setq gnus-summary-line-format "%U%R%z %(%&user-date;  %-15,15f %* %B%s%)\n"
       gnus-user-date-format-alist '((t . "%d.%m.%Y %H:%M"))
