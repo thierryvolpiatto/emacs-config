@@ -74,7 +74,7 @@
                do (forward-line 1)))))
 
 (defun tv:gnus-save-mime-parts ()
-  (interactive)
+  (interactive nil gnus-summary-mode gnus-article-mode)
   (let* ((helm-comp-read-use-marked t)
          (parts (tv:gnus-mime-parts))
          (files (completing-read "Save mime part(s): " (mapcar 'car parts) nil t)))
@@ -156,7 +156,7 @@
       (view-mode))))
 
 (defun tv:browse-url-or-show-patch (arg)
-  (interactive "P")
+  (interactive "P" gnus-article-mode)
   (require 'helm-net)
   (let ((url (w3m-active-region-or-url-at-point)))
     (when url
@@ -195,7 +195,6 @@ signed. When this happen, importing the key from the autocrypt header,
 if one may help."
   (interactive)
   (require 'epg)
-  (require 'autocrypt)
   ;; `message-fetch-field' removes the newlines, so use `mail-fetch-field'.
   (let ((data (mail-fetch-field "Autocrypt" nil t))
         (from (message-sendmail-envelope-from)))
