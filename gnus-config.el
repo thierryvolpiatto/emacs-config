@@ -36,7 +36,8 @@
 ;; ~/.nnmaildir. Looks nice but too slow to be used.
 ;; (setq gnus-select-method '(nnmaildir "Posteo" (directory "~/.nnmaildir")))
 
-;; 3) the online method with nnimap (no mails offline):
+;; 3) the online method with nnimap (no mails offline but they can be
+;; cached with gnus-agent):
 
 ;; Secondary methods are mails and possibly other nntp servers.
 (setq gnus-secondary-select-methods '(;; Add as many mail account as needed with a label.
@@ -193,7 +194,7 @@ This will run in `message-send-hook'."
 (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
 
 ;; Agent
-(setq gnus-agent-expire-days 30)
+(setq gnus-agent-expire-days 7)
 
 ;; Scoring 
 ;; The scoring system sorts articles and authors you read often to the

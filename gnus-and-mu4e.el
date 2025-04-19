@@ -114,6 +114,11 @@
 ;; Keybinding for signing/encrypting:
 ;; `C-c C-m s o' and `C-c C-m c o'.
 
+;; To always sign emails
+;; (add-hook 'message-setup-hook 'mml-secure-message-sign)
+;; To always encrypt emails
+;; (add-hook 'message-setup-hook 'mml-secure-message-encrypt)
+
 ;; force choosing key (completion).
 ;; (setq mm-encrypt-option 'guided)
 
