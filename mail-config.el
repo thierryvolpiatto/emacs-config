@@ -1,4 +1,4 @@
-;;; gnus-and-mu4e.el --- Common setting for gnus and mu4e -*- lexical-binding: t -*-
+;;; mail-config.el --- Common setting for gnus and mu4e -*- lexical-binding: t -*-
 
 ;;; code:
 
@@ -228,6 +228,6 @@ if one may help."
 (add-hook 'gnus-part-display-hook 'tv:remove-cr)
 
 
-(provide 'gnus-and-mu4e)
+(provide 'mail-config)
 
-;;; gnus-and-mu4e.el ends here
+;;; mail-config.el ends here
