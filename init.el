@@ -1934,7 +1934,7 @@ mode temporarily."
 (global-set-key (kbd "<f9>") #'tv:start-gnus)
 
 (setq gnus-init-file "~/.emacs.d/.gnus.el")
-(require 'gnus-and-mu4e)
+(require 'mail-config)
 (addressbook-turn-on-mail-completion)
 (with-eval-after-load 'gnus-sum
   (define-key gnus-summary-mode-map (kbd "C-c s") 'tv:gnus-save-mime-parts)
