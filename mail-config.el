@@ -165,7 +165,8 @@
         (browse-url url)))))
 
 ;; For some reasons some mails have many null characters at the end,
-;; most of the time these emails come from emacs developers.
+;; most of the time these emails come from emacs developers.  Seems
+;; these bits come after decrypting mails.
 (defun tv:delete-null-chars-from-gnus ()
   "Delete null characters in gnus article buffer.
 Such characters are represented by \"^@\" chars.
