@@ -127,7 +127,7 @@
 ;; encrypt-to in gpg.conf ensure epa and mml encrypt to self.
 (setq mml-secure-openpgp-encrypt-to-self nil ; I use encrypt-to in gpg.conf.
       mml-secure-openpgp-sign-with-sender t
-      mml-secure-openpgp-signers '("0EC56D141D16EF93") ; priv
+      mml-secure-openpgp-signers '("0EC56D141D16EF93")
       )
 
 ;; Using 'known for `mm-verify-option' may hang mu4e or gnus forever
