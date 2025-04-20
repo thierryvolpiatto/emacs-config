@@ -5,6 +5,15 @@
 
 ;;; Code:
 
+(require 'mail-config)
+
+(with-eval-after-load 'gnus-sum
+  (define-key gnus-summary-mode-map (kbd "C-c s") 'tv:gnus-save-mime-parts)
+  (define-key gnus-summary-mode-map (kbd "M-q")   'gnus-article-fill-long-lines)
+  (define-key gnus-summary-mode-map (kbd "N")     'gnus-summary-next-unread-article)
+  (define-key gnus-summary-mode-map (kbd "n")     'gnus-summary-next-article)
+  (define-key gnus-summary-mode-map (kbd "p")     'gnus-summary-prev-article))
+
 ;; Don't read/write to the .newrc file, go straight to the *.eld.
 (setq gnus-save-newsrc-file nil
       gnus-read-newsrc-file nil)
@@ -189,6 +198,8 @@ This will run in `message-send-hook'."
       gnus-sum-thread-tree-single-leaf "╰► "
       gnus-sum-thread-tree-vertical "│")
 
+(add-hook 'gnus-summary-mode-hook 'hl-line-mode)
+
 ;; Integration dans dired
 (require 'gnus-dired)
 (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
@@ -256,10 +267,11 @@ This will run in `message-send-hook'."
                                    "multipart/alternative"))
 
 ;; Automatically sign/encrypt replies to signed/encrypted mails. 
-
-(setq gnus-message-replysign t
-      gnus-message-replyencrypt t
-      gnus-message-replysignencrypted t)
+;; All messages in Posteo are encrypted, so with these variables
+;; replies would be always encrypted/signed. 
+(setq gnus-message-replysign nil
+      gnus-message-replyencrypt nil
+      gnus-message-replysignencrypted nil)
 
 ;; Suppression de la signature quand on quote. 
 (setq message-cite-function 'message-cite-original-without-signature)

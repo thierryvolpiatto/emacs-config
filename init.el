@@ -1396,6 +1396,7 @@ With a prefix arg ask with completion which buffer to kill."
 (autoload 'addressbook-gnus-sum-bookmark       "addressbook-bookmark" nil t)
 (autoload 'addressbook-bmenu-edit              "addressbook-bookmark" nil t)
 (autoload 'addressbook-bookmark-jump           "addressbook-bookmark" nil t)
+(addressbook-turn-on-mail-completion)
 
 ;;; Auth-source
 ;;
@@ -1934,15 +1935,6 @@ mode temporarily."
 (global-set-key (kbd "<f9>") #'tv:start-gnus)
 
 (setq gnus-init-file "~/.emacs.d/.gnus.el")
-(with-eval-after-load 'gnus
-  (require 'mail-config))
-(addressbook-turn-on-mail-completion)
-(with-eval-after-load 'gnus-sum
-  (define-key gnus-summary-mode-map (kbd "C-c s") 'tv:gnus-save-mime-parts)
-  (define-key gnus-summary-mode-map (kbd "M-q")   'gnus-article-fill-long-lines)
-  (define-key gnus-summary-mode-map (kbd "N")     'gnus-summary-next-unread-article)
-  (define-key gnus-summary-mode-map (kbd "n")     'gnus-summary-next-article)
-  (define-key gnus-summary-mode-map (kbd "p")     'gnus-summary-prev-article))
 
 ;;; BM bookmarks (in buffer bmks)
 ;;
