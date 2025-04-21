@@ -187,7 +187,7 @@ This will run in `message-send-hook'."
   (let ((time (gnus-group-timestamp gnus-tmp-group)))
     (if time (format-time-string "%b %d  %H:%M" time) "")))
 
-(setq gnus-summary-line-format "%U%R%z %(%&user-date;  %-15,15f %* %B%s%)\n"
+(setq gnus-summary-line-format "%U%R%z%O%(%&user-date;  %-15,15f %* %B%s%)\n"
       gnus-user-date-format-alist '(((gnus-seconds-today) . "Today,     %H:%M")
                                     ((+ 86400 (gnus-seconds-today)) . "Yesterday, %H:%M")
                                     (t . "%d.%m.%Y %H:%M"))
