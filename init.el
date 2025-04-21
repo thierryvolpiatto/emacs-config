@@ -264,7 +264,10 @@ Restart works only on graphic display."
 (defun tv:view-echo-area-messages ()
   (interactive)
   (let ((win (get-buffer-window "*Messages*" 'visible)))
-    (if win (quit-window  nil win) (view-echo-area-messages))))
+    (cond ((and win (one-window-p t))
+           (quit-window  nil win))
+          (win (delete-other-windows win))
+          (t (view-echo-area-messages)))))
 
 (with-eval-after-load 'helm-core
   (define-key global-map (kbd "C-h e") nil)
