@@ -146,7 +146,17 @@ Restart works only on graphic display."
 
 ;; Themes
 (setq custom-theme-directory "~/.emacs.d/themes/")
-(add-hook 'emacs-startup-hook (lambda () (load-theme 'naquadah t)))
+(defvar tv:favorite-themes '(naquadah modus-vivendi
+                             modus-vivendi-tinted
+                             manoj-dark wombat
+                             leuven-dark wheatgrass tsdh-dark))
+
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (let ((theme (nth (random (length tv:favorite-themes))
+                              tv:favorite-themes)))
+              (load-theme theme t)
+              (message "Theme %s loaded" theme))))
 
 ;;; emacs-backup-config
 ;;
