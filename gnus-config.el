@@ -200,10 +200,6 @@ This will run in `message-send-hook'."
 
 (add-hook 'gnus-summary-mode-hook 'hl-line-mode)
 
-;; Integration dans dired
-(require 'gnus-dired)
-(add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
-
 ;; Agent
 (setq gnus-agent-expire-days 7)
 
