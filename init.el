@@ -1946,7 +1946,7 @@ mode temporarily."
   (if arg (gnus-unplugged) (gnus)))
 
 (global-set-key (kbd "<f9>") #'tv:start-gnus)
-
+(require 'mail-config) ; Needed for C-x m when gnus has not started yet.
 (setq gnus-init-file "~/.emacs.d/.gnus.el")
 
 ;;; BM bookmarks (in buffer bmks)
