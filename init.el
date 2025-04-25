@@ -148,9 +148,12 @@ Restart works only on graphic display."
 (setq custom-theme-directory "~/.emacs.d/themes/")
 
 (defvar tv:use-random-themes nil)
-
-(defvar tv:favorite-themes '(naquadah modus-vivendi
+(defvar tv:current-theme nil)
+(defvar tv:favorite-themes '(naquadah
+                             modus-vivendi-tritanopia
+                             modus-vivendi
                              modus-vivendi-tinted
+                             modus-vivendi-deuteranopia
                              wombat leuven-dark
                              github-dark-vscode
                              vs-dark))
@@ -160,9 +163,22 @@ Restart works only on graphic display."
             (if tv:use-random-themes
                 (let ((theme (nth (random (length tv:favorite-themes))
                                   tv:favorite-themes)))
+                  (setq tv:current-theme theme)
                   (load-theme theme t)
                   (message "Theme %s loaded" theme))
-              (load-theme (car tv:favorite-themes) t))))
+              (setq tv:current-theme (car tv:favorite-themes))
+              (load-theme tv:current-theme t))))
+
+;; Helm affixation for theme will be available after loading helm.
+(defun tv:load-theme (theme)
+  (interactive (list (let ((completion-extra-properties '(:category theme)))
+                            (completing-read "Load custom theme: "
+                                             (custom-available-themes)))))
+  (setq theme (intern-soft theme))
+  (when tv:current-theme
+    (disable-theme tv:current-theme))
+  (load-theme theme t)
+  (setq tv:current-theme theme))
 
 ;;; emacs-backup-config
 ;;
