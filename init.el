@@ -285,9 +285,16 @@ Restart works only on graphic display."
           (win (delete-other-windows win))
           (t (view-echo-area-messages)))))
 
+(defun tv:quit-echo-area ()
+  (interactive)
+  (with-selected-window (get-buffer-window "*Messages*" 'visible)
+    (quit-window)))
+
 (with-eval-after-load 'helm-core
   (define-key global-map (kbd "C-h e") nil)
-  (helm-define-key-with-subkeys global-map (kbd "C-h e") ?e 'tv:view-echo-area-messages))
+  (helm-define-key-with-subkeys global-map (kbd "C-h e")
+                                ?e 'tv:view-echo-area-messages
+                                '((?q . tv:quit-echo-area))))
 
 ;;; Compatibility
 ;;
