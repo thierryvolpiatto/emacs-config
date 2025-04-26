@@ -149,14 +149,11 @@ Restart works only on graphic display."
 
 (defvar tv:use-random-themes nil)
 (defvar tv:current-theme nil)
-(defvar tv:favorite-themes '(naquadah
-                             modus-vivendi-tritanopia
-                             modus-vivendi
-                             modus-vivendi-tinted
-                             modus-vivendi-deuteranopia
-                             wombat leuven-dark
+(defvar tv:favorite-themes '(naquadah syhoex
                              github-dark-vscode
-                             vs-dark))
+                             adwaita-dark wombat
+                             leuven-dark vs-dark
+                             manoj-dark wheatgrass))
 
 (add-hook 'emacs-startup-hook
           (lambda ()
