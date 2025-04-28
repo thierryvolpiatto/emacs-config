@@ -872,10 +872,6 @@ Restart works only on graphic display."
   (set-fontset-font
    t 'symbol (font-spec :family "Emoji One") nil 'prepend))
 
-;; Use other another font for italic.
-(set-face-font 'italic "-1ASC-Liberation Mono-regular-italic-normal-*-*-*-*-*-m-0-iso10646-1")
-(set-face-font 'bold-italic "-1ASC-Liberation Mono-bold-italic-normal-*-*-*-*-*-m-0-iso10646-1")
-
 (setq-default frame-background-mode 'dark)
 
 (setq initial-frame-alist '((fullscreen . maximized)))
