@@ -1714,6 +1714,14 @@ With a prefix arg ask with completion which buffer to kill."
     '((right . next-buffer) (left . previous-buffer))
     nil nil 2)
 
+(with-eval-after-load 'thingatpt
+  (define-thing-chars bug "#[[:alnum:]]+"))
+(defun tv:find-emacs-bug (bug)
+  (interactive (list (or (thing-at-point 'bug)
+                         (read-string "Bug number: "))))
+  (setq bug (replace-regexp-in-string "#" "" (format "%s" bug)))
+  (helm-find-files-1 (format "https://debbugs.gnu.org/%s" bug)))
+
 ;; Add fontification to some functions
 (cl-dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
   (font-lock-add-keywords
