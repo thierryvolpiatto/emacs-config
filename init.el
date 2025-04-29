@@ -1231,6 +1231,10 @@ With a prefix arg ask with completion which buffer to kill."
       '((t (:background "ForestGreen")))
     "Face used to highlight diary blocks in calendar."
     :group 'calendar)
+  (defface tv:diary-cyclic
+    '((t (:inherit italic)))
+  "Face for diary cyclic entries."
+  :group 'calendar)
   ;; Add a different face in diary entry like this:
   ;; %%(diary-block 8 2 2021 13 2 2021 'tv:calendar-blocks-1)
   (defface tv:calendar-blocks-1
@@ -1310,10 +1314,11 @@ With a prefix arg ask with completion which buffer to kill."
     (let* ((ovs (overlays-at (point)))
            (props (cl-loop for ov in ovs
                            for prop = (cadr (overlay-properties ov))
-                           when (memq prop '(diary holiday diary-anniversary
+                           when (memq prop '(diary tv:diary-cyclic holiday diary-anniversary
                                              tv:calendar-blocks tv:calendar-blocks-1))
                            collect prop)))
       (cond ((and (or (memq 'diary props)
+                      (memq 'tv:diary-cyclic props)
                       (memq 'tv:calendar-blocks props)
                       (memq 'tv:calendar-blocks-1 props)
                       (memq 'diary-anniversary props))
@@ -1322,6 +1327,7 @@ With a prefix arg ask with completion which buffer to kill."
                (diary-view-entries arg))
              (calendar-cursor-holidays))
             ((or (memq 'diary props)
+                 (memq 'tv:diary-cyclic props)
                  (memq 'tv:calendar-blocks props)
                  (memq 'tv:calendar-blocks-1 props)
                  (memq 'diary-anniversary props))
