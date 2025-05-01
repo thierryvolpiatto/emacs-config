@@ -1986,6 +1986,7 @@ mode temporarily."
   (if arg (gnus-unplugged) (gnus)))
 
 (global-set-key (kbd "<f9>") #'tv:start-gnus)
+(setq mail-user-agent 'gnus-user-agent)
 (require 'mail-config) ; Needed for C-x m when gnus has not started yet.
 (setq gnus-init-file "~/.emacs.d/.gnus.el")
 
