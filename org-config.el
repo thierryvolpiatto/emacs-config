@@ -1,4 +1,4 @@
-;;; org-config.el --- My config for org
+;;; org-config.el --- My config for org -*- lexical-binding: t -*-
 ;; 
 
 ;;; Code:

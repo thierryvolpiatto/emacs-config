@@ -1,4 +1,4 @@
-;;; gnus-config.el -- Laptop
+;;; gnus-config.el --- Gnus init file -*- lexical-binding: t -*-
 
 ;; Set `gnus-init-file' to the path of this file in init.el before
 ;; calling `gnus'.

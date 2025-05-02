@@ -11,6 +11,21 @@
 ;; Needed when installing from source.
 (require 'emms-auto nil t)
 
+;; Add lexbind cookie to emms-cache to shutup warnings in emacs-31.
+(with-eval-after-load 'emms-cache
+  (defun tv:advice-emms-cache-save (old--fn)
+    (let ((header (concat ";;; .emms-cache -*- mode: emacs-lisp; coding: "
+                          (symbol-name emms-cache-file-coding-system)
+                          "; lexical-binding: t -*-\n"))) 
+      (funcall old--fn)
+      (with-current-buffer (find-file-noselect emms-cache-file)
+        (goto-char (point-min))
+        (delete-region (point) (pos-eol))
+        (insert header)
+        (save-buffer)
+        (kill-buffer))))
+  (advice-add 'emms-cache-save :around #'tv:advice-emms-cache-save))
+
 (emms-all)
 
 ;; Setup `emms-player-list'.

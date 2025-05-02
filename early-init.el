@@ -1,4 +1,4 @@
-;;; early-init.el --evaluated before init.el
+;;; early-init.el --- evaluated before init.el -*- lexical-binding: t -*-
 
 (when (and (fboundp 'native-comp-available-p)
            (native-comp-available-p))
