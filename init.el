@@ -1904,12 +1904,14 @@ mode temporarily."
          :act 'modify
          :smatch t))
     (customize-set-variable 'register-use-preview 'insist)
-    (cl-defmethod register-command-info ((_command (eql register-delete)))
-      (make-register-preview-info
-       :types '(all)
-       :msg "Delete register `%s'"
-       :act 'modify
-       :smatch t)))
+    (unless (> emacs-major-version 30)
+      ;; `register-command-info' is not used anymore in 31.
+      (cl-defmethod register-command-info ((_command (eql register-delete)))
+        (make-register-preview-info
+         :types '(all)
+         :msg "Delete register `%s'"
+         :act 'modify
+         :smatch t))))
 
   ;; Override original `register-val-describe' string method. Replace
   ;; unuseful text at beginning of string by a shorter one.
