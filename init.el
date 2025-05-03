@@ -1232,7 +1232,7 @@ With a prefix arg ask with completion which buffer to kill."
     "Face used to highlight diary blocks in calendar."
     :group 'calendar)
   (defface tv:diary-cyclic
-    '((t (:inherit italic)))
+    '((t (:inherit italic :foreground "Cyan")))
   "Face for diary cyclic entries."
   :group 'calendar)
   ;; Add a different face in diary entry like this:
