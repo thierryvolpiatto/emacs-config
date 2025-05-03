@@ -1417,6 +1417,9 @@ With a prefix arg ask with completion which buffer to kill."
 (global-set-key (kbd "C-x v r") 'git-gutter:revert-hunk)
 ;; Toggle whitespace changes view
 (global-set-key (kbd "C-c _") 'git-gutter:toggle-space-view)
+;; Run git-gutter after specified commands
+(add-to-list 'git-gutter:update-commands 'helm-ls-git-run-stage-marked-and-extend-commit)
+(add-to-list 'git-gutter:update-commands 'undo)
 
 (defun tv:git-gutter:popup-diff-quit ()
   (interactive)
