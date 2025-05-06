@@ -2018,6 +2018,11 @@ mode temporarily."
 ;;
 (autoload 'colorcomp "colorcomp" nil t)
 
+;;; iterator
+;;
+(autoload 'iterator:list "iterator")
+(autoload 'iterator:circular "iterator")
+
 
 ;;; Load time
 ;;
