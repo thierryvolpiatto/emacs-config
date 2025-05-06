@@ -196,7 +196,6 @@
         helm-locate-recursive-dirs-command "locate -i -e --regex '^%s' '%s.*$'"
         helm-ff-eshell-unwanted-aliases '("sudo" "cdu" "man"
                                           "gpg-pubkey-export-armor" "gpg-secretkey-export-armor")
-        helm-ff-drag-and-drop-default-directory "/home/thierry/Bureau/"
         helm-file-name-history-hide-deleted t
         helm-ff-ignore-following-on-directory t
         helm-rsync-progress-bar-function #'helm-rsync-svg-progress-bar)
