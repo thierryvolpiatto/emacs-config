@@ -1336,7 +1336,33 @@ With a prefix arg ask with completion which buffer to kill."
             ((memq 'holiday props)
              (calendar-cursor-holidays))
             (t (message "Nothing special on this date")))))
+  
+  (unless (fboundp 'calendar-recenter)
+    (defun calendar-recenter ()
+      (interactive nil 'calendar-mode)
+      (let ((month-at-pt (car (calendar-cursor-to-date)))
+            (iter        (iterator:list '(center left right) 'cycle))
+            pos)
+        (cl-labels ((cal-recenter ()
+                      (setq pos (iterator:next iter))
+                      (pcase pos
+                        ('center (pcase month-at-pt
+                                   ((pred (< _ displayed-month))
+                                    (calendar-scroll-right))
+                                   ((pred (> _ displayed-month))
+                                    (calendar-scroll-left))))
+                        ('left  (calendar-scroll-left))
+                        ('right (calendar-scroll-right 2)))
+                      t))
+          (cal-recenter)
+          (while (let ((event (read-event)))
+                   (pcase event
+                     ('?\C-l (cal-recenter))
+                     (_ (setq unread-command-events
+                              (listify-key-sequence (vector event)))
+                        nil))))))))
 
+  (define-key calendar-mode-map (kbd "C-l") 'calendar-recenter)
   (define-key calendar-mode-map (kbd "C-<right>") 'calendar-forward-month)
   (define-key calendar-mode-map (kbd "C-<left>")  'calendar-backward-month)
   (define-key calendar-mode-map (kbd "RET")       'tv:calendar-diary-or-holiday))
