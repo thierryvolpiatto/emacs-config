@@ -1082,7 +1082,7 @@ With a prefix arg ask with completion which buffer to kill."
         dired-backup-overwrite nil ; nil, always, ask.
         dired-listing-switches (purecopy "-alh")
         dired-create-destination-dirs 'ask
-        wdired-use-dired-vertical-movement 'sometimes)
+        dired-mouse-drag-files 'copy)
   (when (boundp 'dired-vc-rename-file)
     (setq dired-vc-rename-file t))
   (require 'dired-extension))
@@ -1094,6 +1094,16 @@ With a prefix arg ask with completion which buffer to kill."
         ;; Be consistent with emacs-29.
         image-dired-cmd-pngnq-program "pngquant"
         image-dired-cmd-pngnq-options '("--ext" "-nq8.png" "%t")))
+
+;;; Mouse avoidance mode
+;;
+(setq mouse-avoidance-banish-position
+      '((frame-or-window . frame)
+        (side . right)
+        (side-pos . -2)
+        (top-or-bottom . top)
+        (top-or-bottom-pos . 1)))
+(mouse-avoidance-mode 'banish)
 
 ;;; Ledger
 ;;
@@ -1359,10 +1369,10 @@ With a prefix arg ask with completion which buffer to kill."
                    (pcase event
                      ('?\C-l (cal-recenter))
                      (_ (setq unread-command-events
-                              (listify-key-sequence (vector event)))
+                              (nconc (list event) unread-command-events))
                         nil))))))))
 
-  (define-key calendar-mode-map (kbd "C-l") 'calendar-recenter)
+  (define-key calendar-mode-map (kbd "C-l")       'calendar-recenter)
   (define-key calendar-mode-map (kbd "C-<right>") 'calendar-forward-month)
   (define-key calendar-mode-map (kbd "C-<left>")  'calendar-backward-month)
   (define-key calendar-mode-map (kbd "RET")       'tv:calendar-diary-or-holiday))
