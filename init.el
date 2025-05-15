@@ -220,7 +220,7 @@ Restart works only on graphic display."
 ;; Enable some commands disabled by default
 (put 'narrow-to-region 'disabled nil)          ; C-x n n
 (put 'narrow-to-page 'disabled nil)            ; C-x n p
-(put 'scroll-left 'disabled nil)               ; C-x > or <
+(put 'scroll-left 'disabled nil)               ; C-x <
 (put 'downcase-region 'disabled nil)           ; C-x C-l
 (put 'upcase-region 'disabled nil)             ; C-x C-u
 (put 'set-goal-column 'disabled nil)           ; C-x C-n ==> disable with C-u
@@ -2024,7 +2024,7 @@ mode temporarily."
 ;; See (info "(gnus) Gnus Unplugged")
 (defun tv:start-gnus (&optional arg)
   (interactive "P")
-  (if arg (gnus-unplugged) (gnus)))
+  (if arg (gnus-unplugged) (gnus-plugged)))
 
 (global-set-key (kbd "<f9>") #'tv:start-gnus)
 (setq mail-user-agent 'gnus-user-agent)
