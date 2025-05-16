@@ -265,7 +265,7 @@ This will run in `message-send-hook'."
 ;; Automatically sign/encrypt replies to signed/encrypted mails. 
 ;; All messages in Posteo are encrypted, so with these variables
 ;; replies would be always encrypted/signed. 
-(setq gnus-message-replysign nil
+(setq gnus-message-replysign t ; not this one hopefully.
       gnus-message-replyencrypt nil
       gnus-message-replysignencrypted nil)
 
