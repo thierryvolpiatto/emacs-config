@@ -200,8 +200,6 @@
 ;; Imenu
 (setq org-imenu-depth 4)
 
-;; Org-indent
-(setq org-startup-indented t)
 
 (provide 'org-config)
 

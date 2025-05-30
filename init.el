@@ -279,17 +279,6 @@ Restart works only on graphic display."
 ;; Align-regexp
 (global-set-key (kbd "C-}") #'align-regexp)
 
-;; Move to bol or back-to-indentation depending of context.
-(defun tv:bol-or-back-to-indentation ()
-  "Move to bol or indentation depending of context."
-  (interactive)
-  (if (and (derived-mode-p 'prog-mode)
-           (or (bolp)
-               (save-excursion (re-search-backward "[^[:blank:]]" (pos-bol) t))))
-      (back-to-indentation)
-    (move-beginning-of-line 1)))
-(global-set-key (kbd "C-a") #'tv:bol-or-back-to-indentation)
-
 (defun tv:view-echo-area-messages ()
   (interactive)
   (let ((win (get-buffer-window "*Messages*" 'visible)))
