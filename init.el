@@ -2020,21 +2020,6 @@ mode temporarily."
 (require 'mail-config) ; Needed for C-x m when gnus has not started yet.
 (setq gnus-init-file "~/.emacs.d/.gnus.el")
 
-;;; BM bookmarks (in buffer bmks)
-;;
-(with-eval-after-load 'bm
-  (setq bm-highlight-style 'bm-highlight-only-fringe
-        bm-cycle-all-buffers t))
-
-(autoload 'bm-toggle "bm" nil t) ; Installed in ~/elisp.
-(autoload 'bm-next "bm" t)
-(autoload 'bm-previous "bm" t)
-(autoload 'bm-buffer-restore "bm" t)
-(autoload 'bm-repository-load "bm")
-
-(global-set-key (kbd "C-!")   'bm-toggle)
-(global-set-key (kbd "<f12>") 'helm-bm) ; autoloaded in init-helm.
-
 ;;; Sensors
 ;;
 (autoload 'sensors "sensors" nil t)

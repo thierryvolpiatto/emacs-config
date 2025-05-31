@@ -496,13 +496,6 @@ First call indent, second complete symbol, third complete fname."
   ;; Minibuffer history (Rebind to M-s).
   (customize-set-variable 'helm-minibuffer-history-key [remap next-matching-history-element]))
 
-;;; helm-bm
-;;
-(with-eval-after-load 'helm-bm
-  (setq helm-bm-sort-from-pos nil)
-  (define-key helm-bm-map (kbd "<f12>") 'helm-next-line)
-  (define-key helm-bm-map (kbd "S-<f12>") 'helm-previous-line))
-
 ;;; Helm-epa
 ;;
 (helm-epa-mode 1)
