@@ -1846,7 +1846,10 @@ detected."
   (add-to-list
    'imenu-generic-expression
    '("Helm make command"
-     "^\\s-*(\\(?:helm-make-\\)?\\(?:persistent-\\)?command-from-action\\s-+'?\\(\\(?:\\sw\\|\\s_\\|\\\\.\\)+\\)[[:space:]\n]*[^)]*" 1)))
+     "^\\s-*(\\(?:helm-make-\\)?\\(?:persistent-\\)?command-from-action\\s-+'?\\(\\(?:\\sw\\|\\s_\\|\\\\.\\)+\\)[[:space:]\n]*[^)]*" 1))
+  (add-to-list
+   'imenu-generic-expression
+   '("Oclosures" "^\\s-*(\\(?:oclosure-define\\)\\s-+'?\\(\\(?:\\sw\\|\\s_\\|\\\\.\\)+\\)[[:space:]\n]*[^)]*" 1)))
 (add-hook 'emacs-lisp-mode-hook #'tv:imenu-add-extras-generic-expr)
 
 ;;; Yaml-mode
