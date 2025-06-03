@@ -488,11 +488,7 @@ First call indent, second complete symbol, third complete fname."
   (setq helm-imenu-extra-modes '(org-mode markdown-mode))
   (customize-set-variable 'helm-imenu-lynx-style-map t)
   (customize-set-variable 'helm-imenu-use-icon t)
-  (customize-set-variable 'helm-imenu-hide-item-type-name t)
-  (add-to-list 'helm-imenu-type-faces
-               '("^Oclosures$" . font-lock-keyword-face))
-  (add-to-list 'helm-imenu-icon-type-alist
-               '("Oclosures" . (helm-x-icons-generic "three-bars" :face font-lock-type-face))))
+  (customize-set-variable 'helm-imenu-hide-item-type-name t))
 
 ;;; Helm-misc
 ;;

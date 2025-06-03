@@ -1161,11 +1161,12 @@ With a prefix arg ask with completion which buffer to kill."
       python-shell-prompt-regexp "In \\[[0-9]+\\]: "
       python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: ")
 (add-hook 'python-mode-hook 'flycheck-mode)
+(add-hook 'python-mode-hook 'semantic-mode)
 (add-hook 'python-mode-hook
           (lambda ()
             (setq-local mode-name "py")
-            (define-key python-mode-map (kbd "C-c i") 'helm-imenu)
-            (define-key python-mode-map (kbd "C-m") 'newline-and-indent)))
+            (define-key python-mode-map (kbd "C-c i") 'helm-semantic-or-imenu)
+            (define-key python-mode-map (kbd "C-m")   'newline-and-indent)))
 (defun tv:run-or-switch-to-python-shell ()
   (interactive)
   (let* ((buf      (ignore-errors (python-shell-get-process-or-error t)))
@@ -1845,11 +1846,12 @@ detected."
   (require 'imenu)
   (add-to-list
    'imenu-generic-expression
-   '("Helm make command"
+   '("Functions"
      "^\\s-*(\\(?:helm-make-\\)?\\(?:persistent-\\)?command-from-action\\s-+'?\\(\\(?:\\sw\\|\\s_\\|\\\\.\\)+\\)[[:space:]\n]*[^)]*" 1))
-  (add-to-list
-   'imenu-generic-expression
-   '("Oclosures" "^\\s-*(\\(?:oclosure-define\\)\\s-+'?\\(\\(?:\\sw\\|\\s_\\|\\\\.\\)+\\)[[:space:]\n]*[^)]*" 1)))
+  (when (< emacs-major-version 31)
+    (add-to-list
+     'imenu-generic-expression
+     '("Types" "^\\s-*(\\(?:oclosure-define\\)\\s-+'?\\(\\(?:\\sw\\|\\s_\\|\\\\.\\)+\\)[[:space:]\n]*[^)]*" 1))))
 (add-hook 'emacs-lisp-mode-hook #'tv:imenu-add-extras-generic-expr)
 
 ;;; Yaml-mode
