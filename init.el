@@ -476,7 +476,7 @@ Restart works only on graphic display."
 (define-key emacs-lisp-mode-map (kbd "C-M-!")       'tv:eval-region)
 
 (global-set-key (kbd "M-\"")                      'tv:insert-double-quote)
-(global-set-key (kbd "M-[")                       'tv:insert-vector)
+(global-set-key (kbd "M-]")                       'tv:insert-vector)
 (global-set-key (kbd "C-M-`")                     'tv:insert-double-backquote)
 (global-set-key (kbd "C-M-(")                     'tv:move-pair-forward)
 (global-set-key (kbd "C-M-\"")                    'tv:insert-double-quote-and-close-forward)
