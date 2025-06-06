@@ -325,7 +325,8 @@ Restart works only on graphic display."
 (global-set-key (kbd "C-M-s") 'isl-resume)
 (with-eval-after-load 'isl
   (setq isl-before-position-string "≤"
-        isl-after-position-string "≥"))
+        isl-after-position-string "≥"
+        isl-requires-pattern 0))
 
 ;;; Info
 ;;
@@ -1878,12 +1879,6 @@ detected."
 ;;
 (with-eval-after-load 'kmacro
   (global-set-key (kbd "S-<f3>") 'kmacro-set-counter))
-
-;;; Rainbow-mode (installed in elisp)
-;;
-(autoload 'rainbow-mode "rainbow-mode" nil t)
-(with-eval-after-load 'rainbow-mode
-  (setq rainbow-r-colors t))
 
 ;;; modify `exchange-point-and-mark' so that it doesn't activate mark
 ;;  when it is not already active.
