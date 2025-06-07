@@ -1652,21 +1652,47 @@ With a prefix arg ask with completion which buffer to kill."
 (with-eval-after-load 'display-line-numbers
   (setq display-line-numbers-type 'relative))
 
-;;; Outline-mode
+;;; Outline/org navigation
 ;;
+(defun tv:outline-menu ()
+  (cl-loop with h = '("next visible heading"
+                      "previous visible heading"
+                      "forward same level"
+                      "backward same level")
+           for k in '("n: " "p: " "f: " "b: ")
+           concat (concat (propertize k 'face 'minibuffer-prompt) (pop h) "\n")))
+
 (with-eval-after-load 'outline
-  (helm-define-key-with-subkeys outline-minor-mode-map (kbd "C-c C-p")
-                                ?p 'outline-previous-visible-heading
-                                '((?n . outline-next-visible-heading)))
   (helm-define-key-with-subkeys outline-minor-mode-map (kbd "C-c C-n")
                                 ?n 'outline-next-visible-heading
-                                '((?p . outline-previous-visible-heading)))
-  (helm-define-key-with-subkeys outline-minor-mode-map (kbd "C-c C-f")
-                                ?f 'outline-forward-same-level
-                                '((?b . outline-backward-same-level)))
-  (helm-define-key-with-subkeys outline-minor-mode-map (kbd "C-c C-b")
-                                ?b 'outline-backward-same-level
-                                '((?f . outline-forward-same-level))))
+                                '((?p . outline-previous-visible-heading)
+                                  (?f . outline-forward-same-level)
+                                  (?b . outline-backward-same-level)
+                                  (?u . outline-up-heading))
+                                (tv:outline-menu))
+  (helm-define-key-with-subkeys outline-minor-mode-map (kbd "C-c C-p")
+                                ?p 'outline-previous-visible-heading
+                                '((?n . outline-next-visible-heading)
+                                  (?f . outline-forward-same-level)
+                                  (?b . outline-backward-same-level)
+                                  (?u . outline-up-heading))
+                                (tv:outline-menu)))
+
+(with-eval-after-load 'org
+  (helm-define-key-with-subkeys org-mode-map (kbd "C-c C-n")
+                                ?n 'org-next-visible-heading
+                                '((?p . org-previous-visible-heading)
+                                  (?f . org-forward-heading-same-level)
+                                  (?b . org-backward-heading-same-level)
+                                  (?u . outline-up-heading))
+                                (tv:outline-menu))
+  (helm-define-key-with-subkeys org-mode-map (kbd "C-c C-p")
+                                ?p 'org-previous-visible-heading
+                                '((?n . org-next-visible-heading)
+                                  (?f . org-forward-heading-same-level)
+                                  (?b . org-backward-heading-same-level)
+                                  (?u . outline-up-heading))
+                                (tv:outline-menu)))
 
 ;;; Flyspell
 ;;
