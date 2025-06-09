@@ -328,6 +328,11 @@ Restart works only on graphic display."
         isl-after-position-string "≥"
         isl-requires-pattern 0))
 
+;;; Pulse (used by Isl)
+;;
+(with-eval-after-load 'pulse
+  (setq pulse-delay 0.06))
+
 ;;; Info
 ;;
 ;; Cleanup `Info-directory-list'.
