@@ -57,7 +57,35 @@
                                        ;; Don't download mime parts when receiving mail, only text part, use
                                        ;; instead `A-C' to see entire mail.
                                        (nnimap-fetch-partial-articles "text/"))))
-
+;; Gnus topic
+(with-eval-after-load 'gnus-topic
+  (progn
+    (setq gnus-topic-topology '(("Gnus" visible)
+                                (("posteo" visible nil nil))
+                                (("gmane" visible))
+                                (("misc" visible))))
+    (setq gnus-topic-alist '(("posteo"
+                              "nnimap+posteo:INBOX"
+                              "nnimap+posteo:github-helm"
+                              "nnimap+posteo:Emacs-bug"
+                              "nnimap+posteo:Emacs-devel"
+                              "nnimap+posteo:github-async"
+                              "nnimap+posteo:Fortuneo"
+                              "nnimap+posteo:Pub"
+                              "nnimap+posteo:Sent"
+                              "nnimap+posteo:Spam"
+                              "nnimap+posteo:Spam-Log"
+                              "nnimap+posteo:Trash"
+                              "nnimap+posteo:github-magit"
+                              "nnimap+posteo:github-mu")
+                             ("gmane"
+                              "gmane.emacs.bugs"
+                              "gmane.emacs.devel"
+                              "gmane.emacs.elpa.scm")
+                             ("misc")
+                             ("Gnus"
+                              "nnfolder+archive:sent")))))
+(add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
 
 (setq gnus-ignored-from-addresses "thievol@posteo\\.net")
 (setq gnus-thread-sort-functions '((not gnus-thread-sort-by-number)))
