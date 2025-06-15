@@ -27,7 +27,8 @@
       helm-debug-root-directory                 "/home/thierry/tmp/helm-debug"
       helm-follow-mode-persistent               t
       helm-candidate-number-limit               500
-      helm-visible-mark-prefix                  "✓")
+      helm-visible-mark-prefix                  "✓"
+      helm-kill-real-or-display-selection       'real)
 (set-face-foreground 'helm-mark-prefix "Gold1")
 (add-to-list 'helm-sources-using-default-as-input 'helm-source-info-bash)
 (helm-define-key-with-subkeys global-map (kbd "C-c n") ?n 'helm-cycle-resume)
