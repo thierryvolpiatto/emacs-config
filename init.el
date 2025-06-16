@@ -1059,6 +1059,9 @@ With a prefix arg ask with completion which buffer to kill."
           (t
            (set (make-local-variable 'zoom-window-config)
                 (current-window-configuration))
+           ;; Prevent modes like org killing local vars when modifying
+           ;; buffer e.g. org-agenda-next/previous.
+           (put 'zoom-window-config 'permanent-local t)
            (delete-other-windows)))))
 (global-set-key (kbd "C-&") #'zoom-window)
 
