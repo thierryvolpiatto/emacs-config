@@ -1433,6 +1433,23 @@ With a prefix arg ask with completion which buffer to kill."
                 "Disable the evil `bookmark-current-bookmark' mechanism."
                 (kill-local-variable 'bookmark-current-bookmark))))
 
+;;; BM bookmarks (in buffer bmks)
+;;
+(with-eval-after-load 'bm
+  (setq bm-highlight-style 'bm-highlight-only-fringe
+        bm-cycle-all-buffers t)
+  (when (fboundp 'define-fringe-bitmap)
+    (define-fringe-bitmap 'bm-marker-left [#x00 #x00 #xFC #xFE #x0F #xFE #xFC #x00])))
+
+(autoload 'bm-toggle "bm" nil t) ; Installed in ~/elisp.
+(autoload 'bm-next "bm" t)
+(autoload 'bm-previous "bm" t)
+(autoload 'bm-buffer-restore "bm" t)
+(autoload 'bm-repository-load "bm")
+
+(global-set-key (kbd "C-!")   'bm-toggle)
+(global-set-key (kbd "<f12>") 'helm-bm) ; autoloaded in init-helm.
+
 ;;; git-gutter-mode
 ;;
 (autoload 'global-git-gutter-mode "git-gutter" nil t)
@@ -2058,6 +2075,10 @@ mode temporarily."
 ;;; Colorcomp (Mix blue, red and green)
 ;;
 (autoload 'colorcomp "colorcomp" nil t)
+
+;;; Rainbow
+;;
+(autoload 'rainbow-mode "rainbow-mode" nil t)
 
 ;;; iterator
 ;;

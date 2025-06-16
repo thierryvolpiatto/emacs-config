@@ -433,8 +433,16 @@ Need sdcv and stardict-xmlittre packages as dependencies."
         '("--colors 'match:bg:yellow' --colors 'match:fg:black'")
         helm-grep-git-grep-command
         "git --no-pager grep -n%cH --color=always --exclude-standard --no-index --full-name -e %p -- %f")
+  (set-face-attribute 'helm-grep-match nil :background "yellow" :foreground "black")
   (add-hook 'helm-grep-mode-hook 'hl-line-mode)
   (define-key helm-grep-map   (kbd "C-M-a") 'helm/occur-which-func))
+
+;;; Helm-bm
+;;
+(with-eval-after-load 'helm-bm
+  (setq helm-bm-sort-from-pos nil)
+  (define-key helm-bm-map (kbd "<f12>") 'helm-next-line)
+  (define-key helm-bm-map (kbd "S-<f12>") 'helm-previous-line))
 
 ;;; Helm-occur
 ;;
