@@ -449,6 +449,7 @@ Need sdcv and stardict-xmlittre packages as dependencies."
 (with-eval-after-load 'helm-occur
   (setq helm-occur-keep-closest-position t)
   (setq helm-occur-match-shorthands t)
+  (setq helm-occur-candidate-number-limit 500)
   (add-hook 'helm-occur-mode-hook 'hl-line-mode)
   (define-key helm-occur-map (kbd "C-M-a") 'helm/occur-which-func))
 
