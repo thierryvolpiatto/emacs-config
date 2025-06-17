@@ -392,7 +392,11 @@ Need sdcv and stardict-xmlittre packages as dependencies."
 ;;
 (with-eval-after-load 'helm-lib
   (autoload 'isl-search "isl" nil t)
-  (advice-add 'cl--print-table :override #'helm-source--cl--print-table '((depth . 100)))
+  (defun tv:advice-print-table (old-fn &rest args)
+  (cl-letf (((symbol-function 'cl--print-table)
+             #'helm-source--cl--print-table))
+    (apply old-fn args)))
+  (advice-add 'push-button :around #'tv:advice-print-table)
   (setq helm-scroll-amount 4)
   (setq helm-find-function-default-project
         '("~/work/emacs/lisp/" "~/work/github/"))
