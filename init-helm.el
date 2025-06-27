@@ -200,6 +200,7 @@
         helm-file-name-history-hide-deleted t
         helm-ff-ignore-following-on-directory t
         helm-rsync-progress-bar-function #'helm-rsync-svg-progress-bar)
+  (customize-set-variable 'helm-find-files-ignore-diacritics t)
 
   (defun helm-ff-dragon (files)
     "Create a small window with FILES ready to drag and drop.
@@ -253,15 +254,7 @@ new directory."
     - Patch region on directory
     - Open in emms
     - Recoll directory creation
-    - Csv2ledger"
-    (helm-aif (slot-value source 'match)
-        (setf (slot-value source 'match)
-              (append it
-                      '((lambda (candidate)
-                          (string-match (concat (helm-basedir helm-input)
-                                                (char-fold-to-regexp
-                                                 (helm-basename helm-input)))
-                                        candidate))))))
+    - Csv2ledger."
     ;; Info on .info files
     (helm-source-add-action-to-source-if
      "Open info file"
