@@ -92,7 +92,7 @@
 
 ;; Change "From" field according to "To" field on reply.
 (setq gnus-posting-styles
-      '(("thievol@posteo\\.net"
+      '(((header "from" "thievol@posteo\\.net")
          (name "Thierry Volpiatto")
          (gcc "thievol@posteo.net")
          (address "thievol@posteo.net")
