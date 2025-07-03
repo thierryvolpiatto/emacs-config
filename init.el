@@ -64,6 +64,8 @@
 ;;; Global settings
 ;;
 
+(setq find-file-visit-truename t)
+
 ;; Disable annoying bindings
 (global-set-key (kbd "C-z")   nil) ; Disable `suspend-frame'.
 (global-set-key (kbd "<f11>") nil) ; Disable `toggle-frame-fullscreen'
