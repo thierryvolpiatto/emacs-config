@@ -143,6 +143,7 @@
 ;;; Helm-sys
 ;;
 (helm-top-poll-mode 1)
+(setq helm-top-command "env COLUMNS=%s top -b -c -n 1")
 
 ;;; Helm-ring
 ;;
@@ -532,7 +533,11 @@ First call indent, second complete symbol, third complete fname."
 ;;; helm-packages
 ;;
 (with-eval-after-load 'helm-packages
-  (setq helm-packages-isolate-fn #'helm-packages-isolate-1))
+  (setq helm-packages-isolate-fn #'helm-packages-isolate-1
+        helm-packages-default-clone-directory "~/work/")
+  (defun helm-packages-find-project-after-clone (package directory)
+    (helm-find-files-1 (expand-file-name package directory)))
+  (add-hook 'helm-packages-clone-after-hook #'helm-packages-find-project-after-clone))
 
 ;;; Helm-x-icons
 ;;
