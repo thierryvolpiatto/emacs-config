@@ -27,13 +27,20 @@
 
 (tv:add-subdirs-to-load-path "~/elisp")
 
+(defun tv:set-lighter (mode &optional str)
+  "Set minor MODE lighter to STR."
+  (let ((pair (assq mode minor-mode-alist)))
+    (when pair
+      (setcar (cdr pair) (or str "")))))
+
 ;;; gcmh-mode disable GC and increase gc-cons-threshold while not idle,
 ;; when idle, restore gc-cons-threshold and run GC after
 ;; gcmh-idle-delay seconds or (* gcmh-auto-idle-delay-factor
 ;; gcmh-last-gc-time) if set to auto.
 (autoload 'gcmh-mode "gcmh.el") ; Installed in ~/elisp.
 (with-eval-after-load 'gcmh
-  (setq gcmh-idle-delay 'auto))
+  (setq gcmh-idle-delay 'auto)
+  (tv:set-lighter 'gcmh-mode " gc"))
 (gcmh-mode 1)
 
 (with-eval-after-load 'find-func
@@ -50,15 +57,24 @@
 ;;
 ;; Possible values for vc backends: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
 (setq vc-handled-backends nil)
+
+(defun tv:advice-vc-ensure-vc-buffer (&rest _args)
+  "Revert buffer before using vc to setup backends."
+  (when (buffer-modified-p (current-buffer))
+    (save-buffer))
+  (revert-buffer nil t))
+
 ;; Let's psession loading buffers before setting this (much faster).
-;; When it is needed to run e.g. vc-annotate revert buffer before proceding.
 (add-hook 'emacs-startup-hook (lambda ()
                                 (setq vc-handled-backends '(RCS Git)
                                       vc-follow-symlinks t
                                       vc-ignore-dir-regexp
                                       (format "\\(%s\\)\\|\\(%s\\)"
                                               vc-ignore-dir-regexp
-                                              tramp-file-name-regexp)))
+                                              tramp-file-name-regexp)
+                                      vc-deduce-backend-nonvc-modes t)
+                                (advice-add 'vc-ensure-vc-buffer
+                                            :before #'tv:advice-vc-ensure-vc-buffer))
           100)
 
 ;;; Global settings
