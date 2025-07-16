@@ -227,6 +227,7 @@ This will run in `message-send-hook'."
       gnus-sum-thread-tree-vertical "│")
 
 (add-hook 'gnus-summary-mode-hook 'hl-line-mode)
+(add-hook 'gnus-group-mode-hook   'hl-line-mode)
 
 ;; Agent
 (setq gnus-agent-expire-days 7)
