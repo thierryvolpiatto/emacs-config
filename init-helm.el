@@ -536,7 +536,7 @@ First call indent, second complete symbol, third complete fname."
   (setq helm-packages-isolate-fn #'helm-packages-isolate-1
         helm-packages-default-clone-directory "~/work/")
   (defun helm-packages-find-project-after-clone (package directory)
-    (helm-find-files-1 (expand-file-name package directory)))
+    (helm-find-files-1 (file-name-as-directory (expand-file-name package directory))))
   (add-hook 'helm-packages-clone-after-hook #'helm-packages-find-project-after-clone))
 
 ;;; Helm-x-icons
