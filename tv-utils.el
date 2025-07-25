@@ -315,6 +315,23 @@ Ignore text read-only at bol i.e. prompts."
       (delete-region (region-beginning) (region-end))
       (delete-char arg)))
 
+;; Check paren errors
+;;;###autoload
+(defun tv:check-paren-error ()
+  (interactive)
+  (require 'pulse)
+  (catch 'noerror
+    (condition-case err
+        (save-excursion
+          (goto-char (point-min))
+          (scan-sexps (point-min) 9999999)
+          (throw 'noerror (message "No paren error found")))
+      (scan-error
+       (goto-char (caddr err))
+       (pulse-momentary-highlight-region (pos-bol) (pos-eol))
+       (message "Unbalanced parens around line %s"
+                (line-number-at-pos))))))
+
 ;; Easypg
 (defvar epa-armor)
 ;;;###autoload

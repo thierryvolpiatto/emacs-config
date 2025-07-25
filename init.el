@@ -498,6 +498,7 @@ Restart works only on graphic display."
 
 (define-key lisp-interaction-mode-map (kbd "C-M-!") 'tv:eval-region) 
 (define-key emacs-lisp-mode-map (kbd "C-M-!")       'tv:eval-region)
+(define-key emacs-lisp-mode-map (kbd "M-!")         'tv:check-paren-error)
 
 (global-set-key (kbd "M-\"")                      'tv:insert-double-quote)
 (global-set-key (kbd "M-]")                       'tv:insert-vector)
