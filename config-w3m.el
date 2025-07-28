@@ -1,4 +1,4 @@
-;;; .emacs-config-w3m.el -- config w3m for thievol
+;;; .emacs-config-w3m.el -- config w3m for thievol -*- lexical-binding: t -*-
 
 ;; Code:
 
