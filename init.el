@@ -66,7 +66,7 @@
 
 ;; Let's psession loading buffers before setting this (much faster).
 (add-hook 'emacs-startup-hook (lambda ()
-                                (setq vc-handled-backends '(RCS Git)
+                                (setq vc-handled-backends '(RCS Git Hg)
                                       vc-follow-symlinks t
                                       vc-ignore-dir-regexp
                                       (format "\\(%s\\)\\|\\(%s\\)"
@@ -1489,7 +1489,7 @@ With a prefix arg ask with completion which buffer to kill."
 ;; Toggle whitespace changes view
 (global-set-key (kbd "C-c _") 'git-gutter:toggle-space-view)
 ;; Run git-gutter after specified commands
-(add-to-list 'git-gutter:update-commands 'helm-ls-git-run-stage-marked-and-extend-commit)
+(add-to-list 'git-gutter:update-commands 'helm-browse-project)
 (add-to-list 'git-gutter:update-commands 'undo)
 
 (defun tv:git-gutter:popup-diff-quit ()
