@@ -1101,7 +1101,7 @@ With a prefix arg ask with completion which buffer to kill."
         dired-create-destination-dirs 'ask
         dired-mouse-drag-files 'copy)
   (when (boundp 'dired-vc-rename-file)
-    (setq dired-vc-rename-file t))
+    (setq dired-vc-rename-file nil))
   (require 'dired-extension))
 
 ;;; Image dired
