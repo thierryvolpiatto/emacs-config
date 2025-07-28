@@ -58,12 +58,6 @@
 ;; Possible values for vc backends: (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
 (setq vc-handled-backends nil)
 
-(defun tv:advice-vc-ensure-vc-buffer (&rest _args)
-  "Revert buffer before using vc to setup backends."
-  (when (buffer-modified-p (current-buffer))
-    (save-buffer))
-  (revert-buffer nil t))
-
 ;; Let's psession loading buffers before setting this (much faster).
 (add-hook 'emacs-startup-hook (lambda ()
                                 (setq vc-handled-backends '(RCS Git Hg)
@@ -72,9 +66,7 @@
                                       (format "\\(%s\\)\\|\\(%s\\)"
                                               vc-ignore-dir-regexp
                                               tramp-file-name-regexp)
-                                      vc-deduce-backend-nonvc-modes t)
-                                (advice-add 'vc-ensure-vc-buffer
-                                            :before #'tv:advice-vc-ensure-vc-buffer))
+                                      vc-deduce-backend-nonvc-modes t))
           100)
 
 ;;; Global settings
