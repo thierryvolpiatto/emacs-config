@@ -56,7 +56,7 @@
       org-capture-use-agenda-date t)
 (setq org-capture-templates
       '(("t" "Todo"   entry (file+headline  "~/org/agenda.org" "Tasks")        "** TODO %?\n    %i\n  %a" :prepend t)
-        ("n" "Notes"  entry (file+headline  "~/org/notes.org"  "General")      "** %T %?\n\n    %i\n"     :prepend t)
+        ("n" "Notes"  entry (file+headline  "~/org/notes.org"  "General")      "** %^{Title}\n  %i\n  %a" :prepend t)
         ("h" "Helm"   entry (file+headline  "~/org/notes.org"  "Helm")         "** %^{Title}\n  %i\n  %a" :prepend t)
         ("e" "Emacs"  entry (file+headline  "~/org/notes.org"  "Emacs")        "** %^{Title}\n  %i\n  %a" :prepend t)
         ("l" "Lisp"   entry (file+headline  "~/org/notes.org"  "Elisp")        "** %^{Title}\n  %i\n  %a" :prepend t)

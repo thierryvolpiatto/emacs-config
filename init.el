@@ -71,7 +71,6 @@
 
 ;;; Global settings
 ;;
-
 (setq find-file-visit-truename t)
 
 ;; Disable annoying bindings
