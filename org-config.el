@@ -55,19 +55,19 @@
 (setq org-default-notes-file (expand-file-name "notes.org" org-directory)
       org-capture-use-agenda-date t)
 (setq org-capture-templates
-      '(("t" "Todo" entry         (file+headline  "~/org/agenda.org" "Tasks")        "** TODO %?\n    %i\n  %a" :prepend t)
-        ("n" "Notes" entry        (file+headline  "~/org/notes.org"  "General")      "** %T %?\n\n    %i\n"     :prepend t)
-        ("E" "Entrainement" entry (file+headline  "~/org/notes.org"  "Entrainement") "** %T %?\n\n    %i\n"     :prepend t)
-        ("H" "Helm" entry         (file+headline  "~/org/notes.org"  "Helm")         "** %^{Title}\n  %i\n  %a" :prepend t)
-        ("l" "Lisp" entry         (file+headline  "~/org/notes.org"  "Elisp")        "** %^{Title}\n  %i\n  %a" :prepend t)
-        ("p" "Python" entry       (file+headline  "~/org/notes.org"  "Python")       "** %^{Title}\n  %i\n  %a" :prepend t)
-        ("b" "Bash" entry         (file+headline  "~/org/notes.org " "Bash")         "** %^{Title}\n  %i\n  %a" :prepend t)
-        ("L" "Linux" entry        (file+headline  "~/org/notes.org"  "Linux")        "** %^{Title}\n  %i\n  %a" :prepend t)))
+      '(("t" "Todo"   entry (file+headline  "~/org/agenda.org" "Tasks")        "** TODO %?\n    %i\n  %a" :prepend t)
+        ("n" "Notes"  entry (file+headline  "~/org/notes.org"  "General")      "** %T %?\n\n    %i\n"     :prepend t)
+        ("h" "Helm"   entry (file+headline  "~/org/notes.org"  "Helm")         "** %^{Title}\n  %i\n  %a" :prepend t)
+        ("e" "Emacs"  entry (file+headline  "~/org/notes.org"  "Emacs")        "** %^{Title}\n  %i\n  %a" :prepend t)
+        ("l" "Lisp"   entry (file+headline  "~/org/notes.org"  "Elisp")        "** %^{Title}\n  %i\n  %a" :prepend t)
+        ("p" "Python" entry (file+headline  "~/org/notes.org"  "Python")       "** %^{Title}\n  %i\n  %a" :prepend t)
+        ("b" "Bash"   entry (file+headline  "~/org/notes.org " "Bash")         "** %^{Title}\n  %i\n  %a" :prepend t)
+        ("L" "Linux"  entry (file+headline  "~/org/notes.org"  "Linux")        "** %^{Title}\n  %i\n  %a" :prepend t)))
 
 ;; Org-protocol
 ;; See https://orgmode.org/worg/org-contrib/org-protocol.html for
 ;; setting it up.
-(require 'org-protocol)
+;; (require 'org-protocol)
 
 ;; org-annotation-helper 
 ;; (require 'org-annotation-helper)
