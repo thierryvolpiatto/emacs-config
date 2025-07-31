@@ -1927,7 +1927,8 @@ detected."
 (autoload 'wfnames-setup-buffer "wfnames" nil t)
 (with-eval-after-load 'wfnames
   (setq wfnames-create-parent-directories t
-        wfnames-interactive-rename nil))
+        wfnames-interactive-rename nil)
+  (define-key wfnames-mode-map (kbd "C-c n") 'tv:normalize-fnames))
 
 ;;; Emms (install it from source for Emacs < 28 to avoid seq dependency)
 ;;
