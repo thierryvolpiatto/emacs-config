@@ -1126,9 +1126,10 @@ With a prefix arg ask with completion which buffer to kill."
 (autoload 'rectangle-utils-insert-at-right         "rectangle-utils" nil t)
 (autoload 'rectangle-utils-menu                    "rectangle-utils" nil t)
 (autoload 'rectangle-utils-extend-rectangle-to-end "rectangle-utils" nil t)
-(global-set-key (kbd "C-x r e") 'rectangle-utils-extend-rectangle-to-end)
-(global-set-key (kbd "C-x r h") 'rectangle-utils-menu)
+(global-set-key (kbd "C-x r e")       'rectangle-utils-extend-rectangle-to-end)
+(global-set-key (kbd "C-x r h")       'rectangle-utils-menu)
 (global-set-key (kbd "C-x r <right>") 'rectangle-utils-insert-at-right)
+(global-set-key (kbd "C-x r <left>"   'delete-whitespace-rectangle))
 
 ;;; Zop-to-char
 ;;
