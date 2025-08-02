@@ -411,10 +411,7 @@ Need sdcv and stardict-xmlittre packages as dependencies."
 ;;
 (with-eval-after-load 'helm-external
   (setq helm-raise-command                 "wmctrl -xa %s"
-        helm-default-external-file-browser "thunar")
-  (require 'emms-config)
-  (add-hook 'helm-open-file-externally-after-hook #'tv:emms-player-start-hook)
-  (add-hook 'helm-open-file-externally-after-finish-hook #'tv:emms-player-stop-hook))
+        helm-default-external-file-browser "thunar"))
 
 ;;; Helm-grep
 ;;
