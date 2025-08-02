@@ -194,8 +194,14 @@
 ;; Disable org-persist
 (when (> emacs-major-version 28)
   (with-eval-after-load 'org-persist
-    (advice-add 'org-persist-register :override #'ignore)))
-
+    (setq org-element-cache-persistent nil)
+    ;; Thanks Colin!
+    (defun zz/advice--org-persist (old-fn &rest args)
+      (let (user-init-file)
+        (apply old-fn args)))
+    (advice-add 'org-persist-clear-storage-maybe :around #'zz/advice--org-persist)
+    (when org-persist--refresh-gc-lock-timer
+      (cancel-timer org-persist--refresh-gc-lock-timer))))
 
 ;; Imenu
 (setq org-imenu-depth 4)
