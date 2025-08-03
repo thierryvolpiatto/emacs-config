@@ -2126,7 +2126,7 @@ mode temporarily."
 (psession-mode 1)
 (psession-savehist-mode 1)
 (setq psession-save-buffers-unwanted-buffers-regexp
-      "\\(diary\\|\\.jpg\\|\\.png\\|\\*image-native-display\\*\\)$")
+      "\\(diary\\|\\.jpg\\|\\.png\\|\\.org\\|\\*image-native-display\\*\\)$")
 
 ;; Link now scratch buffer to file
 (tv:restore-scratch-buffer)
