@@ -81,6 +81,11 @@
 
 (helm-mode 1)
 
+(add-to-list 'helm-completing-read-command-categories
+             '("psession-make-persistent-variable" . symbol-help))
+(add-to-list 'helm-completing-read-command-categories
+             '("psession-remove-persistent-variables" . symbol-help))
+
 (setq helm-completing-read-handlers-alist
       '((find-tag . helm-completing-read-default-find-tag)
         (ggtags-find-tag-dwim . helm-completing-read-default-find-tag)
