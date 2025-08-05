@@ -630,6 +630,10 @@ Restart works only on graphic display."
                      lst
                      '("--" ["Git status" helm-browse-project])))))
 
+(with-eval-after-load 'helm-ls-git
+  (require 'timeout)
+  (fset 'debounce-helm-ls-git--branch  (timeout-debounce #'helm-ls-git--branch 0.1))
+  (fset 'debounce-helm-ls-git-root-dir (timeout-debounce #'helm-ls-git-root-dir 0.1)))
 (defun tv:custom-modeline-github-vc ()
   (require 'helm-ls-git)
   (let* ((fname (buffer-file-name (current-buffer)))
@@ -639,8 +643,8 @@ Restart works only on graphic display."
                      ;; is enough slow.
                      (not (file-remote-p fname))
                      (fboundp 'helm-ls-git--branch)
-                     (helm-ls-git-root-dir))
-            (helm-ls-git--branch)))
+                     (debounce-helm-ls-git-root-dir))
+            (debounce-helm-ls-git--branch)))
          (status-color    "SkyBlue")
          (git-icon        (all-the-icons-faicon "git"))
          (git-branch-icon (all-the-icons-octicon "git-branch")))
