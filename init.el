@@ -632,19 +632,19 @@ Restart works only on graphic display."
 
 (with-eval-after-load 'helm-ls-git
   (require 'timeout) ; Need a modified version of timeout package.
-  (fset 'debounce-helm-ls-git--branch  (timeout-debounce #'helm-ls-git--branch 0.1))
-  (fset 'debounce-helm-ls-git-root-dir (timeout-debounce #'helm-ls-git-root-dir 0.1)))
+  (defun tv:get-git-branch (fname)
+    (when (and fname
+               ;; Don't do fancy things on remote files, tramp
+               ;; is enough slow.
+               (not (file-remote-p fname))
+               (helm-ls-git-root-dir))
+      (helm-ls-git--branch)))
+  (fset 'debounce--get-git--branch (timeout-debounce #'tv:get-git-branch 0.1)))
+
 (defun tv:custom-modeline-github-vc ()
   (require 'helm-ls-git)
   (let* ((fname (buffer-file-name (current-buffer)))
-         (branch
-          (when (and fname
-                     ;; Don't do fancy things on remote files, tramp
-                     ;; is enough slow.
-                     (not (file-remote-p fname))
-                     (fboundp 'helm-ls-git--branch)
-                     (debounce-helm-ls-git-root-dir))
-            (debounce-helm-ls-git--branch)))
+         (branch (debounce--get-git--branch fname))
          (status-color    "SkyBlue")
          (git-icon        (all-the-icons-faicon "git"))
          (git-branch-icon (all-the-icons-octicon "git-branch")))
