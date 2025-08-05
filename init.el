@@ -631,7 +631,7 @@ Restart works only on graphic display."
                      '("--" ["Git status" helm-browse-project])))))
 
 (with-eval-after-load 'helm-ls-git
-  (require 'timeout)
+  (require 'timeout) ; Need a modified version of timeout package.
   (fset 'debounce-helm-ls-git--branch  (timeout-debounce #'helm-ls-git--branch 0.1))
   (fset 'debounce-helm-ls-git-root-dir (timeout-debounce #'helm-ls-git-root-dir 0.1)))
 (defun tv:custom-modeline-github-vc ()
