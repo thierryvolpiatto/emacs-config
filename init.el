@@ -623,6 +623,7 @@ Restart works only on graphic display."
                                   (if (string= ,branch ,current)
                                       (message "Already on %s branch" real)
                                     (shell-command (format "git checkout -q '%s'" real))
+                                    (revert-buffer nil t)
                                     (message "Switched to %s branch" real)))))
              into lst
              finally return
@@ -643,8 +644,8 @@ Restart works only on graphic display."
 
 (defun tv:custom-modeline-github-vc ()
   (require 'helm-ls-git)
-  (let* ((fname (buffer-file-name (current-buffer)))
-         (branch (debounce--get-git--branch fname))
+  (let* ((fname           (buffer-file-name (current-buffer)))
+         (branch          (debounce--get-git--branch fname))
          (status-color    "SkyBlue")
          (git-icon        (all-the-icons-faicon "git"))
          (git-branch-icon (all-the-icons-octicon "git-branch")))
