@@ -641,6 +641,9 @@ Restart works only on graphic display."
                (helm-ls-git-root-dir))
       (helm-ls-git--branch)))
   (fset 'debounce--get-git--branch (timeout-debounce #'tv:get-git-branch 0.1)))
+;; The delay can be modified like this if needed (without reevaluating all or
+;; restarting emacs):
+;; (setf (timeout-debounce--delay (symbol-function 'debounce--get-git--branch)) 0.5)
 
 (defun tv:custom-modeline-github-vc ()
   (require 'helm-ls-git)
