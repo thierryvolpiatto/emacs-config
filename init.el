@@ -546,7 +546,8 @@ Restart works only on graphic display."
 ;;; Woman/man
 ;;
 (with-eval-after-load 'woman
-  (setq woman-use-own-frame nil))
+  (setq woman-use-own-frame nil)
+  (add-to-list 'woman-manpath "~/.local/kitty.app/share/man/"))
 
 (with-eval-after-load 'man
   (setq Man-notify-method 'pushy)
