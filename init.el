@@ -887,7 +887,7 @@ Restart works only on graphic display."
 
 (setq-default frame-background-mode 'dark)
 
-(setq initial-frame-alist '((fullscreen . maximized)))
+(setq initial-frame-alist '((fullscreen . maximized) (alpha . 90)))
 (setq frame-auto-hide-function 'delete-frame)
 
 (when (boundp 'other-window-scroll-default)
