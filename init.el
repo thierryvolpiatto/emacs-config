@@ -2118,14 +2118,10 @@ mode temporarily."
 
 ;;; Vundo
 ;;
-(autoload 'vundo-popup-mode "vundo-popup" nil t)
 (autoload 'vundo "vundo" nil t)
-(autoload 'vundo-diff-mark "vundo-diff" nil t)
-(autoload 'vundo-diff-unmark "vundo-diff" nil t)
-(autoload 'vundo-diff "vundo-diff" nil t)
-(vundo-popup-mode 1)
-(setq vundo-glyph-alist vundo-unicode-symbols)
-(set-face-attribute 'vundo-default nil :family "Symbola")
+(with-eval-after-load 'vundo
+  (setq vundo-glyph-alist vundo-unicode-symbols)
+  (set-face-attribute 'vundo-default nil :family "Symbola"))
 (global-set-key (kbd "C-x u") 'vundo)
 
 
