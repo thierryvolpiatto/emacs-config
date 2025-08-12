@@ -7,6 +7,12 @@
         native-comp-async-jobs-number 4
         native-comp-async-report-warnings-errors 'silent))
 
+(advice-add 'emacs-repository-get-version :override #'ignore)
+(advice-add 'emacs-repository-get-branch :override #'ignore)
+(add-hook 'after-init-hook (lambda ()
+                             (advice-remove 'emacs-repository-get-version #'ignore)
+                             (advice-remove 'emacs-repository-get-branch #'ignore)))
+
 (setq inhibit-startup-echo-area-message "thierry")
 
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
