@@ -1192,10 +1192,13 @@ With a prefix arg ask with completion which buffer to kill."
 ;;
 (when (boundp 'gud-pdb-command-name)
   (setq gud-pdb-command-name "ipdb3"))
-(setq python-shell-interpreter "ipython3"
-      python-shell-interpreter-args "-i --autoindent --simple-prompt --InteractiveShell.display_page=True"
-      python-shell-prompt-regexp "In \\[[0-9]+\\]: "
-      python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: ")
+(with-eval-after-load 'python
+  (setq python-shell-interpreter "ipython3"
+        python-shell-interpreter-args "-i --autoindent --simple-prompt --InteractiveShell.display_page=True"
+        python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+        python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+        python-shell-prompt-detect-enabled nil
+        python-shell-prompt-detect-failure-warning nil))
 (add-hook 'python-mode-hook 'flycheck-mode)
 (add-hook 'python-mode-hook 'semantic-mode)
 (add-hook 'python-mode-hook
