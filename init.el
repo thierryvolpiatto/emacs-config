@@ -885,11 +885,6 @@ Restart works only on graphic display."
 ;; Cascadia is available at
 ;; https://github.com/microsoft/cascadia-code/releases and Fira is
 ;; available in linuxmint.
-;; Need fonts-emojione package (apt)
-;; See (info "(elisp) Fontsets")
-(when (member "Emoji One" (font-family-list))
-  (set-fontset-font
-   t 'symbol (font-spec :family "Emoji One") nil 'prepend))
 
 (setq-default frame-background-mode 'dark)
 
