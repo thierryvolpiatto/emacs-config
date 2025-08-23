@@ -3,7 +3,9 @@
 ;;; code:
 
 ;; Fontify patches in gnus
-(require 'gnus-patch)
+;; Specify path to gnus-patch to use gnus from a not fully configured
+;; emacs (helm.sh).
+(require 'gnus-patch "~/elisp/gnus-patch.el")
 (advice-add 'gnus-article-prepare-display :after #'gnus-patch:article-treat-patch)
 
 ;;; Message and smtp settings

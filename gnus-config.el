@@ -5,7 +5,9 @@
 
 ;;; Code:
 
-(require 'mail-config)
+;; Specify mail-config path to use gnus in helm.sh (need to symlink
+;; gnus-config to ~/.gnus as well).
+(require 'mail-config "~/elisp/emacs-config/mail-config.el")
 
 (with-eval-after-load 'gnus-sum
   (define-key gnus-summary-mode-map [remap gnus-summary-save-parts] 'tv:gnus-save-mime-parts)
