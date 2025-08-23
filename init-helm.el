@@ -1,7 +1,7 @@
 ;;; init-helm.el --- My startup file for helm. -*- lexical-binding: t -*-
 ;;; Code:
 
-;;; Set up helm first (will load helm-autoloads.el)
+;;; Load helm-core.
 
 (require 'helm)
 ;; Only needed when installed from source.
