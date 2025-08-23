@@ -388,11 +388,6 @@ Restart works only on graphic display."
 
 ;;; Async
 ;;
-;; Need to be called before helm config.
-;; Temporary fix for emacs bug 58919.
-(when (< emacs-major-version 29)
-  (with-eval-after-load 'async
-    (setq async-child-init "~/.emacs.d/fix-copy-directory.el")))
 ;; Dired async.
 (autoload 'dired-async-mode "dired-async" nil t)
 (dired-async-mode 1)
