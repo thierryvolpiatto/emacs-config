@@ -636,7 +636,8 @@ Restart works only on graphic display."
                (not (file-remote-p fname))
                (helm-ls-git-root-dir))
       (helm-ls-git--branch)))
-  (fset 'debounce--get-git--branch (timeout-debounce #'tv:get-git-branch 0.1)))
+  (defalias 'debounce--get-git--branch (timeout-debounce #'tv:get-git-branch 0.1)
+    "Call `tv:get-git-branch' only after emacs becomes idle 0.1s."))
 ;; The delay can be modified like this if needed (without reevaluating all or
 ;; restarting emacs):
 ;; (setf (timeout-closure--delay (symbol-function 'debounce--get-git--branch)) 0.5)
@@ -1860,7 +1861,7 @@ detected."
 ;; Maybe turn on auto-fill-mode when a comment or docstring field
 ;; is detected. Ensure the hook is appended otherwise things like
 ;; eldoc-eval will not work.
-(add-hook 'post-command-hook #'tv:turn-on-auto-fill-mode-maybe t)
+(add-hook 'post-command-hook #'tv:turn-on-auto-fill-mode-maybe 99)
 
 (global-set-key (kbd "<f11> s c")                     'tv:goto-scratch)
 (global-set-key (kbd "<S-f12>")                       'cancel-debug-on-entry)
