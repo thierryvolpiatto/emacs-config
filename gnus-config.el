@@ -22,6 +22,8 @@
 
 (setq gnus-read-active-file 'some)
 (setq gnus-check-new-newsgroups 'ask-server)
+;; Allow followup to news from Gmane.
+(setq gnus-mailing-list-groups "^gmane")
 
 ;;; Gnus methods
 ;;
