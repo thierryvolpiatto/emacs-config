@@ -682,6 +682,7 @@ With a prefix arg prompt to edit file extensions."
   (interactive "P")
   (cl-assert (memq major-mode '(wfnames-mode wdired-mode)) nil
              "No filenames to modify in this buffer")
+  (barf-if-buffer-read-only)
   (let* ((exts    (tv:collect-file-exts-in-buffer))
          (strings (and edit-exts
                        (read-from-minibuffer
