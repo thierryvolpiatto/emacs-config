@@ -667,7 +667,10 @@ Used by the Mailto script used from firefox."
     (save-excursion
       (goto-char (point-min))
       (while (re-search-forward "[. ]" nil t)
-        (unless (looking-at-p regexp) (replace-match "_"))))))
+        (unless (looking-at-p regexp)
+          (replace-match (if (save-match-data
+                               (looking-back "_ " 1))
+                             "" "_")))))))
 
 ;;;###autoload
 (defun tv:normalize-fnames (&optional edit-exts)
