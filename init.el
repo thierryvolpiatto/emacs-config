@@ -391,6 +391,7 @@ Restart works only on graphic display."
 ;; Dired async.
 (autoload 'dired-async-mode "dired-async" nil t)
 (dired-async-mode 1)
+(setq dired-async-skip-fast t)
 ;; async-bytecomp
 (autoload 'async-byte-recompile-directory "async-bytecomp")
 (autoload 'async-byte-compile-file "async-bytecomp")
@@ -628,7 +629,7 @@ Restart works only on graphic display."
                      '("--" ["Git status" helm-browse-project])))))
 
 (with-eval-after-load 'helm-ls-git
-  (require 'timeout) ; Need a modified version of timeout package.
+  (require 'timeout-closure)
   (defun tv:get-git-branch (fname)
     (when (and fname
                ;; Don't do fancy things on remote files, tramp
@@ -636,7 +637,7 @@ Restart works only on graphic display."
                (not (file-remote-p fname))
                (helm-ls-git-root-dir))
       (helm-ls-git--branch)))
-  (defalias 'debounce--get-git--branch (timeout-debounce #'tv:get-git-branch 0.1)
+  (defalias 'debounce--get-git--branch (timeout-closure-debounce #'tv:get-git-branch 0.1)
     "Call `tv:get-git-branch' only after emacs becomes idle 0.1s."))
 ;; The delay can be modified like this if needed (without reevaluating all or
 ;; restarting emacs):
