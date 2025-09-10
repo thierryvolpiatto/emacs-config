@@ -669,7 +669,10 @@ Used by the Mailto script used from firefox."
       (while (re-search-forward "[. ]" nil t)
         (unless (looking-at-p regexp)
           (replace-match (if (save-match-data
-                               (looking-back "_ " 1))
+                               ;; "foo_ !bar.txt"
+                               (or (looking-back "[_-] " 1)
+                                   ;; "foo !- bar.txt"
+                                   (looking-at "[-_]")))
                              "" "_")))))))
 
 ;;;###autoload
