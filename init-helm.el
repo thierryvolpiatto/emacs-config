@@ -110,7 +110,6 @@
 (add-to-list 'helm-completion-styles-alist '(python-mode . (emacs helm helm-flex)))
 
 ;; Custom completion matching
-;; (add-to-list 'helm-completion-styles-alist '(wfnames-mode . (emacs helm flex)))
 (add-to-list 'helm-completion-styles-alist '(switch-to-buffer . helm-fuzzy))
 
 ;; `completions-detailed' works now with both
@@ -198,6 +197,7 @@
 (with-eval-after-load 'helm-files
   (setq helm-ff-auto-update-initial-value        t
         helm-ff-allow-non-existing-file-at-point t
+        helm-ff-candidate-number-limit           5000
         helm-trash-remote-files                  t
         helm-dwim-target                         'next-window
         helm-locate-recursive-dirs-command "locate -i -e --regex '^%s' '%s.*$'"
@@ -436,13 +436,6 @@ Need sdcv and stardict-xmlittre packages as dependencies."
   (set-face-attribute 'helm-grep-match nil :background "yellow" :foreground "black")
   (add-hook 'helm-grep-mode-hook 'hl-line-mode)
   (define-key helm-grep-map   (kbd "C-M-a") 'helm/occur-which-func))
-
-;;; Helm-bm
-;;
-(with-eval-after-load 'helm-bm
-  (setq helm-bm-sort-from-pos nil)
-  (define-key helm-bm-map (kbd "<f12>") 'helm-next-line)
-  (define-key helm-bm-map (kbd "S-<f12>") 'helm-previous-line))
 
 ;;; Helm-occur
 ;;
