@@ -38,7 +38,7 @@
 ;;; Load all autoloads for helm extensions
 ;;
 ;;
-(load "/home/thierry/elisp/helm-extensions/helm-extensions-autoloads.el")
+(load "helm-extensions-autoloads.el")
 
 
 (defun helm/debug-toggle ()
