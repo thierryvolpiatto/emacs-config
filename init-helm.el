@@ -9,24 +9,16 @@
 ;; make creates it with a provide, so require helm-autoloads is
 ;; supported only when building with make from source.
 (require 'helm-autoloads)
-(setq helm-input-idle-delay                     0.01
-      helm-reuse-last-window-split-state        t
-      helm-always-two-windows                   t
-      helm-split-window-inside-p                nil
+(setq helm-reuse-last-window-split-state        t
       helm-commands-using-frame                 '(completion-at-point helm-imenu
                                                   helm-imenu-in-all-buffers)
-      helm-actions-inherit-frame-settings       t
       helm-use-frame-when-more-than-two-windows t
       helm-use-frame-when-no-suitable-window    t
       helm-frame-background-color               "DarkSlateGray"
-      helm-show-action-window-other-window      'left
-      helm-allow-mouse                          t
       helm-move-to-line-cycle-in-source         t
       helm-autoresize-max-height                80   ; it is %.
       helm-autoresize-min-height                20   ; it is %.
-      helm-debug-root-directory                 "/home/thierry/tmp/helm-debug"
       helm-follow-mode-persistent               t
-      helm-candidate-number-limit               500
       helm-visible-mark-prefix                  "✓"
       helm-kill-real-or-display-selection       'real)
 (set-face-foreground 'helm-mark-prefix "Gold1")
