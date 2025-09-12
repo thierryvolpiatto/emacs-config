@@ -1814,12 +1814,6 @@ With a prefix arg ask with completion which buffer to kill."
   (setq bug (replace-regexp-in-string "#" "" (format "%s" bug)))
   (helm-find-files-1 (format "https://debbugs.gnu.org/%s" bug)))
 
-;; Add fontification to some functions
-(cl-dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
-  (font-lock-add-keywords
-   mode
-   '(("(\\<\\(cl-dolist\\)\\>" 1 font-lock-keyword-face))))
-
 (defvar tv:autofill-modes '(emacs-lisp-mode
                             lisp-interaction-mode
                             sh-mode))
