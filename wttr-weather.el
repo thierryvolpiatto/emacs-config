@@ -4,10 +4,21 @@
 ;;; Code:
 
 (require 'ansi-color)
+(require 'face-remap)
 
 (defvar wttr-weather-history nil)
 (defvar wttr-weather-default-location "Guillestre")
 (defvar wttr-weather-last-location nil)
+
+(defgroup wttr-weather nil
+  "Wttr.in weather emacs interface."
+  :group 'convenience
+  :prefix "wttr-weather-")
+
+(defface wttr-weather-buffer-face
+  '((t :family "Liberation Mono"))
+  "Default face for the weather display buffer."
+  :group 'wttr-weather)
 
 ;;;###autoload
 (defun wttr-weather (place)
@@ -21,6 +32,8 @@ See <https://github.com/chubin/wttr.in>."
                                   wttr-weather-default-location)))
   (let ((buf (get-buffer-create (format "*wttr.in %s*" place))))
     (switch-to-buffer buf)
+    (set-buffer buf)
+    (setq buffer-face-mode-face 'wttr-weather-buffer-face)
     (when current-prefix-arg
       (set (make-local-variable 'wttr-weather-last-location) nil))
     (unless wttr-weather-last-location
@@ -83,8 +96,9 @@ See <https://github.com/chubin/wttr.in>."
 (define-derived-mode wttr-weather-mode
     special-mode "wttr"
     "Mode used to display wttr-weather buffer."
-  (make-local-variable 'wttr-weather-last-location)
-  (set (make-local-variable 'revert-buffer-function) 'wttr-weather-revert-fn))
+    (buffer-face-mode 1)
+    (make-local-variable 'wttr-weather-last-location)
+    (set (make-local-variable 'revert-buffer-function) 'wttr-weather-revert-fn))
 (put 'wttr-weather-mode 'no-helm-mx t)
 
 (provide 'wttr-weather)
