@@ -1172,6 +1172,30 @@ With a prefix arg ask with completion which buffer to kill."
   (setq iedit-increment-format-string "%03d"))
 (global-set-key [C-return] 'iedit-rectangle-mode)
 
+;; Modify syntax-table in some modes while iedit-mode is running.
+(defvar tv-syntax-for-iedit-alist
+  '((ninja-mode . ((?/ . ".") (?$ . "'")))))
+
+(defvar tv--syntax-for-iedit-modified nil)
+
+(defun tv-iedit-syntax-hook-fn ()
+  (let ((mode-syntax (assoc-default major-mode tv-syntax-for-iedit-alist))
+        (table (copy-syntax-table)))
+    (when mode-syntax
+      (set-syntax-table table)
+      (cl-loop for (x . y) in mode-syntax
+               do (modify-syntax-entry x y table))
+      (setq tv--syntax-for-iedit-modified t))))
+
+(defun tv-iedit-restore-syntax-fn ()
+  (when tv--syntax-for-iedit-modified
+    (set-syntax-table (symbol-value
+                       (intern (format "%s-syntax-table" major-mode))))
+    (setq tv--syntax-for-iedit-modified nil)))
+
+(add-hook 'iedit-mode-before-hook #'tv-iedit-syntax-hook-fn)
+(add-hook 'iedit-mode-end-hook #'tv-iedit-restore-syntax-fn)
+
 ;;; Eldoc
 ;;
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
