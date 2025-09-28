@@ -155,14 +155,13 @@ Restart works only on graphic display."
 
 ;; Themes
 (setq custom-theme-directory "~/.emacs.d/themes/")
-
+(add-to-list 'custom-theme-load-path "~/work/github/doom-themes/themes/")
+(add-to-list 'load-path "~/work/github/doom-themes/")
 (defvar tv:use-random-themes nil)
 (defvar tv:current-theme nil)
-(defvar tv:favorite-themes '(naquadah-tv naquadah
-                             syhoex github-dark-vscode
-                             adwaita-dark wombat
-                             leuven-dark vs-dark
-                             manoj-dark wheatgrass))
+(defvar tv:favorite-themes '(naquadah-tv doom-winter-is-coming-dark-blue
+                             doom-badger doom-moonlight doom-1337
+                             doom-tokyo-night doom-vibrant doom-one))
 
 (add-hook 'emacs-startup-hook
           (lambda ()
@@ -179,7 +178,8 @@ Restart works only on graphic display."
 (defun tv:load-theme (theme)
   (interactive (list (let ((completion-extra-properties '(:category theme)))
                             (completing-read "Load custom theme: "
-                                             (custom-available-themes)))))
+                                             (custom-available-themes)
+                                             nil t))))
   (setq theme (intern-soft theme))
   (when tv:current-theme
     (disable-theme tv:current-theme))
