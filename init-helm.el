@@ -513,6 +513,13 @@ First call indent, second complete symbol, third complete fname."
   (setq helm-ls-git-delete-branch-on-remote t
         helm-ls-git-auto-refresh-at-eob t))
 
+;;; Helm-bm
+;;
+(with-eval-after-load 'helm-bm
+  (setq helm-bm-sort-from-pos nil)
+  (define-key helm-bm-map (kbd "<f12>") 'helm-next-line)
+  (define-key helm-bm-map (kbd "S-<f12>") 'helm-previous-line))
+
 ;;; Helm-M-x
 ;;
 (setq helm-M-x-exclude-unusable-commands-in-mode t)
