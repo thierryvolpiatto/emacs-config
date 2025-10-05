@@ -391,7 +391,8 @@ Restart works only on graphic display."
 ;; Dired async.
 (autoload 'dired-async-mode "dired-async" nil t)
 (dired-async-mode 1)
-(setq dired-async-skip-fast t)
+(setq dired-async-skip-fast t
+      dired-async-large-file-warning-threshold nil)
 ;; async-bytecomp
 (autoload 'async-byte-recompile-directory "async-bytecomp")
 (autoload 'async-byte-compile-file "async-bytecomp")
