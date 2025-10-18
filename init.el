@@ -1560,7 +1560,7 @@ With a prefix arg ask with completion which buffer to kill."
         (let ((pwd (eshell/pwd)))
           (with-temp-buffer
             (let* ((default-directory (file-name-as-directory pwd))
-                   (proc (process-file
+                   (proc (process-file ; branch name.
                           "git" nil t nil
                           "symbolic-ref" "HEAD" "--short"))
                    (id (propertize (if (= (user-uid) 0) " # " " $ ")
@@ -1569,21 +1569,26 @@ With a prefix arg ask with completion which buffer to kill."
               (unless (= proc 0)
                 (erase-buffer)
                 (setq detached t)
-                (setq proc (process-file
+                (setq proc (process-file ; commit id.
                             "git" nil t nil
                             "rev-parse" "--short" "HEAD")))
               (if (= proc 0)
                   (progn
+                    ;; The branch name or a short hash if detached.
                     (setq branch (replace-regexp-in-string
                                   "\n" "" (buffer-string)))
                     (erase-buffer)
-                    (setq proc (process-file
+                    (setq proc (process-file ; Status.
                                 "git" nil t nil "status" "--porcelain"))
-                    (setq status (pcase (buffer-string)
-                                   ((and str (guard (and (not (string= str ""))
-                                                         (= proc 0))))
-                                    (if (string-match "\\`[?]" str) "?" "*"))
-                                   (_ "")))
+                    (setq status (save-excursion
+                                   (goto-char (point-min))
+                                   (cl-loop while (re-search-forward "^ ?\\([?M]\\)" nil t)
+                                            for s = (match-string 1) 
+                                            concat (cond ((string-match "?" s)
+                                                          (propertize s 'face 'font-lock-property-name-face))
+                                                         ((string-match "M" s)
+                                                          (propertize s 'face 'font-lock-warning-face))
+                                                         (t "")))))
                     (format "%s@%s:%s(%s%s)%s"
                             (getenv "USER") (system-name)
                             (propertize (abbreviate-file-name pwd) 'face 'italic)
@@ -1591,11 +1596,8 @@ With a prefix arg ask with completion which buffer to kill."
                                          "%s%s"
                                          (if detached "detached@" "")
                                          branch)
-                                        'face '((:foreground "red")))
-                            (propertize status
-                                        'face `((:foreground
-                                                 ,(if (string= "?" status)
-                                                      "OrangeRed" "gold1"))))
+                                        'face 'font-lock-type-face)
+                            status
                             id))
                 (format "%s@%s:%s%s"
                         (getenv "USER") (system-name)
