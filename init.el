@@ -2106,14 +2106,6 @@ mode temporarily."
 (global-set-key (kbd "C-!")   'bm-toggle)
 (global-set-key (kbd "<f12>") 'helm-bm) ; autoloaded in init-helm.
 
-;;; Vundo
-;;
-(autoload 'vundo "vundo" nil t)
-(with-eval-after-load 'vundo
-  (setq vundo-glyph-alist vundo-unicode-symbols)
-  (set-face-attribute 'vundo-default nil :family "Symbola"))
-(global-set-key (kbd "C-x u") 'vundo)
-
 
 ;;; Load time
 ;;

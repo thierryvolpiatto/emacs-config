@@ -12,6 +12,7 @@
 (setq helm-reuse-last-window-split-state        t
       helm-commands-using-frame                 '(completion-at-point helm-imenu
                                                   helm-imenu-in-all-buffers)
+      helm-always-two-windows                   t
       helm-use-frame-when-more-than-two-windows t
       helm-use-frame-when-no-suitable-window    t
       helm-frame-background-color               "DarkSlateGray"
@@ -544,6 +545,7 @@ First call indent, second complete symbol, third complete fname."
 (define-key helm-command-map (kbd "g") 'helm-apt-search)
 (define-key helm-command-map (kbd "z") 'helm-complex-command-history)
 (define-key helm-command-map (kbd "x") 'helm-firefox-bookmarks)
+(define-key helm-command-map (kbd "b") 'helm-brave-bookmarks)
 (define-key helm-command-map (kbd "w") 'helm-wikipedia-suggest)
 (define-key helm-command-map (kbd "#") 'helm-emms)
 (define-key helm-command-map (kbd "I") 'helm-imenu-in-all-buffers)
