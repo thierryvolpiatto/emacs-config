@@ -1555,6 +1555,11 @@ With a prefix arg ask with completion which buffer to kill."
 
 ;;; Eshell-config
 ;;
+;; Must be configured before loading eshell which will setup
+;; eshell-password-prompt-regexp according to this.
+(setq password-word-equivalents '("password" "passcode" "passphrase" "pass phrase"
+                                  "pin" "decryption key" "encryption key"
+                                  "mot de passe"))
 (setq eshell-prompt-function
       (lambda ()
         (let ((pwd (eshell/pwd)))
@@ -1582,7 +1587,7 @@ With a prefix arg ask with completion which buffer to kill."
                                 "git" nil t nil "status" "--porcelain"))
                     (setq status (save-excursion
                                    (goto-char (point-min))
-                                   (cl-loop while (re-search-forward "^ ?\\([?M]\\)" nil t)
+                                   (cl-loop while (re-search-forward "^ ?\\([?A-Z]\\)" nil t)
                                             for s = (match-string 1) 
                                             concat (cond ((string-match "?" s)
                                                           (propertize s 'face 'font-lock-property-name-face))
@@ -1603,8 +1608,9 @@ With a prefix arg ask with completion which buffer to kill."
                         (getenv "USER") (system-name)
                         (propertize (abbreviate-file-name pwd) 'face 'italic)
                         id)))))))
-(setq eshell-password-prompt-regexp
-      "\\(\\(?:adgangskode\\|contrase\\(?:\\(?:ny\\|ñ\\)a\\)\\|geslo\\|h\\(?:\\(?:asł\\|esl\\)o\\)\\|iphasiwedi\\|jelszó\\|l\\(?:ozinka\\|ösenord\\)\\|[Mm]\\(?:ot de passe\\|ật khẩu\\)\\|pa\\(?:rola\\|s\\(?:ahitza\\|s\\(?: phrase\\|code\\|ord\\|phrase\\|wor[dt]\\)\\|vorto\\)\\)\\|s\\(?:alasana\\|enha\\|laptažodis\\)\\|wachtwoord\\|лозинка\\|пароль\\|ססמה\\|كلمة السر\\|गुप्तशब्द\\|शब्दकूट\\|গুপ্তশব্দ\\|পাসওয়ার্ড\\|ਪਾਸਵਰਡ\\|પાસવર્ડ\\|ପ୍ରବେଶ ସଙ୍କେତ\\|கடவுச்சொல்\\|సంకేతపదము\\|ಗುಪ್ತಪದ\\|അടയാളവാക്ക്\\|රහස්පදය\\|ពាក្យសម្ងាត់\\|パスワード\\|密[码碼]\\|암호\\)\\).*:.*\\'")
+
+;; (setq eshell-password-prompt-regexp
+;;       "\\(\\(?:[Mm]\\(?:ot de passe\\)\\|pa\\(?:s\\(?:s\\(?: phrase\\|code\\|ord\\|phrase\\|wor[dt]\\)\\)\\)\\)\\).*:.*\\'")
 
 ;; Compatibility 24.2/24.3
 (unless (or (fboundp 'eshell-pcomplete)
