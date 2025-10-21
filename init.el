@@ -268,17 +268,6 @@ Restart works only on graphic display."
 (global-set-key (kbd "C-M-s") nil)
 (global-set-key (kbd "C-M-r") nil)
 
-;; `while-no-input-ignore-events' is not set in emacs-27+ (bug#46940).
-(unless (and (boundp 'while-no-input-ignore-events)
-             while-no-input-ignore-events)
-  (setq while-no-input-ignore-events
-        '(focus-in
-          focus-out
-          help-echo
-          iconify-frame
-          make-frame-visible
-          selection-request)))
-
 ;; Don't beep even with visible-bell (debian)
 (setq ring-bell-function 'ignore)
 
@@ -414,13 +403,12 @@ Restart works only on graphic display."
 
 (global-set-key (kbd "<f11> t") 'tv:term)
 
-;; Browse url
+;; Browse url default browser
 ;;
 ;;
 (with-eval-after-load 'browse-url
-  ;; See avail browser at ~/work/github/helm/helm-net.el:253
-  (setq browse-url-firefox-program "firefox"
-        browse-url-browser-function 'helm-browse-url-firefox))
+  ;; See avail browser at ~/work/github/helm/helm-net.el:255
+  (setq browse-url-browser-function 'helm-browse-url-brave))
 
 ;;; Diff/Ediff
 ;;
@@ -576,7 +564,10 @@ Restart works only on graphic display."
                             "Sh "))
     (setq mode-line-process nil))
   (add-to-list 'auto-mode-alist '("\\.bashrc\\'" . sh-mode))
-  (add-hook 'sh-mode-hook #'flycheck-mode)
+  ;; Use shellcheck as backend for flymake.
+  (add-hook 'sh-mode-hook #'flymake-mode)
+  (autoload 'flymake-shellcheck-load "flymake-shellcheck")
+  (add-hook 'sh-mode-hook 'flymake-shellcheck-load)
   (add-hook 'sh-mode-hook #'tv:set-sh-script-mode-name)
   (define-key sh-mode-map (kbd "RET") 'newline-and-indent)
   (define-key sh-mode-map (kbd "C-h f") 'helm-info-bash))
@@ -1192,8 +1183,6 @@ With a prefix arg ask with completion which buffer to kill."
         python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
         python-shell-prompt-detect-enabled nil
         python-shell-prompt-detect-failure-warning nil))
-(add-hook 'python-mode-hook 'flycheck-mode)
-(add-hook 'python-mode-hook 'semantic-mode)
 (add-hook 'python-mode-hook
           (lambda ()
             (setq-local mode-name "py")
