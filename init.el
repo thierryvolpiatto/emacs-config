@@ -258,16 +258,6 @@ Restart works only on graphic display."
 ;; Disable indent-tabs-mode
 (setq-default indent-tabs-mode nil)
 
-;; Disable all isearch bindings
-(global-set-key [remap isearch-forward] 'undefined)
-(global-set-key [remap isearch-backward] 'undefined)
-(global-set-key [remap isearch-forward-regexp] 'undefined)
-(global-set-key [remap isearch-backward-regexp] 'undefined)
-(global-set-key (kbd "C-r") nil)
-(global-set-key (kbd "C-s") nil)
-(global-set-key (kbd "C-M-s") nil)
-(global-set-key (kbd "C-M-r") nil)
-
 ;; Don't beep even with visible-bell (debian)
 (setq ring-bell-function 'ignore)
 
@@ -314,6 +304,16 @@ Restart works only on graphic display."
 (put 'file-name-history 'history-length 1000)
 ;; Limit M-x history to 50.
 (put 'extended-command-history 'history-length 50)
+
+;; Disable all Isearch bindings
+(global-set-key [remap isearch-forward] 'undefined)
+(global-set-key [remap isearch-backward] 'undefined)
+(global-set-key [remap isearch-forward-regexp] 'undefined)
+(global-set-key [remap isearch-backward-regexp] 'undefined)
+(global-set-key (kbd "C-r") nil)
+(global-set-key (kbd "C-s") nil)
+(global-set-key (kbd "C-M-s") nil)
+(global-set-key (kbd "C-M-r") nil)
 
 ;;; Isearch-light (Installed in site-lisp with make)
 ;;
