@@ -13,6 +13,7 @@
       helm-commands-using-frame                 '(completion-at-point helm-imenu
                                                   helm-imenu-in-all-buffers)
       helm-always-two-windows                   t
+      helm-split-window-default-side            'below
       helm-use-frame-when-more-than-two-windows t
       helm-use-frame-when-no-suitable-window    t
       helm-frame-background-color               "DarkSlateGray"
