@@ -301,7 +301,7 @@ Restart works only on graphic display."
 ;;
 (setq history-delete-duplicates t)
 (setq history-length            100)
-(put 'file-name-history 'history-length 1000)
+(put 'file-name-history 'history-length 50)
 ;; Limit M-x history to 50.
 (put 'extended-command-history 'history-length 50)
 
@@ -646,22 +646,17 @@ Restart works only on graphic display."
          (branch          (debounce--get-git--branch fname))
          (status-color    "SkyBlue")
          (git-icon        (all-the-icons-faicon "git"))
-         (git-branch-icon (all-the-icons-octicon "git-branch")))
+         (git-branch-icon (all-the-icons-octicon "git-branch" :face '(:foreground "Deepskyblue3"))))
     (when branch
-      (concat
-       (propertize (format " %s" git-icon) 'face '(:height 1.2) 'display '(raise -0.1))
-       " · "
-       (propertize (format "%s" git-branch-icon)
-                     'face `(:height 1.3 :family ,(all-the-icons-octicon-family) :foreground "Deepskyblue3")
-                     'display '(raise -0.1))
-       (propertize (format " %s" branch)
-                   'face `(:height 0.9 :foreground ,status-color)
-                   'mouse-face 'highlight
-                   'help-echo "Mouse-1: Switch to branch"
-                   'local-map (make-mode-line-mouse-map
-                               'mouse-1 (lambda ()
-                                          (interactive)
-                                          (popup-menu (tv:select-git-branches-menu)))))))))
+      (concat git-icon " " git-branch-icon
+              (propertize (format " %s" branch)
+                          'face `(:height 0.9 :foreground ,status-color)
+                          'mouse-face 'highlight
+                          'help-echo "Mouse-1: Switch to branch"
+                          'local-map (make-mode-line-mouse-map
+                                      'mouse-1 (lambda ()
+                                                 (interactive)
+                                                 (popup-menu (tv:select-git-branches-menu)))))))))
 
 (with-eval-after-load 'all-the-icons
   ;; Will have no effect in emacs-30<.
@@ -2103,6 +2098,20 @@ mode temporarily."
 (global-set-key (kbd "C-!")   'bm-toggle)
 (global-set-key (kbd "<f12>") 'helm-bm) ; autoloaded in init-helm.
 
+;;; OSM
+;;
+(with-eval-after-load 'osm
+  (setq osm-home '(44.66 6.62 12)) ; Mont-Dauphin
+  (setq osm-server 'opentopomap)
+  (setq osm-max-tiles 512))
+
+;;; Recentf
+;;
+(with-eval-after-load 'recentf
+  (recentf-mode 1)
+  (setq recentf-max-saved-items 50)
+  (dolist (elm '("COMMIT_EDITMSG$" "emms-history$" "emms-cache$" "newsrc\\.eld$"))
+    (add-to-list 'recentf-exclude elm)))
 
 ;;; Load time
 ;;
