@@ -408,7 +408,7 @@ Restart works only on graphic display."
 ;;
 (with-eval-after-load 'browse-url
   ;; See avail browser at ~/work/github/helm/helm-net.el:255
-  (setq browse-url-browser-function 'helm-browse-url-brave))
+  (setq browse-url-browser-function 'helm-browse-url-firefox))
 
 ;;; Diff/Ediff
 ;;
