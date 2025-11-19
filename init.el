@@ -408,7 +408,8 @@ Restart works only on graphic display."
 ;;
 (with-eval-after-load 'browse-url
   ;; See avail browser at ~/work/github/helm/helm-net.el:255
-  (setq browse-url-browser-function 'helm-browse-url-firefox))
+  (setq browse-url-browser-function 'helm-browse-url-firefox
+        helm-browse-url-brave-program "brave"))
 
 ;;; Diff/Ediff
 ;;
@@ -939,6 +940,7 @@ If ARG is non nil decrease transparency."
 ;; Use `display-buffer-alist' instead of deprecated
 ;; `special-display-regexps'. All entries must be dedicated to
 ;; replicate `special-display-regexps' behavior.
+(setq switch-to-buffer-obey-display-actions t)
 (customize-set-variable 'display-buffer-alist
                         (append '(("\\*Help"
                                    ;; Avoid creating new frames
@@ -986,7 +988,7 @@ If ARG is non nil decrease transparency."
                                      (foreground-color . "black")
                                      (alpha . nil)
                                      (fullscreen . nil))))
-                                  ("\\*helm apt show\\*"
+                                  ("\\*helm-system-packages-output\\*"
                                    (display-buffer-pop-up-frame)
                                    (dedicated . t)
                                    (pop-up-frame-parameters .

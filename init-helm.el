@@ -41,16 +41,6 @@
   (message "Helm Debug is now %s"
            (if helm-debug "Enabled" "Disabled")))
 
-(defun helm/occur-which-func ()
-  (interactive)
-  (with-current-buffer
-      (or (helm-aif (with-helm-buffer
-                      (window-buffer helm-persistent-action-display-window))
-              (and (null (minibufferp it)) it))
-          helm-current-buffer)
-    (when (eq major-mode 'emacs-lisp-mode)
-      (message "[%s]" (which-function)))))
-
 (defun helm/bash-history ()
   (interactive)
   (helm :sources (helm-build-in-file-source "Bash history" "~/.bash_history"
@@ -180,7 +170,8 @@
         helm-buffers-fuzzy-matching t
         helm-boring-buffer-regexp-list
         '("\\` " "\\`\\*helm" "\\`\\*Echo Area" "\\`\\*Minibuf"
-          "\\`\\*Messages" "\\`\\*Magit" "\\`\\*git-gutter" "\\`\\*Help" "\\`\\*skitour"))
+          "\\`\\*Messages" "\\`\\*Fancy Diary Entries"
+          "\\`\\*git-gutter" "\\`\\*Help" "\\`\\*skitour"))
   (customize-set-variable 'helm-buffers-maybe-switch-to-tab  t)
   (customize-set-variable 'helm-buffers-show-icons t)
 
@@ -428,8 +419,7 @@ Need sdcv and stardict-xmlittre packages as dependencies."
         helm-grep-git-grep-command
         "git --no-pager grep -n%cH --color=always --exclude-standard --no-index --full-name -e %p -- %f")
   (set-face-attribute 'helm-grep-match nil :background "yellow" :foreground "black")
-  (add-hook 'helm-grep-mode-hook 'hl-line-mode)
-  (define-key helm-grep-map   (kbd "C-M-a") 'helm/occur-which-func))
+  (add-hook 'helm-grep-mode-hook 'hl-line-mode))
 
 ;;; Helm-occur
 ;;
@@ -437,8 +427,7 @@ Need sdcv and stardict-xmlittre packages as dependencies."
   (setq helm-occur-keep-closest-position t)
   (setq helm-occur-match-shorthands t)
   (setq helm-occur-candidate-number-limit 500)
-  (add-hook 'helm-occur-mode-hook 'hl-line-mode)
-  (define-key helm-occur-map (kbd "C-M-a") 'helm/occur-which-func))
+  (add-hook 'helm-occur-mode-hook 'hl-line-mode))
 
 ;;; Helm-elisp
 ;;
@@ -543,7 +532,7 @@ First call indent, second complete symbol, third complete fname."
 ;;; Helm-command-map
 ;;
 ;;
-(define-key helm-command-map (kbd "g") 'helm-apt-search)
+(define-key helm-command-map (kbd "g") 'helm-system-packages)
 (define-key helm-command-map (kbd "z") 'helm-complex-command-history)
 (define-key helm-command-map (kbd "x") 'helm-firefox-bookmarks)
 (define-key helm-command-map (kbd "b") 'helm-brave-bookmarks)
