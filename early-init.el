@@ -13,8 +13,6 @@
                              (advice-remove 'emacs-repository-get-version #'ignore)
                              (advice-remove 'emacs-repository-get-branch #'ignore)))
 
-(setq inhibit-startup-echo-area-message "thierry")
-
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                          ("gnu"   . "https://elpa.gnu.org/packages/")
                          ("nongnu" . "https://elpa.nongnu.org/nongnu/")))

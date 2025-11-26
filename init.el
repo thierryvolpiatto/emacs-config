@@ -2,6 +2,8 @@
 
 ;;; Code:
 
+(setq inhibit-startup-echo-area-message "thierry")
+
 (defvar tv:startup-time (current-time))
 (defun tv:emacs-load-time ()
   (let ((time (float-time (time-subtract (current-time) tv:startup-time))))
@@ -2052,7 +2054,7 @@ mode temporarily."
   (define-key w3m-mode-map (kbd "RET")            'tv:w3m-RET)
   (define-key w3m-mode-map (kbd "<backspace>")    'tv:scroll-up)
   (define-key w3m-lynx-like-map (kbd "S-<right>") 'w3m-view-this-url-new-session))
-(global-set-key (kbd "<f7> h") 'w3m)
+(global-set-key (kbd "<f7>") 'w3m)
 
 ;;; Gnus
 ;;
