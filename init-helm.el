@@ -191,7 +191,6 @@
         helm-file-name-history-hide-deleted t
         helm-ff-ignore-following-on-directory t
         helm-rsync-progress-bar-function #'helm-rsync-svg-progress-bar)
-  (customize-set-variable 'helm-find-files-ignore-diacritics t)
 
   (defun helm-ff-dragon (files)
     "Create a small window with FILES ready to drag and drop.

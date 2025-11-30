@@ -410,8 +410,7 @@ Restart works only on graphic display."
 ;;
 (with-eval-after-load 'browse-url
   ;; See avail browser at ~/work/github/helm/helm-net.el:255
-  (setq browse-url-browser-function 'helm-browse-url-firefox
-        helm-browse-url-brave-program "brave"))
+  (setq browse-url-browser-function 'helm-browse-url-firefox))
 
 ;;; Diff/Ediff
 ;;
@@ -875,7 +874,7 @@ Restart works only on graphic display."
 
 (setq-default frame-background-mode 'dark)
 
-(setq initial-frame-alist '((fullscreen . maximized) (alpha . 90)))
+(setq initial-frame-alist '((fullscreen . maximized)))
 (setq frame-auto-hide-function 'delete-frame)
 
 (when (boundp 'other-window-scroll-default)
