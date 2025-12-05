@@ -407,10 +407,6 @@ Need sdcv and stardict-xmlittre packages as dependencies."
 (with-eval-after-load 'helm-grep
   (setq helm-pdfgrep-default-read-command
         "xreader --page-label=%p '%f'"
-        helm-grep-default-command
-        "ack -Hn --color --smart-case --no-group %e -- %p %f"
-        helm-grep-default-recurse-command
-        "ack -H --color --smart-case --no-group %e -- %p %f"
         helm-grep-ag-command
         "rg --color=always --colors 'match:bg:yellow' --colors 'match:fg:black' --smart-case --search-zip --no-heading --line-number %s -- %s %s"
         helm-grep-ag-pipe-cmd-switches
@@ -534,7 +530,6 @@ First call indent, second complete symbol, third complete fname."
 (define-key helm-command-map (kbd "g") 'helm-system-packages)
 (define-key helm-command-map (kbd "z") 'helm-complex-command-history)
 (define-key helm-command-map (kbd "x") 'helm-firefox-bookmarks)
-(define-key helm-command-map (kbd "b") 'helm-brave-bookmarks)
 (define-key helm-command-map (kbd "w") 'helm-wikipedia-suggest)
 (define-key helm-command-map (kbd "#") 'helm-emms)
 (define-key helm-command-map (kbd "I") 'helm-imenu-in-all-buffers)
