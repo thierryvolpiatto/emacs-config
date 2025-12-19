@@ -6,7 +6,7 @@
 (require 'helm)
 ;; Only needed when installed from source.
 ;; NOTE: package.el creates an autoload file without a provide whereas
-;; make creates it with a provide, so require helm-autoloads is
+;; make creates it with a provide, so (require 'helm-autoloads) is
 ;; supported only when building with make from source.
 (require 'helm-autoloads)
 (setq helm-reuse-last-window-split-state        t

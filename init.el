@@ -2111,10 +2111,12 @@ mode temporarily."
 ;;; Recentf
 ;;
 (with-eval-after-load 'recentf
-  (recentf-mode 1)
   (setq recentf-max-saved-items 50)
   (dolist (elm '("COMMIT_EDITMSG$" "emms-history$" "emms-cache$" "newsrc\\.eld$"))
     (add-to-list 'recentf-exclude elm)))
+;; Otherwise recentf starts recording only after hitting C-c h in HFF.
+(recentf-mode 1)
+
 
 ;;; Load time
 ;;
