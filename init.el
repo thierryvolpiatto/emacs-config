@@ -566,10 +566,6 @@ Restart works only on graphic display."
                             "Sh "))
     (setq mode-line-process nil))
   (add-to-list 'auto-mode-alist '("\\.bashrc\\'" . sh-mode))
-  ;; Use shellcheck as backend for flymake.
-  (add-hook 'sh-mode-hook #'flymake-mode)
-  (autoload 'flymake-shellcheck-load "flymake-shellcheck")
-  (add-hook 'sh-mode-hook 'flymake-shellcheck-load)
   (add-hook 'sh-mode-hook #'tv:set-sh-script-mode-name)
   (define-key sh-mode-map (kbd "RET") 'newline-and-indent)
   (define-key sh-mode-map (kbd "C-h f") 'helm-info-bash))
