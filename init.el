@@ -288,15 +288,6 @@ Restart works only on graphic display."
                                 ?e 'tv:view-echo-area-messages
                                 '((?q . tv:quit-echo-area))))
 
-;;; Compatibility
-;;
-;;
-;; For `osm' in skitour (open street map)
-(unless (fboundp 'json-available-p)
-  (defun json-available-p ()
-    (fboundp 'json-parse-string)))
-
-
 ;;;; Package configurations.
 
 ;;; History
