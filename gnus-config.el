@@ -81,7 +81,11 @@
                               "nnimap+posteo:Spam-Log"
                               "nnimap+posteo:Trash"
                               "nnimap+posteo:github-magit"
-                              "nnimap+posteo:github-mu")
+                              "nnimap+posteo:github-mu"
+                              "nnimap+posteo:payoneer"
+                              "nnimap+posteo:github-iedit"
+                              "nnimap+posteo:cachyos"
+                              "nnimap+posteo:Bouygues")
                              ("gmane"
                               "gmane.emacs.bugs"
                               "gmane.emacs.devel"
