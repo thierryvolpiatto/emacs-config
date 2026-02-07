@@ -128,7 +128,7 @@ depending the value of N is positive or negative."
         (insert str))
       (condition-case _err
           (while (setq expr (read (current-buffer)))
-            (push (eval expr) store))
+            (push (eval expr t) store))
         (end-of-file nil)))
     (message "Evaluated in Region:\n- %s"
              (mapconcat 'identity
