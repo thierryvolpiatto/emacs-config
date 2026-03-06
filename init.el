@@ -160,7 +160,6 @@ Restart works only on graphic display."
 (add-to-list 'custom-theme-load-path "~/work/github/doom-themes/themes/")
 (add-to-list 'load-path "~/work/github/doom-themes/")
 (defvar tv:use-random-themes nil)
-(defvar tv:current-theme nil)
 (defvar tv:favorite-themes '(naquadah-tv doom-winter-is-coming-dark-blue
                              doom-badger doom-moonlight doom-1337
                              doom-tokyo-night doom-vibrant doom-one))
@@ -170,11 +169,9 @@ Restart works only on graphic display."
             (if tv:use-random-themes
                 (let ((theme (nth (random (length tv:favorite-themes))
                                   tv:favorite-themes)))
-                  (setq tv:current-theme theme)
                   (load-theme theme t)
                   (message "Theme %s loaded" theme))
-              (setq tv:current-theme (car tv:favorite-themes))
-              (load-theme tv:current-theme t))))
+              (load-theme (car tv:favorite-themes) t))))
 
 ;; Helm affixation for theme will be available after loading helm.
 (defun tv:load-theme (theme)
@@ -183,10 +180,10 @@ Restart works only on graphic display."
                                              (custom-available-themes)
                                              nil t))))
   (setq theme (intern-soft theme))
-  (when tv:current-theme
-    (disable-theme tv:current-theme))
-  (load-theme theme t)
-  (setq tv:current-theme theme))
+  (let ((current-theme (car custom-enabled-themes)))
+    (when current-theme
+      (disable-theme current-theme))
+    (load-theme theme t)))
 
 ;;; emacs-backup-config
 ;;
