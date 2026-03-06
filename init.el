@@ -179,11 +179,7 @@ Restart works only on graphic display."
                             (completing-read "Load custom theme: "
                                              (custom-available-themes)
                                              nil t))))
-  (setq theme (intern-soft theme))
-  (let ((current-theme (car custom-enabled-themes)))
-    (when current-theme
-      (disable-theme current-theme))
-    (load-theme theme t)))
+  (customize-set-variable 'custom-enabled-themes (list (intern-soft theme))))
 
 ;;; emacs-backup-config
 ;;
