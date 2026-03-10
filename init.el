@@ -521,6 +521,7 @@ Restart works only on graphic display."
   (add-to-list 'woman-manpath "~/.local/kitty.app/share/man/"))
 
 (with-eval-after-load 'man
+  (setq manual-program "w3mman")
   (setq Man-notify-method 'pushy)
   ;; Get rid of the most of the time unuseful default.
   (advice-add 'Man-default-man-entry :override #'ignore))
