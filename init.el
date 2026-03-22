@@ -2099,6 +2099,17 @@ mode temporarily."
 ;; Otherwise recentf starts recording only after hitting C-c h in HFF.
 (recentf-mode 1)
 
+;;; Comint
+;;
+;; Kill buffer and window when hitting C-d and stop beeing prompted.
+(with-eval-after-load 'comint
+  (defun comint--advice-send-eof (&rest _args)
+    (let* ((buf (current-buffer))
+           (win (get-buffer-window buf 'visible)))
+      (set-process-query-on-exit-flag (get-buffer-process buf) nil)
+      (when win (quit-window t))))
+  (advice-add 'comint-send-eof :after 'comint--advice-send-eof))
+
 
 ;;; Load time
 ;;
