@@ -2022,6 +2022,8 @@ mode temporarily."
 ;;; W3m
 ;;
 ;;
+(require 'w3m-load nil t) ; this is the autoload file when installed from source.
+
 (with-eval-after-load 'w3m
   (require 'config-w3m)
   (define-key w3m-mode-map (kbd "M-<right>")      'w3m-next-buffer)
