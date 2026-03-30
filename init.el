@@ -2084,13 +2084,6 @@ mode temporarily."
 (global-set-key (kbd "C-!")   'bm-toggle)
 (global-set-key (kbd "<f12>") 'helm-bm) ; autoloaded in init-helm.
 
-;;; OSM
-;;
-(with-eval-after-load 'osm
-  (setq osm-home '(44.66 6.62 12)) ; Mont-Dauphin
-  (setq osm-server 'opentopomap)
-  (setq osm-max-tiles 512))
-
 ;;; Recentf
 ;;
 (with-eval-after-load 'recentf
