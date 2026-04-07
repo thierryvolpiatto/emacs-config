@@ -1487,14 +1487,14 @@ With a prefix arg ask with completion which buffer to kill."
   (setq whitespace-line-column 80))
 (global-set-key (kbd "C-c W") 'whitespace-mode)
 
-;;; markdown-mode (autoloaded by package)
+;;; markdown-mode
 ;;
-(with-eval-after-load 'markdown-mode
-  (setq auto-mode-alist
-        (append '(("\\.markdown$" . markdown-mode)
-                  ("\\.md$" . markdown-mode)
-                  ("\\.mdpp$" . markdown-mode))
-                auto-mode-alist)))
+(autoload 'markdown-mode "markdown-mode" nil t)
+(setq auto-mode-alist
+      (append '(("\\.markdown$" . markdown-mode)
+                ("\\.md$" . markdown-mode)
+                ("\\.mdpp$" . markdown-mode))
+              auto-mode-alist))
 
 ;;; Markdown/Org-toc
 ;;
