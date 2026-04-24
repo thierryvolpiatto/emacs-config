@@ -162,7 +162,7 @@
   (require 'helm-net)
   (let ((url (w3m-active-region-or-url-at-point)))
     (when url
-      (if (string-match "\\.\\(patch\\|diff\\)\\?.*" url)
+      (if (string-match "\\.\\(patch\\|diff\\)\\'" url)
           (tv:show-patch-other-frame (if arg (concat url "?w=1") url))
         (browse-url url)))))
 

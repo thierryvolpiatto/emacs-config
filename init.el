@@ -1339,6 +1339,7 @@ With a prefix arg ask with completion which buffer to kill."
   
   (unless (fboundp 'calendar-recenter)
     (defun calendar-recenter ()
+      "Recenter month at point in calendar."
       (interactive nil 'calendar-mode)
       (let ((month-at-pt (car (calendar-cursor-to-date)))
             (iter        (iterator:list '(center left right) 'cycle))
