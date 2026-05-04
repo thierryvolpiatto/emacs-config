@@ -2106,6 +2106,11 @@ mode temporarily."
       (when win (quit-window t))))
   (advice-add 'comint-send-eof :after 'comint--advice-send-eof))
 
+;;; Yeetube
+;;
+;; Needs yt-dlp and mpv as dependencies
+(autoload 'yeetube-search "yeetube" nil t)
+
 
 ;;; Load time
 ;;
