@@ -278,7 +278,7 @@ new directory."
          (emms-play-file candidate)))
      source
      (lambda (candidate)
-       (or (and (file-directory-p candidate)
+       (or (and (file-accessible-directory-p candidate)
                 (directory-files
                  candidate
                  nil ".*\\.\\(mp3\\|ogg\\|flac\\)$" t))
