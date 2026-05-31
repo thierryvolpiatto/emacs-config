@@ -50,9 +50,7 @@
 
 ;;; Emacs customize own file
 ;;
-(setq custom-file (if (<= emacs-major-version 30)
-                      "~/.emacs.d/.emacs-custom.el"
-                    "~/.emacs.d/.emacs-custom-31.el"))
+(setq custom-file "~/.emacs.d/.emacs-custom.el")
 (load custom-file)
 
 ;;; VC
@@ -81,7 +79,8 @@
 
 ;; Prevent emacs warning when hitting <XF86TouchpadOff> and
 ;; <XF86TouchpadOn> to disable/enabling TouchPad.
-(define-key global-map (kbd "<XF86TouchpadOff>") (lambda () (interactive) (message "TouchPad disabled")))
+;; Seems Emacs-30+ don't know about <XF86TouchpadOff> so use <f23>.
+(define-key global-map (kbd "<f23>") (lambda () (interactive) (message "TouchPad disabled")))
 (define-key global-map (kbd "<XF86TouchpadOn>")  (lambda () (interactive) (message "TouchPad reenabled")))
 
 ;; Revert-buffer
