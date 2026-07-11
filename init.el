@@ -1898,6 +1898,9 @@ detected."
 
 ;;; Emms (install it from source for Emacs < 28 to avoid seq dependency)
 ;;
+;; With this set, HFF may not use directory-files to check directory
+;; contents (faster) .
+(setq emms-source-file-default-directory "~/Musique")
 (with-eval-after-load 'emms
   ;; When helm-emms will load and require emms, config will be
   ;; loaded.
@@ -2109,6 +2112,8 @@ mode temporarily."
 ;;
 ;; Needs yt-dlp and mpv as dependencies
 (autoload 'yeetube-search "yeetube" nil t)
+(with-eval-after-load 'yeetube
+  (setq yeetube-download-audio-format "mp3"))
 
 
 ;;; Load time
