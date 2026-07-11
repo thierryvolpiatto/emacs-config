@@ -279,9 +279,9 @@ new directory."
      source
      (lambda (candidate)
        (or (and (file-accessible-directory-p candidate)
-                (directory-files
-                 candidate
-                 nil ".*\\.\\(mp3\\|ogg\\|flac\\)$" t))
+                ;; Set in init.el before loading emms.
+                emms-source-file-default-directory
+                (file-in-directory-p candidate emms-source-file-default-directory))
            (string-match-p ".*\\.\\(mp3\\|ogg\\|flac\\)$" candidate)))
      1)
     ;; Setup recoll dirs
