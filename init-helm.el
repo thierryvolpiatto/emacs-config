@@ -519,6 +519,11 @@ First call indent, second complete symbol, third complete fname."
     (helm-find-files-1 (file-name-as-directory (expand-file-name package directory))))
   (add-hook 'helm-packages-clone-after-hook #'helm-packages-find-project-after-clone))
 
+;;; helm-firefox
+;;
+(with-eval-after-load 'helm-firefox
+  (customize-set-variable 'helm-firefox-default-directory "~/.config/mozilla/firefox"))
+
 ;;; Helm-x-icons
 ;;
 ;; (with-eval-after-load 'helm-x-icons
