@@ -61,6 +61,15 @@
                                        ;; Don't download mime parts when receiving mail, only text part, use
                                        ;; instead `A-C' to see entire mail.
                                        (nnimap-fetch-partial-articles "text/"))))
+
+;; Try to fix bug when replying with attachment (emacs-31.1) :
+;; gnus-get-function: No such function: nntp-request-create-group
+;; Always use the NOERROR arg of gnus-get-function.
+(when (> emacs-major-version 30)
+  (defun tv:advice-gnus-get-function (method function &optional noerror)
+    (setq noerror t))
+  (advice-add 'gnus-get-function :before #'tv:advice-gnus-get-function))
+
 ;; Gnus topic
 (with-eval-after-load 'gnus-topic
   (progn
