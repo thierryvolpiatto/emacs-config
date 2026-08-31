@@ -1240,6 +1240,8 @@ With a prefix arg ask with completion which buffer to kill."
       '((t (:background "DarkOliveGreen")))
     "Face used to highlight diary blocks in calendar."
     :group 'calendar)
+  ;; The :set function uses `calendar-set-date-style' fn which set
+  ;; several other variables, so don't customize this.
   (setq calendar-date-style 'european)
   (setq calendar-mark-diary-entries-flag t)
   (setq calendar-mark-holidays-flag t)
@@ -1247,7 +1249,10 @@ With a prefix arg ask with completion which buffer to kill."
   (setq holiday-hebrew-holidays nil)
   (setq holiday-islamic-holidays nil)
   (setq holiday-oriental-holidays nil)
-
+  
+  (when (boundp 'diary-date-insertion-form)
+    ;; New in emacs-31, set it to behave as in previous emacs versions.
+    (setq diary-date-insertion-form '(monthname " " day ", " year)))
   (setq diary-display-function 'diary-fancy-display)
   (add-hook 'diary-list-entries-hook 'diary-sort-entries t)
   (add-hook 'calendar-today-visible-hook 'calendar-mark-today)
