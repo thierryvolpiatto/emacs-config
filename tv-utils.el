@@ -99,14 +99,14 @@
 ;;; switch-other-window 
 ;;
 ;;;###autoload
-(defun other-window-backward (&optional n)
+(defun tv:other-window-backward (&optional n)
   "Move backward to other window or frame."
   (interactive "p")
   (other-window (- n) 0)
   (select-frame-set-input-focus (selected-frame)))
 
 ;;;###autoload
-(defun other-window-forward (&optional n)
+(defun tv:other-window-forward (&optional n)
   "Move to other window or frame.
 With a prefix arg move N window forward or backward
 depending the value of N is positive or negative."
@@ -353,22 +353,6 @@ Ignore text read-only at bol i.e. prompts."
 (defun gpg-sign-to-sig (file)
   "Create a .sig file."
   (epa-sign-file file nil 'detached))
-
-;;;###autoload
-(defun tv:gpg-verify-file (gpg-file)
-  "Meant to be used from eshell alias.
-    alias gpg-verify tv:gpg-verify-file $1"
-  (let ((data-file (directory-files
-                    (file-name-directory (expand-file-name gpg-file)) t
-                    (concat (regexp-quote (helm-basename gpg-file t)) "$"))))
-    (cl-assert (member (file-name-extension gpg-file) '("gpg" "sig" "asc"))
-               nil "Please select the signed file not the data file")
-    (cl-assert (null (cdr data-file)) nil "Failed to find data-file")
-    (setq data-file (car data-file))
-    (with-temp-buffer
-      (if (= (call-process "gpg" nil t nil "--verify" gpg-file data-file) 0)
-          (buffer-string)
-        "Gpg error while verifying signature"))))
 
 ;; Switch indenting lisp style.
 ;;;###autoload
