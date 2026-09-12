@@ -236,6 +236,7 @@ If entries are already pointed, skip."
                               ("MOTIF: DECLIC" . ":codevi")
                               ("GITHUB SPONSORS" . ":thierry:github")
                               ("IMMOB PATRIMOINE ET FINANCES" . ":loyers:immovar")
+                              ("FONCIA MEDITERRANEE GERANCE MOTIF" . ":loyers:foncia")
                               ("VIR GIE AFER" . ":afer:racp")
                               ("PIERVAL SANTE" . ":scpi:pierval")
                               ("LFREM DISTRI SCPI" . ":scpi:lfrem")
