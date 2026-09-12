@@ -1582,6 +1582,13 @@ With a prefix arg ask with completion which buffer to kill."
                         (propertize (abbreviate-file-name pwd) 'face 'italic)
                         id)))))))
 
+;; Fix how eshell-command output is displayed and provide
+;; `eshell-command-show-output' var which allow customizing when we
+;; display output (all async or sync).
+(require 'eshell-command-advice)
+(setq eshell-command-show-output 'sync)
+(advice-add 'eshell-command :override #'tv:advice-eshell-command)
+
 ;; (setq eshell-password-prompt-regexp
 ;;       "\\(\\(?:[Mm]\\(?:ot de passe\\)\\|pa\\(?:s\\(?:s\\(?: phrase\\|code\\|ord\\|phrase\\|wor[dt]\\)\\)\\)\\)\\).*:.*\\'")
 
