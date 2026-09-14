@@ -704,6 +704,8 @@ Restart works only on graphic display."
                  '("Téléchargements" all-the-icons-faicon "cloud-download" :height 0.9 :v-adjust -0.1))
     (add-to-list 'all-the-icons-dir-icon-alist
                  '("Bureau" all-the-icons-octicon "device-desktop" :height 1.0 :v-adjust -0.1))
+    (add-to-list 'all-the-icons-dir-icon-alist
+                 '("Mail" all-the-icons-material "mail" :height 1.0 :v-adjust -0.1))
     ;; Icons for modes.
     (setf (alist-get 'sh-mode all-the-icons-mode-icon-alist)
           '(all-the-icons-alltheicon "terminal" :face all-the-icons-purple :v-adjust 0.0))
