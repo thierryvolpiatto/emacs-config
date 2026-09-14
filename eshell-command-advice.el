@@ -5,7 +5,8 @@
 (defvar eshell-non-interactive-p)
 
 (defcustom eshell-command-show-output 'sync
-  "doc"
+  "When to show output of eshell-command.
+Can be either the symbols always, async, sync or never."
   :type '(choice
           (const :tag "Show output for async and sync commands" all)
           (const :tag "Show output only for async commands" async)
@@ -53,9 +54,9 @@ buffer is already taken by another running shell command."
              (show-output
               (cond ((eq eshell-command-show-output 'never) nil)
                     ((string= bufname eshell-command-buffer-name-async)
-                     (memq eshell-command-show-output '(all async)))
+                     (memq eshell-command-show-output '(always async)))
                     ((string= bufname eshell-command-buffer-name-sync)
-                     (memq eshell-command-show-output '(all sync)))))
+                     (memq eshell-command-show-output '(always sync)))))
              unique)
         (when bufname
           (when (buffer-live-p (get-buffer bufname))
