@@ -4,14 +4,13 @@
 
 (defvar eshell-non-interactive-p)
 
-(defcustom eshell-command-show-output 'sync
+(defcustom eshell-command-show-output '(sync)
   "When to show output of eshell-command.
-Can be either the symbols always, async, sync or never."
-  :type '(choice
-          (const :tag "Show output for async and sync commands" all)
-          (const :tag "Show output only for async commands" async)
-          (const :tag "Show output only for sync commands" sync)
-          (const :tag "Never show output" never))
+This is a list like \\='(sync async), if the list is empty no output
+is shown."
+  :type '(set
+          (const :tag "Show output for async commands" async)
+          (const :tag "Show output for sync commands" sync))
   :group 'eshell
   :version "32.1")
 
@@ -52,11 +51,10 @@ buffer is already taken by another running shell command."
                        (async eshell-command-buffer-name-async)
                        (t eshell-command-buffer-name-sync)))
              (show-output
-              (cond ((eq eshell-command-show-output 'never) nil)
-                    ((string= bufname eshell-command-buffer-name-async)
-                     (memq eshell-command-show-output '(always async)))
+              (cond ((string= bufname eshell-command-buffer-name-async)
+                     (memq 'async eshell-command-show-output))
                     ((string= bufname eshell-command-buffer-name-sync)
-                     (memq eshell-command-show-output '(always sync)))))
+                     (memq 'sync eshell-command-show-output))))
              unique)
         (when bufname
           (when (buffer-live-p (get-buffer bufname))
