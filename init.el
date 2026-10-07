@@ -1588,7 +1588,6 @@ With a prefix arg ask with completion which buffer to kill."
 ;; `eshell-command-show-output' var which allow customizing when we
 ;; display output (all async or sync).
 (require 'eshell-command-advice)
-(setq eshell-command-show-output 'sync)
 (advice-add 'eshell-command :override #'tv:advice-eshell-command)
 
 ;; (setq eshell-password-prompt-regexp
