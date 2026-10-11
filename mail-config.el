@@ -96,9 +96,10 @@
   (setq gnus-completing-read-function #'tv:gnus-emacs-completing-read))
 
 ;; Html renderer (shr)
-(setq mm-text-html-renderer (if (fboundp 'w3m) 'w3m 'shr))
-(setq shr-color-visible-luminance-min 75)
-(setq shr-use-colors nil)
+(setq mm-text-html-renderer 'shr) ;(if (fboundp 'w3m) 'w3m 'shr))
+(setq shr-color-visible-luminance-min 75
+      shr-use-colors nil
+      shr-use-fonts nil)
 
 ;; I use C-c C-c to browse url and RET for scrolling.
 (with-eval-after-load 'shr
@@ -160,7 +161,9 @@
 (defun tv:browse-url-or-show-patch (arg)
   (interactive "P" gnus-article-mode)
   (require 'helm-net)
-  (let ((url (w3m-active-region-or-url-at-point)))
+  (let ((url (if (eq mm-text-html-renderer 'w3m)
+                 (w3m-active-region-or-url-at-point)
+               (get-text-property (point) 'shr-url))))
     (when url
       (if (string-match "\\.\\(patch\\|diff\\)\\'" url)
           (tv:show-patch-other-frame (if arg (concat url "?w=1") url))
