@@ -520,7 +520,13 @@ Restart works only on graphic display."
   (add-to-list 'woman-manpath "~/.local/kitty.app/share/man/"))
 
 (with-eval-after-load 'man
-  (setq manual-program "w3mman")
+  (when (< emacs-major-version 32)
+    ;; Use ansi-osc as in Emacs-32.
+    (defun tv:advice-Man-fontify-manpage ()
+      (require 'ansi-osc)
+      (let ((ansi-osc-handlers '(("8" . ansi-osc-hyperlink-handler))))
+        (ansi-osc-apply-on-region (point-min) (point-max))))
+    (advice-add 'Man-fontify-manpage :after #'tv:advice-Man-fontify-manpage))
   (setq Man-notify-method 'pushy)
   ;; Get rid of the most of the time unuseful default.
   (advice-add 'Man-default-man-entry :override #'ignore))
@@ -2033,7 +2039,7 @@ mode temporarily."
     (when (or current-prefix-arg (null url))
       (setq url (read-string (format-prompt "Url" "debbugs.gnu.org")
                              nil nil "https://debbugs.gnu.org/%s")))
-    (w3m-browse-url (format url bug-number) t t)))
+    (browse-url (format url bug-number) t t)))
 
 ;;; W3m
 ;;
