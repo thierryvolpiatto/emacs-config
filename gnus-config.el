@@ -98,7 +98,7 @@
                              ("gmane"
                               "gmane.emacs.bugs"
                               "gmane.emacs.devel"
-                              "gmane.emacs.elpa.scm")
+                              "gmane.emacs.help")
                              ("misc")
                              ("Gnus"
                               "nnfolder+archive:sent")))))
