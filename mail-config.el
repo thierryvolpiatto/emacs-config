@@ -96,7 +96,7 @@
   (setq gnus-completing-read-function #'tv:gnus-emacs-completing-read))
 
 ;; Html renderer (shr)
-(setq mm-text-html-renderer 'shr) ;(if (fboundp 'w3m) 'w3m 'shr))
+(setq mm-text-html-renderer (if (fboundp 'w3m) 'w3m 'shr))
 (setq shr-color-visible-luminance-min 75
       shr-use-colors nil
       shr-use-fonts nil)
