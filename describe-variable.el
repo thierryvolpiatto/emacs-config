@@ -97,6 +97,7 @@ Large values are not pretty printed."
    (let ((v (variable-at-point))
          (enable-recursive-minibuffers t)
          (orig-buffer (current-buffer))
+         pp-escape-newlines
          val)
      (setq val (completing-read
                 (format-prompt "Describe variable" (and (symbolp v) v))
