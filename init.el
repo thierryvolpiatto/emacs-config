@@ -1623,7 +1623,8 @@ With a prefix arg ask with completion which buffer to kill."
             ;; Make `completion-at-point' use
             ;; bash-completion which works
             ;; with mostly all (no eshell aliases).
-            (add-hook 'completion-at-point-functions 'bash-completion-eshell-capf -99 t)
+            ;; Update: Use now readline-completion package.
+            (add-hook 'completion-at-point-functions 'readline-completion-at-point -99 t)
             ;; Completion on eshell aliases among other things. It's
             ;; pretty unclear which map to use, at least it
             ;; changes nearly at each emacs version :-(.
@@ -1855,7 +1856,7 @@ detected."
 ;;; Macro expand
 ;;
 ;; Installed in ~/elisp. Keep this version as latest needs compat package.
-(autoload 'macrostep-expand "macrostep.el" nil t)
+(autoload 'macrostep-expand "macrostep" nil t)
 (define-key lisp-interaction-mode-map (kbd "M-e") 'macrostep-expand)
 (define-key emacs-lisp-mode-map (kbd "M-e") 'macrostep-expand)
 (with-eval-after-load 'macrostep
@@ -1871,6 +1872,11 @@ detected."
     (save-excursion (eshell-bol) (point))
     (point) t)
    '(:exclusive no)))
+
+;;; Readline completion
+;;
+;; Installed in ~/elisp. Needs GNU Readline 8.3, released in July 2025.
+(autoload 'readline-completion-at-point "readline-completion" nil t)
 
 ;;; Log-view (only used with RCS)
 ;;
