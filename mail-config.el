@@ -61,6 +61,20 @@
         mm-file-name-collapse-whitespace
         mm-file-name-replace-whitespace))
 
+;; Junk mail
+;; (when (require 'mm-decode)
+;;   (setq mm-discouraged-alternatives
+;;         '("text/html"
+;;           "text/richtext"
+;;           "text/enriched"
+;;           "multipart/related"
+;;           "image/.*")
+;;         mm-automatic-display
+;;         (remove "text/html" mm-automatic-display)))
+
+;; Try to inline images
+;; (setq mm-inline-text-html-with-images t)
+
 ;; Save mime parts
 (defun tv:gnus-mime-parts ()
   (with-current-buffer gnus-article-buffer

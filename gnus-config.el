@@ -278,32 +278,6 @@ This will run in `message-send-hook'."
 ;;  ("gmane.spam.detected" -1000 nil s)))
 (setq gnus-summary-expunge-below -999)
 
-
-;;; Message and smtp settings
-;;
-;;
-;;; mm-* settings
-;;
-;; Junk mail
-
-;; (when (require 'mm-decode)
-;;   (setq mm-discouraged-alternatives
-;;         '("text/html"
-;;           "text/richtext"
-;;           "text/enriched"
-;;           "multipart/related"
-;;           "image/.*")
-;;         mm-automatic-display
-;;         (remove "text/html" mm-automatic-display)))
-
-;;; Remove white space in filenames
-;;
-;;
-
-;; Try to inline images
-;; (setq mm-inline-text-html-with-images t)
-
-
 (setq gnus-inhibit-mime-unbuttonizing nil)
 (setq gnus-buttonized-mime-types '("multipart/signed"
                                    "multipart/alternative"))
