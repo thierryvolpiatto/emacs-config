@@ -15,7 +15,8 @@
       ;; Set these variables manually as `w3m-display-mode' is sucking.
       w3m-use-tab t
       w3m-pop-up-frames nil
-      w3m-pop-up-windows nil)
+      w3m-pop-up-windows nil
+      w3m-fill-column 72)
 
 ;; `w3m-bookmark-save-buffer' is backing up bookmark file by renaming,
 ;; so that when `w3m-bookmark-file' is a symlink the symlink is

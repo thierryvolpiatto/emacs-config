@@ -94,7 +94,10 @@
                               "nnimap+posteo:payoneer"
                               "nnimap+posteo:github-iedit"
                               "nnimap+posteo:cachyos"
-                              "nnimap+posteo:Bouygues")
+                              "nnimap+posteo:Bouygues"
+                              "nnimap+posteo:VisuGPX"
+                              "nnimap+posteo:Banque"
+                              "nnimap+posteo:Afer")
                              ("gmane"
                               "gmane.emacs.bugs"
                               "gmane.emacs.devel"
@@ -105,7 +108,7 @@
 (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
 
 (setq gnus-ignored-from-addresses "thievol@posteo\\.net")
-(setq gnus-thread-sort-functions '((not gnus-thread-sort-by-number)))
+;; (setq gnus-thread-sort-functions '((not gnus-thread-sort-by-number)))
 
 ;; Change "From" field according to "To" field on reply.
 (setq gnus-posting-styles
