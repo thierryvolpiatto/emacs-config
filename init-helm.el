@@ -288,14 +288,14 @@ new directory."
     (when (executable-find "recoll")
       (helm-source-add-action-to-source-if
        "Recoll index directory"
-       'helm-ff-recoll-index-directories
+       #'helm-ff-recoll-index-directories
        source
        'file-directory-p
        3))
     ;; Csv to ledger
     (helm-source-add-action-to-source-if
      "Csv2Ledger"
-     'helm-ff-csv2ledger
+     #'helm-ff-csv2ledger
      source
      (lambda (candidate)
        (member (file-name-extension candidate) '("csv")))
