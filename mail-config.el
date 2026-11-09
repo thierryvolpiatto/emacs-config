@@ -90,14 +90,32 @@
                do (forward-line 1)))))
 
 (defun tv:gnus-save-mime-parts ()
+  "Save mime parts in `mm-default-directory'.
+If file to save already exists in `mm-default-directory', copy it as
+\"file<n>.txt\" where n is incremented at each turn."
   (interactive nil gnus-summary-mode gnus-article-mode)
   (let* ((helm-comp-read-use-marked t)
          (parts (tv:gnus-mime-parts))
-         (files (completing-read "Save mime part(s): " (mapcar 'car parts) nil t)))
+         (files (completing-read "Save mime part(s): "
+                                 (mapcar 'car parts) nil t))
+         (fnum 1))
     (when files
       (dolist (f files)
-        (mm-save-part-to-file
-         (assoc-default f parts) (expand-file-name f mm-default-directory))))))
+        (let* ((target (expand-file-name f mm-default-directory))
+               (bn     (file-name-nondirectory
+                        (file-name-sans-extension target))))
+          ;; If foo.txt exists next save will be foo<1>.txt, if
+          ;; foo<n>.txt exists, next save will be foo<n+1>.txt.
+          (when (file-exists-p target)
+            (dolist (file (directory-files mm-default-directory
+                                           t (regexp-quote bn)))
+              (when (string-match (format "%s<\\([[:digit:]]+\\)>\\'" bn)
+                                  (file-name-sans-extension file))
+                (let ((n (string-to-number (match-string 1 file))))
+                  (setq fnum (if (= n fnum) (1+ n) (max n fnum))))))
+            (setq target (format "%s<%s>%s" (file-name-sans-extension target)
+                                 fnum (file-name-extension target t))))
+          (mm-save-part-to-file (assoc-default f parts) target))))))
 
 ;; We can't use directly `completing-read' because the signature of
 ;; `gnus-completing-read' which funcall this is not the same (missing predicate). 
