@@ -304,7 +304,7 @@ Restart works only on graphic display."
 ;;
 (load "isl-autoloads")
 (global-set-key (kbd "C-s") 'isl-search)
-(global-set-key (kbd "C-z") 'isl-narrow-to-defun)
+(global-set-key (kbd "C-z") 'isl-search-defun)
 (global-set-key (kbd "C-r") 'isl-resume)
 (with-eval-after-load 'isl
   (setq isl-before-position-string "≤"
