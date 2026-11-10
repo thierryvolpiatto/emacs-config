@@ -2078,6 +2078,13 @@ mode temporarily."
 (require 'mail-config) ; Needed for C-x m when gnus has not started yet.
 (setq gnus-init-file "~/.emacs.d/.gnus.el")
 
+;;; Offlineimap
+;;
+(autoload 'offlineimap "offlineimap" nil t)
+(add-hook 'offlineimap-event-hooks 'gnus-group-get-new-news)
+(with-eval-after-load 'gnus-group
+  (define-key gnus-group-mode-map (kbd "U") 'offlineimap))
+
 ;;; Sensors
 ;;
 (autoload 'sensors "sensors" nil t)

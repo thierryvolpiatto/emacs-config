@@ -28,6 +28,8 @@
 ;;; Gnus methods
 ;;
 ;;
+(setq gnus-select-method '(nntp "news.gmane.io"))
+
 ;; Three methods described here to use Emails with Gnus:
 
 ;; 1) This is the configuration using dovecot server.
@@ -36,31 +38,35 @@
 ;; mail_location = maildir:~/Maildir:LAYOUT=fs
 ;; Need also offlineimap to feed ~/Maildir.
 
-;; (setq gnus-select-method
-;;       '(nnimap "Posteo"
-;;         (nnimap-address "localhost")
-;;         (nnimap-stream network)
-;;         (nnimap-authenticator login)))
-
-(setq gnus-select-method '(nntp "news.gmane.io"))
+;; (setq gnus-secondary-select-methods
+;;       '((nnimap "Posteo"
+;;          (nnimap-address "localhost")
+;;          (nnimap-stream network)
+;;          (nnimap-authenticator login))))
 
 ;; 2) The nnmaildir config: Use offlineimap to feed ~/.nnmaildir
 ;; The ~/.offlineimaprc used by offlineimap command should point to
-;; ~/.nnmaildir. Looks nice but too slow to be used.
-;; (setq gnus-select-method '(nnmaildir "Posteo" (directory "~/.nnmaildir")))
+;; ~/.nnmaildir. However if multiple accounts are needed, we need a
+;; nnmaildir account pointing to each mail directory in .nnmaildir
+;; with offlineimap fetching mails for each accounts:
+
+;; (setq gnus-secondary-select-methods '((nnmaildir "Posteo" (directory "~/.nnmaildir/Posteo"))
+;;                                       (nnmaildir "Yahoo" (directory "~/.nnmaildir/Yahoo"))))
 
 ;; 3) the online method with nnimap (no mails offline but they can be
 ;; cached with gnus-agent):
 
 ;; Secondary methods are mails and possibly other nntp servers.
-(setq gnus-secondary-select-methods '(;; Add as many mail account as needed with a label.
-                                      ;; Add then an entry in .authinfo:
-                                      ;; machine label port xxx login xxx password xxx
-                                      (nnimap "posteo" ; Label for reference in .authinfo for machine name.
-                                       (nnimap-address "posteo.de")
-                                       ;; Don't download mime parts when receiving mail, only text part, use
-                                       ;; instead `A-C' to see entire mail.
-                                       (nnimap-fetch-partial-articles "text/"))))
+;; (setq gnus-secondary-select-methods '(;; Add as many mail account as needed with a label.
+;;                                       ;; Add then an entry in .authinfo:
+;;                                       ;; machine label port xxx login xxx password xxx
+;;                                       (nnimap "posteo" ; Label for reference in .authinfo for machine name.
+;;                                        (nnimap-address "posteo.de")
+;;                                        ;; Don't download mime parts when receiving mail, only text part, use
+;;                                        ;; instead `A-C' to see entire mail.
+;;                                        (nnimap-fetch-partial-articles "text/"))))
+
+(setq gnus-secondary-select-methods '((nnmaildir "Posteo" (directory "~/.nnmaildir/Posteo"))))
 
 ;; Try to fix bug when replying with attachment (emacs-31.1) :
 ;; gnus-get-function: No such function: nntp-request-create-group
@@ -78,26 +84,26 @@
                                 (("gmane" visible))
                                 (("misc" visible))))
     (setq gnus-topic-alist '(("posteo"
-                              "nnimap+posteo:INBOX"
-                              "nnimap+posteo:github-helm"
-                              "nnimap+posteo:Emacs-bug"
-                              "nnimap+posteo:Emacs-devel"
-                              "nnimap+posteo:github-async"
-                              "nnimap+posteo:Fortuneo"
-                              "nnimap+posteo:Pub"
-                              "nnimap+posteo:Sent"
-                              "nnimap+posteo:Spam"
-                              "nnimap+posteo:Spam-Log"
-                              "nnimap+posteo:Trash"
-                              "nnimap+posteo:github-magit"
-                              "nnimap+posteo:github-mu"
-                              "nnimap+posteo:payoneer"
-                              "nnimap+posteo:github-iedit"
-                              "nnimap+posteo:cachyos"
-                              "nnimap+posteo:Bouygues"
-                              "nnimap+posteo:VisuGPX"
-                              "nnimap+posteo:Banque"
-                              "nnimap+posteo:Afer")
+                              "nnmaildir+posteo:INBOX"
+                              "nnmaildir+posteo:github-helm"
+                              "nnmaildir+posteo:Emacs-bug"
+                              "nnmaildir+posteo:Emacs-devel"
+                              "nnmaildir+posteo:github-async"
+                              "nnmaildir+posteo:Fortuneo"
+                              "nnmaildir+posteo:Pub"
+                              "nnmaildir+posteo:Sent"
+                              "nnmaildir+posteo:Spam"
+                              "nnmaildir+posteo:Spam-Log"
+                              "nnmaildir+posteo:Trash"
+                              "nnmaildir+posteo:github-magit"
+                              "nnmaildir+posteo:github-mu"
+                              "nnmaildir+posteo:payoneer"
+                              "nnmaildir+posteo:github-iedit"
+                              "nnmaildir+posteo:cachyos"
+                              "nnmaildir+posteo:Bouygues"
+                              "nnmaildir+posteo:VisuGPX"
+                              "nnmaildir+posteo:Banque"
+                              "nnmaildir+posteo:Afer")
                              ("gmane"
                               "gmane.emacs.bugs"
                               "gmane.emacs.devel"
@@ -108,7 +114,13 @@
 (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
 
 (setq gnus-ignored-from-addresses "thievol@posteo\\.net")
-;; (setq gnus-thread-sort-functions '((not gnus-thread-sort-by-number)))
+(setq gnus-thread-sort-functions '((not gnus-thread-sort-by-number)))
+
+;; Search
+;; (info "(gnus) Search Queries")
+;; Only needed for nnimap and ephemeral groups, I use no search engine
+;; with nnmaildir.
+;; (setq gnus-search-use-parsed-queries t)
 
 ;; Change "From" field according to "To" field on reply.
 (setq gnus-posting-styles
