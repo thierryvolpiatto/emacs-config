@@ -77,40 +77,7 @@
   (advice-add 'gnus-get-function :before #'tv:advice-gnus-get-function))
 
 ;; Gnus topic
-(with-eval-after-load 'gnus-topic
-  (progn
-    (setq gnus-topic-topology '(("Gnus" visible)
-                                (("posteo" visible nil nil))
-                                (("gmane" visible))
-                                (("misc" visible))))
-    (setq gnus-topic-alist '(("posteo"
-                              "nnmaildir+posteo:INBOX"
-                              "nnmaildir+posteo:github-helm"
-                              "nnmaildir+posteo:Emacs-bug"
-                              "nnmaildir+posteo:Emacs-devel"
-                              "nnmaildir+posteo:github-async"
-                              "nnmaildir+posteo:Fortuneo"
-                              "nnmaildir+posteo:Pub"
-                              "nnmaildir+posteo:Sent"
-                              "nnmaildir+posteo:Spam"
-                              "nnmaildir+posteo:Spam-Log"
-                              "nnmaildir+posteo:Trash"
-                              "nnmaildir+posteo:github-magit"
-                              "nnmaildir+posteo:github-mu"
-                              "nnmaildir+posteo:payoneer"
-                              "nnmaildir+posteo:github-iedit"
-                              "nnmaildir+posteo:cachyos"
-                              "nnmaildir+posteo:Bouygues"
-                              "nnmaildir+posteo:VisuGPX"
-                              "nnmaildir+posteo:Banque"
-                              "nnmaildir+posteo:Afer")
-                             ("gmane"
-                              "gmane.emacs.bugs"
-                              "gmane.emacs.devel"
-                              "gmane.emacs.help")
-                             ("misc")
-                             ("Gnus"
-                              "nnfolder+archive:sent")))))
+;; Topic are set in newsrc.eld
 (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
 
 (setq gnus-ignored-from-addresses "thievol@posteo\\.net")
