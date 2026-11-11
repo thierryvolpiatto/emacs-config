@@ -53,6 +53,9 @@
 ;; (setq gnus-secondary-select-methods '((nnmaildir "Posteo" (directory "~/.nnmaildir/Posteo"))
 ;;                                       (nnmaildir "Yahoo" (directory "~/.nnmaildir/Yahoo"))))
 
+;; NOTE: When modifying nnmaildir settings, maybe restart emacs before
+;; trying new settings.
+
 ;; 3) the online method with nnimap (no mails offline but they can be
 ;; cached with gnus-agent):
 
@@ -77,7 +80,9 @@
   (advice-add 'gnus-get-function :before #'tv:advice-gnus-get-function))
 
 ;; Gnus topic
-;; Topic are set in newsrc.eld
+;; Topic are set in newsrc.eld, to modify use the topic commands from
+;; Gnus, setting the vars `gnus-topic-topology' and `gnus-topic-alist'
+;; have no effect.
 (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
 
 (setq gnus-ignored-from-addresses "thievol@posteo\\.net")
