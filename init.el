@@ -2068,12 +2068,7 @@ mode temporarily."
 
 ;;; Gnus
 ;;
-;; See (info "(gnus) Gnus Unplugged")
-(defun tv:start-gnus (&optional arg)
-  (interactive "P")
-  (if arg (gnus-unplugged) (gnus-plugged)))
-
-(global-set-key (kbd "<f9>") #'tv:start-gnus)
+(global-set-key (kbd "<f9>") 'gnus)
 (setq mail-user-agent 'gnus-user-agent)
 (require 'mail-config) ; Needed for C-x m when gnus has not started yet.
 (setq gnus-init-file "~/.emacs.d/.gnus.el")
@@ -2081,9 +2076,29 @@ mode temporarily."
 ;;; Offlineimap
 ;;
 (autoload 'offlineimap "offlineimap" nil t)
-(add-hook 'offlineimap-event-hooks 'gnus-group-get-new-news)
 (with-eval-after-load 'gnus-group
+  ;; Needs a patched offlineimap.el that doesn't run the hook in
+  ;; process-filter otherwise expect an emacs crash.
+  (add-hook 'offlineimap-event-hooks 'gnus-group-get-new-news)
   (define-key gnus-group-mode-map (kbd "U") 'offlineimap))
+
+;; Make a full update all the
+;; `tv:gnus-max-number-offlineimap-quick-update' mail retrievals,
+;; otherwise make only quick synchronizations.
+(defvar tv:gnus-quick-offlineimap-counter 10) ; Ensure a full update on startup.
+(defvar tv:gnus-max-number-offlineimap-quick-update 10)
+(defvar tv:gnus-offlineimap-command-full "offlineimap -u machineui")
+(defvar tv:gnus-offlineimap-command-quick "offlineimap -q -u machineui")
+(defun tv:gnus-update-mail-quick-or-full ()
+  (if (>= tv:gnus-quick-offlineimap-counter
+          tv:gnus-max-number-offlineimap-quick-update)
+      (progn
+        (setq offlineimap-command tv:gnus-offlineimap-command-full)
+        (setq tv:gnus-quick-offlineimap-counter 0))
+    (setq offlineimap-command tv:gnus-offlineimap-command-quick)
+    (cl-incf tv:gnus-quick-offlineimap-counter)))
+;; Needs a patched offlineimap.el
+(add-hook 'offlineimap-update-pre-hook #'tv:gnus-update-mail-quick-or-full)
 
 ;;; Sensors
 ;;

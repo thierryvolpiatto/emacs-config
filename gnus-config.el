@@ -69,7 +69,9 @@
 ;;                                        ;; instead `A-C' to see entire mail.
 ;;                                        (nnimap-fetch-partial-articles "text/"))))
 
-(setq gnus-secondary-select-methods '((nnmaildir "Posteo" (directory "~/.nnmaildir/Posteo"))))
+(setq gnus-secondary-select-methods '((nnmaildir "Posteo"
+                                       (directory "~/.nnmaildir/Posteo")
+                                       (gnus-search-engine gnus-search-notmuch))))
 
 ;; Try to fix bug when replying with attachment (emacs-31.1) :
 ;; gnus-get-function: No such function: nntp-request-create-group
@@ -90,8 +92,6 @@
 
 ;; Search
 ;; (info "(gnus) Search Queries")
-;; Only needed for nnimap and ephemeral groups, I use no search engine
-;; with nnmaildir.
 ;; (setq gnus-search-use-parsed-queries t)
 
 ;; Change "From" field according to "To" field on reply.
