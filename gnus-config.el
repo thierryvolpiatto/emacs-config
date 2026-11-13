@@ -71,7 +71,8 @@
 
 (setq gnus-secondary-select-methods '((nnmaildir "Posteo"
                                        (directory "~/.nnmaildir/Posteo")
-                                       (gnus-search-engine gnus-search-notmuch))))
+                                       (gnus-search-engine gnus-search-notmuch
+                                        (remove-prefix "/home/thierry/.nnmaildir/Posteo")))))
 
 ;; Try to fix bug when replying with attachment (emacs-31.1) :
 ;; gnus-get-function: No such function: nntp-request-create-group
