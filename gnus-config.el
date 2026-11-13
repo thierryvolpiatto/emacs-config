@@ -93,7 +93,7 @@
 
 ;; Search
 ;; (info "(gnus) Search Queries")
-;; (setq gnus-search-use-parsed-queries t)
+(setq gnus-search-use-parsed-queries t)
 
 ;; Change "From" field according to "To" field on reply.
 (setq gnus-posting-styles
