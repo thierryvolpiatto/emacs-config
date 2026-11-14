@@ -591,6 +591,21 @@ Used by the Mailto script used from firefox."
               (expt (/ L2 (tan (degrees-to-radians (/ 180 holes)))) 2)))))))
 
 ;;;###autoload
+(defun tv:sum-region ()
+  (interactive)
+  (when (use-region-p)
+    (let ((text (buffer-substring-no-properties
+                 (region-beginning) (region-end)))
+          (nums '()))
+      (with-temp-buffer
+        (insert text)
+        (goto-char (point-min))
+        (while (re-search-forward "[[:digit:].]+" nil t)
+          (push (match-string 0) nums)))
+      (when nums
+        (kill-new (format "%S" (calc-eval (mapconcat 'identity nums "+"))))))))
+
+;;;###autoload
 (defun tv:align-let ()
   "Align let forms."
   (interactive)
