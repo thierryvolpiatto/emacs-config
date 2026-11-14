@@ -2068,7 +2068,17 @@ mode temporarily."
 
 ;;; Gnus
 ;;
-(global-set-key (kbd "<f9>") 'gnus)
+(defun tv:gnus ()
+  (interactive)
+  (cond ((buffer-live-p (get-buffer "*Group*"))
+         (switch-to-buffer "*Group*"))
+        (t (call-interactively #'gnus))))
+
+(with-eval-after-load 'gnus-group
+  (define-key gnus-group-mode-map (kbd "q") 'quit-window)
+  (define-key gnus-group-mode-map (kbd "Q") 'gnus-group-exit))
+
+(global-set-key (kbd "<f9>") 'tv:gnus)
 (setq mail-user-agent 'gnus-user-agent)
 (require 'mail-config) ; Needed for C-x m when gnus has not started yet.
 (setq gnus-init-file "~/.emacs.d/.gnus.el")
