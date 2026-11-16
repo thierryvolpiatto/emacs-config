@@ -2083,32 +2083,67 @@ mode temporarily."
 (require 'mail-config) ; Needed for C-x m when gnus has not started yet.
 (setq gnus-init-file "~/.emacs.d/.gnus.el")
 
-;;; Offlineimap
+;;; Offlineimap (Ofp).
 ;;
-(autoload 'offlineimap "offlineimap" nil t)
+(defvar ofp--progress-reporter nil)
+(defvar ofp-update-pre-hook nil)
+(defvar ofp-command "offlineimap -u basic")
+(defvar ofp-event-hooks nil)
+(defun ofp ()
+  "Run OfflineIMAP."
+  (interactive nil gnus-group-mode)
+  (let* ((buffer (get-buffer-create "*OfflineImap*"))
+         (process-connection-type t))
+    (if (get-buffer-process buffer)
+        (message "Offlineimap currently running")
+      (run-hooks 'ofp-update-pre-hook)
+      (setq ofp--progress-reporter
+            (make-progress-reporter
+             (format "Retrieving mails...")))
+      (let ((process (start-process-shell-command
+                      "offlineimap"
+                      buffer
+                      ofp-command)))
+        (set-process-filter
+         process
+         (lambda (proc str)
+           (when ofp--progress-reporter
+             (progress-reporter-update ofp--progress-reporter))
+           (with-current-buffer (process-buffer proc)
+             (goto-char (point-max))
+             (insert str))))
+        (set-process-sentinel
+         process
+         (lambda (proc event)
+           (if (or (not (eq (process-status proc) 'exit))
+                   (/= (process-exit-status proc) 0))
+               (message "Offlineimap returned with non-zero exit code")
+             (when ofp--progress-reporter
+               (progress-reporter-done ofp--progress-reporter))
+             (sit-for 1)
+             (run-hooks 'ofp-event-hooks))))))))
+
 (with-eval-after-load 'gnus-group
-  ;; Needs a patched offlineimap.el that doesn't run the hook in
-  ;; process-filter otherwise expect an emacs crash.
-  (add-hook 'offlineimap-event-hooks 'gnus-group-get-new-news)
-  (define-key gnus-group-mode-map (kbd "U") 'offlineimap))
+  (define-key gnus-group-mode-map (kbd "U") 'ofp)
+  (add-hook 'ofp-event-hooks 'gnus-group-get-new-news))
 
 ;; Make a full update all the
 ;; `tv:gnus-max-number-offlineimap-quick-update' mail retrievals,
 ;; otherwise make only quick synchronizations.
-(defvar tv:gnus-quick-offlineimap-counter 10) ; Ensure a full update on startup.
-(defvar tv:gnus-max-number-offlineimap-quick-update 10)
-(defvar tv:gnus-offlineimap-command-full "offlineimap -u machineui")
-(defvar tv:gnus-offlineimap-command-quick "offlineimap -q -u machineui")
+(defvar tv:gnus-quick-ofp-counter 10) ; Ensure a full update on startup.
+(defvar tv:gnus-max-number-ofp-quick-update 10)
+(defvar tv:gnus-ofp-command-full "offlineimap -u basic")
+(defvar tv:gnus-ofp-command-quick "offlineimap -q -u basic")
 (defun tv:gnus-update-mail-quick-or-full ()
-  (if (>= tv:gnus-quick-offlineimap-counter
-          tv:gnus-max-number-offlineimap-quick-update)
+  (if (>= tv:gnus-quick-ofp-counter
+          tv:gnus-max-number-ofp-quick-update)
       (progn
-        (setq offlineimap-command tv:gnus-offlineimap-command-full)
-        (setq tv:gnus-quick-offlineimap-counter 0))
-    (setq offlineimap-command tv:gnus-offlineimap-command-quick)
-    (cl-incf tv:gnus-quick-offlineimap-counter)))
-;; Needs a patched offlineimap.el
-(add-hook 'offlineimap-update-pre-hook #'tv:gnus-update-mail-quick-or-full)
+        (setq ofp-command tv:gnus-ofp-command-full)
+        (setq tv:gnus-quick-ofp-counter 0))
+    (setq ofp-command tv:gnus-ofp-command-quick)
+    (cl-incf tv:gnus-quick-ofp-counter)))
+
+(add-hook 'ofp-update-pre-hook #'tv:gnus-update-mail-quick-or-full)
 
 ;;; Sensors
 ;;
