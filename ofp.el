@@ -6,6 +6,10 @@
 (defvar ofp-update-pre-hook nil)
 (defvar ofp-command "offlineimap -u basic")
 (defvar ofp-event-hooks nil)
+(defvar ofp-quick-counter 10) ; Ensure a full update on startup.
+(defvar ofp-max-number-quick-update 10)
+(defvar ofp-command-full "offlineimap -u basic")
+(defvar ofp-command-quick "offlineimap -q -u basic")
 
 ;;;###autoload
 (defun ofp ()
@@ -45,10 +49,6 @@
 ;; Make a full update all the
 ;; `ofp-max-number-offlineimap-quick-update' mail retrievals,
 ;; otherwise make only quick synchronizations.
-(defvar ofp-quick-counter 10) ; Ensure a full update on startup.
-(defvar ofp-max-number-quick-update 10)
-(defvar ofp-command-full "offlineimap -u basic")
-(defvar ofp-command-quick "offlineimap -q -u basic")
 (defun ofp-update-mail-quick-or-full ()
   (if (>= ofp-quick-counter
           ofp-max-number-quick-update)
