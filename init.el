@@ -2085,65 +2085,11 @@ mode temporarily."
 
 ;;; Offlineimap (Ofp).
 ;;
-(defvar ofp--progress-reporter nil)
-(defvar ofp-update-pre-hook nil)
-(defvar ofp-command "offlineimap -u basic")
-(defvar ofp-event-hooks nil)
-(defun ofp ()
-  "Run OfflineIMAP."
-  (interactive nil gnus-group-mode)
-  (let* ((buffer (get-buffer-create "*OfflineImap*"))
-         (process-connection-type t))
-    (if (get-buffer-process buffer)
-        (message "Offlineimap currently running")
-      (run-hooks 'ofp-update-pre-hook)
-      (setq ofp--progress-reporter
-            (make-progress-reporter
-             (format "Retrieving mails...")))
-      (let ((process (start-process-shell-command
-                      "offlineimap"
-                      buffer
-                      ofp-command)))
-        (set-process-filter
-         process
-         (lambda (proc str)
-           (when ofp--progress-reporter
-             (progress-reporter-update ofp--progress-reporter))
-           (with-current-buffer (process-buffer proc)
-             (goto-char (point-max))
-             (insert str))))
-        (set-process-sentinel
-         process
-         (lambda (proc event)
-           (if (or (not (eq (process-status proc) 'exit))
-                   (/= (process-exit-status proc) 0))
-               (message "Offlineimap returned with non-zero exit code")
-             (when ofp--progress-reporter
-               (progress-reporter-done ofp--progress-reporter))
-             (sit-for 1)
-             (run-hooks 'ofp-event-hooks))))))))
-
+(autoload 'ofp "ofp" nil t)
 (with-eval-after-load 'gnus-group
   (define-key gnus-group-mode-map (kbd "U") 'ofp)
   (add-hook 'ofp-event-hooks 'gnus-group-get-new-news))
-
-;; Make a full update all the
-;; `tv:gnus-max-number-offlineimap-quick-update' mail retrievals,
-;; otherwise make only quick synchronizations.
-(defvar tv:gnus-quick-ofp-counter 10) ; Ensure a full update on startup.
-(defvar tv:gnus-max-number-ofp-quick-update 10)
-(defvar tv:gnus-ofp-command-full "offlineimap -u basic")
-(defvar tv:gnus-ofp-command-quick "offlineimap -q -u basic")
-(defun tv:gnus-update-mail-quick-or-full ()
-  (if (>= tv:gnus-quick-ofp-counter
-          tv:gnus-max-number-ofp-quick-update)
-      (progn
-        (setq ofp-command tv:gnus-ofp-command-full)
-        (setq tv:gnus-quick-ofp-counter 0))
-    (setq ofp-command tv:gnus-ofp-command-quick)
-    (cl-incf tv:gnus-quick-ofp-counter)))
-
-(add-hook 'ofp-update-pre-hook #'tv:gnus-update-mail-quick-or-full)
+(add-hook 'ofp-update-pre-hook #'ofp-update-mail-quick-or-full)
 
 ;;; Sensors
 ;;
