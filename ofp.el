@@ -1,0 +1,64 @@
+;;; ofp.el --- Offlineimap UI for Gnus -*- lexical-binding: t -*-
+
+;;; Code:
+
+(defvar ofp--progress-reporter nil)
+(defvar ofp-update-pre-hook nil)
+(defvar ofp-command "offlineimap -u basic")
+(defvar ofp-event-hooks nil)
+
+;;;###autoload
+(defun ofp ()
+  "Run OfflineIMAP."
+  (interactive nil gnus-group-mode)
+  (let* ((buffer (get-buffer-create "*OfflineImap*"))
+         (process-connection-type t))
+    (if (get-buffer-process buffer)
+        (message "Offlineimap currently running")
+      (run-hooks 'ofp-update-pre-hook)
+      (setq ofp--progress-reporter
+            (make-progress-reporter
+             (format "Retrieving mails...")))
+      (let ((process (start-process-shell-command
+                      "offlineimap"
+                      buffer
+                      ofp-command)))
+        (set-process-filter
+         process
+         (lambda (proc str)
+           (when ofp--progress-reporter
+             (progress-reporter-update ofp--progress-reporter))
+           (with-current-buffer (process-buffer proc)
+             (goto-char (point-max))
+             (insert str))))
+        (set-process-sentinel
+         process
+         (lambda (proc _event)
+           (if (or (not (eq (process-status proc) 'exit))
+                   (/= (process-exit-status proc) 0))
+               (message "Offlineimap returned with non-zero exit code")
+             (when ofp--progress-reporter
+               (progress-reporter-done ofp--progress-reporter))
+             (sit-for 1)
+             (run-hooks 'ofp-event-hooks))))))))
+
+;; Make a full update all the
+;; `ofp-max-number-offlineimap-quick-update' mail retrievals,
+;; otherwise make only quick synchronizations.
+(defvar ofp-quick-counter 10) ; Ensure a full update on startup.
+(defvar ofp-max-number-quick-update 10)
+(defvar ofp-command-full "offlineimap -u basic")
+(defvar ofp-command-quick "offlineimap -q -u basic")
+(defun ofp-update-mail-quick-or-full ()
+  (if (>= ofp-quick-counter
+          ofp-max-number-quick-update)
+      (progn
+        (setq ofp-command ofp-command-full)
+        (setq ofp-quick-counter 0))
+    (setq ofp-command ofp-command-quick)
+    (cl-incf ofp-quick-counter)))
+
+
+(provide 'ofp)
+
+;;; ofp.el ends here
