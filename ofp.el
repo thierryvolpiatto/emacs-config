@@ -50,11 +50,9 @@
 ;; `ofp-max-number-offlineimap-quick-update' mail retrievals,
 ;; otherwise make only quick synchronizations.
 (defun ofp-update-mail-quick-or-full ()
-  (if (>= ofp-quick-counter
-          ofp-max-number-quick-update)
-      (progn
-        (setq ofp-command ofp-command-full)
-        (setq ofp-quick-counter 0))
+  (if (>= ofp-quick-counter ofp-max-number-quick-update)
+      (setq ofp-command ofp-command-full
+            ofp-quick-counter 0)
     (setq ofp-command ofp-command-quick)
     (cl-incf ofp-quick-counter)))
 
