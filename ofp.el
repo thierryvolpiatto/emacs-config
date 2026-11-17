@@ -12,9 +12,10 @@
 (defvar ofp-command-quick "offlineimap -q -u basic")
 
 ;;;###autoload
-(defun ofp ()
-  "Run OfflineIMAP."
-  (interactive nil gnus-group-mode)
+(defun ofp (&optional arg)
+  "Run OfflineIMAP.
+With a prefix arg don't run `ofp-event-hooks'."
+  (interactive "P" gnus-group-mode)
   (let* ((buffer (get-buffer-create "*OfflineImap*"))
          (process-connection-type t))
     (if (get-buffer-process buffer)
@@ -44,7 +45,7 @@
              (when ofp--progress-reporter
                (progress-reporter-done ofp--progress-reporter))
              (sit-for 1)
-             (run-hooks 'ofp-event-hooks))))))))
+             (unless arg (run-hooks 'ofp-event-hooks)))))))))
 
 ;; Make a full update all the
 ;; `ofp-max-number-offlineimap-quick-update' mail retrievals,
