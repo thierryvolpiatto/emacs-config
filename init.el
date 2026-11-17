@@ -2066,8 +2066,12 @@ mode temporarily."
   (define-key w3m-lynx-like-map (kbd "S-<right>") 'w3m-view-this-url-new-session))
 (global-set-key (kbd "<f7>") 'w3m)
 
-;;; Gnus
+;;; Gnus+offlineimap
 ;;
+(autoload 'ofp "ofp" nil t)
+(with-eval-after-load 'ofp
+  (add-hook 'ofp-update-pre-hook #'ofp-update-mail-quick-or-full))
+
 (defun tv:gnus ()
   (interactive)
   (cond ((buffer-live-p (get-buffer "*Group*"))
@@ -2075,21 +2079,15 @@ mode temporarily."
         (t (call-interactively #'gnus))))
 
 (with-eval-after-load 'gnus-group
+  (define-key gnus-group-mode-map (kbd "U") 'ofp)
   (define-key gnus-group-mode-map (kbd "q") 'quit-window)
-  (define-key gnus-group-mode-map (kbd "Q") 'gnus-group-exit))
+  (define-key gnus-group-mode-map (kbd "Q") 'gnus-group-exit)
+  (add-hook 'ofp-event-hooks 'gnus-group-get-new-news))
 
 (global-set-key (kbd "<f9>") 'tv:gnus)
 (setq mail-user-agent 'gnus-user-agent)
 (require 'mail-config) ; Needed for C-x m when gnus has not started yet.
 (setq gnus-init-file "~/.emacs.d/.gnus.el")
-
-;;; Offlineimap (Ofp).
-;;
-(autoload 'ofp "ofp" nil t)
-(with-eval-after-load 'gnus-group
-  (define-key gnus-group-mode-map (kbd "U") 'ofp)
-  (add-hook 'ofp-event-hooks 'gnus-group-get-new-news))
-(add-hook 'ofp-update-pre-hook #'ofp-update-mail-quick-or-full)
 
 ;;; Sensors
 ;;
