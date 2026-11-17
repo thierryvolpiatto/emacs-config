@@ -17,7 +17,8 @@
 With a prefix arg don't run `ofp-event-hooks'."
   (interactive "P" gnus-group-mode)
   (let* ((buffer (get-buffer-create "*OfflineImap*"))
-         (process-connection-type t))
+         (process-connection-type t)
+         (num 0))
     (if (get-buffer-process buffer)
         (message "Offlineimap currently running")
       (run-hooks 'ofp-update-pre-hook)
@@ -35,7 +36,9 @@ With a prefix arg don't run `ofp-event-hooks'."
              (progress-reporter-update ofp--progress-reporter))
            (with-current-buffer (process-buffer proc)
              (goto-char (point-max))
-             (insert str))))
+             (insert str)
+             (when (string-match "\\`Copy message" str)
+               (incf num)))))
         (set-process-sentinel
          process
          (lambda (proc _event)
@@ -44,6 +47,9 @@ With a prefix arg don't run `ofp-event-hooks'."
                (message "Offlineimap returned with non-zero exit code")
              (when ofp--progress-reporter
                (progress-reporter-done ofp--progress-reporter))
+             (unless (zerop num)
+               (sit-for 1)
+               (message "[%d] incoming message(s)" num))
              (sit-for 1)
              (unless arg (run-hooks 'ofp-event-hooks)))))))))
 
