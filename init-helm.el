@@ -172,6 +172,7 @@
         '("\\` " "\\`\\*helm" "\\`\\*Echo Area" "\\`\\*Minibuf"
           "\\`\\*Messages" "\\`\\*Fancy Diary Entries"
           "\\`\\*git-gutter" "\\`\\*Help" "\\`\\*skitour"))
+  (helm-add-to-list 'helm-type-buffer-actions '("Bury buffer" . bury-buffer) 1)
   (customize-set-variable 'helm-buffers-maybe-switch-to-tab  t)
   (customize-set-variable 'helm-buffers-show-icons t)
 
