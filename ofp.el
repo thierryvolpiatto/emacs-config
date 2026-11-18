@@ -1,11 +1,20 @@
 ;;; ofp.el --- Offlineimap UI for Gnus -*- lexical-binding: t -*-
 
+;;; commentary: Usable with offlineimap and mbsync.
+
 ;;; Code:
 
-(defvar ofp--progress-reporter nil)
-(defvar ofp-update-pre-hook nil)
 (defvar ofp-command "offlineimap -u basic")
+(defvar ofp-update-pre-hook nil)
 (defvar ofp-event-hooks nil)
+(defvar ofp-buffer "*OfflineImap*")
+
+;; internals
+(defvar ofp--progress-reporter nil)
+
+;; Specific to offlineimap, allow running offlineimap -q
+;; `ofp-max-number-quick-update' times before running a full update
+;; without -q.
 (defvar ofp-quick-counter 10) ; Ensure a full update on startup.
 (defvar ofp-max-number-quick-update 10)
 (defvar ofp-command-full "offlineimap -u basic")
@@ -16,17 +25,18 @@
   "Run OfflineIMAP.
 With a prefix arg don't run `ofp-event-hooks'."
   (interactive "P" gnus-group-mode)
-  (let* ((buffer (get-buffer-create "*OfflineImap*"))
+  (let* ((buffer (get-buffer-create ofp-buffer))
          (process-connection-type t)
+         (cmd-name (car (split-string ofp-command)))
          (num 0))
     (if (get-buffer-process buffer)
-        (message "Offlineimap currently running")
+        (message "%s currently running" cmd-name)
       (run-hooks 'ofp-update-pre-hook)
       (setq ofp--progress-reporter
             (make-progress-reporter
              (format "Retrieving mails...")))
       (let ((process (start-process-shell-command
-                      "offlineimap"
+                      cmd-name
                       buffer
                       ofp-command)))
         (set-process-filter
@@ -37,14 +47,15 @@ With a prefix arg don't run `ofp-event-hooks'."
            (with-current-buffer (process-buffer proc)
              (goto-char (point-max))
              (insert str)
-             (when (string-match "\\`Copy message" str)
+             (when (and (string= cmd-name "offlineimap")
+                        (string-match "\\`Copy message" str))
                (incf num)))))
         (set-process-sentinel
          process
          (lambda (proc _event)
            (if (or (not (eq (process-status proc) 'exit))
                    (/= (process-exit-status proc) 0))
-               (message "Offlineimap returned with non-zero exit code")
+               (message "%s returned with non-zero exit code" cmd-name)
              (when ofp--progress-reporter
                (progress-reporter-done ofp--progress-reporter))
              (unless (zerop num)
@@ -53,8 +64,8 @@ With a prefix arg don't run `ofp-event-hooks'."
              (sit-for 1)
              (unless arg (run-hooks 'ofp-event-hooks)))))))))
 
-;; Make a full update all the
-;; `ofp-max-number-offlineimap-quick-update' mail retrievals,
+;; Specific to Offlineimap. Make a full update all the
+;; `ofp-max-number-quick-update' mail retrievals,
 ;; otherwise make only quick synchronizations.
 (defun ofp-update-mail-quick-or-full ()
   (if (>= ofp-quick-counter ofp-max-number-quick-update)
