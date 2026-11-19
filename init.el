@@ -2066,7 +2066,7 @@ mode temporarily."
   (define-key w3m-lynx-like-map (kbd "S-<right>") 'w3m-view-this-url-new-session))
 (global-set-key (kbd "<f7>") 'w3m)
 
-;;; Gnus+offlineimap
+;;; Gnus+ofp
 ;;
 (autoload 'ofp "ofp" nil t)
 (with-eval-after-load 'ofp
@@ -2074,7 +2074,8 @@ mode temporarily."
 
 (with-eval-after-load 'gnus-group
   (define-key gnus-group-mode-map (kbd "U") 'ofp)
-  (add-hook 'ofp-event-hooks 'gnus-group-get-new-news))
+  ;; Update only mail groups (set to level 1).
+  (add-hook 'ofp-event-hooks (lambda () (gnus-group-get-new-news 1))))
 
 (global-set-key (kbd "<f9>") 'gnus)
 (setq mail-user-agent 'gnus-user-agent)
