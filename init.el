@@ -2072,19 +2072,11 @@ mode temporarily."
 (with-eval-after-load 'ofp
   (add-hook 'ofp-update-pre-hook #'ofp-update-mail-quick-or-full))
 
-(defun tv:gnus ()
-  (interactive)
-  (cond ((buffer-live-p (get-buffer "*Group*"))
-         (switch-to-buffer "*Group*"))
-        (t (call-interactively #'gnus))))
-
 (with-eval-after-load 'gnus-group
   (define-key gnus-group-mode-map (kbd "U") 'ofp)
-  (define-key gnus-group-mode-map (kbd "q") 'quit-window)
-  (define-key gnus-group-mode-map (kbd "Q") 'gnus-group-exit)
   (add-hook 'ofp-event-hooks 'gnus-group-get-new-news))
 
-(global-set-key (kbd "<f9>") 'tv:gnus)
+(global-set-key (kbd "<f9>") 'gnus)
 (setq mail-user-agent 'gnus-user-agent)
 (require 'mail-config) ; Needed for C-x m when gnus has not started yet.
 (setq gnus-init-file "~/.emacs.d/.gnus.el")

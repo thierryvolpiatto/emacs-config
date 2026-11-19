@@ -285,5 +285,8 @@ This will run in `message-send-hook'."
   (define-key gnus-article-mode-map (kbd "<C-tab>")   'w3m-next-anchor)
   (define-key gnus-article-mode-map (kbd "<backtab>") 'w3m-previous-anchor))
 
+;; Close server when system sleep.
+(setq gnus-close-on-sleep t)
+
 ;;; gnus-config.el ends here
 
