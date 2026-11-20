@@ -68,6 +68,10 @@ With a prefix arg don't run `ofp-event-hooks'."
 ;; `ofp-max-number-quick-update' mail retrievals,
 ;; otherwise make only quick synchronizations.
 (defun ofp-update-mail-quick-or-full ()
+  "Make a full or quick offlineimap update.
+The full update is done all the `ofp-max-number-quick-update'
+seconds, otherwise a quick update is done, that is the -q offlineimap
+arg is used."
   (if (>= ofp-quick-counter ofp-max-number-quick-update)
       (setq ofp-command ofp-command-full
             ofp-quick-counter 0)
