@@ -28,41 +28,42 @@ With a prefix arg don't run `ofp-event-hooks'."
   (let* ((buffer (get-buffer-create ofp-buffer))
          (process-connection-type t)
          (cmd-name (car (split-string ofp-command)))
-         (num 0))
+         (num 0)
+         process)
     (if (get-buffer-process buffer)
         (message "%s currently running" cmd-name)
       (run-hooks 'ofp-update-pre-hook)
       (setq ofp--progress-reporter
             (make-progress-reporter
              (format "Retrieving mails...")))
-      (let ((process (start-process-shell-command
-                      cmd-name
-                      buffer
-                      ofp-command)))
-        (set-process-filter
-         process
-         (lambda (proc str)
+      (setq process (start-process-shell-command
+                     cmd-name
+                     buffer
+                     ofp-command))
+      (set-process-filter
+       process
+       (lambda (proc str)
+         (when ofp--progress-reporter
+           (progress-reporter-update ofp--progress-reporter))
+         (with-current-buffer (process-buffer proc)
+           (goto-char (point-max))
+           (insert str)
+           (when (and (string= cmd-name "offlineimap")
+                      (string-match "\\`Copy message" str))
+             (incf num)))))
+      (set-process-sentinel
+       process
+       (lambda (proc _event)
+         (if (or (not (eq (process-status proc) 'exit))
+                 (/= (process-exit-status proc) 0))
+             (message "%s returned with non-zero exit code" cmd-name)
            (when ofp--progress-reporter
-             (progress-reporter-update ofp--progress-reporter))
-           (with-current-buffer (process-buffer proc)
-             (goto-char (point-max))
-             (insert str)
-             (when (and (string= cmd-name "offlineimap")
-                        (string-match "\\`Copy message" str))
-               (incf num)))))
-        (set-process-sentinel
-         process
-         (lambda (proc _event)
-           (if (or (not (eq (process-status proc) 'exit))
-                   (/= (process-exit-status proc) 0))
-               (message "%s returned with non-zero exit code" cmd-name)
-             (when ofp--progress-reporter
-               (progress-reporter-done ofp--progress-reporter))
-             (unless (zerop num)
-               (sit-for 1)
-               (message "[%d] incoming message(s)" num))
+             (progress-reporter-done ofp--progress-reporter))
+           (unless (zerop num)
              (sit-for 1)
-             (unless arg (run-hooks 'ofp-event-hooks)))))))))
+             (message "[%d] incoming message(s)" num))
+           (sit-for 1)
+           (unless arg (run-hooks 'ofp-event-hooks))))))))
 
 ;; Specific to Offlineimap. Make a full update all the
 ;; `ofp-max-number-quick-update' mail retrievals,
