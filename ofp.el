@@ -77,7 +77,7 @@ arg is used."
       (setq ofp-command ofp-command-full
             ofp-quick-counter 0)
     (setq ofp-command ofp-command-quick)
-    (cl-incf ofp-quick-counter)))
+    (incf ofp-quick-counter)))
 
 
 (provide 'ofp)
