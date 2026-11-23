@@ -62,6 +62,8 @@ With a prefix arg don't run `ofp-event-hooks'."
                        (string-match "\\`Copy message" str))
                   (incf num))
                  ((and (string= cmd-name "mbsync")
+                       ;; the line looks like this:
+                       ;; far side: 117 messages, 1 recent
                        (string-match "\\`far side:.*\\([[:digit:]]+\\) recent" str))
                   (setq num (+ num (string-to-number (match-string 1 str)))))))))
       (set-process-sentinel
