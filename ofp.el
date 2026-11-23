@@ -4,10 +4,10 @@
 
 ;;; Code:
 
-(defvar ofp-command "offlineimap -u basic")
+(defvar ofp-command "mbsync -q -V posteo")
 (defvar ofp-update-pre-hook nil)
 (defvar ofp-event-hooks nil)
-(defvar ofp-buffer "*OfflineImap*")
+(defvar ofp-buffer "*Mbsync*")
 
 ;; internals
 (defvar ofp--progress-reporter nil)
@@ -32,6 +32,11 @@ With a prefix arg don't run `ofp-event-hooks'."
          process)
     (if (get-buffer-process buffer)
         (message "%s currently running" cmd-name)
+      (with-current-buffer buffer
+        (goto-char (point-max))
+        (insert (propertize (format "*** %s: Running %s\n"
+                                    (format-time-string "%c") cmd-name)
+                            'face 'font-lock-variable-name-face)))
       (run-hooks 'ofp-update-pre-hook)
       (setq ofp--progress-reporter
             (make-progress-reporter
@@ -47,7 +52,12 @@ With a prefix arg don't run `ofp-event-hooks'."
            (progress-reporter-update ofp--progress-reporter))
          (with-current-buffer (process-buffer proc)
            (goto-char (point-max))
-           (insert str)
+           ;; Clean the mbsync counter.
+           (if (string-match ".*\r\\(.*\\)" str)
+               (progn
+                 (delete-region (pos-bol) (pos-eol))
+                 (insert (match-string 1 str)))
+             (insert str))
            (when (and (string= cmd-name "offlineimap")
                       (string-match "\\`Copy message" str))
              (incf num)))))
