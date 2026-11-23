@@ -52,15 +52,18 @@ With a prefix arg don't run `ofp-event-hooks'."
            (progress-reporter-update ofp--progress-reporter))
          (with-current-buffer (process-buffer proc)
            (goto-char (point-max))
-           ;; Clean the mbsync counter.
+           ;; Clean the mbsync prog bar.
            (if (string-match ".*\r\\(.*\\)" str)
                (progn
                  (delete-region (pos-bol) (pos-eol))
                  (insert (match-string 1 str)))
              (insert str))
-           (when (and (string= cmd-name "offlineimap")
-                      (string-match "\\`Copy message" str))
-             (incf num)))))
+           (cond ((and (string= cmd-name "offlineimap")
+                       (string-match "\\`Copy message" str))
+                  (incf num))
+                 ((and (string= cmd-name "mbsync")
+                       (string-match "\\`far side:.*\\([[:digit:]]+\\) recent" str))
+                  (setq num (+ num (string-to-number (match-string 1 str)))))))))
       (set-process-sentinel
        process
        (lambda (proc _event)
