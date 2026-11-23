@@ -2069,8 +2069,6 @@ mode temporarily."
 ;;; Gnus+ofp
 ;;
 (autoload 'ofp "ofp" nil t)
-(with-eval-after-load 'ofp
-  (add-hook 'ofp-update-pre-hook #'ofp-update-mail-quick-or-full))
 
 (with-eval-after-load 'gnus-group
   (define-key gnus-group-mode-map (kbd "U") 'ofp)
