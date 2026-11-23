@@ -22,7 +22,7 @@
 
 ;;;###autoload
 (defun ofp (&optional arg)
-  "Run OfflineIMAP.
+  "Sync mails with `ofp-command'.
 With a prefix arg don't run `ofp-event-hooks'."
   (interactive "P" gnus-group-mode)
   (let* ((buffer (get-buffer-create ofp-buffer))
