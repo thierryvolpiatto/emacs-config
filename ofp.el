@@ -1,4 +1,4 @@
-;;; ofp.el --- Offlineimap UI for Gnus -*- lexical-binding: t -*-
+;;; ofp.el --- Mail sync UI for Gnus -*- lexical-binding: t -*-
 
 ;;; commentary: Usable with offlineimap and mbsync.
 
