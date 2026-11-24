@@ -69,11 +69,13 @@ With a prefix arg don't run `ofp-event-hooks'."
              (message "%s returned with non-zero exit code" cmd-name)
            (when ofp--progress-reporter
              (progress-reporter-done ofp--progress-reporter))
-           (with-current-buffer (process-buffer proc)
-             (goto-char (point-max))
-             (save-excursion
-               (when (re-search-backward "Near: \\+\\([[:digit:]]+\\)" nil t)
-                 (setq num (string-to-number (match-string 1))))))
+           ;; Mbsync incomings mails.
+           (when (string= cmd-name "mbsync")
+             (with-current-buffer (process-buffer proc)
+               (goto-char (point-max))
+               (save-excursion
+                 (when (re-search-backward "Near: \\+\\([[:digit:]]+\\)" nil t)
+                   (setq num (string-to-number (match-string 1)))))))
            (unless (zerop num)
              (sit-for 1)
              (message "[%d] incoming message(s)" num))
