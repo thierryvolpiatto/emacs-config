@@ -58,14 +58,9 @@ With a prefix arg don't run `ofp-event-hooks'."
                  (delete-region (pos-bol) (pos-eol))
                  (insert (match-string 1 str)))
              (insert str))
-           (cond ((and (string= cmd-name "offlineimap")
-                       (string-match "\\`Copy message" str))
-                  (incf num))
-                 ((and (string= cmd-name "mbsync")
-                       ;; the line looks like this:
-                       ;; far side: 117 messages, 1 recent
-                       (string-match "\\`far side:.*\\([[:digit:]]+\\) recent" str))
-                  (setq num (+ num (string-to-number (match-string 1 str)))))))))
+           (when (and (string= cmd-name "offlineimap")
+                      (string-match "\\`Copy message" str))
+             (incf num)))))
       (set-process-sentinel
        process
        (lambda (proc _event)
@@ -74,6 +69,11 @@ With a prefix arg don't run `ofp-event-hooks'."
              (message "%s returned with non-zero exit code" cmd-name)
            (when ofp--progress-reporter
              (progress-reporter-done ofp--progress-reporter))
+           (with-current-buffer (process-buffer proc)
+             (goto-char (point-max))
+             (save-excursion
+               (when (re-search-backward "Near: \\+\\([[:digit:]]+\\)" nil t)
+                 (setq num (string-to-number (match-string 1))))))
            (unless (zerop num)
              (sit-for 1)
              (message "[%d] incoming message(s)" num))
