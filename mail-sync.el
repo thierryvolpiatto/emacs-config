@@ -4,7 +4,8 @@
 
 ;;; Code:
 
-(defvar mail-sync-command "mbsync -q -V posteo")
+(defvar mail-sync-command "mbsync")
+(defvar mail-sync-command-switches '("-q" "-V" "posteo"))
 (defvar mail-sync-update-pre-hook nil)
 (defvar mail-sync-event-hook nil)
 (defvar mail-sync-buffer "*Mbsync*")
@@ -34,10 +35,11 @@ With a prefix arg don't run `mail-sync-event-hook'."
       (run-hooks 'mail-sync-update-pre-hook)
       (setq mail-sync--progress-reporter
             (make-progress-reporter "Retrieving mails..."))
-      (setq process (start-process-shell-command
-                     cmd-name
-                     buffer
-                     mail-sync-command))
+      (setq process (apply #'start-process
+                           cmd-name
+                           buffer
+                           mail-sync-command
+                           mail-sync-command-switches))
       (set-process-filter
        process
        (lambda (proc str)
