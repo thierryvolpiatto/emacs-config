@@ -19,7 +19,7 @@
 With a prefix arg don't run `mail-sync-event-hook'."
   (interactive "P" gnus-group-mode)
   (let* ((buffer (get-buffer-create mail-sync-buffer))
-         (cmd-name (car (split-string mail-sync-command)))
+         (cmd-name (file-name-nondirectory mail-sync-command))
          (num 0)
          ;; Ensure the mbsync -q really disable its reporter.
          (process-connection-type nil)
@@ -63,7 +63,7 @@ With a prefix arg don't run `mail-sync-event-hook'."
                  (/= (process-exit-status proc) 0))
              (message "%s returned with non-zero exit code" cmd-name)
            ;; Mbsync incomings mails.
-           (when (string= cmd-name "mbsync")
+           (when (buffer-live-p (process-buffer proc))
              (with-current-buffer (process-buffer proc)
                (goto-char (point-max))
                (save-excursion
