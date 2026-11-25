@@ -1,6 +1,11 @@
 ;;; mail-sync.el --- Mbsync UI for Gnus -*- lexical-binding: t -*-
 
-;;; Commentary: None.
+;;; Commentary: Needs mbsync command line and .mbsyncrc well
+;; configured. Provide the command `mail-sync'. To update the gnus
+;; group buffer after fetching mails use the hook
+;; `mail-sync-event-hook' with the function `gnus-group-get-new-news'
+;; called with the level corresponding to all mails group e.g:
+;; (add-hook 'mail-sync-event-hooks (lambda () (gnus-group-get-new-news 1)))
 
 ;;; Code:
 
