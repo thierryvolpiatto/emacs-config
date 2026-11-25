@@ -2066,14 +2066,14 @@ mode temporarily."
   (define-key w3m-lynx-like-map (kbd "S-<right>") 'w3m-view-this-url-new-session))
 (global-set-key (kbd "<f7>") 'w3m)
 
-;;; Gnus+ofp
+;;; Gnus+mail-sync
 ;;
-(autoload 'ofp "ofp" nil t)
+(autoload 'mail-sync "mail-sync" nil t)
 
 (with-eval-after-load 'gnus-group
-  (define-key gnus-group-mode-map (kbd "U") 'ofp)
+  (define-key gnus-group-mode-map (kbd "U") 'mail-sync)
   ;; Update only mail groups (set to level 1).
-  (add-hook 'ofp-event-hooks (lambda () (gnus-group-get-new-news 1))))
+  (add-hook 'mail-sync-event-hooks (lambda () (gnus-group-get-new-news 1))))
 
 (global-set-key (kbd "<f9>") 'gnus)
 (setq mail-user-agent 'gnus-user-agent)
