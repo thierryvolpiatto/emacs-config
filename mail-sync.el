@@ -15,7 +15,7 @@
 
 ;;;###autoload
 (defun mail-sync (&optional arg)
-  "Sync mails with `mail-sync-command'.
+  "Run `mail-sync-command' with `mail-sync-command-switches'.
 With a prefix arg don't run `mail-sync-event-hook'."
   (interactive "P" gnus-group-mode)
   (let* ((buffer (get-buffer-create mail-sync-buffer))
@@ -62,7 +62,8 @@ With a prefix arg don't run `mail-sync-event-hook'."
          (if (or (not (eq (process-status proc) 'exit))
                  (/= (process-exit-status proc) 0))
              (progn (message "%s returned with non-zero exit code" cmd-name)
-                    (pop-to-buffer mail-sync-buffer))
+                    (when (buffer-live-p buffer)
+                      (switch-to-buffer buffer)))
            ;; Mbsync incomings mails.
            (when (buffer-live-p (process-buffer proc))
              (with-current-buffer (process-buffer proc)
