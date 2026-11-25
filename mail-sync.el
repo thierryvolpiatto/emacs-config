@@ -34,10 +34,11 @@ With a prefix arg don't run `mail-sync-event-hooks'."
     (if (get-buffer-process buffer)
         (message "%s currently running" cmd-name)
       (with-current-buffer buffer
-        (goto-char (point-max))
-        (insert (propertize (format "*** %s: Running %s\n"
-                                    (format-time-string "%c") cmd-name)
-                            'face 'font-lock-variable-name-face)))
+        (let ((inhibit-read-only t))
+          (goto-char (point-max))
+          (insert (propertize (format "*** %s: Running %s\n"
+                                      (format-time-string "%c") cmd-name)
+                              'face 'font-lock-variable-name-face))))
       (run-hooks 'mail-sync-update-pre-hook)
       (setq mail-sync--progress-reporter
             (make-progress-reporter
@@ -52,11 +53,12 @@ With a prefix arg don't run `mail-sync-event-hooks'."
          (when mail-sync--progress-reporter
            (progress-reporter-update mail-sync--progress-reporter))
          (with-current-buffer (process-buffer proc)
-           (goto-char (point-max))
-           (insert str)
-           (when (and (string= cmd-name "offlineimap")
-                      (string-match "\\`Copy message" str))
-             (incf num)))))
+           (let ((inhibit-read-only t))
+             (goto-char (point-max))
+             (insert str)
+             (when (and (string= cmd-name "offlineimap")
+                        (string-match "\\`Copy message" str))
+               (incf num))))))
       (set-process-sentinel
        process
        (lambda (proc _event)
@@ -71,7 +73,8 @@ With a prefix arg don't run `mail-sync-event-hooks'."
                (goto-char (point-max))
                (save-excursion
                  (when (re-search-backward "Near: \\+\\([[:digit:]]+\\)" nil t)
-                   (setq num (string-to-number (match-string 1)))))))
+                   (setq num (string-to-number (match-string 1)))))
+               (special-mode)))
            (unless (zerop num)
              (sit-for 1)
              (message "[%d] incoming message(s)" num))
