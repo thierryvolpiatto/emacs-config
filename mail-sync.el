@@ -51,11 +51,11 @@ With a prefix arg don't run `mail-sync-event-hook'."
       (set-process-sentinel
        process
        (lambda (proc _event)
+         (when mail-sync--progress-reporter
+           (progress-reporter-done mail-sync--progress-reporter))
          (if (or (not (eq (process-status proc) 'exit))
                  (/= (process-exit-status proc) 0))
              (message "%s returned with non-zero exit code" cmd-name)
-           (when mail-sync--progress-reporter
-             (progress-reporter-done mail-sync--progress-reporter))
            ;; Mbsync incomings mails.
            (when (string= cmd-name "mbsync")
              (with-current-buffer (process-buffer proc)
