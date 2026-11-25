@@ -85,7 +85,8 @@ With a prefix arg don't run `mail-sync-event-hooks'."
   "Make a full or quick offlineimap update.
 The full update is done all the `mail-sync-max-number-quick-update'
 seconds, otherwise a quick update is done, that is the -q offlineimap
-arg is used.  Should run before running offlineimap in `mail-sync-update-pre-hook'."
+arg is used.  Should run before running offlineimap in
+`mail-sync-update-pre-hook'."
   (if (>= mail-sync-quick-counter mail-sync-max-number-quick-update)
       (setq mail-sync-command mail-sync-command-full
             mail-sync-quick-counter 0)
