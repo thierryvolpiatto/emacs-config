@@ -6,30 +6,22 @@
 
 (defvar mail-sync-command "mbsync -q -V posteo")
 (defvar mail-sync-update-pre-hook nil)
-(defvar mail-sync-event-hooks nil)
+(defvar mail-sync-event-hook nil)
 (defvar mail-sync-buffer "*Mbsync*")
 
 ;; internals
 (defvar mail-sync--progress-reporter nil)
 
-;; Specific to offlineimap, allow running offlineimap -q
-;; `mail-sync-max-number-quick-update' times before running a full update
-;; without -q.
-(defvar mail-sync-quick-counter 10) ; Ensure a full update on startup.
-(defvar mail-sync-max-number-quick-update 10)
-(defvar mail-sync-command-full "offlineimap -u basic")
-(defvar mail-sync-command-quick "offlineimap -q -u basic")
-
 ;;;###autoload
 (defun mail-sync (&optional arg)
   "Sync mails with `mail-sync-command'.
-With a prefix arg don't run `mail-sync-event-hooks'."
+With a prefix arg don't run `mail-sync-event-hook'."
   (interactive "P" gnus-group-mode)
   (let* ((buffer (get-buffer-create mail-sync-buffer))
-         (process-connection-type t)
          (cmd-name (car (split-string mail-sync-command)))
-         process-connection-type
          (num 0)
+         ;; Ensure the mbsync -q really disable its reporter.
+         (process-connection-type nil)
          process)
     (if (get-buffer-process buffer)
         (message "%s currently running" cmd-name)
@@ -55,10 +47,7 @@ With a prefix arg don't run `mail-sync-event-hooks'."
          (with-current-buffer (process-buffer proc)
            (let ((inhibit-read-only t))
              (goto-char (point-max))
-             (insert str)
-             (when (and (string= cmd-name "offlineimap")
-                        (string-match "\\`Copy message" str))
-               (incf num))))))
+             (insert str)))))
       (set-process-sentinel
        process
        (lambda (proc _event)
@@ -79,22 +68,7 @@ With a prefix arg don't run `mail-sync-event-hooks'."
              (sit-for 1)
              (message "[%d] incoming message(s)" num))
            (sit-for 1)
-           (unless arg (run-hooks 'mail-sync-event-hooks))))))))
-
-;; Specific to Offlineimap. Make a full update all the
-;; `mail-sync-max-number-quick-update' mail retrievals,
-;; otherwise make only quick synchronizations.
-(defun mail-sync-update-mail-quick-or-full ()
-  "Make a full or quick offlineimap update.
-The full update is done all the `mail-sync-max-number-quick-update'
-seconds, otherwise a quick update is done, that is the -q offlineimap
-arg is used.  Should run before running offlineimap in
-`mail-sync-update-pre-hook'."
-  (if (>= mail-sync-quick-counter mail-sync-max-number-quick-update)
-      (setq mail-sync-command mail-sync-command-full
-            mail-sync-quick-counter 0)
-    (setq mail-sync-command mail-sync-command-quick)
-    (incf mail-sync-quick-counter)))
+           (unless arg (run-hooks 'mail-sync-event-hook))))))))
 
 
 (provide 'mail-sync)
