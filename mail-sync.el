@@ -61,7 +61,8 @@ With a prefix arg don't run `mail-sync-event-hook'."
            (progress-reporter-done mail-sync--progress-reporter))
          (if (or (not (eq (process-status proc) 'exit))
                  (/= (process-exit-status proc) 0))
-             (message "%s returned with non-zero exit code" cmd-name)
+             (progn (message "%s returned with non-zero exit code" cmd-name)
+                    (pop-to-buffer mail-sync-buffer))
            ;; Mbsync incomings mails.
            (when (buffer-live-p (process-buffer proc))
              (with-current-buffer (process-buffer proc)
