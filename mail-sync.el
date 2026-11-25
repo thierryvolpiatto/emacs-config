@@ -33,8 +33,7 @@ With a prefix arg don't run `mail-sync-event-hook'."
                               'face 'font-lock-variable-name-face))))
       (run-hooks 'mail-sync-update-pre-hook)
       (setq mail-sync--progress-reporter
-            (make-progress-reporter
-             (format "Retrieving mails...")))
+            (make-progress-reporter "Retrieving mails..."))
       (setq process (start-process-shell-command
                      cmd-name
                      buffer
