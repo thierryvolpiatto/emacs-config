@@ -64,11 +64,9 @@ With a prefix arg don't run `mail-sync-event-hook'."
                  (when (re-search-backward "Near: \\+\\([[:digit:]]+\\)" nil t)
                    (setq num (string-to-number (match-string 1)))))
                (special-mode)))
+           (unless arg (run-hooks 'mail-sync-event-hook))
            (unless (zerop num)
-             (sit-for 1)
-             (message "[%d] incoming message(s)" num))
-           (sit-for 1)
-           (unless arg (run-hooks 'mail-sync-event-hook))))))))
+             (message "[%d] incoming message(s)" num))))))))
 
 
 (provide 'mail-sync)
