@@ -1,6 +1,6 @@
-;;; mail-sync.el --- Mail sync UI for Gnus -*- lexical-binding: t -*-
+;;; mail-sync.el --- Mbsync UI for Gnus -*- lexical-binding: t -*-
 
-;;; commentary: Usable with offlineimap and mbsync.
+;;; Commentary: None.
 
 ;;; Code:
 
