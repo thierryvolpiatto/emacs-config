@@ -43,10 +43,15 @@ With a prefix arg don't run `mail-sync-event-hook'."
        (lambda (proc str)
          (when mail-sync--progress-reporter
            (progress-reporter-update mail-sync--progress-reporter))
-         (with-current-buffer (process-buffer proc)
-           (let ((inhibit-read-only t))
-             (goto-char (point-max))
-             (insert str)))))
+         (when (buffer-live-p (process-buffer proc))
+           (with-current-buffer (process-buffer proc)
+             (let ((moving (= (point) (process-mark proc)))
+                   (inhibit-read-only t))
+               (save-excursion
+                 (goto-char (process-mark proc))
+                 (insert str)
+                 (set-marker (process-mark proc) (point)))
+               (when moving (goto-char (process-mark proc))))))))
       (set-process-sentinel
        process
        (lambda (proc _event)
