@@ -3,7 +3,7 @@
 ;;; Commentary: Needs mbsync command line and .mbsyncrc well
 ;; configured. Provide the command `mail-sync'. To update the gnus
 ;; group buffer after fetching mails use the hook
-;; `mail-sync-event-hook' with the function `gnus-group-get-new-news'
+;; `mail-sync-update-after-hook' with the function `gnus-group-get-new-news'
 ;; called with the level corresponding to all mails group e.g:
 ;; (add-hook 'mail-sync-event-hooks (lambda () (gnus-group-get-new-news 1)))
 
@@ -12,7 +12,7 @@
 (defvar mail-sync-command "mbsync")
 (defvar mail-sync-command-switches '("-q" "-V" "posteo"))
 (defvar mail-sync-update-pre-hook nil)
-(defvar mail-sync-event-hook nil)
+(defvar mail-sync-update-after-hook nil)
 (defvar mail-sync-buffer "*Mbsync*")
 
 ;; internals
@@ -21,7 +21,7 @@
 ;;;###autoload
 (defun mail-sync (&optional arg)
   "Run `mail-sync-command' with `mail-sync-command-switches'.
-With a prefix arg don't run `mail-sync-event-hook'."
+With a prefix arg don't run `mail-sync-update-after-hook'."
   (interactive "P" gnus-group-mode)
   (let* ((buffer (get-buffer-create mail-sync-buffer))
          (cmd-name (file-name-nondirectory mail-sync-command))
@@ -77,7 +77,7 @@ With a prefix arg don't run `mail-sync-event-hook'."
                  (when (re-search-backward "Near: \\+\\([[:digit:]]+\\)" nil t)
                    (setq num (string-to-number (match-string 1)))))
                (special-mode)))
-           (unless arg (run-hooks 'mail-sync-event-hook))
+           (unless arg (run-hooks 'mail-sync-update-after-hook))
            (unless (zerop num)
              (message "[%d] incoming message(s)" num))))))))
 

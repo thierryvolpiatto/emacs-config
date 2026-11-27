@@ -2073,7 +2073,7 @@ mode temporarily."
 (with-eval-after-load 'gnus-group
   (define-key gnus-group-mode-map (kbd "U") 'mail-sync)
   ;; Update only mail groups (set to level 1).
-  (add-hook 'mail-sync-event-hook (lambda () (gnus-group-get-new-news 1))))
+  (add-hook 'mail-sync-update-after-hook (lambda () (gnus-group-get-new-news 1))))
 
 (global-set-key (kbd "<f9>") 'gnus)
 (setq mail-user-agent 'gnus-user-agent)
